@@ -1,0 +1,134 @@
+package br.jus.cnj.pje.office.core.imp;
+
+import static com.github.signer4j.imp.Strings.optional;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Optional.ofNullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import com.github.signer4j.ISignatureAlgorithm;
+import com.github.signer4j.ISignatureType;
+import com.github.signer4j.imp.Args;
+import com.github.signer4j.imp.Params;
+import com.github.signer4j.imp.SignatureAlgorithm;
+import com.github.signer4j.imp.SignatureType;
+import com.github.signer4j.imp.Strings;
+import com.github.signer4j.task.ITask;
+import com.github.signer4j.task.imp.AbstractRequestReader;
+
+import br.jus.cnj.pje.office.core.IArquivo;
+import br.jus.cnj.pje.office.core.IAssinadorParams;
+import br.jus.cnj.pje.office.core.ISignerMode;
+import br.jus.cnj.pje.office.core.IStandardSignature;
+
+public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinadorReader.TarefaAssinador>{
+
+  public static final PjeAssinadorReader INSTANCE = new PjeAssinadorReader();
+
+  PjeAssinadorReader() {
+    super(TarefaAssinador.class);
+  }
+
+  static final class TarefaAssinador implements IAssinadorParams {
+
+    private PjeSignerMode modo;
+    
+    private String enviarPara;
+
+    private boolean deslogarKeyStore = true;
+
+    private PjeStandardSignature padraoAssinatura;
+    
+    private SignatureType tipoAssinatura = SignatureType.ATTACHED;
+    
+    private SignatureAlgorithm algoritmoHash = SignatureAlgorithm.SHA1withRSA;//HashAlgorithm.DIGEST_SHA1; TODO revisar essa inicialização
+    
+    private List<IArquivo> arquivos = new ArrayList<>();
+   
+    @Override
+    public final boolean isDeslogarKeyStore() {
+      return this.deslogarKeyStore;
+    }
+    
+    @Override
+    public final Optional<ISignerMode> getModo() {
+      return ofNullable(this.modo);
+    }
+    
+    @Override
+    public final Optional<String> getEnviarPara() {
+      return optional(this.enviarPara);
+    }
+
+    @Override
+    public final Optional<ISignatureAlgorithm> getAlgoritmoHash() {
+      return ofNullable(this.algoritmoHash);
+    }
+
+    @Override
+    public final Optional<IStandardSignature> getPadraoAssinatura() {
+      return ofNullable(this.padraoAssinatura);
+    }
+
+    @Override
+    public final Optional<ISignatureType> getTipoAssinatura() {
+      return ofNullable(this.tipoAssinatura);
+    }
+    
+    @Override
+    public final List<IArquivo> getArquivos() {
+      return this.arquivos == null ? emptyList() : unmodifiableList(this.arquivos);
+    }
+  }
+
+  final static class AssinadorArquivo implements IArquivo {
+
+    public static IArquivo newInstance(File file, String prefix) {
+      return new AssinadorArquivo(file, prefix);
+    }
+    
+    private AssinadorArquivo(File file, String prefix) {
+      this.nome = Args.requireNonNull(file, "file is null").getName() + "." + Strings.trim(prefix) + ".p7s";
+      this.url = file.getAbsolutePath();
+    }
+    
+    private String nome;
+    private String url;
+    private boolean terAtributosAssinados = Boolean.TRUE;
+    private List<String> paramsEnvio = new ArrayList<>();
+
+    @Override
+    public final Optional<String> getUrl() {
+      return optional(this.url);
+    }
+    
+    @Override
+    public final Optional<String> getNome() {
+      return optional(this.nome);
+    }
+
+    @Override
+    public final boolean isTerAtributosAssinados() { //TODO aparentemente isso não é usado em lugar algum!
+      return this.terAtributosAssinados;
+    }
+
+    @Override
+    public final List<String> getParamsEnvio() {
+      return this.paramsEnvio == null ? emptyList() : unmodifiableList(this.paramsEnvio);
+    }
+  }
+
+  @Override
+  protected ITask<?> createTask(Params output, TarefaAssinador pojo) throws IOException {
+    Optional<ISignerMode> mode = pojo.getModo();
+    if (!mode.isPresent()) {
+      throw new IOException("Parameter 'modoAssinatura' (local/remoto) not found!");
+    }
+    return mode.get().getTask(output, pojo);
+  }
+}
