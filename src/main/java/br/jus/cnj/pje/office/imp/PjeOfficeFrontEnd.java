@@ -7,13 +7,13 @@ import java.awt.TrayIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.jus.cnj.pje.office.IPjeFrotEnd;
+import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.imp.IPjeOffice;
 import br.jus.cnj.pje.office.gui.Images;
 import br.jus.cnj.pje.office.gui.alert.MessageAlert;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
-enum PjeOfficeFrontEnd implements IPjeFrotEnd {
+enum PjeOfficeFrontEnd implements IPjeFrontEnd {
   SYSTRAY {
     private SystemTray tray;
     private TrayIcon trayIcon;

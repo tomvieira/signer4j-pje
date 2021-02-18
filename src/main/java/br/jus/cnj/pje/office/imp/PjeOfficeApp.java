@@ -17,7 +17,7 @@ import java.awt.event.ItemListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.jus.cnj.pje.office.IPjeFrotEnd;
+import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.IPjeOffice;
@@ -30,7 +30,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
 
   private final IPjeOffice office;
   
-  private IPjeFrotEnd frontEnd;
+  private IPjeFrontEnd frontEnd;
 
   public static void main(String[] args) {
     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "PjeOffice-" + Version.current());
