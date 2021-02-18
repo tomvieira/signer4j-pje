@@ -59,12 +59,17 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
     checkLoaded();
     return Optional.ofNullable(pool.get(id));
   }
-
+  
+  @Override
+  public void checkAccessPermission(IServerAccess access) throws PjePermissionDeniedException {
+    checker.checkAccessPermission(access);
+  }
+  
   @Override
   public final void save(IServerAccess access) throws PjePermissionDeniedException {
     Args.requireNonNull(access, "access is null");
     checkLoaded();
-    checker.checkAccessPermission(access);
+    checkAccessPermission(access);
     access = access.newInstance();
     persist(access);
     pool.put(access.getId(), access);
@@ -81,7 +86,7 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   protected void add(IServerAccess access) {
     if (access != null) {
       try {
-        checker.checkAccessPermission(access); 
+        checkAccessPermission(access); 
         pool.put(access.getId(), access); 
       } catch (PjePermissionDeniedException e) {
         unpersist(access);

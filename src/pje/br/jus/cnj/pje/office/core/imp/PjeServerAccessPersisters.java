@@ -51,4 +51,9 @@ public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
     persister.reload();
     return this;
   }
+
+  @Override
+  public void checkAccessPermission(IServerAccess serverRequest) throws PjePermissionDeniedException {
+    persister.checkAccessPermission(serverRequest);
+  }
 }

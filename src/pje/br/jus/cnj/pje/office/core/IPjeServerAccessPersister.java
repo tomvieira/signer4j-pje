@@ -22,4 +22,6 @@ public interface IPjeServerAccessPersister {
   default void disallow(IServerAccess access) throws PjePermissionDeniedException {
     save(access.clone(false));
   }
+
+  void checkAccessPermission(IServerAccess serverRequest) throws PjePermissionDeniedException;
 }

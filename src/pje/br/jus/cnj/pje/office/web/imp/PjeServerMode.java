@@ -90,7 +90,6 @@ enum PjeServerMode {
       HttpContext context = server.createContext(handler.getEndPoint(), handler);
       for(Filter filter: setup.getFilters()) {
         context.getFilters().add(filter);
-        context.getFilters().add(filter);
       }
     }
   }

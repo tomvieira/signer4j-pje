@@ -240,7 +240,7 @@ public class PjeServerList extends PjeDialog implements IPjeServerList {
 
     @Override
     public int getColumnCount() {
-      return 4;
+      return COLUMN_NAMES.length;
     }
     
     @Override

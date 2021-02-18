@@ -54,6 +54,7 @@ public enum PjeSecurityAgent implements ISecurityAgent {
   
   @Override
   public boolean isPermitted(IPjeMainParams params, StringBuilder whyNot) {
+    
     Optional<String> opCode = params.getCodigoSeguranca();
     if (!opCode.isPresent()) {
       whyNot.append("Servidor do Pje não enviou parâmetro 'codigoSeguranca'.");
@@ -85,20 +86,23 @@ public enum PjeSecurityAgent implements ISecurityAgent {
     final Optional<IServerAccess> access = persister.hasPermission(serverRequest.getId());
     
     if (!access.isPresent()) {
-      
-      PjeAccessTime time = acessor.tryAccess(serverRequest); //FAZER UMA CHACAGEM ANTES DE MOSTRAR A TELA!
-
-      if (AWAYS.equals(time) || NEVER.equals(time)) {
-        try {
+      try {
+        persister.checkAccessPermission(serverRequest);
+        
+        PjeAccessTime time = acessor.tryAccess(serverRequest); 
+  
+        if (AWAYS.equals(time) || NEVER.equals(time)) {
           persister.save(serverRequest.clone(AWAYS.equals(time)));
-        } catch (PjePermissionDeniedException e) {
-          whyNot.append("Acesso não autorizado ao servidor: '" + server + 
-              "'.\nEste endereço não é reconhecido pelo CNJ.");
-          LOGGER.warn(whyNot.toString(), e);
-          return false;
         }
+        
+        return AT_THIS_TIME.equals(time) || AWAYS.equals(time);
+        
+      } catch (PjePermissionDeniedException e) {
+        whyNot.append("Acesso não autorizado ao servidor: '" + server + 
+            "'.\nEste endereço não é reconhecido pelo CNJ.");
+        LOGGER.warn(whyNot.toString(), e);
+        return false;
       }
-      return AT_THIS_TIME.equals(time) || AWAYS.equals(time);
     }
     boolean ok = access.get().isAutorized();
     if (!ok) {
