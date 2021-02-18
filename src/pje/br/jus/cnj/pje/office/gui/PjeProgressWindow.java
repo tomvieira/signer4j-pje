@@ -5,7 +5,6 @@ import static java.lang.String.format;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Objects;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IProgressFactory;
-import com.github.signer4j.progress.imp.ProgressFactory;
 
 import br.jus.cnj.pje.office.core.IPjeProgressView;
 import io.reactivex.disposables.Disposable;

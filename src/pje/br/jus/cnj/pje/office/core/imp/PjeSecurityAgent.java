@@ -80,23 +80,18 @@ public enum PjeSecurityAgent implements ISecurityAgent {
     }
     
     final String server = opServer.get();
-
     final IServerAccess serverRequest = new PjeServerAccess(app, server, code);
-
     final Optional<IServerAccess> access = persister.hasPermission(serverRequest.getId());
     
     if (!access.isPresent()) {
       try {
         persister.checkAccessPermission(serverRequest);
-        
         PjeAccessTime time = acessor.tryAccess(serverRequest); 
   
         if (AWAYS.equals(time) || NEVER.equals(time)) {
           persister.save(serverRequest.clone(AWAYS.equals(time)));
         }
-        
         return AT_THIS_TIME.equals(time) || AWAYS.equals(time);
-        
       } catch (PjePermissionDeniedException e) {
         whyNot.append("Acesso não autorizado ao servidor: '" + server + 
             "'.\nEste endereço não é reconhecido pelo CNJ.");
