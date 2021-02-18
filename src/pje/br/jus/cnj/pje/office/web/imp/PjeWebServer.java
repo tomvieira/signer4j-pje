@@ -211,7 +211,14 @@ public class PjeWebServer implements IPjeWebServer {
   }
   
   private void stopAsync() {
-    Threads.async(() -> {sleep(1500); this.stop(true); System.exit(1); });
+    Threads.async(() -> {
+      try {
+        sleep(1500); 
+        this.stop(true); 
+      }finally {
+        System.exit(1); 
+      }
+    });
   }
   
   private void startHttps() throws IOException {
