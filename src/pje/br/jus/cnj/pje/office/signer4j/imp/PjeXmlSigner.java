@@ -88,16 +88,19 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
     }
   }
 
-  private ISignedData process(InputStream input) throws KeyStoreAccessException {
+  @Override
+  public ISignedData process(InputStream input) throws KeyStoreAccessException {
+    Args.requireNonNull(input, "input is null");
     return invoke(() -> {
       IChoice choice = choose();
       return SignedData.from(
-        sign(input, 
-            createKeyInfo(choice.getCertificate()), 
-            choice.getPrivateKey()
-            ), 
+        sign(
+          input, 
+          createKeyInfo(choice.getCertificate()), 
+          choice.getPrivateKey()
+        ), 
         choice
-        );
+      );
     });
   }
 
