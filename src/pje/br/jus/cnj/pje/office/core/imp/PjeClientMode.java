@@ -26,7 +26,7 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
 
 enum PjeClientMode {
-  HTTP() {
+  HTTP("http") {
     @Override
     protected IPjeClient createClient(PjeClientBuilder builder) {
       return builder.evictExpiredConnections()
@@ -35,7 +35,7 @@ enum PjeClientMode {
         .build();
     }
   },
-  HTTPS {
+  HTTPS("https") {
     @Override
     protected IPjeClient createClient(PjeClientBuilder builder) {
       final KeyStore keyStore;
@@ -62,6 +62,12 @@ enum PjeClientMode {
     }
   };
   
+  private final String name;
+  
+  private PjeClientMode(String name) {
+    this.name = name;
+  }
+  
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
       .setResponseTimeout(Timeout.DISABLED) //This is SO Timeout. Default to infinit!
       .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
@@ -71,7 +77,7 @@ enum PjeClientMode {
   private IPjeClient client;
 
   public static IPjeClient clientFrom(String address) {
-    return (trim(address).toUpperCase().startsWith(HTTPS.name()) ? HTTPS : HTTP).getClient();
+    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient();
   }
 
   public static void closeClients() {
