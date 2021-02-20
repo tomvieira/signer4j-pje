@@ -1,11 +1,15 @@
 package br.jus.cnj.pje.office.core;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.signer4j.imp.Constants;
 
 public enum Version {
-  Version_2_0_0;
+  _2_0_0("2.0.0");
+  
+  private String version;
+
+  private Version(String version) {
+    this.version = version;
+  }
   
   private static final Version[] VALUES = Version.values();
   
@@ -23,6 +27,6 @@ public enum Version {
   
   @Override
   public String toString() {
-    return StringUtils.replaceChars(name().substring(name().indexOf('_') + 1), '_', '.');
+    return version;
   }
 }

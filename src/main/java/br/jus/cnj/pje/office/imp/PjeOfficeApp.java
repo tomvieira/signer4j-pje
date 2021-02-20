@@ -2,6 +2,7 @@
 package br.jus.cnj.pje.office.imp;  
 
 import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
+import static br.jus.cnj.pje.office.imp.PjeOfficeFrontEnd.getBest;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
@@ -19,8 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
-import br.jus.cnj.pje.office.core.Version;
-import br.jus.cnj.pje.office.core.imp.IPjeOffice;
+import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.imp.PJeOffice;
 import br.jus.cnj.pje.office.gui.alert.MessageAlert;
 
@@ -28,29 +28,30 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeApp.class);
 
-  private final IPjeOffice office;
+  private IPjeOffice office;
   
   private IPjeFrontEnd frontEnd;
 
   public static void main(String[] args) {
-    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "PjeOffice-" + Version.current());
-    invokeLater(() ->  new PjeOfficeApp().start());
+    invokeLater(() ->  new PjeOfficeApp(getBest()).start());
   }
 
-  private PjeOfficeApp() {
+  private PjeOfficeApp(IPjeFrontEnd frontEnd) {
     this.office = new PJeOffice(this);
-    this.frontEnd = PjeOfficeFrontEnd.getBest();
+    this.frontEnd = frontEnd;
   }
 
   @Override
   public void onKill() {
     this.frontEnd.dispose();
-    LOGGER.info("App killed");
+    this.office = null;
+    this.frontEnd = null;
+    LOGGER.info("App closed");
   }
 
   @Override
   public void onFailStart(Exception e) {
-    display("Uma versão antiga do PjeOffice precisa fechada ou desinstalada do seu computador.\n" + e.getMessage());
+    display("Uma versão antiga do PjeOffice precisa ser fechada e/ou desinstalada do seu computador.\n" + e.getMessage());
     System.exit(1);
   }
 
@@ -101,6 +102,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
     MenuItem mnuLog = new MenuItem("Registro de atividades");
     mnuLog.addActionListener(e -> office.showActivities());
 
+    
     CheckboxMenuItem mnuDev = new CheckboxMenuItem("Ativar modo desenvolvedor");
     mnuDev.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED){
@@ -117,6 +119,17 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
 
     Menu mnuOption = new Menu("Opções");
     mnuOption.add(mnuLog);
+
+    if (PjeOfficeFrontEnd.supportsSystray()) {
+      final IPjeFrontEnd front = frontEnd.next();
+      MenuItem mnuDesk = new MenuItem(front.getTitle());
+      mnuDesk.addActionListener(e -> {
+        office.kill();
+        new PjeOfficeApp(front).start();
+      });
+      mnuOption.add(mnuDesk);
+    }
+    
     mnuOption.add(mnuDev);
 
     popup.add(mnuConfig);
@@ -132,6 +145,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
     try {
       this.frontEnd.install(office, popup);
     } catch (Exception es) {
+      LOGGER.error(this.frontEnd.getTitle() + "Não é suportada. Nova tentativa com Desktop", es);
       this.frontEnd = PjeOfficeFrontEnd.DESKTOP;
       try {
         this.frontEnd.install(office, popup);

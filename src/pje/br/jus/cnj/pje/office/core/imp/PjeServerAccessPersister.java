@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Args;
 
+import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 import br.jus.cnj.pje.office.core.IServerAccess;
 import br.jus.cnj.pje.office.core.IServerAccessPermissionChecker;

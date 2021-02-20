@@ -2,10 +2,10 @@ package br.jus.cnj.pje.office.signer4j.imp;
 
 import static com.github.signer4j.imp.Args.requireNonNull;
 import static com.github.signer4j.imp.Constants.DEFAULT_CHARSET;
+import static com.github.signer4j.imp.Strings.empty;
 import static com.github.signer4j.imp.Strings.trim;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -35,7 +35,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -118,12 +117,12 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
   }
 
   private static final String[] SEARCH_CLEANER = new String[] {"\n", "\r", " standalone=\"no\""};
-  private static final String[] REPLACE_CLEANER = new String[] {EMPTY, EMPTY, EMPTY};
+  private static final String[] REPLACE_CLEANER = new String[] {empty(), empty(), empty()};
 
   private byte[] toByteArray(Document document) throws Exception {
     try(OpenByteArrayOutputStream out = new OpenByteArrayOutputStream()){
       this.outputTransformer.transform(new DOMSource(document), new StreamResult(out));
-      final String content = StringUtils.replaceEachRepeatedly(
+      final String content = Strings.replaceEachRepeatedly(
           trim(out.asString(DEFAULT_CHARSET)), 
           SEARCH_CLEANER, 
           REPLACE_CLEANER

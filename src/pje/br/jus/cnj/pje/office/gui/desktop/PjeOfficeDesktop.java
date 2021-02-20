@@ -14,8 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.Version;
-import br.jus.cnj.pje.office.core.imp.IPjeOffice;
 import br.jus.cnj.pje.office.gui.Images;
 import br.jus.cnj.pje.office.gui.PjeFrame;
 

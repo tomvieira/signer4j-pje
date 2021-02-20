@@ -2,7 +2,6 @@ package br.jus.cnj.pje.office.web.imp;
 
 import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
-import static com.github.signer4j.imp.Threads.sleep;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.HttpTools;
-import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.task.ITaskRequestExecutor;
@@ -23,6 +21,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
+import br.jus.cnj.pje.office.core.IExitable;
 import br.jus.cnj.pje.office.core.IPjeProgressView;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.ISecurityAgent;
@@ -148,7 +147,7 @@ public class PjeWebServer implements IPjeWebServer {
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de parada do servidor");
       PjeResponse.SUCCESS.processResponse(response);
-      PjeWebServer.this.stopAsync();
+      PjeWebServer.this.exit();
     }
   }
   
@@ -167,6 +166,7 @@ public class PjeWebServer implements IPjeWebServer {
   private HttpServer httpServer;
   private HttpsServer httpsServer;
   private PjeWebServerSetup setup;
+  private IExitable exitable;
   
   private final AtomicBoolean localRequest = new AtomicBoolean(false);
   
@@ -175,12 +175,13 @@ public class PjeWebServer implements IPjeWebServer {
     this.localRequest.set(enabled);
   }
   
-  public PjeWebServer(IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent) {
-    this(PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get(), tokenAccess, securityAgent);
+  public PjeWebServer(IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent, IExitable exitable) {
+    this(PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get(), tokenAccess, securityAgent, exitable);
   }
 
-  public PjeWebServer(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent) {
+  public PjeWebServer(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent, IExitable exitable) {
     this.executor = new PjeTaskRequestExecutor(view, factory, tokenAccess, securityAgent, localRequest);
+    this.exitable = exitable;
   }
   
   @Override
@@ -210,15 +211,8 @@ public class PjeWebServer implements IPjeWebServer {
     return setup != null;
   }
   
-  private void stopAsync() {
-    Threads.async(() -> {
-      try {
-        sleep(1500); 
-        this.stop(true); 
-      }finally {
-        System.exit(1); 
-      }
-    });
+  private void exit() {
+    exitable.exit(1500);
   }
   
   private void startHttps() throws IOException {

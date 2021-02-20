@@ -4,6 +4,7 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.signer4j.imp.Strings.getQuietly;
+import static com.github.signer4j.imp.Threads.sleep;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -14,11 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
+import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.HttpTools;
+import com.github.signer4j.imp.States;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.WindowLockDettector;
 
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
+import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.PjeProgressView;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
@@ -32,9 +36,9 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private IPjeWebServer webServer;
 
-  private final IPjeLifeCycleHook lifeCycle;
+  private IPjeLifeCycleHook lifeCycle;
 
-  private final IWindowLockDettector dettector;
+  private IWindowLockDettector dettector;
 
   private Disposable ticket;
 
@@ -43,57 +47,73 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   private PJeOffice(IWindowLockDettector dettector, IPjeLifeCycleHook hook) {
+    Args.requireNonNull(dettector, "dettector is null");
+    Args.requireNonNull(hook, "hook is null");
     this.dettector = dettector.notifyTo(this);
     this.lifeCycle = hook;
   }
   
+  private void checkIsAlive() throws IllegalStateException {
+    States.requireTrue(this.lifeCycle != null, "PjeOffice was killed");
+  }
+  
   @Override
   public void boot() {
+    checkIsAlive();
     reset();
   }
   
   @Override
   public void showCertificates() {
+    checkIsAlive();
     PjeCertificateAcessor.INSTANCE.showCertificates(true, false);
   }
 
   @Override
   public void showAuthorizedServers() {
+    checkIsAlive();
     PjeServerListAcessor.INSTANCE.show();
   }
 
   @Override
   public void showActivities() {
+    checkIsAlive();
     PjeProgressView.INSTANCE.display();
   }
 
   @Override
   public void setDevMode() {
+    checkIsAlive();
     PjeSecurityAgent.INSTANCE.setDevMode();
   }
 
   @Override
   public void setProductionMode() {
+    checkIsAlive();
     PjeSecurityAgent.INSTANCE.setProductionMode();    
   }
   
   @Override
   public void setAuthStrategy(PjeAuthStrategy strategy) {
+    checkIsAlive();
     PjeCertificateAcessor.INSTANCE.setAuthStrategy(strategy);
   }
   
   @Override
   public boolean isAwayStrategy() {
+    checkIsAlive();
     return AWAYS == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
   }
 
   @Override
   public boolean isOneTimeStrategy() {
+    checkIsAlive();
     return ONE_TIME == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
   }
 
   @Override
   public boolean isConfirmStrategy() {
+    checkIsAlive();
     return CONFIRM == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
   }
   
@@ -113,10 +133,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     LOGGER.info("Servidor web parado. Requisições indisponíveis");
     PjeClientMode.closeClients();
     lifeCycle.onShutdown();
-    if (this.ticket != null)
-      this.ticket.dispose();
-    this.ticket = null;
-    this.webServer = null;
   }
   
   protected void onWebServerKill() {
@@ -128,6 +144,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   @Override
   public void onMachineLocked(int value) {
+    checkIsAlive();
     LOGGER.info("Máquina bloqueada pelo usuário");
     stopWebServer();
     PjeCertificateAcessor.INSTANCE.close();
@@ -135,13 +152,14 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   @Override
   public void onMachineUnlocked(int value) {
+    checkIsAlive();
     LOGGER.info("Máquina desbloqueada pelo usuário");
     startWebServer();
   }
 
   private void startWebServer() {
     if (this.webServer == null) {
-      this.webServer = new PjeWebServer(PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+      this.webServer = new PjeWebServer(PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE, this);
       this.ticket = this.webServer.lifeCycle().subscribe(cycle -> {
         switch(cycle) {
         case STARTUP:
@@ -176,20 +194,36 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
         this.lifeCycle.onFailShutdown(e);
       } finally {
         this.webServer = null;
+        if (this.ticket != null)
+          this.ticket.dispose();
+        this.ticket = null;
       }
     }
   }
   
   @Override
-  public void exit() {
+  public void kill() {
+    checkIsAlive();
+    this.stopWebServer(true);
+    this.lifeCycle = null;
+    this.dettector = null;
+    this.ticket = null;
+    //game over!
+  }
+  
+  @Override
+  public void exit(long delay) {
+    checkIsAlive();
     Threads.async(() -> {
-      this.stopWebServer(true);
+      sleep(delay);
+      this.kill();
       System.exit(0);
     });
   }
   
   @Override
   public void showOfflineSigner() {
+    checkIsAlive();
     final String request = 
       "{\"aplicacao\":\"Pje\"," + 
       "\"servidor\":\"localhost\"," + 

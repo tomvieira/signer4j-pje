@@ -22,6 +22,7 @@ import com.github.signer4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IFilePath;
 import br.jus.cnj.pje.office.core.IPjeConfig;
+import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IServerAccess;
 import br.jus.cnj.pje.office.core.PjeAllowedExtensions;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;

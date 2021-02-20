@@ -19,6 +19,8 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.hc.core5.util.Timeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Streams;
 
@@ -62,11 +64,7 @@ enum PjeClientMode {
     }
   };
   
-  private final String name;
-  
-  private PjeClientMode(String name) {
-    this.name = name;
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(PjeClientMode.class);
   
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
       .setResponseTimeout(Timeout.DISABLED) //This is SO Timeout. Default to infinit!
@@ -76,13 +74,22 @@ enum PjeClientMode {
 
   private IPjeClient client;
 
+  private final String name;
+  
+  private PjeClientMode(String name) {
+    this.name = name;
+  }
+  
   public static IPjeClient clientFrom(String address) {
     return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient();
   }
 
+  
   public static void closeClients() {
     HTTP.close();
+    LOGGER.info("Cliente HTTP closed");
     HTTPS.close();
+    LOGGER.info("Cliente HTTPS closed");
   }
   
   private final IPjeClient getClient() {

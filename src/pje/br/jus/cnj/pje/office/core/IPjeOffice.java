@@ -1,9 +1,9 @@
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.core;
 
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 
-public interface IPjeOffice {
-
+public interface IPjeOffice extends IExitable {
+  
   void boot();
 
   void showCertificates();
@@ -18,8 +18,6 @@ public interface IPjeOffice {
 
   void setProductionMode();
 
-  void exit();
-
   void setAuthStrategy(PjeAuthStrategy strategy);
 
   boolean isAwayStrategy();
@@ -27,4 +25,6 @@ public interface IPjeOffice {
   boolean isOneTimeStrategy();
 
   boolean isConfirmStrategy();
+
+  void kill();
 }

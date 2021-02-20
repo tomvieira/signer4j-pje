@@ -1,11 +1,9 @@
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.core;
 
 import java.util.Optional;
 
 import com.github.signer4j.imp.Exec;
 
-import br.jus.cnj.pje.office.core.IFilePath;
-import br.jus.cnj.pje.office.core.IServerAccess;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
 

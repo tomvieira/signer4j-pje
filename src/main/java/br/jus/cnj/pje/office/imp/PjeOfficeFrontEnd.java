@@ -8,13 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.core.imp.IPjeOffice;
+import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.Images;
 import br.jus.cnj.pje.office.gui.alert.MessageAlert;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
 enum PjeOfficeFrontEnd implements IPjeFrontEnd {
-  SYSTRAY {
+  SYSTRAY("Versão Systray") {
     private SystemTray tray;
     private TrayIcon trayIcon;
     
@@ -29,10 +29,18 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
 
     @Override
     public void dispose() {
+      trayIcon.setPopupMenu(null);
       tray.remove(trayIcon);
+      trayIcon = null;
+      tray = null;
+    }
+
+    @Override
+    public IPjeFrontEnd next() {
+      return DESKTOP;
     }
   },
-  DESKTOP {
+  DESKTOP("Versão Desktop") {
     private PjeOfficeDesktop desktop;
     
     @Override
@@ -44,16 +52,37 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     @Override
     public void dispose() {
       this.desktop.close();
+      this.desktop = null;
+    }
+
+    @Override
+    public IPjeFrontEnd next() {
+      return SYSTRAY;
     }
   };
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeFrontEnd.class);
   
+  private String title;
+  
+  PjeOfficeFrontEnd(String title) {
+    this.title = title;
+  }
+  
+  @Override
+  public final String getTitle() {
+    return title;
+  }
+  
   public static PjeOfficeFrontEnd getBest() {
-    boolean systray = SystemTray.isSupported();
+    boolean systray = supportsSystray();
     LOGGER.info("Suporte a systray: " + systray);
     boolean forceDesktop = System.getenv("PJE_OFFICE_DESKTOP") != null;
     LOGGER.info("Forçar uso desktop: " + forceDesktop);
     return systray && !forceDesktop ? SYSTRAY : DESKTOP;
+  }
+
+  public static boolean supportsSystray() {
+    return SystemTray.isSupported();
   }
 }
