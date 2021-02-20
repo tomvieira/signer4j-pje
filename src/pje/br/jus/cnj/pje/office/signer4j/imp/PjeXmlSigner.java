@@ -122,7 +122,7 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
   private byte[] toByteArray(Document document) throws Exception {
     try(OpenByteArrayOutputStream out = new OpenByteArrayOutputStream()){
       this.outputTransformer.transform(new DOMSource(document), new StreamResult(out));
-      final String content = Strings.replaceEachRepeatedly(
+      final String content = Strings.replaceEach(
           trim(out.asString(DEFAULT_CHARSET)), 
           SEARCH_CLEANER, 
           REPLACE_CLEANER

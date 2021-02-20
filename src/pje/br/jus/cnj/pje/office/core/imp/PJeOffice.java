@@ -198,6 +198,8 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
           this.ticket.dispose();
         this.ticket = null;
       }
+    } else if (kill) {
+      onWebServerKill();
     }
   }
   
@@ -208,7 +210,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     this.lifeCycle = null;
     this.dettector = null;
     this.ticket = null;
-    //game over!
   }
   
   @Override
@@ -217,7 +218,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     Threads.async(() -> {
       sleep(delay);
       this.kill();
-      System.exit(0);
+      System.exit(0); //game over!
     });
   }
   
