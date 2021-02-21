@@ -3,6 +3,8 @@ package br.jus.cnj.pje.office.imp;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import br.jus.cnj.pje.office.gui.alert.MessageAlert;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
 enum PjeOfficeFrontEnd implements IPjeFrontEnd {
+  
   SYSTRAY("Versão Systray") {
     private SystemTray tray;
     private TrayIcon trayIcon;
@@ -24,13 +27,21 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     public void install(IPjeOffice office, PopupMenu menu) throws Exception {
       this.tray = SystemTray.getSystemTray();
       this.trayIcon = new TrayIcon(Images.PJE_ICON_TRAY.asImage());
+      //this.trayIcon.setImageAutoSize(true);
       this.trayIcon.setPopupMenu(menu);
-      this.trayIcon.addActionListener(e -> MessageAlert.display("Menu acessível com botão auxiliar do mouse"));
+      this.trayIcon.addMouseListener(new MouseAdapter() {
+        public void mouseReleased(MouseEvent e) {
+          if (e.getButton() != MouseEvent.BUTTON3) {
+            MessageAlert.display("Menu acessível com botão auxiliar do mouse.");
+          }
+        }
+      });
+      trayIcon.setToolTip("PjeOffice - Assinador do Pje.\nClique com botão auxiliar para ver o menu.");
       this.tray.add(trayIcon);
     }
 
     @Override
-    public void doDispose() {
+    protected void doDispose() {
       LOGGER.debug("Anulando PopupMenu em trayIcon");
       trayIcon.setPopupMenu(null);
       LOGGER.debug("Removendo trayIcon de tray");
@@ -45,6 +56,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
       return DESKTOP;
     }
   },
+  
   DESKTOP("Versão Desktop") {
     private PjeOfficeDesktop desktop;
     
@@ -55,7 +67,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     }
 
     @Override
-    public void doDispose() {
+    protected void doDispose() {
       this.desktop.close();
       this.desktop = null;
     }

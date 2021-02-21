@@ -114,7 +114,6 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
 
     MenuItem mnuLog = new MenuItem("Registro de atividades");
     mnuLog.addActionListener(e -> office.showActivities());
-
     
     CheckboxMenuItem mnuDev = new CheckboxMenuItem("Ativar modo desenvolvedor");
     mnuDev.addItemListener(e -> {
