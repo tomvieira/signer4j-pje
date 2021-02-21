@@ -4,6 +4,7 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.signer4j.imp.Strings.getQuietly;
+import static com.github.signer4j.imp.Threads.async;
 import static com.github.signer4j.imp.Threads.sleep;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -139,6 +140,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     LOGGER.info("Killing PjeOffice");
     this.dettector.stop();
     PjeCertificateAcessor.INSTANCE.close();
+    LOGGER.info("Fechada instância certificate acessor");
     this.lifeCycle.onKill();
   }
 
@@ -215,11 +217,18 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void exit(long delay) {
     checkIsAlive();
-    Threads.async(() -> {
+    Runnable action = () -> {
       sleep(delay);
       this.kill();
-      System.exit(0); //game over!
-    });
+      LOGGER.info("Game over! Bye bye!");
+      Runtime.getRuntime().halt(0);
+    };
+    if (Threads.isShutdownHook()) {
+      LOGGER.info("Pedido de finalização via ShutdownHook");
+      action.run();
+      return;
+    }
+    async(action);
   }
   
   @Override

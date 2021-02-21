@@ -7,6 +7,8 @@ import java.awt.TrayIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.imp.Threads;
+
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.Images;
@@ -28,9 +30,12 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     }
 
     @Override
-    public void dispose() {
+    public void doDispose() {
+      LOGGER.debug("Anulando PopupMenu em trayIcon");
       trayIcon.setPopupMenu(null);
+      LOGGER.debug("Removendo trayIcon de tray");
       tray.remove(trayIcon);
+      LOGGER.debug("Anulando atributos trayIcon e tray");
       trayIcon = null;
       tray = null;
     }
@@ -50,7 +55,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     }
 
     @Override
-    public void dispose() {
+    public void doDispose() {
       this.desktop.close();
       this.desktop = null;
     }
@@ -73,6 +78,18 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
   public final String getTitle() {
     return title;
   }
+  
+  @Override
+  public final void dispose() {
+    if (Threads.isShutdownHook()) {
+      LOGGER.info("Dispose escaped (thread em shutdownhook)");
+      return;
+    }
+    doDispose();
+    LOGGER.info("Frontend liberado");
+  }
+  
+  protected abstract void doDispose();
   
   public static PjeOfficeFrontEnd getBest() {
     boolean systray = supportsSystray();

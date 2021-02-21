@@ -14,11 +14,15 @@ import java.awt.CheckboxMenuItem;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.signer4j.imp.Threads;
+import com.github.signer4j.imp.Threads.ShutdownHookThread;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
@@ -34,7 +38,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
   
   private IPjeFrontEnd frontEnd;
 
-  private Thread jvmHook;
+  private ShutdownHookThread jvmHook;
   
   public static void main(String[] args) {
     invokeLater(() ->  new PjeOfficeApp(getBest()).start());
@@ -43,16 +47,17 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
   private PjeOfficeApp(IPjeFrontEnd frontEnd) {
     this.office = new PJeOffice(this);
     this.frontEnd = frontEnd;
-    this.jvmHook = new Thread(office::exit);
-    Runtime.getRuntime().addShutdownHook(jvmHook);
+    this.jvmHook = Threads.shutdownHookAdd(office::exit, "JVMShutDownHook");
   }
 
   @Override
   public void onKill() {
+    LOGGER.info("Liberando frontEnd");
     this.frontEnd.dispose();
-    tryRun(() -> getRuntime().removeShutdownHook(jvmHook), true);
     this.office = null;
     this.frontEnd = null;
+    LOGGER.info("Reciclando jvmHook");
+    Threads.shutdownHookRem(jvmHook);
     this.jvmHook = null;
     LOGGER.info("App closed");
   }
@@ -164,5 +169,6 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
         System.exit(1);
       }
     }
+    Toolkit.getDefaultToolkit().beep();
   }
 }

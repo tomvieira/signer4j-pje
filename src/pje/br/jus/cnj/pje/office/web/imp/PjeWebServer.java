@@ -2,6 +2,7 @@ package br.jus.cnj.pje.office.web.imp;
 
 import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
+import static java.awt.Toolkit.getDefaultToolkit;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,7 +58,10 @@ public class PjeWebServer implements IPjeWebServer {
          "Por favor, remova seu certificado do computador\n" +
          "e notifique este alerta ao suporte em segurança!";
         LOGGER.warn(message);
-        invokeLater(() -> display(message));
+        invokeLater(() -> {
+          getDefaultToolkit().beep();
+          display(message);
+        });
         request.sendResponseHeaders(HttpStatus.SC_UNAUTHORIZED, 0);
         request.close();
       } else {
