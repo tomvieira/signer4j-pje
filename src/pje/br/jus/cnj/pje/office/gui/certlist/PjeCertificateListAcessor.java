@@ -6,9 +6,9 @@ import java.util.function.Predicate;
 
 import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificateListUI.ICertificateEntry;
-import com.github.signer4j.gui.CertificateListUI;
 import com.github.signer4j.ICertificates;
 import com.github.signer4j.IKeyStoreAccess;
+import com.github.signer4j.gui.CertificateListUI;
 import com.github.signer4j.imp.AbstractCertificateChooser;
 import com.github.signer4j.imp.Choice;
 import com.github.signer4j.imp.IChoice;

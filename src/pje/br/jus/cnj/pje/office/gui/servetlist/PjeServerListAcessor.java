@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.gui.servetlist;
 
-import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.List;
 import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.core.imp.PjeServerAccess;
 import br.jus.cnj.pje.office.core.imp.PjeServerAccessPersisters;
 import br.jus.cnj.pje.office.gui.servetlist.IPjeServerListUI.Action;
@@ -68,7 +68,7 @@ public enum PjeServerListAcessor implements IPjeServerListAcessor {
   @Override
   public void show() {
     List<IServerEntry> entries = new ArrayList<>();
-    CONF.loadServerAccess(sa -> entries.add(new ServerEntry(sa)));
+    PjeConfig.loadServerAccess(sa -> entries.add(new ServerEntry(sa)));
     List<IPjeServerAccess> serverAccess = serverList
       .show(entries)
       .stream()
@@ -78,7 +78,7 @@ public enum PjeServerListAcessor implements IPjeServerListAcessor {
         se.getCode(), 
         Authorization.SIM.equals(se.getAuthorization())))
       .collect(toList());
-    CONF.overwrite(serverAccess.toArray(new IPjeServerAccess[serverAccess.size()]));
+    PjeConfig.overwrite(serverAccess.toArray(new IPjeServerAccess[serverAccess.size()]));
     PjeServerAccessPersisters.refresh();
   }
 }

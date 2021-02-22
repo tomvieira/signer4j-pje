@@ -1,10 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
-import static com.github.signer4j.gui.CertificateListUI.display;
-import static com.github.signer4j.imp.Config.persister;
 import static com.github.signer4j.imp.KeyStoreInvokeHandler.INVOKER;
 import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
@@ -83,12 +80,12 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   private List<IFilePath> a1Files = new ArrayList<>();
 
   private PjeCertificateAcessor() {
-    this.strategy = PjeAuthStrategy.valueOf(CONF
+    this.strategy = PjeAuthStrategy.valueOf(PjeConfig
         .authStrategy()
         .orElse(AWAYS.name())
         .toUpperCase());
-    persister().loadA3Paths(a3Libraries::add);
-    persister().loadA1Paths(a1Files::add);
+    PjeConfig.loadA3Paths(a3Libraries::add);
+    PjeConfig.loadA1Paths(a1Files::add);
     this.devManager = new DeviceManager(notDuplicated()
       .more(new EnvironmentStrategy())
       .more(new FilePathStrategy())
@@ -112,8 +109,8 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
       List<IDevice> devices = this.devManager.getDevices(autoForce || force); 
       selected = CertificateListUI.display(
         toEntries(devices), 
-        this::onNewDevices, 
-        autoSelect
+        autoSelect, 
+        this::onNewDevices
       );
     }while(selected == null);
     this.autoForce = false;
@@ -133,7 +130,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     if (strategy != null) {
       this.strategy = strategy;
       this.close();
-      CONF.save(strategy);
+      PjeConfig.save(strategy);
     }
   } 
   

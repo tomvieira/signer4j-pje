@@ -14,6 +14,7 @@ import com.github.signer4j.imp.exception.KeyStoreAccessException;
 import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
+import com.github.signer4j.progress.imp.InterruptedProgress;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -83,6 +84,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
     progress.begin(Stage.PROCESSING_FILES, size);
     IPjeToken token = loginToken();
     
+    boolean cancel = false;
     int index = 0;
     try {
       IByteProcessor processor = padraoAssinatura.getByteProcessor(token, params);
@@ -153,6 +155,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
       }
       progress.end();
     }catch(Exception e) {
+      cancel = e instanceof InterruptedProgress;
       fail |= index != size;
     }finally {
       token.logout(); //params.isDeslogarKeyStore() //TODO entender esse parâmetro que vem do servidor!
@@ -163,7 +166,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
       invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
       return PjeResponse.SUCCESS;
     }
-    invokeLater(() -> display("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades."));
+    String detail = cancel ? "Operação cancelada pelo usuário." : "Alguns arquivos NÃO puderam ser assinados.";
+    invokeLater(() -> display(detail + "\nVeja detalhes no registro de atividades."));
     return PjeResponse.FAIL;
   }
   

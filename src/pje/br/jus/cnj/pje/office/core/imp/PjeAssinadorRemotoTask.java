@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.DownloadStatus;
+import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.exception.TaskException;

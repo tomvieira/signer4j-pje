@@ -1,14 +1,12 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
-
 import java.util.Optional;
 
-import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 
 public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
-  DEVMODE(new PjeServerAccessPersister(PjePermissionChecker.DEVMODE, CONF) {
+  DEVMODE(new PjeServerAccessPersister(PjePermissionChecker.DEVMODE) {
     @Override
     protected void add(IPjeServerAccess access) {
       if (access != null) {
@@ -17,7 +15,7 @@ public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
     }
   }),
   
-  PRODUCTION(new PjeServerAccessPersister(PjePermissionChecker.PRODUCTION, CONF));
+  PRODUCTION(new PjeServerAccessPersister(PjePermissionChecker.PRODUCTION));
   
   public static void refresh() {
     for(PjeServerAccessPersisters p: PjeServerAccessPersisters.values()) {

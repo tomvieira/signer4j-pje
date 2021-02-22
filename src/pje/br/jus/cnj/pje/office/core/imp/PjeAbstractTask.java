@@ -20,8 +20,8 @@ import com.github.signer4j.task.imp.AbstractTask;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeMainParams;
-import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;

@@ -13,9 +13,7 @@ import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
-public class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister {
-  
-  public static final IPjeConfigPersister CONF = new PJeConfigPersister();
+class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister {
   
   private static final String SERVER_LIST      = "list.server";
   
@@ -27,7 +25,7 @@ public class PJeConfigPersister extends ConfigPersister implements IPjeConfigPer
     }
   }
   
-  private PJeConfigPersister() {
+  PJeConfigPersister() {
     super(new PjeConfig());
   }
   

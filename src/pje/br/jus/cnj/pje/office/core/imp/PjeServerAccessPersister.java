@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Args;
 
-import br.jus.cnj.pje.office.core.IPjeConfigPersister;
-import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPermissionChecker;
+import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 
 class PjeServerAccessPersister implements IPjeServerAccessPersister {
   
@@ -24,11 +23,8 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   
   private final Map<String, IPjeServerAccess> pool = new HashMap<>();
   
-  protected final IPjeConfigPersister persister;
-
-  protected PjeServerAccessPersister(IPjeServerAccessPermissionChecker checker, IPjeConfigPersister persister) {
+  protected PjeServerAccessPersister(IPjeServerAccessPermissionChecker checker) {
     this.checker = Args.requireNonNull(checker, "checker is null");
-    this.persister = Args.requireNonNull(persister, "persister is null");
   }
   
   protected boolean isLoaded() {
@@ -97,14 +93,14 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   }
   
   protected void load() {
-    persister.loadServerAccess(this::add);
+    PjeConfig.loadServerAccess(this::add);
   }
   
   protected void persist(IPjeServerAccess... access) {
-    persister.save(access);
+    PjeConfig.save(access);
   }
 
   protected void unpersist(IPjeServerAccess access) {
-    persister.delete(access);
+    PjeConfig.delete(access);
   }
 }

@@ -8,8 +8,8 @@ import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.task.imp.TaskRequestExecutor;
 
 import br.jus.cnj.pje.office.core.IPjeProgressView;
-import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 

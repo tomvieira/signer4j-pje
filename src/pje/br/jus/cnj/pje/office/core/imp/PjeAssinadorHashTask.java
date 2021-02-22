@@ -20,7 +20,6 @@ import com.github.signer4j.task.exception.TaskException;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.core.IAssinadorHashParams;
 import br.jus.cnj.pje.office.core.IPjeClient;
-import br.jus.cnj.pje.office.core.imp.PjeAssinadorHashReader.AssinadorHashArquivo;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 

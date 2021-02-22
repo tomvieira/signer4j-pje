@@ -24,8 +24,8 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
 import br.jus.cnj.pje.office.core.IPjeProgressView;
-import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.gui.PjeProgressView;

@@ -13,9 +13,9 @@ import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeMainParams;
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
-import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
 
 public enum PjeSecurityAgent implements IPjeSecurityAgent {
   INSTANCE;
