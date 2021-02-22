@@ -37,7 +37,7 @@ import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.gui.PjeImages;
 
-public class PjeServerList extends SimpleDialog implements IPjeServerListUI {
+public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
 
   private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class PjeServerList extends SimpleDialog implements IPjeServerListUI {
   private List<IServerEntry> currentList = Collections.emptyList();
   private List<IServerEntry> loadedList;
 
-  public PjeServerList() {
+  public PjeServerListUI() {
     super("Servidores autorizados", true);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setBounds(100, 100, 602, 371);

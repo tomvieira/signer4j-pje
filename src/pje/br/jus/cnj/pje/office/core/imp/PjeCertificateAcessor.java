@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
-import static com.github.signer4j.gui.CertificateList.display;
+import static com.github.signer4j.gui.CertificateListUI.display;
 import static com.github.signer4j.imp.Config.persister;
 import static com.github.signer4j.imp.KeyStoreInvokeHandler.INVOKER;
 import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
@@ -21,7 +21,7 @@ import com.github.signer4j.IDevice;
 import com.github.signer4j.IDeviceManager;
 import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
-import com.github.signer4j.gui.CertificateList;
+import com.github.signer4j.gui.CertificateListUI;
 import com.github.signer4j.gui.alert.ExpiredPasswordAlert;
 import com.github.signer4j.gui.alert.NoTokenPresentAlert;
 import com.github.signer4j.gui.alert.TokenLockedAlert;
@@ -110,7 +110,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     Optional<ICertificateEntry> selected;
     do {
       List<IDevice> devices = this.devManager.getDevices(autoForce || force); 
-      selected = CertificateList.display(
+      selected = CertificateListUI.display(
         toEntries(devices), 
         this::onNewDevices, 
         autoSelect

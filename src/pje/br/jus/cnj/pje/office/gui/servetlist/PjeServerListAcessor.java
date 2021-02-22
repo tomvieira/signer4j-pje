@@ -63,7 +63,7 @@ public enum PjeServerListAcessor implements IPjeServerListAcessor {
     }
   }
   
-  private final IPjeServerListUI serverList = new PjeServerList();
+  private final IPjeServerListUI serverList = new PjeServerListUI();
   
   @Override
   public void show() {
