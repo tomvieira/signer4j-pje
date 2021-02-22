@@ -7,7 +7,7 @@ import java.util.Scanner;
 import com.github.signer4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.gui.alert.PjePermissionAccessor;
 
 public enum PjePermissionAcessor implements IPjePermissionAccessor {
@@ -15,13 +15,13 @@ public enum PjePermissionAcessor implements IPjePermissionAccessor {
     private final IPjePermissionAccessor acessor = new PjePermissionAccessor();
     
     @Override
-    public PjeAccessTime tryAccess(IServerAccess token) {
+    public PjeAccessTime tryAccess(IPjeServerAccess token) {
       return acessor.tryAccess(token);
     }
   },
   CONSOLE(){
     @Override
-    public PjeAccessTime tryAccess(IServerAccess token) {
+    public PjeAccessTime tryAccess(IPjeServerAccess token) {
       @SuppressWarnings("resource")
       Scanner sc = new Scanner(System.in);
       do{

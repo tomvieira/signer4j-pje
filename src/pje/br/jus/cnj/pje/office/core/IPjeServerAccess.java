@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core;
 
-public interface IServerAccess {
+public interface IPjeServerAccess {
 
   String getId();
   
@@ -12,9 +12,9 @@ public interface IServerAccess {
 
   boolean isAutorized();
   
-  IServerAccess clone(boolean allowed);
+  IPjeServerAccess clone(boolean allowed);
 
-  default IServerAccess newInstance() {
+  default IPjeServerAccess newInstance() {
     return clone(isAutorized());
   }
 }

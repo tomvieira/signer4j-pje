@@ -11,8 +11,8 @@ import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
-import br.jus.cnj.pje.office.core.IServerAccess;
-import br.jus.cnj.pje.office.core.IServerAccessPermissionChecker;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccessPermissionChecker;
 
 class PjeServerAccessPersister implements IPjeServerAccessPersister {
   
@@ -20,13 +20,13 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   
   private boolean loaded = false;
   
-  private final IServerAccessPermissionChecker checker;
+  private final IPjeServerAccessPermissionChecker checker;
   
-  private final Map<String, IServerAccess> pool = new HashMap<>();
+  private final Map<String, IPjeServerAccess> pool = new HashMap<>();
   
   protected final IPjeConfigPersister persister;
 
-  protected PjeServerAccessPersister(IServerAccessPermissionChecker checker, IPjeConfigPersister persister) {
+  protected PjeServerAccessPersister(IPjeServerAccessPermissionChecker checker, IPjeConfigPersister persister) {
     this.checker = Args.requireNonNull(checker, "checker is null");
     this.persister = Args.requireNonNull(persister, "persister is null");
   }
@@ -37,7 +37,7 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
 
   @FunctionalInterface
   protected interface IPool {
-    void add(IServerAccess access);
+    void add(IPjeServerAccess access);
   }
   
   private void checkLoaded() {
@@ -55,19 +55,19 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   }
   
   @Override
-  public final Optional<IServerAccess> hasPermission(String id){
+  public final Optional<IPjeServerAccess> hasPermission(String id){
     Args.requireNonNull(id, "id is null");
     checkLoaded();
     return Optional.ofNullable(pool.get(id));
   }
   
   @Override
-  public void checkAccessPermission(IServerAccess access) throws PjePermissionDeniedException {
+  public void checkAccessPermission(IPjeServerAccess access) throws PjePermissionDeniedException {
     checker.checkAccessPermission(access);
   }
   
   @Override
-  public final void save(IServerAccess access) throws PjePermissionDeniedException {
+  public final void save(IPjeServerAccess access) throws PjePermissionDeniedException {
     Args.requireNonNull(access, "access is null");
     checkLoaded();
     checkAccessPermission(access);
@@ -77,14 +77,14 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
   }
 
   @Override
-  public final void remove(IServerAccess access) throws PjeTokenPersisterException {
+  public final void remove(IPjeServerAccess access) throws PjeTokenPersisterException {
     Args.requireNonNull(access, "access is null");
     checkLoaded();
     unpersist(access);
     pool.remove(access.getId());
   }
   
-  protected void add(IServerAccess access) {
+  protected void add(IPjeServerAccess access) {
     if (access != null) {
       try {
         checkAccessPermission(access); 
@@ -100,11 +100,11 @@ class PjeServerAccessPersister implements IPjeServerAccessPersister {
     persister.loadServerAccess(this::add);
   }
   
-  protected void persist(IServerAccess... access) {
+  protected void persist(IPjeServerAccess... access) {
     persister.save(access);
   }
 
-  protected void unpersist(IServerAccess access) {
+  protected void unpersist(IPjeServerAccess access) {
     persister.delete(access);
   }
 }

@@ -5,7 +5,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.github.signer4j.ICertificate;
-import com.github.signer4j.ICertificateList.ICertificateEntry;
+import com.github.signer4j.ICertificateListUI.ICertificateEntry;
+import com.github.signer4j.gui.CertificateList;
 import com.github.signer4j.ICertificates;
 import com.github.signer4j.IKeyStoreAccess;
 import com.github.signer4j.imp.AbstractCertificateChooser;
@@ -31,7 +32,7 @@ public class PjeCertificateListAcessor extends AbstractCertificateChooser {
     if (options.size() == 1)
       return toChoice(options.get(0));
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    Optional<ICertificateEntry> ce = PjeCertificateList.display((List)options);
+    Optional<ICertificateEntry> ce = CertificateList.display((List)options);
     if (!ce.isPresent()) {
       return Choice.CANCEL;
     }

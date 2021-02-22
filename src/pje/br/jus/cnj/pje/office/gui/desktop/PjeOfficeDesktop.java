@@ -14,13 +14,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import br.jus.cnj.pje.office.core.IExitable;
-import br.jus.cnj.pje.office.core.IPjeOffice;
-import br.jus.cnj.pje.office.core.Version;
-import br.jus.cnj.pje.office.gui.Images;
-import br.jus.cnj.pje.office.gui.PjeFrame;
+import com.github.signer4j.IExitable;
+import com.github.signer4j.gui.utils.SimpleFrame;
+import com.github.signer4j.imp.Config;
 
-public class PjeOfficeDesktop extends PjeFrame {
+import br.jus.cnj.pje.office.core.Version;
+
+public class PjeOfficeDesktop extends SimpleFrame {
   private static final long serialVersionUID = 1L;
   
   private JPanel contentPane;
@@ -35,7 +35,7 @@ public class PjeOfficeDesktop extends PjeFrame {
     setContentPane(contentPane);
     JButton btnMain = new JButton("");
     btnMain.add(popup);
-    btnMain.setIcon(new ImageIcon(Images.PJE_ICON.asImage()));
+    btnMain.setIcon(new ImageIcon(Config.getIcon()));
     btnMain.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         popup.show(e.getComponent(), e.getX(), e.getY());

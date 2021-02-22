@@ -1,12 +1,12 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
-public class ServerAccessWrapper implements IServerAccess {
+public class PJeServerAccessWrapper implements IPjeServerAccess {
 
-  private IServerAccess access;
+  private IPjeServerAccess access;
   
-  protected ServerAccessWrapper(IServerAccess access) {
+  protected PJeServerAccessWrapper(IPjeServerAccess access) {
     this.access = access;
   }
 
@@ -36,7 +36,7 @@ public class ServerAccessWrapper implements IServerAccess {
   }
 
   @Override
-  public IServerAccess clone(boolean allowed) {
+  public IPjeServerAccess clone(boolean allowed) {
     return access.clone(allowed);
   }
 

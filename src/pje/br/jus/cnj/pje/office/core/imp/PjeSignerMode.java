@@ -8,10 +8,10 @@ import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.ITask;
 
 import br.jus.cnj.pje.office.core.IAssinadorParams;
-import br.jus.cnj.pje.office.core.ISignerMode;
+import br.jus.cnj.pje.office.core.IPjeSignerMode;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-public enum PjeSignerMode implements ISignerMode {
+public enum PjeSignerMode implements IPjeSignerMode {
   LOCAL("LOCAL") {
     @Override
     public ITask<IPjeResponse> getTask(Params params, IAssinadorParams pojo) {
@@ -28,7 +28,7 @@ public enum PjeSignerMode implements ISignerMode {
   private static final PjeSignerMode[] VALUES = PjeSignerMode.values(); 
   
   @JsonCreator
-  public static ISignerMode fromString(final String key) {
+  public static IPjeSignerMode fromString(final String key) {
     return get(key).orElse(null);
   }
 
@@ -43,7 +43,7 @@ public enum PjeSignerMode implements ISignerMode {
     return name.toLowerCase();
   }
 
-  public static Optional<ISignerMode> get(String name) {
+  public static Optional<IPjeSignerMode> get(String name) {
     for(PjeSignerMode a: VALUES) {
       if (a.name.equalsIgnoreCase(name))
         return Optional.of(a);

@@ -9,18 +9,18 @@ import com.github.signer4j.task.imp.TaskRequestExecutor;
 
 import br.jus.cnj.pje.office.core.IPjeProgressView;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.core.ISecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 class PjeTaskRequestExecutor extends TaskRequestExecutor<IPjeRequest, IPjeResponse, PjeTaskRequest> {
   
   private final IPjeTokenAccess tokenAccess;
-  private final ISecurityAgent securityAgent;
+  private final IPjeSecurityAgent securityAgent;
   private final IPjeProgressView view;
   private final AtomicBoolean localRequest;
   
-  public PjeTaskRequestExecutor(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent, AtomicBoolean localRequest) {
+  public PjeTaskRequestExecutor(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, AtomicBoolean localRequest) {
     super(PjeRequestResolver.INSTANCE, factory);
     this.view = Args.requireNonNull(view, "view is null");
     this.tokenAccess = Args.requireNonNull(tokenAccess, "tokenAccess is null");
@@ -32,7 +32,7 @@ class PjeTaskRequestExecutor extends TaskRequestExecutor<IPjeRequest, IPjeRespon
   protected void onRequestResolved(PjeTaskRequest request) {
     request.of(IPjeRequest.PJE_LOCAL_REQUEST, localRequest);
     request.of(IPjeTokenAccess.TOKEN_ACCESS, tokenAccess);
-    request.of(ISecurityAgent.PJE_SECURITY_AGENT_PARAM, securityAgent);
+    request.of(IPjeSecurityAgent.PJE_SECURITY_AGENT_PARAM, securityAgent);
   }
 
   @Override

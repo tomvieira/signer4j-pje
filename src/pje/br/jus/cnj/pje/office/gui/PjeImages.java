@@ -6,26 +6,20 @@ import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 
-public enum Images {
+import com.github.signer4j.gui.utils.IPicture;
+
+public enum PjeImages implements IPicture {
   PJE_ICON("/pje-icon.png"), 
   
   PJE_SERVER("/server.png"),
   
-  PJE_LOCK("/lock.png"),
-  
-  PJE_CERTIFICATE("/certificate.png"),
-  
   PJE_LOG("/log.png"),
   
-  PJE_ICON_TRAY("/pje-icon-16.png"), 
+  PJE_ICON_TRAY("/pje-icon-16.png");
   
-  PJE_ICON_A3("/a3.png"), 
-  
-  PJE_ICON_A1("/a1.png");
-
   final String path;
   
-  Images(String path) {
+  PjeImages(String path) {
     this.path = path;
   }
   

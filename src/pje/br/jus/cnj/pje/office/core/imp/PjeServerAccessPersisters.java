@@ -5,12 +5,12 @@ import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
 import java.util.Optional;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
 public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
   DEVMODE(new PjeServerAccessPersister(PjePermissionChecker.DEVMODE, CONF) {
     @Override
-    protected void add(IServerAccess access) {
+    protected void add(IPjeServerAccess access) {
       if (access != null) {
         super.add(new DevModeServerAccess(access));
       }
@@ -32,17 +32,17 @@ public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
   }
 
   @Override
-  public Optional<IServerAccess> hasPermission(String id) {
+  public Optional<IPjeServerAccess> hasPermission(String id) {
     return persister.hasPermission(id);
   }
 
   @Override
-  public void save(IServerAccess access) throws PjePermissionDeniedException {
+  public void save(IPjeServerAccess access) throws PjePermissionDeniedException {
     persister.save(access);
   }
 
   @Override
-  public void remove(IServerAccess access) throws PjeTokenPersisterException {
+  public void remove(IPjeServerAccess access) throws PjeTokenPersisterException {
     persister.remove(access);
   }
 
@@ -53,7 +53,7 @@ public enum PjeServerAccessPersisters implements IPjeServerAccessPersister {
   }
 
   @Override
-  public void checkAccessPermission(IServerAccess serverRequest) throws PjePermissionDeniedException {
+  public void checkAccessPermission(IPjeServerAccess serverRequest) throws PjePermissionDeniedException {
     persister.checkAccessPermission(serverRequest);
   }
 }

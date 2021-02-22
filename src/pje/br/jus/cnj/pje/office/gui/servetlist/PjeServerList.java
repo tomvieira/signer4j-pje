@@ -32,12 +32,12 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.github.signer4j.gui.utils.ButtonRenderer;
+import com.github.signer4j.gui.utils.SimpleDialog;
 import com.github.signer4j.imp.Args;
 
-import br.jus.cnj.pje.office.gui.Images;
-import br.jus.cnj.pje.office.gui.PjeDialog;
+import br.jus.cnj.pje.office.gui.PjeImages;
 
-public class PjeServerList extends PjeDialog implements IPjeServerList {
+public class PjeServerList extends SimpleDialog implements IPjeServerListUI {
 
   private static final long serialVersionUID = 1L;
 
@@ -62,7 +62,7 @@ public class PjeServerList extends PjeDialog implements IPjeServerList {
     pnlNorth.setLayout(new BorderLayout(0, 0));
 
     JLabel lblServerList = new JLabel("Servidores Disponíveis");
-    lblServerList.setIcon(Images.PJE_SERVER.asIcon());
+    lblServerList.setIcon(PjeImages.PJE_SERVER.asIcon());
     lblServerList.setHorizontalAlignment(SwingConstants.LEFT);
     lblServerList.setFont(new Font("Tahoma", Font.BOLD, 15));
     pnlNorth.add(lblServerList, BorderLayout.NORTH);

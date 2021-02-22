@@ -1,14 +1,12 @@
 
 package br.jus.cnj.pje.office.imp;  
 
-import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
 import static br.jus.cnj.pje.office.imp.PjeOfficeFrontEnd.getBest;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
+import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
-import static com.github.signer4j.imp.Throwables.tryRun;
-import static java.lang.Runtime.getRuntime;
 
 import java.awt.CheckboxMenuItem;
 import java.awt.Menu;
@@ -21,17 +19,24 @@ import java.awt.event.ItemListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.signer4j.imp.Config;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.Threads.ShutdownHookThread;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
+import br.jus.cnj.pje.office.core.imp.PJeConfigPersister;
 import br.jus.cnj.pje.office.core.imp.PJeOffice;
-import br.jus.cnj.pje.office.gui.alert.MessageAlert;
+import br.jus.cnj.pje.office.gui.PjeImages;
 
 public class PjeOfficeApp implements IPjeLifeCycleHook {
 
+  static {
+    Config.setup(PjeImages.PJE_ICON.asImage(), PJeConfigPersister.CONF);
+  }
+  
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeApp.class);
 
   private IPjeOffice office;

@@ -1,10 +1,10 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
-public class DevModeServerAccess extends ServerAccessWrapper {
+public class DevModeServerAccess extends PJeServerAccessWrapper {
 
-  protected DevModeServerAccess(IServerAccess access) {
+  protected DevModeServerAccess(IPjeServerAccess access) {
     super(access);
   }
   
@@ -14,7 +14,7 @@ public class DevModeServerAccess extends ServerAccessWrapper {
   }
 
   @Override
-  public IServerAccess clone(boolean allowed) {
+  public IPjeServerAccess clone(boolean allowed) {
     return new DevModeServerAccess(super.clone(allowed));
   }
 }

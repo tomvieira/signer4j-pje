@@ -7,7 +7,7 @@ import com.sun.net.httpserver.Filter;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 
 @SuppressWarnings("restriction")
-interface IWebServerSetup {
+interface IPjeWebServerSetup {
   
   int getPort();
 

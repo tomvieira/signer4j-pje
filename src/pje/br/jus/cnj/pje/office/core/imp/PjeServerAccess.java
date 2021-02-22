@@ -5,11 +5,11 @@ import java.util.List;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Strings;
 
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
-public class PjeServerAccess implements IServerAccess {
+public class PjeServerAccess implements IPjeServerAccess {
   
-  public static IServerAccess fromString(List<String> members) {
+  public static IPjeServerAccess fromString(List<String> members) {
     return new PjeServerAccess(
         members.get(0),
         members.get(1),
@@ -72,7 +72,7 @@ public class PjeServerAccess implements IServerAccess {
   }
   
   @Override
-  public final IServerAccess clone(boolean allowed) {
+  public final IPjeServerAccess clone(boolean allowed) {
     return new PjeServerAccess(app, server, code, allowed);
   }
 

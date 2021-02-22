@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.signer4j.imp.Params;
+import com.github.signer4j.imp.DownloadStatus;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.exception.TaskException;
@@ -70,7 +71,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       final String endPoint = getEndpointFor(url);
       
       progress.step("Baixando url: %s", endPoint);
-      final PjeDownloadStatus status = new PjeDownloadStatus(progress);
+      final DownloadStatus status = new DownloadStatus(progress);
       try {
         client.down(endPoint, session, userAgent, status);
       } catch (PjeServerException e) {

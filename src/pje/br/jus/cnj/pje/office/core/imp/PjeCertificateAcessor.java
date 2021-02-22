@@ -1,9 +1,10 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IFilePath.toPaths;
 import static br.jus.cnj.pje.office.core.imp.PJeConfigPersister.CONF;
-import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateList.display;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
+import static com.github.signer4j.IFilePath.toPaths;
+import static com.github.signer4j.gui.CertificateList.display;
+import static com.github.signer4j.imp.Config.persister;
 import static com.github.signer4j.imp.KeyStoreInvokeHandler.INVOKER;
 import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
@@ -15,12 +16,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.signer4j.ICertificate;
-import com.github.signer4j.ICertificateList.ICertificateEntry;
+import com.github.signer4j.ICertificateListUI.ICertificateEntry;
 import com.github.signer4j.IDevice;
 import com.github.signer4j.IDeviceManager;
+import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
+import com.github.signer4j.gui.alert.ExpiredPasswordAlert;
+import com.github.signer4j.gui.alert.NoTokenPresentAlert;
+import com.github.signer4j.gui.alert.TokenLockedAlert;
 import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
+import com.github.signer4j.imp.Config;
 import com.github.signer4j.imp.DefaultCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
 import com.github.signer4j.imp.EnvironmentStrategy;
@@ -33,13 +39,8 @@ import com.github.signer4j.imp.exception.NoTokenPresentException;
 import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
 import com.github.signer4j.imp.exception.TokenLockedException;
 
-import br.jus.cnj.pje.office.core.IFilePath;
 import br.jus.cnj.pje.office.core.IPjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.gui.Images;
-import br.jus.cnj.pje.office.gui.alert.ExpiredPasswordAlert;
-import br.jus.cnj.pje.office.gui.alert.NoTokenPresentAlert;
-import br.jus.cnj.pje.office.gui.alert.TokenLockedAlert;
 import br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
@@ -81,9 +82,12 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   private List<IFilePath> a1Files = new ArrayList<>();
 
   private PjeCertificateAcessor() {
-    this.strategy = PjeAuthStrategy.valueOf(CONF.authStrategy().orElse(AWAYS.name()).toUpperCase());
-    CONF.loadA3Paths(a3Libraries::add);
-    CONF.loadA1Paths(a1Files::add);
+    this.strategy = PjeAuthStrategy.valueOf(CONF
+        .authStrategy()
+        .orElse(AWAYS.name())
+        .toUpperCase());
+    persister().loadA3Paths(a3Libraries::add);
+    persister().loadA1Paths(a1Files::add);
     this.devManager = new DeviceManager(notDuplicated()
       .more(new EnvironmentStrategy())
       .more(new FilePathStrategy())
@@ -194,7 +198,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
         if (TokenType.A3.equals(pjeToken.getType()))
           ++times;
         final int t = times;
-        if (isTrue(() -> InvalidPinAlert.display(t, Images.PJE_ICON.asImage())))
+        if (isTrue(() -> InvalidPinAlert.display(t, Config.getIcon())))
           continue;
         throw new RuntimeKeyStoreException(e);
       } catch (KeyStoreAccessException e) {

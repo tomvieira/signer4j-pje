@@ -3,10 +3,10 @@ package br.jus.cnj.pje.office.signer4j.imp;
 import static com.github.signer4j.imp.SwingTools.isTrue;
 
 import com.github.signer4j.IToken;
+import com.github.signer4j.gui.alert.TokenUseAlert;
 import com.github.signer4j.imp.exception.KeyStoreAccessException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 
-import br.jus.cnj.pje.office.gui.alert.TokenUseAlert;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
 

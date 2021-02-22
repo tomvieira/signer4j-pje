@@ -9,12 +9,12 @@ import java.awt.event.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.gui.alert.MessageAlert;
 import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.IPjeOffice;
-import br.jus.cnj.pje.office.gui.Images;
-import br.jus.cnj.pje.office.gui.alert.MessageAlert;
+import br.jus.cnj.pje.office.gui.PjeImages;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
 enum PjeOfficeFrontEnd implements IPjeFrontEnd {
@@ -26,7 +26,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     @Override
     public void install(IPjeOffice office, PopupMenu menu) throws Exception {
       this.tray = SystemTray.getSystemTray();
-      this.trayIcon = new TrayIcon(Images.PJE_ICON_TRAY.asImage());
+      this.trayIcon = new TrayIcon(PjeImages.PJE_ICON_TRAY.asImage());
       //this.trayIcon.setImageAutoSize(true);
       this.trayIcon.setPopupMenu(menu);
       this.trayIcon.addMouseListener(new MouseAdapter() {

@@ -32,7 +32,7 @@ enum PjeServerMode {
   HTTP() {
     @SuppressWarnings("unchecked")
     @Override
-    protected HttpServer setup(IWebServerSetup setup) throws IOException {
+    protected HttpServer setup(IPjeWebServerSetup setup) throws IOException {
       HttpServer server = HttpServer.create();
       bind(server, setup);
       return server;
@@ -42,7 +42,7 @@ enum PjeServerMode {
   HTTPS() {
     @SuppressWarnings("unchecked")
     @Override
-    protected HttpsServer setup(IWebServerSetup setup) throws IOException {
+    protected HttpsServer setup(IPjeWebServerSetup setup) throws IOException {
       HttpsServer server = HttpsServer.create();
       bind(server, setup);
       return setupSSL(server);
@@ -84,7 +84,7 @@ enum PjeServerMode {
   
   private static Logger LOGGER = LoggerFactory.getLogger(PjeServerMode.class);
   
-  protected static void bind(HttpServer server, IWebServerSetup setup) {
+  protected static void bind(HttpServer server, IPjeWebServerSetup setup) {
     server.setExecutor(setup.getExecutor());
     for(IPjeRequestHandler handler: setup.getHandlers()) {
       HttpContext context = server.createContext(handler.getEndPoint(), handler);
@@ -115,11 +115,11 @@ enum PjeServerMode {
     throw exception;
   }
 
-  public static HttpServer newHttp(IWebServerSetup setup) throws IOException {
+  public static HttpServer newHttp(IPjeWebServerSetup setup) throws IOException {
     return bind(HTTP.setup(setup), setup.getPort());
   }
 
-  public static HttpsServer newHttps(IWebServerSetup setup) throws IOException {
+  public static HttpsServer newHttps(IPjeWebServerSetup setup) throws IOException {
     return bind(HTTPS.setup(setup), setup.getPort());
   }
   
@@ -128,5 +128,5 @@ enum PjeServerMode {
     HttpTools.sendGetRequest("http://127.0.0.1:" + port + IPjeWebServer.SHUTDOWN_ENDPOINT);
   }
 
-  protected abstract <T extends HttpServer> T setup(IWebServerSetup setup) throws IOException;
+  protected abstract <T extends HttpServer> T setup(IPjeWebServerSetup setup) throws IOException;
 }

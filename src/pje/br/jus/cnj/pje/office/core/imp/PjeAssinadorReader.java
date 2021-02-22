@@ -23,7 +23,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.core.IArquivo;
 import br.jus.cnj.pje.office.core.IAssinadorParams;
-import br.jus.cnj.pje.office.core.ISignerMode;
+import br.jus.cnj.pje.office.core.IPjeSignerMode;
 import br.jus.cnj.pje.office.core.IStandardSignature;
 
 public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinadorReader.TarefaAssinador>{
@@ -56,7 +56,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
     }
     
     @Override
-    public final Optional<ISignerMode> getModo() {
+    public final Optional<IPjeSignerMode> getModo() {
       return ofNullable(this.modo);
     }
     
@@ -125,7 +125,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
 
   @Override
   protected ITask<?> createTask(Params output, TarefaAssinador pojo) throws IOException {
-    Optional<ISignerMode> mode = pojo.getModo();
+    Optional<IPjeSignerMode> mode = pojo.getModo();
     if (!mode.isPresent()) {
       throw new IOException("Parameter 'modoAssinatura' (local/remoto) not found!");
     }

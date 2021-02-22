@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.web.imp;
 
-import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
+import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static java.awt.Toolkit.getDefaultToolkit;
 
@@ -11,6 +11,7 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.IExitable;
 import com.github.signer4j.imp.HttpTools;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
@@ -22,10 +23,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
-import br.jus.cnj.pje.office.core.IExitable;
 import br.jus.cnj.pje.office.core.IPjeProgressView;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.core.ISecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.gui.PjeProgressView;
@@ -179,11 +179,11 @@ public class PjeWebServer implements IPjeWebServer {
     this.localRequest.set(enabled);
   }
   
-  public PjeWebServer(IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent, IExitable exitable) {
+  public PjeWebServer(IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IExitable exitable) {
     this(PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get(), tokenAccess, securityAgent, exitable);
   }
 
-  public PjeWebServer(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, ISecurityAgent securityAgent, IExitable exitable) {
+  public PjeWebServer(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IExitable exitable) {
     this.executor = new PjeTaskRequestExecutor(view, factory, tokenAccess, securityAgent, localRequest);
     this.exitable = exitable;
   }

@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.gui.servetlist;
 
 import java.util.List;
 
-interface IPjeServerList {
+interface IPjeServerListUI {
   
   enum Authorization {
     SIM, NÃO;

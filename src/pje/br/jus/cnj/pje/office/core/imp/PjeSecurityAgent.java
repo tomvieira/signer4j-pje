@@ -14,10 +14,10 @@ import com.github.signer4j.imp.Args;
 import br.jus.cnj.pje.office.core.IPjeMainParams;
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
-import br.jus.cnj.pje.office.core.ISecurityAgent;
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
-public enum PjeSecurityAgent implements ISecurityAgent {
+public enum PjeSecurityAgent implements IPjeSecurityAgent {
   INSTANCE;
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeSecurityAgent.class);
@@ -80,8 +80,8 @@ public enum PjeSecurityAgent implements ISecurityAgent {
     }
     
     final String server = opServer.get();
-    final IServerAccess serverRequest = new PjeServerAccess(app, server, code);
-    final Optional<IServerAccess> access = persister.hasPermission(serverRequest.getId());
+    final IPjeServerAccess serverRequest = new PjeServerAccess(app, server, code);
+    final Optional<IPjeServerAccess> access = persister.hasPermission(serverRequest.getId());
     
     if (!access.isPresent()) {
       try {

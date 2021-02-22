@@ -6,10 +6,11 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import com.github.signer4j.imp.Args;
+import com.github.signer4j.imp.Config;
 
-import br.jus.cnj.pje.office.core.IServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.imp.PjeAccessTime;
-import br.jus.cnj.pje.office.gui.Images;
+import br.jus.cnj.pje.office.gui.PjeImages;
 
 public final class PjeServerPermissionOptions {
 
@@ -17,19 +18,19 @@ public final class PjeServerPermissionOptions {
 
   private static final PjeAccessTime[] OPTIONS = PjeAccessTime.values();
   
-  public static PjeAccessTime choose(IServerAccess access) {
+  public static PjeAccessTime choose(IPjeServerAccess access) {
     Args.requireNonNull(access, "access is null");
     return new PjeServerPermissionOptions(access).show();
   }
   
   private final JOptionPane jop;
   
-  private PjeServerPermissionOptions(IServerAccess access) {
+  private PjeServerPermissionOptions(IPjeServerAccess access) {
     jop = new JOptionPane(
       format(MESSAGE_FORMAT, access.getApp(), access.getServer()),
       JOptionPane.QUESTION_MESSAGE, 
       JOptionPane.YES_NO_CANCEL_OPTION, 
-      Images.PJE_SERVER.asIcon(), 
+      PjeImages.PJE_SERVER.asIcon(), 
       OPTIONS, 
       OPTIONS[2]
     );
@@ -39,7 +40,7 @@ public final class PjeServerPermissionOptions {
     JDialog dialog = jop.createDialog("Autorização de servidor");
     dialog.setAlwaysOnTop(true);
     dialog.setModal(true);
-    dialog.setIconImage(Images.PJE_ICON.asImage());
+    dialog.setIconImage(Config.getIcon());
     dialog.setVisible(true);
     dialog.dispose();
     Object selectedValue = jop.getValue();

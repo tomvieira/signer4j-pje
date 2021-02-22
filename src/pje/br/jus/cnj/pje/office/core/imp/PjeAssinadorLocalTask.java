@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.core.imp.PjeAssinadorReader.AssinadorArquivo.newInstance;
-import static br.jus.cnj.pje.office.gui.alert.MessageAlert.display;
+import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.Dates.stringNow;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 

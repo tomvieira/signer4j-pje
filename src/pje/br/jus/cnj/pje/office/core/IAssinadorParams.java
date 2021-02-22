@@ -14,7 +14,7 @@ public interface IAssinadorParams {
 
   Optional<String> getEnviarPara();
 
-  Optional<ISignerMode> getModo();
+  Optional<IPjeSignerMode> getModo();
 
   Optional<ISignatureType> getTipoAssinatura();
 

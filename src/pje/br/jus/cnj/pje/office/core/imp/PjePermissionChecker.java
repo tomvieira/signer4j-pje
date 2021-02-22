@@ -13,21 +13,21 @@ import com.github.signer4j.imp.Base64;
 import com.github.signer4j.imp.Certificates;
 import com.github.signer4j.imp.Ciphers;
 
-import br.jus.cnj.pje.office.core.ISecurityAgent;
-import br.jus.cnj.pje.office.core.IServerAccess;
-import br.jus.cnj.pje.office.core.IServerAccessPermissionChecker;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.IPjeServerAccessPermissionChecker;
 
-public enum PjePermissionChecker implements IServerAccessPermissionChecker {
+public enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
   DEVMODE() {
     @Override
-    public void checkAccessPermission(IServerAccess token) throws PjePermissionDeniedException  {
+    public void checkAccessPermission(IPjeServerAccess token) throws PjePermissionDeniedException  {
       //nothing to do allow all
     }    
   },
   
   DENY_ALL() {
     @Override
-    public void checkAccessPermission(IServerAccess access) throws PjePermissionDeniedException {
+    public void checkAccessPermission(IPjeServerAccess access) throws PjePermissionDeniedException {
       throw new PjePermissionDeniedException("Permissão negada (deny all implementation)");
     }  
   },
@@ -35,7 +35,7 @@ public enum PjePermissionChecker implements IServerAccessPermissionChecker {
   PRODUCTION(){
     
     @Override
-    public void checkAccessPermission(IServerAccess access)  throws PjePermissionDeniedException {
+    public void checkAccessPermission(IPjeServerAccess access)  throws PjePermissionDeniedException {
       Args.requireText(access, "access is null");
       
       final byte[] cryptedBytes = Base64.base64Decode(access.getCode());
@@ -83,7 +83,7 @@ public enum PjePermissionChecker implements IServerAccessPermissionChecker {
   protected final PublicKey key;
   
   PjePermissionChecker() {
-    try(InputStream is = ISecurityAgent.class.getResourceAsStream("/PJeOffice.cer")) {
+    try(InputStream is = IPjeSecurityAgent.class.getResourceAsStream("/PJeOffice.cer")) {
       this.key = Certificates.create(is).getPublicKey();
     } catch (CertificateException | IOException e) {
       throw new RuntimeException("Unabled to read public key from 'PjeOffice.cer'");

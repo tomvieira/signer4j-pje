@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.core.IPjeMainParams.PJE_MAIN_REQUEST_PARAM;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.gui.alert.PermissionDeniedAlert.display;
+import static com.github.signer4j.gui.alert.PermissionDeniedAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,7 +21,7 @@ import com.github.signer4j.task.imp.AbstractTask;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeMainParams;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.core.ISecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -75,8 +75,8 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
     return getParameterValue(IPjeRequest.PJE_LOCAL_REQUEST);
   }
 
-  protected final ISecurityAgent getSecurityAgent() {
-    return getParameterValue(ISecurityAgent.PJE_SECURITY_AGENT_PARAM);
+  protected final IPjeSecurityAgent getSecurityAgent() {
+    return getParameterValue(IPjeSecurityAgent.PJE_SECURITY_AGENT_PARAM);
   }
   
   protected final String getEndpointFor(String sendTo) {

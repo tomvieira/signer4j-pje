@@ -12,7 +12,7 @@ import com.sun.net.httpserver.Filter;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 
 @SuppressWarnings("restriction")
-class PjeWebServerSetup implements IWebServerSetup{
+class PjeWebServerSetup implements IPjeWebServerSetup{
   
   private int port = 8800;
   

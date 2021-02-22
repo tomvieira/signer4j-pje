@@ -26,6 +26,7 @@ import javax.swing.border.EtchedBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.gui.utils.SimpleFrame;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Objects;
 import com.github.signer4j.progress.IProgress;
@@ -34,7 +35,7 @@ import com.github.signer4j.progress.IProgressFactory;
 import br.jus.cnj.pje.office.core.IPjeProgressView;
 import io.reactivex.disposables.Disposable;
 
-class PjeProgressWindow extends PjeFrame implements IPjeProgressView {
+class PjeProgressWindow extends SimpleFrame implements IPjeProgressView {
 
   private static final long serialVersionUID = 1L;
 
@@ -62,7 +63,7 @@ class PjeProgressWindow extends PjeFrame implements IPjeProgressView {
     pngNorth.setLayout(new GridLayout(3, 1, 0, 0));
 
     JLabel lblLog = new JLabel("Registro de atividades");
-    lblLog.setIcon(Images.PJE_LOG.asIcon());
+    lblLog.setIcon(PjeImages.PJE_LOG.asIcon());
     lblLog.setHorizontalAlignment(SwingConstants.LEFT);
     lblLog.setFont(new Font("Tahoma", Font.BOLD, 15));
     pngNorth.add(lblLog);

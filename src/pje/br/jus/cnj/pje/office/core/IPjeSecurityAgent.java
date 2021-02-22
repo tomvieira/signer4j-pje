@@ -1,8 +1,8 @@
 package br.jus.cnj.pje.office.core;
 
-public interface ISecurityAgent {
+public interface IPjeSecurityAgent {
   
-  String PJE_SECURITY_AGENT_PARAM = ISecurityAgent.class.getSimpleName() + ".instance";
+  String PJE_SECURITY_AGENT_PARAM = IPjeSecurityAgent.class.getSimpleName() + ".instance";
   
   void refresh();
   
