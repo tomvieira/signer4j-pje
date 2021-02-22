@@ -33,24 +33,31 @@ final class PjeTaskChecker {
   }
 
   public static <T> T checkIfPresent(Optional<T> optional, String paramName) throws TaskException {
-    throwIf(!(checkIfNull(optional, paramName)).isPresent(), "Parâmetro '" + paramName + "' não informado!");
+    throwIf(!(checkIfNull(optional, paramName)).isPresent(), paramName);
     return optional.get();
   }
   
   public static <T> T checkIfNull(T object, String paramName) throws TaskException {
-    throwIf(object == null, "Parâmetro '" + paramName + "' não informado!");
+    throwIf(object == null, paramName);
     return object;
   }
   
-  
-  public static ISignatureAlgorithm checkIfSupported(ISignatureAlgorithm algorithm) throws TaskException {
-    throwIf(!SignatureAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm.getName());
-    return algorithm;
+  public static ISignatureAlgorithm checkIfSupportedSig(Optional<String> algorithm, String paramName) throws TaskException {
+    return checkIfSupportedSig(checkIfPresent(algorithm, paramName), paramName);
   }
   
-  public static IHashAlgorithm checkIfSupportedHash(IHashAlgorithm algorithm) throws TaskException {
-    throwIf(!HashAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm.getName());
-    return algorithm;
+  public static IHashAlgorithm checkIfSupportedHash(Optional<String> algorithm, String paramName) throws TaskException {
+    return checkIfSupportedHash(checkIfPresent(algorithm, paramName), paramName);
+  }
+
+  public static ISignatureAlgorithm checkIfSupportedSig(String algorithm, String paramName) throws TaskException {
+    throwIf(!SignatureAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm);
+    return SignatureAlgorithm.get(algorithm).get();
+  }
+  
+  private static IHashAlgorithm checkIfSupportedHash(String algorithm, String paramName) throws TaskException {
+    throwIf(!HashAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm);
+    return HashAlgorithm.get(algorithm).get();
   }
   
   @SuppressWarnings("rawtypes")

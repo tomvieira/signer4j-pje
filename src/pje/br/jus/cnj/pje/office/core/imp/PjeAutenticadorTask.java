@@ -2,13 +2,13 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.core.IAutenticadorParams.PJE_TAREFA_AUTENTICADOR_PARAM;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupported;
+import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
+import static com.github.signer4j.imp.SignatureAlgorithm.MD5withRSA;
 
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Params;
-import com.github.signer4j.imp.SignatureAlgorithm;
 import com.github.signer4j.imp.exception.KeyStoreAccessException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
@@ -57,7 +57,11 @@ class PjeAutenticadorTask extends PjeAbstractTask {
     final IAutenticadorParams params = getAutenticadorParams();
     this.enviarPara = checkIfPresent(params.getEnviarPara(), "enviarPara"); 
     this.mensagem = checkIfPresent(params.getMensagem(), "mensagem");
-    this.algorithm = checkIfSupported(() -> params.getAlgoritmoAssinatura().orElse(SignatureAlgorithm.MD5withRSA.name()));
+    this.algorithm = checkIfSupportedSig(params
+      .getAlgoritmoAssinatura()
+      .orElse(MD5withRSA.getName()), 
+      "algoritmoAssinatura"
+    );
   }
   
   @Override

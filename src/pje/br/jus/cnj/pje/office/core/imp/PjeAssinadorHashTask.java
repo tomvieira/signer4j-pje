@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.core.IAssinadorHashParams.PJE_TAREFA_ASSINADOR_HASH;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupported;
+import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.ISimpleSigner;
 import com.github.signer4j.imp.Params;
-import com.github.signer4j.imp.SignatureAlgorithm;
 import com.github.signer4j.imp.SignedData;
 import com.github.signer4j.imp.exception.KeyStoreAccessException;
 import com.github.signer4j.progress.IProgress;
@@ -21,6 +20,7 @@ import com.github.signer4j.task.exception.TaskException;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.core.IAssinadorHashParams;
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.imp.PjeAssinadorHashReader.AssinadorHashArquivo;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
@@ -61,23 +61,21 @@ class PjeAssinadorHashTask extends PjeAbstractTask {
   protected void validateParams() throws TaskException {
     super.validateParams();
     IAssinadorHashParams params = getAssinadorHashParams();
-    //TODO confirmar se isso é verdade
-    this.algorithm = checkIfSupported(() -> params.getAlgoritmoAssinatura()
-        .orElse(SignatureAlgorithm.SHA1withRSA.toString())); 
+    this.algorithm = checkIfSupportedSig(params.getAlgoritmoAssinatura(), "algoritmoAssinatura");
     this.uploadUrl = checkIfPresent(params.getUploadUrl(), "uploadUrl");
     this.modoTeste = params.isModoTeste();
     this.arquivos =  params.getArquivos();
   }
 
   private static byte[] hashToBytes (final String hash) {
-    final byte[] b = new byte[hash.length() / 2];
-    for (int i = 0; i < hash.length() / 2; ++i) {
-      final String s2 = hash.substring(i * 2, i * 2 + 2);
-      b[i] = (byte)(Integer.parseInt(s2, 16) & 0xFF);
+    final int mid = hash.length() / 2;
+    final byte[] b = new byte[mid];
+    for (int i = 0; i < mid; i++) {
+      b[i] = (byte)(Integer.parseInt(hash.substring(i << 1, (i+1) << 1), 16) & 0xFF);
     }
     return b;
   }
-
+  
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
 

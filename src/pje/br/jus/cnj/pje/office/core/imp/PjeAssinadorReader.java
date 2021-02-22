@@ -48,7 +48,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
     
     private SignatureAlgorithm algoritmoHash = SignatureAlgorithm.SHA1withRSA;//HashAlgorithm.DIGEST_SHA1; TODO revisar essa inicialização
     
-    private List<IArquivo> arquivos = new ArrayList<>();
+    private List<AssinadorArquivo> arquivos = new ArrayList<>();
    
     @Override
     public final boolean isDeslogarKeyStore() {
@@ -99,7 +99,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
     
     private String nome;
     private String url;
-    private boolean terAtributosAssinados = Boolean.TRUE;
+    private boolean terAtributosAssinados = true;
     private List<String> paramsEnvio = new ArrayList<>();
 
     @Override

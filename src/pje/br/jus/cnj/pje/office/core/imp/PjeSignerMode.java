@@ -12,13 +12,13 @@ import br.jus.cnj.pje.office.core.ISignerMode;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 public enum PjeSignerMode implements ISignerMode {
-  LOCAL() {
+  LOCAL("LOCAL") {
     @Override
     public ITask<IPjeResponse> getTask(Params params, IAssinadorParams pojo) {
       return new PjeAssinadorLocalTask(params, pojo);
     }
   }, 
-  REMOTO(){
+  REMOTO("REMOTO"){
     @Override
     public ITask<IPjeResponse> getTask(Params params, IAssinadorParams pojo) {
       return new PjeAssinadorRemotoTask(params, pojo);
@@ -32,14 +32,20 @@ public enum PjeSignerMode implements ISignerMode {
     return get(key).orElse(null);
   }
 
+  private String name;
+  
+  PjeSignerMode(String name) {
+    this.name = name;
+  }
+  
   @JsonValue
   public String getKey() {
-    return this.name().toLowerCase();
+    return name.toLowerCase();
   }
 
   public static Optional<ISignerMode> get(String name) {
     for(PjeSignerMode a: VALUES) {
-      if (a.name().equalsIgnoreCase(name))
+      if (a.name.equalsIgnoreCase(name))
         return Optional.of(a);
     }
     return Optional.empty();

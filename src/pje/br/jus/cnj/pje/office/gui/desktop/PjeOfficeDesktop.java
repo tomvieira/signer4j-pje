@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import br.jus.cnj.pje.office.core.IExitable;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.gui.Images;
@@ -24,7 +25,7 @@ public class PjeOfficeDesktop extends PjeFrame {
   
   private JPanel contentPane;
 
-  public PjeOfficeDesktop(IPjeOffice office, PopupMenu popup) {
+  public PjeOfficeDesktop(IExitable office, PopupMenu popup) {
     super("PjeOffice - " + Version.current());
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setBounds(100, 100, 336, 235);
@@ -33,6 +34,7 @@ public class PjeOfficeDesktop extends PjeFrame {
     contentPane.setLayout(new BorderLayout(0, 0));
     setContentPane(contentPane);
     JButton btnMain = new JButton("");
+    btnMain.add(popup);
     btnMain.setIcon(new ImageIcon(Images.PJE_ICON.asImage()));
     btnMain.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
@@ -44,7 +46,6 @@ public class PjeOfficeDesktop extends PjeFrame {
         office.exit();
       }
     });
-    btnMain.add(popup);
     contentPane.add(btnMain, BorderLayout.CENTER);
     setLocationRelativeTo(null);
   }

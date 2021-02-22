@@ -5,7 +5,6 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.signer4j.imp.Strings.getQuietly;
 import static com.github.signer4j.imp.Threads.async;
-import static com.github.signer4j.imp.Threads.sleep;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -217,8 +216,8 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void exit(long delay) {
     checkIsAlive();
-    Runnable action = () -> {
-      sleep(delay);
+    final Runnable action = () -> {
+      Threads.sleep(delay);
       this.kill();
       LOGGER.info("Game over! Bye bye!");
       Runtime.getRuntime().halt(0);

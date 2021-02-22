@@ -37,7 +37,7 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
     try {
       tr = (PjeTaskRequest) MAIN.read(rValue, new PjeTaskRequest().of(HttpHeaders.USER_AGENT, a));
     } catch (IOException e) {
-      throw new TaskResolverException("Unabled to read 'r' request parameter: " + rValue);
+      throw new TaskResolverException("Unabled to read 'r' request parameter: " + rValue, e);
     }
     
     StringBuilder because = new StringBuilder();

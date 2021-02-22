@@ -97,13 +97,13 @@ class PjeClient implements IPjeClient {
   private HttpPost createPostRequest(String endPoint, String session, String userAgent, String assinatura, String cadeiaCertificado, IAssinadorHashArquivo file) {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-    parameters.add((NameValuePair)new BasicNameValuePair("assinatura", assinatura));
-    parameters.add((NameValuePair)new BasicNameValuePair("cadeiaCertificado", cadeiaCertificado));
-    parameters.add((NameValuePair)new BasicNameValuePair("id", file.getId().get()));
-    parameters.add((NameValuePair)new BasicNameValuePair("codIni", file.getCodIni().get()));
-    parameters.add((NameValuePair)new BasicNameValuePair("hash", file.getHash().get()));
+    parameters.add(new BasicNameValuePair("assinatura", assinatura));
+    parameters.add(new BasicNameValuePair("cadeiaCertificado", cadeiaCertificado));
+    parameters.add(new BasicNameValuePair("id", file.getId().get()));
+    parameters.add(new BasicNameValuePair("codIni", file.getCodIni().get()));
+    parameters.add(new BasicNameValuePair("hash", file.getHash().get()));
     //TODO na versão original do PJEOffice, o envio é abortado se não tem 'idTarefa', faz sentido?
-    parameters.add((NameValuePair)new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
+    parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
     postRequest.setEntity(new UrlEncodedFormEntity(parameters));
     return postRequest;
   }

@@ -32,7 +32,7 @@ class PjeAssinadorHashReader extends AbstractRequestReader<Params, PjeAssinadorH
     private String uploadUrl;
     private String algoritmoAssinatura;
     
-    private List<IAssinadorHashArquivo> arquivos = new ArrayList<>();
+    private List<AssinadorHashArquivo> arquivos = new ArrayList<>();
 
     @Override
     public final boolean isModoTeste() {
@@ -59,13 +59,15 @@ class PjeAssinadorHashReader extends AbstractRequestReader<Params, PjeAssinadorH
       return this.arquivos == null ? emptyList() : unmodifiableList(this.arquivos);
     }
   }
-
+  
   static final class AssinadorHashArquivo implements IAssinadorHashArquivo {
     private String id;
     private String codIni;
     private String hash;
     private Boolean isBin;
     private Long idTarefa;
+    
+    public AssinadorHashArquivo() {}
 
     @Override
     public Optional<String> getId() {
@@ -97,5 +99,4 @@ class PjeAssinadorHashReader extends AbstractRequestReader<Params, PjeAssinadorH
   protected ITask<?> createTask(Params output, TarefaAssinadorHash pojo) throws IOException {
     return new PjeAssinadorHashTask(output, pojo);
   }
-
 }
