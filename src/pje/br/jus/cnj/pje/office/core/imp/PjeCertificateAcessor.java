@@ -21,6 +21,7 @@ import com.github.signer4j.IDevice;
 import com.github.signer4j.IDeviceManager;
 import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
+import com.github.signer4j.gui.CertificateList;
 import com.github.signer4j.gui.alert.ExpiredPasswordAlert;
 import com.github.signer4j.gui.alert.NoTokenPresentAlert;
 import com.github.signer4j.gui.alert.TokenLockedAlert;
@@ -109,7 +110,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     Optional<ICertificateEntry> selected;
     do {
       List<IDevice> devices = this.devManager.getDevices(autoForce || force); 
-      selected = display(
+      selected = CertificateList.display(
         toEntries(devices), 
         this::onNewDevices, 
         autoSelect
