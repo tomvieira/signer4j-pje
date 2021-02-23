@@ -263,7 +263,7 @@ public class PjeWebServer implements IPjeWebServer {
         startHttp();
         startHttps();
       } catch (IOException e) {
-        LOGGER.warn("Não fio possível iniciar o servidor", e);
+        LOGGER.warn("Não foi possível iniciar o servidor", e);
         stop(false);
         throw e;
       }

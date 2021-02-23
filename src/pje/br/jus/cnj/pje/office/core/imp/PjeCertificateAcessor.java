@@ -128,9 +128,8 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
 
   public synchronized void setAuthStrategy(IPjeAuthStrategy strategy) {
     if (strategy != null) {
-      this.strategy = strategy;
+      PjeConfig.save(this.strategy = strategy);
       this.close();
-      PjeConfig.save(strategy);
     }
   } 
   
@@ -143,7 +142,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   }
   
   @Override
-  public void close() {
+  public synchronized void close() {
     try {
       if (token != null) {
         token.logout(true);
