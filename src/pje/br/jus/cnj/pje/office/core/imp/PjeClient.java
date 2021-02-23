@@ -241,7 +241,7 @@ class PjeClient implements IPjeClient {
             final long total = entity.getContentLength();
             final InputStream input = entity.getContent();
             status.onStartDownload(total);
-            final byte[] buffer = new byte[1024]; //TODO verificar o melhor tamanho de buffer!
+            final byte[] buffer = new byte[32 * 1024];
             status.onStatus(total, 0);
             for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
               output.write(buffer, 0, length);

@@ -3,6 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.IByteProcessor;
+import com.github.signer4j.ICMSSigner;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -32,9 +33,11 @@ enum PjeStandardSignature implements IStandardSignature {
     public IByteProcessor getByteProcessor(IPjeToken token, IAssinadorParams params) {
       Args.requireNonNull(token, "token is null");
       Args.requireNonNull(params, "param is null");
+      
       return token.cmsSignerBuilder()
         .usingAlgorigthm(params.getAlgoritmoHash().get())
         .usingSignatureType(params.getTipoAssinatura().get())
+        .usingConfig((p, o) -> ((ICMSSigner)p).usingAttributes((Boolean)o))
         .build();
     }
   }; 

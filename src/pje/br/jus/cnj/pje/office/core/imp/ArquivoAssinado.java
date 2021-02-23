@@ -65,7 +65,7 @@ class ArquivoAssinado extends ArquivoWrapper implements IArquivoAssinado {
         if (rethrow != null) {
           throw rethrow;
         }
-        signedData = signer.process(notSignedFile);
+        signedData = signer.config(isTerAtributosAssinados()).process(notSignedFile);
       }catch(OutOfMemoryError e) {
         throw new OutOfMemoryException("Arquivo " + notSignedFile.getAbsolutePath() + " muito grande!", e);
       }

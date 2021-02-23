@@ -113,7 +113,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
     }
 
     @Override
-    public final boolean isTerAtributosAssinados() { //TODO aparentemente isso não é usado em lugar algum!
+    public final boolean isTerAtributosAssinados() {
       return this.terAtributosAssinados;
     }
 

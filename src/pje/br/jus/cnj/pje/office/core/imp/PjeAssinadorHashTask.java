@@ -5,6 +5,9 @@ import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
@@ -102,11 +105,14 @@ class PjeAssinadorHashTask extends PjeAbstractTask {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
           final String id = checkIfPresent(file.getId(), "id");
           final String hash = checkIfPresent(file.getHash(), "hash");
-    
+
           checkIfPresent(file.getCodIni(), "codIni");
           
-          //TODO Versão original do PJEOffice tem uma gambiarra que cancela tudo se idTarefa é null, procede ainda?
-          checkIfPresent(file.getIdTarefa(), "idTarefa"); 
+          Optional<Long> idTarefa = file.getIdTarefa();
+          if (!idTarefa.isPresent()) { //TODO ver PJeClient original que evita envio de dados com este parametro indefinido.
+            progress.step("Documento Id: %s IGNORADO porque parâmetro 'idTarefa' encontra-se vazio", id);
+            continue;
+          }
           
           final byte[] content = hashToBytes(hash);
           
