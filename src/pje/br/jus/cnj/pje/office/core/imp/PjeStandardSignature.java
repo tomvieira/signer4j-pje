@@ -23,7 +23,7 @@ enum PjeStandardSignature implements IStandardSignature {
   NOT_ENVELOPED(){
     @Override
     public IStandardSignature checkIfDependentParamsIsPresent(IAssinadorParams params) throws TaskException  {
-      PjeTaskChecker.checkIfNull(params, "param is null");
+      PjeTaskChecker.checkIfNull(params, "params is null");
       PjeTaskChecker.checkIfPresent(params.getAlgoritmoHash(), "algoritmoHash");
       PjeTaskChecker.checkIfPresent(params.getTipoAssinatura(), "tipoAssinatura");
       return this;
