@@ -14,8 +14,8 @@ import java.util.Optional;
 
 import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificateListUI.ICertificateEntry;
+import com.github.signer4j.ICustomDeviceManager;
 import com.github.signer4j.IDevice;
-import com.github.signer4j.IDeviceManager;
 import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
 import com.github.signer4j.gui.CertificateListUI;
@@ -73,7 +73,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   
   private IPjeAuthStrategy strategy;
 
-  private final IDeviceManager devManager;
+  private final ICustomDeviceManager devManager;
   
   private List<IFilePath> a3Libraries = new ArrayList<>();
 

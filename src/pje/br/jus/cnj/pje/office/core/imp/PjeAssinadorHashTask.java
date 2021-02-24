@@ -7,8 +7,6 @@ import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.hc.core5.http.message.BasicNameValuePair;
-
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.ISimpleSigner;
