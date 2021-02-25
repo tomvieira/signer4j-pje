@@ -141,8 +141,9 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     return new PjeToken(device.getSlot().getToken(), strategy);
   }
   
+  //Jamais poderá ser sincronizado porque a thread de requisição trava this em get e a thread do swing não conseguirá fechar a instancia
   @Override
-  public synchronized void close() {
+  public void close() { 
     try {
       if (token != null) {
         token.logout(true);
