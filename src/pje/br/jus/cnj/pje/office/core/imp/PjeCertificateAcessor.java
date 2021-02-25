@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
 import static com.github.signer4j.imp.KeyStoreInvokeHandler.INVOKER;
@@ -39,7 +40,6 @@ import com.github.signer4j.imp.exception.TokenLockedException;
 
 import br.jus.cnj.pje.office.core.IPjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
@@ -60,12 +60,10 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   
   private static List<ICertificateEntry> toEntries(List<IDevice> devices) {
     final List<ICertificateEntry> entries = new ArrayList<>();
-    devices.forEach(d -> {
-      d.getCertificates()
-        .stream()
-        .filter(PjeCertificateListAcessor.SUPPORTED_CERTIFICATE)
-        .forEach(c -> entries.add(new CertifiateEntry(d, c)));
-    });
+    devices.forEach(d -> d.getCertificates()
+      .stream()
+      .filter(SUPPORTED_CERTIFICATE)
+      .forEach(c -> entries.add(new CertifiateEntry(d, c))));
     return entries;
   }
   
@@ -145,12 +143,9 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   @Override
   public void close() { 
     try {
-      if (token != null) {
-        token.logout(true);
-        token = null;
-      }
-    } finally {
       devManager.close();
+    } finally {
+      token = null;
     }
   }
   
