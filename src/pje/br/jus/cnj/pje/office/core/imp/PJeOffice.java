@@ -160,7 +160,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private void startWebServer() {
     if (this.webServer == null) {
-      this.webServer = new PjeWebServer(PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE, this);
+      this.webServer = new PjeWebServer(this);
       this.ticket = this.webServer.lifeCycle().subscribe(cycle -> {
         switch(cycle) {
         case STARTUP:

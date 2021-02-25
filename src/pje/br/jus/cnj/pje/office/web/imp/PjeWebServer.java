@@ -27,7 +27,9 @@ import br.jus.cnj.pje.office.core.IPjeProgressView;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.Version;
+import br.jus.cnj.pje.office.core.imp.PjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
 import br.jus.cnj.pje.office.gui.PjeProgressView;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
@@ -179,11 +181,15 @@ public class PjeWebServer implements IPjeWebServer {
     this.localRequest.set(enabled);
   }
   
-  public PjeWebServer(IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IExitable exitable) {
-    this(PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get(), tokenAccess, securityAgent, exitable);
+  public PjeWebServer(IExitable exitable) {
+    this(exitable, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  }
+  
+  private PjeWebServer(IExitable exitable, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+    this(exitable, tokenAccess, securityAgent, PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get());
   }
 
-  public PjeWebServer(IPjeProgressView view, IProgressFactory factory, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IExitable exitable) {
+  private PjeWebServer(IExitable exitable, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IPjeProgressView view, IProgressFactory factory) {
     this.executor = new PjeTaskRequestExecutor(view, factory, tokenAccess, securityAgent, localRequest);
     this.exitable = exitable;
   }
