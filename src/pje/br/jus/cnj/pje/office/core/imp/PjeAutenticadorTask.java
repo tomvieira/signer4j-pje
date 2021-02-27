@@ -9,7 +9,7 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.SignatureAlgorithm;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
@@ -81,7 +81,7 @@ class PjeAutenticadorTask extends PjeAbstractTask {
     final IPjeToken token = loginToken();
     try {
       signedData = token.signerBuilder().usingAlgorigthm(algorithm).build().process(content);
-    } catch (KeyStoreAccessException e) {
+    } catch (Signer4JException e) {
       TaskException ex = new TaskException("Não foi possível assinar a mensagem", e);
       progress.abort(ex);
       throw ex;

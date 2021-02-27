@@ -11,7 +11,7 @@ import com.github.signer4j.IToken;
 import com.github.signer4j.exception.NotAuthenticatedException;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.TokenWrapper;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 import br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
@@ -67,7 +67,7 @@ public class PjeToken extends TokenWrapper implements IPjeToken {
   }
   
   @Override
-  public final IToken login() throws KeyStoreAccessException { 
+  public final IToken login() throws Signer4JException { 
     strategy.login(super.token);
     return this;
   }

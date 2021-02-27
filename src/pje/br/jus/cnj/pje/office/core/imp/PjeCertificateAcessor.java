@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
-import static com.github.signer4j.imp.KeyStoreInvokeHandler.INVOKER;
+import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
 import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 import static com.github.signer4j.imp.SwingTools.isTrue;
@@ -32,7 +32,7 @@ import com.github.signer4j.imp.EnvironmentStrategy;
 import com.github.signer4j.imp.IDriverVisitor;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 import com.github.signer4j.imp.exception.NoTokenPresentException;
 import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
@@ -198,7 +198,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
         if (isTrue(() -> InvalidPinAlert.display(t, Config.getIcon())))
           continue;
         throw new RuntimeKeyStoreException(e);
-      } catch (KeyStoreAccessException e) {
+      } catch (Signer4JException e) {
         throw new RuntimeKeyStoreException(e);
       }
     }while(true);

@@ -10,7 +10,7 @@ import java.io.IOException;
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.TemporaryException;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
@@ -111,7 +111,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
             progress.step(message + e.getMessage());
             progress.end();
             throw new TemporaryException(e);
-          } catch (KeyStoreAccessException e) {
+          } catch (Signer4JException e) {
             String message = "Arquivo ignorado:  " + file.toString();
             LOGGER.warn(message, e);
             progress.step(message + " -> " +  e.getMessage());

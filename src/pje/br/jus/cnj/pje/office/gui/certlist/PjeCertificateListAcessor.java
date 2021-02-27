@@ -12,7 +12,7 @@ import com.github.signer4j.gui.CertificateListUI;
 import com.github.signer4j.imp.AbstractCertificateChooser;
 import com.github.signer4j.imp.Choice;
 import com.github.signer4j.imp.IChoice;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 public class PjeCertificateListAcessor extends AbstractCertificateChooser {
   
@@ -28,7 +28,7 @@ public class PjeCertificateListAcessor extends AbstractCertificateChooser {
   }
  
   @Override
-  protected IChoice doChoose(List<CertificateEntry> options) throws KeyStoreAccessException {
+  protected IChoice doChoose(List<CertificateEntry> options) throws Signer4JException {
     if (options.size() == 1)
       return toChoice(options.get(0));
     @SuppressWarnings({ "unchecked", "rawtypes" })

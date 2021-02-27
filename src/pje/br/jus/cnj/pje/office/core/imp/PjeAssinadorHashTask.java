@@ -12,7 +12,7 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.ISimpleSigner;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.SignedData;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
@@ -122,7 +122,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask {
           } else {
             try {
               signedData = signer.process(content);
-            } catch (KeyStoreAccessException e) {
+            } catch (Signer4JException e) {
               throw new TaskException("Não foi possível assinar o arquivo id: " + id, e);
             }
           }

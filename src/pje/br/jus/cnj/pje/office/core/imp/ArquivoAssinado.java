@@ -14,7 +14,7 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.OpenByteArrayOutputStream;
 import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.OutOfMemoryException;
 
 import br.jus.cnj.pje.office.core.IArquivo;
@@ -48,7 +48,7 @@ class ArquivoAssinado extends ArquivoWrapper implements IArquivoAssinado {
   }
 
   @Override
-  public void sign(IByteProcessor signer) throws KeyStoreAccessException, IOException, UnsupportedCosignException {
+  public void sign(IByteProcessor signer) throws Signer4JException, IOException, UnsupportedCosignException {
     if (signedData == null) {
       Args.requireNonNull(signer, "signer is null");
       try {

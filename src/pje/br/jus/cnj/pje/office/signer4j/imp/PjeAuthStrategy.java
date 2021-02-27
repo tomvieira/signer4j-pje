@@ -4,7 +4,7 @@ import static com.github.signer4j.imp.SwingTools.isTrue;
 
 import com.github.signer4j.IToken;
 import com.github.signer4j.gui.alert.TokenUseAlert;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
@@ -13,7 +13,7 @@ import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 public enum PjeAuthStrategy implements IPjeAuthStrategy{
   AWAYS("Sempre solicitar senha") {
     @Override
-    public void login(IToken token) throws KeyStoreAccessException {
+    public void login(IToken token) throws Signer4JException {
       token.login();
     }
 
@@ -24,7 +24,7 @@ public enum PjeAuthStrategy implements IPjeAuthStrategy{
   },
   ONE_TIME("Solicitar senha uma vez") {
     @Override
-    public void login(IToken token) throws KeyStoreAccessException {
+    public void login(IToken token) throws Signer4JException {
       if (!token.isAuthenticated()) {
         token.login();
       }
@@ -37,7 +37,7 @@ public enum PjeAuthStrategy implements IPjeAuthStrategy{
   },
   NEVER("Impedir o uso do dispositivo"){
     @Override
-    public void login(IToken token) throws KeyStoreAccessException {
+    public void login(IToken token) throws Signer4JException {
       throw new LoginCanceledException();
     }
   
@@ -48,7 +48,7 @@ public enum PjeAuthStrategy implements IPjeAuthStrategy{
   },
   CONFIRM("Apenas confirmar uso do dispositivo"){
     @Override
-    public void login(IToken token) throws KeyStoreAccessException {
+    public void login(IToken token) throws Signer4JException {
       if (token.isAuthenticated()) { 
         if (!isTrue(TokenUseAlert::display)) {
           token.logout();

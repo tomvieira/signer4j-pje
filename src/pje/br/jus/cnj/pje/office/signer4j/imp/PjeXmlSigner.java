@@ -50,7 +50,7 @@ import com.github.signer4j.imp.SignException;
 import com.github.signer4j.imp.SignedData;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Throwables;
-import com.github.signer4j.imp.exception.KeyStoreAccessException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 import br.jus.cnj.pje.office.signer4j.IPjeXmlSigner;
 import br.jus.cnj.pje.office.signer4j.IPjeXmlSignerBuilder;
@@ -68,19 +68,19 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
   }
 
   @Override
-  public ISignedData process(byte[] content, int offset, int length) throws KeyStoreAccessException {
+  public ISignedData process(byte[] content, int offset, int length) throws Signer4JException {
     Args.requireNonEmpty(content, "content is null");
     Args.requireZeroPositive(offset, "offset is negative");
     Args.requireZeroPositive(length, "length is negative");
     try(InputStream is = new ByteArrayInputStream(content, offset, length)) {
       return process(is);
     } catch (IOException e) {
-      throw new KeyStoreAccessException(e);
+      throw new Signer4JException(e);
     }
   }
 
   @Override
-  public ISignedData process(File content) throws KeyStoreAccessException, IOException {
+  public ISignedData process(File content) throws Signer4JException, IOException {
     Args.requireNonNull(content, "content is null");
     try(InputStream is = new BufferedInputStream(new FileInputStream(content), 32*1024)) {
       return process(is);
@@ -88,7 +88,7 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
   }
 
   @Override
-  public ISignedData process(InputStream input) throws KeyStoreAccessException {
+  public ISignedData process(InputStream input) throws Signer4JException {
     Args.requireNonNull(input, "input is null");
     return invoke(() -> {
       IChoice choice = choose();
