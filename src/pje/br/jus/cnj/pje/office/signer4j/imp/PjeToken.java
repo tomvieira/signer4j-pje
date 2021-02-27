@@ -5,6 +5,7 @@ import static com.github.signer4j.imp.Args.requireNonNull;
 import com.github.signer4j.ICMSSignerBuilder;
 import com.github.signer4j.ICertificateChooser;
 import com.github.signer4j.ICertificateChooserFactory;
+import com.github.signer4j.IPKCS7SignerBuilder;
 import com.github.signer4j.ISignerBuilder;
 import com.github.signer4j.IToken;
 import com.github.signer4j.exception.NotAuthenticatedException;
@@ -42,6 +43,11 @@ public class PjeToken extends TokenWrapper implements IPjeToken {
   @Override
   public final ICMSSignerBuilder cmsSignerBuilder() {
     return super.cmsSignerBuilder((k, c) -> new PjeCertificateListAcessor(k,  c));
+  }
+
+  @Override
+  public final IPKCS7SignerBuilder pkcs7SignerBuilder() {
+    return super.pkcs7SignerBuilder((k, c) -> new PjeCertificateListAcessor(k,  c));
   }
 
   @Override

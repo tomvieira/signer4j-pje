@@ -33,9 +33,8 @@ enum PjeStandardSignature implements IStandardSignature {
     public IByteProcessor getByteProcessor(IPjeToken token, IAssinadorParams params) {
       Args.requireNonNull(token, "token is null");
       Args.requireNonNull(params, "param is null");
-      
       return token.cmsSignerBuilder()
-        .usingAlgorigthm(params.getAlgoritmoHash().get())
+        .usingSignatureAlgorithm(params.getAlgoritmoHash().get())
         .usingSignatureType(params.getTipoAssinatura().get())
         .usingConfig((p, o) -> ((ICMSSigner)p).usingAttributes((Boolean)o))
         .build();

@@ -51,9 +51,10 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   
   private static class CertifiateEntry extends DefaultCertificateEntry {
     CertifiateEntry(IDevice device, ICertificate certificate) {
-      super(device, certificate);
+      super(Optional.ofNullable(device), certificate);
     }
-    IDevice device() {
+    
+    Optional<IDevice> device() {
       return super.device;
     }
   }
@@ -156,7 +157,10 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     final Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
     if (selected.isPresent()) {
       CertifiateEntry e = (CertifiateEntry)selected.get();
-      return Optional.of(token = toToken(e.device()));
+      Optional<IDevice> device = e.device();
+      if (device.isPresent()) {
+        return Optional.of(token = toToken(device.get()));
+      }
     }
     return Optional.empty();
   }

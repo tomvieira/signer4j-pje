@@ -53,7 +53,7 @@ class ArquivoAssinado extends ArquivoWrapper implements IArquivoAssinado {
       Args.requireNonNull(signer, "signer is null");
       try {
         UnsupportedCosignException rethrow = null;
-        try(OpenByteArrayOutputStream out = new OpenByteArrayOutputStream()) {
+        try(OpenByteArrayOutputStream out = new OpenByteArrayOutputStream(notSignedFile.length())) {
           Files.copy(notSignedFile.toPath(), out);
           try(InputStream content = out.toInputStream()){ //Essa estratégia evita copias de byte[]'s
             new CMSSignedData(content).getSignedContent();
