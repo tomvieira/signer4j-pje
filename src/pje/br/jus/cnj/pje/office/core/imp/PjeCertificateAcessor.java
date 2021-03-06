@@ -3,8 +3,8 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
-import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
 import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
+import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 import static com.github.signer4j.imp.SwingTools.isTrue;
 
@@ -25,17 +25,16 @@ import com.github.signer4j.gui.alert.NoTokenPresentAlert;
 import com.github.signer4j.gui.alert.TokenLockedAlert;
 import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
-import com.github.signer4j.imp.Config;
 import com.github.signer4j.imp.DefaultCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
 import com.github.signer4j.imp.EnvironmentStrategy;
 import com.github.signer4j.imp.IDriverVisitor;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
-import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 import com.github.signer4j.imp.exception.NoTokenPresentException;
-import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
+import com.github.signer4j.imp.exception.Signer4JException;
+import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.imp.exception.TokenLockedException;
 
 import br.jus.cnj.pje.office.core.IPjeCertificateAcessor;
@@ -172,34 +171,34 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     do {
       Optional<IPjeToken> opToken = getToken(force, autoSelect);
       if (!opToken.isPresent()) {
-        throw new RuntimeKeyStoreException(new LoginCanceledException());
+        throw new Signer4JRuntimeException(new LoginCanceledException());
       }
       IPjeToken pjeToken = (IPjeToken)opToken.get();
       try {
         return INVOKER.invoke(() -> (IPjeToken)pjeToken.login());
       } catch (LoginCanceledException e) {
-        throw new RuntimeKeyStoreException(e);
+        throw new Signer4JRuntimeException(e);
       } catch (NoTokenPresentException e) {
         if (!isTrue(NoTokenPresentAlert::display))
-          throw new RuntimeKeyStoreException(e);
+          throw new Signer4JRuntimeException(e);
         this.close();
         force = true;
         autoSelect = false;
       } catch (TokenLockedException e) {
         invokeAndWait(TokenLockedAlert::display);
-        throw new RuntimeKeyStoreException(e);
+        throw new Signer4JRuntimeException(e);
       } catch (ExpiredCredentialException e) {
         invokeAndWait(ExpiredPasswordAlert::display);
-        throw new RuntimeKeyStoreException(e);
+        throw new Signer4JRuntimeException(e);
       } catch (InvalidPinException e) {
         if (TokenType.A3.equals(pjeToken.getType()))
           ++times;
         final int t = times;
-        if (isTrue(() -> InvalidPinAlert.display(t, Config.getIcon())))
+        if (isTrue(() -> InvalidPinAlert.display(t, PjeConfig.getIcon())))
           continue;
-        throw new RuntimeKeyStoreException(e);
+        throw new Signer4JRuntimeException(e);
       } catch (Signer4JException e) {
-        throw new RuntimeKeyStoreException(e);
+        throw new Signer4JRuntimeException(e);
       }
     }while(true);
   }

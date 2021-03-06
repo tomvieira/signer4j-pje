@@ -4,8 +4,8 @@ import static com.github.signer4j.imp.SwingTools.isTrue;
 
 import com.github.signer4j.IToken;
 import com.github.signer4j.gui.alert.TokenUseAlert;
-import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 

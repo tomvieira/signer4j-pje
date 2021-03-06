@@ -14,8 +14,8 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.OpenByteArrayOutputStream;
 import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.OutOfMemoryException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 import br.jus.cnj.pje.office.core.IArquivo;
 import br.jus.cnj.pje.office.core.IArquivoAssinado;

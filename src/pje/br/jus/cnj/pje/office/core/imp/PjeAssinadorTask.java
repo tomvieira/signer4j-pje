@@ -11,7 +11,7 @@ import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.TemporaryException;
 import com.github.signer4j.imp.exception.Signer4JException;
-import com.github.signer4j.imp.exception.RuntimeKeyStoreException;
+import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.progress.imp.InterruptedProgress;
@@ -119,7 +119,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
             if (!token.isAuthenticated()) {
               try {
                 token = loginToken();
-              }catch(RuntimeKeyStoreException ex) {
+              }catch(Signer4JRuntimeException ex) {
                 ex.addSuppressed(e);
                 throw new TaskException("Não foi possível recuperar autenticação do token.", ex);
               }

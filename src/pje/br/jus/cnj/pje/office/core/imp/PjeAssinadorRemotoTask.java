@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +26,11 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
     }
   }
   
-  final List<IArquivoAssinado> tempFiles = new ArrayList<>();
+  private final List<IArquivoAssinado> tempFiles = new ArrayList<>();
   
   private List<IArquivo> arquivos;
+  
+  private String enviarPara;
   
   PjeAssinadorRemotoTask(Params request, IAssinadorParams pojo) {
     super(request, pojo);
@@ -41,6 +41,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
     super.validateParams();
     final IAssinadorParams params = getAssinadorParams();
     this.arquivos = PjeTaskChecker.checkIfNull(params.getArquivos(), "arquivos");
+    this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara");
   }
 
   @Override
@@ -100,7 +101,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   
   @Override
   protected void send(IArquivoAssinado arquivo) throws TaskException {
-    final String endPoint = getEndpointFor(checkIfPresent(arquivo.getUrl(), "url"));
+    final String endPoint = getEndpointFor(enviarPara);
     try {
       getPjeClient().send(
         endPoint, 

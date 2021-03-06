@@ -157,29 +157,24 @@ public class PjeWebServer implements IPjeWebServer {
     }
   }
   
-  private final Filter access = new AccessFilter();
+  private IExitable exitable;
+  private HttpServer httpServer;
+  private HttpsServer httpsServer;
+  private PjeWebServerSetup setup;
+
   private final Filter cors   = new CorsFilter();
+  private final Filter access = new AccessFilter();
   
   private final IPjeRequestHandler ping = new PingRequestHandler();
   private final IPjeRequestHandler task = new TaskRequestHandler();
   private final IPjeRequestHandler vers = new VersionRequestHandler();
   private final IPjeRequestHandler exit = new ShutdownRequestHandler();
 
+  private final AtomicBoolean localRequest = new AtomicBoolean(false);
+
   private final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
-
-  private HttpServer httpServer;
-  private HttpsServer httpsServer;
-  private PjeWebServerSetup setup;
-  private IExitable exitable;
-  
-  private final AtomicBoolean localRequest = new AtomicBoolean(false);
-  
-  @Override
-  public void setAllowLocalRequest(boolean enabled) {
-    this.localRequest.set(enabled);
-  }
   
   public PjeWebServer(IExitable exitable) {
     this(exitable, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
@@ -194,6 +189,11 @@ public class PjeWebServer implements IPjeWebServer {
     this.exitable = exitable;
   }
   
+  @Override
+  public void setAllowLocalRequest(boolean enabled) {
+    this.localRequest.set(enabled);
+  }
+
   @Override
   public String getTaskEndpoint() {
     return task.getEndPoint();
