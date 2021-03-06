@@ -147,7 +147,9 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
     StringBuilder whyNot = new StringBuilder();
     if (!getSecurityAgent().isPermitted(params, whyNot)) {
       String cause = whyNot.toString();
-      invokeLater(() -> display(cause));
+      if (!cause.isEmpty()) {
+        invokeLater(() -> display(cause));
+      }
       throw new TaskException("Permissão negada. " + cause);
     }
   }
