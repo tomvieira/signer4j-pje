@@ -5,7 +5,6 @@ import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.Dates.stringNow;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -97,7 +96,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     final String fileName = arquivo.getNome().get();
 
     final File saved = new File(destination, fileName);
-    try(OutputStream output = new BufferedOutputStream(new FileOutputStream(saved), 32 * 1024)){ 
+    try(OutputStream output = new FileOutputStream(saved)){ 
       signedData.writeTo(output);
     } catch (IOException e) {
       saved.delete();
