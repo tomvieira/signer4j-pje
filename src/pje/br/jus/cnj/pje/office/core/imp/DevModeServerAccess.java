@@ -10,7 +10,7 @@ public class DevModeServerAccess extends PJeServerAccessWrapper {
   
   @Override
   public boolean isAutorized() {
-    return true;
+    return true; //devmode aways returns TRUE
   }
 
   @Override

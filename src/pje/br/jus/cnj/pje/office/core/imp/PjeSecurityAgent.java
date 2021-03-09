@@ -74,7 +74,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
 
     Optional<String> opServer = params.getServidor();
     if (!opServer.isPresent()) {
-      whyNot.append("Servidor do Pje não enviou parâmetro 'server'.");
+      whyNot.append("Servidor do Pje não enviou parâmetro 'servidor'.");
       LOGGER.warn(whyNot.toString());
       return false;
     }

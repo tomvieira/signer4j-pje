@@ -51,7 +51,7 @@ public enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
       
       final int dots = cleanCode.indexOf(':');
       if (dots < 0 || dots == cleanCode.length() - 1) {
-        throw new PjePermissionDeniedException("Parâmetro em formato inválido: {}. Contactar CNJ" + cleanCode);
+        throw new PjePermissionDeniedException("Parâmetro em formato inválido: " + cleanCode + ". Contactar CNJ ");
       }
       
       final String appCode = trim(cleanCode.substring(0, dots));
