@@ -136,7 +136,6 @@ class PjeClient implements IPjeClient {
   
   @Override
   public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PjeServerException {
-    requireText("", "");
     final Supplier<HttpGet> supplier = () -> createGet(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
