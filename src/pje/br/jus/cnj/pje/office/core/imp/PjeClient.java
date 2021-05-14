@@ -39,6 +39,7 @@ import com.github.signer4j.imp.Runner;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Supplier;
 import com.github.signer4j.imp.TemporaryException;
+import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
@@ -231,6 +232,7 @@ class PjeClient implements IPjeClient {
           throw new TemporaryException("Não é possível gravar download em output nulo");
         }
         final HttpGet get = supplier.get();
+       
         try(CloseableHttpResponse response = client.execute(get)) {
           HttpEntity entity = response.getEntity();
           if (entity == null) {

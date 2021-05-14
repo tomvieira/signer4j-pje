@@ -258,6 +258,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
         );
         LOGGER.info("Finalizada requisição local");
       }finally {
+        Threads.sleep(2000);        
         webServer.setAllowLocalRequest(false);
       }
     });

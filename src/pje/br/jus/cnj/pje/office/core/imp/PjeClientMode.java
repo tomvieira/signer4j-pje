@@ -67,10 +67,11 @@ enum PjeClientMode {
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeClientMode.class);
   
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
-      .setResponseTimeout(Timeout.DISABLED) //This is SO Timeout. Default to infinit!
+      .setResponseTimeout(Timeout.ofSeconds(6))//Timeout.DISABLED) //This is SO Timeout. Default to infinit!
       .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
       .setConnectTimeout(Timeout.of(3, TimeUnit.MINUTES))
       .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES)).build();
+    
 
   private IPjeClient client;
 

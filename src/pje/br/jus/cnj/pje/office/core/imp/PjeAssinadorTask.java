@@ -116,15 +116,6 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
             LOGGER.warn(message, e);
             progress.step(message + " -> " +  e.getMessage());
             progress.end();
-            if (!token.isAuthenticated()) {
-              try {
-                token = loginToken();
-              }catch(Signer4JRuntimeException ex) {
-                ex.addSuppressed(e);
-                throw new TaskException("Não foi possível recuperar autenticação do token.", ex);
-              }
-              processor = padraoAssinatura.getByteProcessor(token, params);
-            }
             throw new TemporaryException(e);
           }
           progress.step("Enviando arquivo '%s'", fileName);
@@ -138,14 +129,22 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
             throw new TemporaryException(e);
           }
           progress.end();
-        }catch(TaskException e) {
-          progress.abort(e);
-          throw e;
         }catch(TemporaryException e) {
           fail = true;
           progress.abort(e);
+
           int remainder = size - index - 1;
           if (remainder > 0) {
+            if (!token.isAuthenticated()) {
+              try {
+                token = loginToken();
+              }catch(Signer4JRuntimeException ex) {
+                progress.abort(e);
+                ex.addSuppressed(e);
+                throw new TaskException("Não foi possível recuperar autenticação do token.", ex);
+              }
+              processor = padraoAssinatura.getByteProcessor(token, params);
+            }
             progress.begin(Stage.PROCESSING_FILES, remainder);
           }
         }finally {
