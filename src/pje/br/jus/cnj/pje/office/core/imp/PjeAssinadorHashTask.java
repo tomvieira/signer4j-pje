@@ -103,15 +103,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
           final String id = checkIfPresent(file.getId(), "id");
           final String hash = checkIfPresent(file.getHash(), "hash");
-
           checkIfPresent(file.getCodIni(), "codIni");
-          
-          Optional<Long> idTarefa = file.getIdTarefa();
-          if (!idTarefa.isPresent()) { //TODO ver PJeClient original que evita envio de dados com este parametro indefinido.
-            progress.step("Documento Id: %s IGNORADO porque parâmetro 'idTarefa' encontra-se vazio", id);
-            continue;
-          }
-          
           final byte[] content = hashToBytes(hash);
           
           progress.step("Documento Id: %s", id);

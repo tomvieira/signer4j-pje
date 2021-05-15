@@ -39,7 +39,6 @@ import com.github.signer4j.imp.Runner;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Supplier;
 import com.github.signer4j.imp.TemporaryException;
-import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
@@ -103,8 +102,8 @@ class PjeClient implements IPjeClient {
     parameters.add(new BasicNameValuePair("id", file.getId().get()));
     parameters.add(new BasicNameValuePair("codIni", file.getCodIni().get()));
     parameters.add(new BasicNameValuePair("hash", file.getHash().get()));
-    //TODO na versão original do PJEOffice, o envio é abortado se não tem 'idTarefa', faz sentido?
-    parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
+    if (file.getIdTarefa().isPresent())
+      parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
     postRequest.setEntity(new UrlEncodedFormEntity(parameters));
     return postRequest;
   }
