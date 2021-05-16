@@ -33,7 +33,7 @@ enum PjeClientMode {
     protected IPjeClient createClient(PjeClientBuilder builder) {
       return builder.evictExpiredConnections()
         .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-        .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(StandardCookieSpec.IGNORE).build())
+        .setDefaultRequestConfig(REQUEST_CONFIG)
         .build();
     }
   },
@@ -55,7 +55,6 @@ enum PjeClientMode {
           .build();
         return builder.setConnectionManager(cm)
           .evictExpiredConnections()
-          //.disableAutomaticRetries() //TODO estudar a relação deste parâmetro com o uso de Retryable do método PjeClient.send
           .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
           .build();
       } catch (Exception e) {
@@ -67,10 +66,11 @@ enum PjeClientMode {
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeClientMode.class);
   
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
-      .setResponseTimeout(Timeout.ofSeconds(6))//Timeout.DISABLED) //This is SO Timeout. Default to infinit!
+      .setResponseTimeout(Timeout.ofSeconds(60))//Timeout.DISABLED) //This is SO Timeout. Default to infinit!
       .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
       .setConnectTimeout(Timeout.of(3, TimeUnit.MINUTES))
-      .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES)).build();
+      .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES))
+      .setCookieSpec(StandardCookieSpec.IGNORE).build();
     
 
   private IPjeClient client;
