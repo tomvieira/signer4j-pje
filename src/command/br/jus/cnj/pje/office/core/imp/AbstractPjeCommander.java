@@ -66,7 +66,7 @@ abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeRespons
   private boolean started = false;
   
   protected AbstractPjeCommander(IBootable boot, String serverEndpoint) {
-    this(boot, serverEndpoint, PjeCertificate.ACCESSOR, PjeSecurity.CONTROLLER);
+    this(boot, serverEndpoint, PjeTokenAccessor.INSTANCE, PjeSecurity.CONTROLLER);
   }
   
   protected AbstractPjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {

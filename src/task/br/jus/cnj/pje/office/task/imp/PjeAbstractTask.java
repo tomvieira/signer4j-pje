@@ -61,6 +61,7 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeSecurityPermissor;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
@@ -178,7 +179,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     getRequestExecutor().execute(runnable);
   }
   
-  protected final IPjeSecurityAgent getSecurityAgent() {
+  protected final IPjeSecurityPermissor getSecurityPermissor() {
     return getParameterValue(IPjeSecurityAgent.PARAM_NAME);
   }
   
@@ -365,7 +366,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
     final IMainParams params = getMainRequest();
     StringBuilder whyNot = new StringBuilder();
-    if (!getSecurityAgent().isPermitted(params, whyNot)) {
+    if (!getSecurityPermissor().isPermitted(params, whyNot)) {
       String cause = whyNot.toString();
       if (!cause.isEmpty()) {
         PermissionDeniedAlert.showInfo(cause);

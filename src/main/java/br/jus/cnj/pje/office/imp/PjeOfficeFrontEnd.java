@@ -27,6 +27,8 @@
 
 package br.jus.cnj.pje.office.imp;
 
+import static br.jus.cnj.pje.office.gui.PjeImages.PJE_ICON_TRAY;
+import static br.jus.cnj.pje.office.gui.PjeImages.PJE_ICON_TRAY_ONLINE;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.awt.Frame;
@@ -40,13 +42,15 @@ import java.awt.event.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.IToken;
 import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.Version;
-import br.jus.cnj.pje.office.gui.PjeImages;
+import br.jus.cnj.pje.office.core.imp.PjeTokenAccessor;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
+import io.reactivex.disposables.Disposable;
 
 enum PjeOfficeFrontEnd implements IPjeFrontEnd {
   
@@ -54,16 +58,26 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     private SystemTray tray;
     private TrayIcon trayIcon;
     private Frame trayFrame;
+
+    @Override
+    public IPjeFrontEnd fallback() {
+      return DESKTOP;
+    }
+
+    @Override
+    protected void setOnline(boolean online) {
+      trayIcon.setImage(online ? PJE_ICON_TRAY_ONLINE.asImage().get() : PJE_ICON_TRAY.asImage().get());      
+    }
     
     @Override
-    public void install(IBootable office, PopupMenu menu) throws Exception {
+    protected void doInstall(IBootable office, PopupMenu menu) throws Exception {
       trayFrame = new Frame("");
       trayFrame.setType(Type.UTILITY);
       trayFrame.setUndecorated(true);
       trayFrame.setResizable(false);
       trayFrame.setVisible(true);
       tray = SystemTray.getSystemTray();
-      trayIcon = new TrayIcon(PjeImages.PJE_ICON_TRAY.asImage().orElseThrow(IconNotFoundException::new));
+      trayIcon = new TrayIcon(PJE_ICON_TRAY.asImage().get());
       trayIcon.setPopupMenu(menu);
       trayIcon.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {
@@ -78,7 +92,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
       trayIcon.setToolTip("PjeOffice - Assinador do Pje.");
       trayIcon.displayMessage("PjeOffice PRO", "Versão " + Version.current().toString(), TrayIcon.MessageType.NONE);
     }
-
+    
     @Override
     protected void doDispose() {
       LOGGER.debug("Removendo trayIcon de tray");
@@ -96,12 +110,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
         tryRun(trayFrame::removeAll);
         trayFrame = null;
       }
-      LOGGER.debug("systray disposed!");
-    }
-
-    @Override
-    public IPjeFrontEnd next() {
-      return DESKTOP;
+      LOGGER.debug("Systray disposed!");
     }
   },
   
@@ -109,7 +118,17 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     private PjeOfficeDesktop desktop;
     
     @Override
-    public void install(IBootable office, PopupMenu menu) {
+    public IPjeFrontEnd fallback() {
+      return SYSTRAY;
+    }
+
+    @Override
+    protected void setOnline(boolean online) {
+      desktop.setOnline(online);
+    }
+    
+    @Override
+    protected void doInstall(IBootable office, PopupMenu menu) {
       desktop = new PjeOfficeDesktop(office, menu);
       desktop.showToFront();
     }
@@ -121,37 +140,9 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
       }
       desktop = null;
     }
-
-    @Override
-    public IPjeFrontEnd next() {
-      return SYSTRAY;
-    }
   };
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeFrontEnd.class);
-  
-  private String title;
-  
-  PjeOfficeFrontEnd(String title) {
-    this.title = title;
-  }
-  
-  @Override
-  public final String getTitle() {
-    return title;
-  }
-  
-  @Override
-  public final void dispose() {
-    if (Threads.isShutdownHook()) {
-      LOGGER.info("Dispose escaped (thread em shutdownhook)");
-      return;
-    }
-    doDispose();
-    LOGGER.info("Frontend liberado");
-  }
-  
-  protected abstract void doDispose();
   
   public static PjeOfficeFrontEnd getBest() {
     boolean systray = supportsSystray();
@@ -163,5 +154,53 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
 
   public static boolean supportsSystray() {
     return SystemTray.isSupported();
+  }
+  
+  private String title;
+  private Disposable ticket, status;
+  
+  PjeOfficeFrontEnd(String title) {
+    this.title = title;
+  }
+  
+  @Override
+  public final String getTitle() {
+    return title;
+  }
+  
+  @Override
+  public void install(IBootable office, PopupMenu menu) throws Exception {
+    doInstall(office, menu);
+    ticket = PjeTokenAccessor.INSTANCE.newToken().subscribe(this::checkStatus);
+  }
+
+  private void checkStatus(IToken token) {
+    if (status != null)
+      status.dispose();
+    status = token.getStatus().subscribe(this::setOnline);
+  }
+  
+  protected abstract void doDispose();
+  protected abstract void setOnline(boolean online);
+  protected abstract void doInstall(IBootable office, PopupMenu menu) throws Exception;
+
+  @Override
+  public final void dispose() {
+    LOGGER.debug("Liberando ciclo de acesso");
+    if (ticket != null) {
+      tryRun(() -> ticket.dispose());
+      ticket = null;
+    }
+    LOGGER.debug("Liberando status de acesso");
+    if (status != null) {
+      tryRun(() -> status.dispose());
+      status = null;
+    }
+    if (Threads.isShutdownHook()) {
+      LOGGER.info("Dispose escaped (thread em shutdownhook)");
+      return;
+    }
+    doDispose();
+    LOGGER.info("Frontend liberado");
   }
 }

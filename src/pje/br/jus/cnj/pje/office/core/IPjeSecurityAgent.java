@@ -27,9 +27,7 @@
 
 package br.jus.cnj.pje.office.core;
 
-import br.jus.cnj.pje.office.task.IMainParams;
-
-public interface IPjeSecurityAgent {
+public interface IPjeSecurityAgent extends IPjeSecurityPermissor {
   String PARAM_NAME = IPjeSecurityAgent.class.getSimpleName() + ".instance";
   
   void refresh();
@@ -37,5 +35,4 @@ public interface IPjeSecurityAgent {
   void setProductionMode();
   
   boolean isDevMode();
-  boolean isPermitted(IMainParams params, StringBuilder whyNot);
 }

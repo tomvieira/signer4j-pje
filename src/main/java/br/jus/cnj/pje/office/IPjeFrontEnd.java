@@ -33,7 +33,7 @@ import java.awt.PopupMenu;
 public interface IPjeFrontEnd {
   String getTitle();
   
-  IPjeFrontEnd next();
+  IPjeFrontEnd fallback();
   
   void install(IBootable office, PopupMenu menu) throws Exception;
   

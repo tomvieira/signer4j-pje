@@ -32,9 +32,13 @@ import com.github.utils4j.gui.IPicture;
 public enum PjeImages implements IPicture {
   PJE_ICON("/pje-icon.png"), 
   
+  PJE_ICON_ONLINE("/pje-icon-online.png"), 
+
   PJE_SERVER("/server.png"),
   
-  PJE_ICON_TRAY("/pje-icon-16.png");
+  PJE_ICON_TRAY("/pje-icon-16.png"),
+  
+  PJE_ICON_TRAY_ONLINE("/pje-icon-16-online.png");
   
   final String path;
   

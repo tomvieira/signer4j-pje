@@ -30,7 +30,6 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static com.github.signer4j.IFilePath.toPaths;
 import static com.github.signer4j.imp.DeviceCertificateEntry.toEntries;
-import static com.github.signer4j.imp.Signer4JInvoker.SIGNER4J;
 import static com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException.lambda;
 import static com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException.of;
 import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
@@ -47,6 +46,7 @@ import com.github.signer4j.IDevice;
 import com.github.signer4j.IDeviceManager;
 import com.github.signer4j.IDriverVisitor;
 import com.github.signer4j.IFilePath;
+import com.github.signer4j.IToken;
 import com.github.signer4j.TokenType;
 import com.github.signer4j.gui.CertificateListUI;
 import com.github.signer4j.gui.alert.ExpiredPasswordAlert;
@@ -69,10 +69,12 @@ import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.imp.PjeToken;
+import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
-public enum PjeCertificate implements IPjeTokenAccess {
+public enum PjeTokenAccessor implements IPjeTokenAccess {
   
-  ACCESSOR;
+  INSTANCE;
   
   private class FilePathStrategy extends AbstractStrategy {
     @Override
@@ -93,16 +95,57 @@ public enum PjeCertificate implements IPjeTokenAccess {
   
   private List<IFilePath> a3Libraries = new ArrayList<>();
 
-  private PjeCertificate() {
+  private BehaviorSubject<IToken> tokenCycle = BehaviorSubject.create();
+  
+  private PjeTokenAccessor() {
     PjeConfig.loadA1Paths(a1Files::add);
     PjeConfig.loadA3Paths(a3Libraries::add);
     this.strategy = PjeAuthStrategy.getDefault();
     this.devManager = new DeviceManager(new NotDuplicatedStrategy(new FilePathStrategy())).install(toPaths(a1Files));
     //this.devManager = new MSCAPIDevManager();
   }
+
+  public Observable<IToken> newToken() {
+    return tokenCycle;
+  }
   
-  private IPjeToken toToken(IDevice device) {    
-    return new PjeToken(device.getSlot().getToken(), strategy);
+  public IPjeAuthStrategy getAuthStrategy() {
+    return this.strategy;
+  }
+
+  @Override
+  public void logout() {
+    if (token != null) {
+      token.logout(true);
+      token = null;
+    }
+  }
+
+  @Override
+  public final void close() { 
+    try {
+      this.devManager.close();
+    } finally {
+      if (this.token != null) {
+        tokenCycle.onComplete();
+        tokenCycle = BehaviorSubject.create();
+      }
+      this.token = null;
+    }
+  }
+  
+  public void setAuthStrategy(IPjeAuthStrategy strategy) {
+    if (strategy != null) {
+      PjeConfig.save(this.strategy = strategy);
+      this.logout();
+      this.close();      
+    }
+  }
+  
+  private IPjeToken toToken(IDevice device) {  
+    PjeToken token = new PjeToken(device.getSlot().getToken(), strategy);
+    tokenCycle.onNext(token);
+    return token;
   }
   
   private void onNewDevices(List<IFilePath> a1List, List<IFilePath> a3List) {
@@ -112,12 +155,12 @@ public enum PjeCertificate implements IPjeTokenAccess {
     this.close();
     this.devManager.install(toPaths(a1List));
   }
-
+  
   private Optional<IPjeToken> getToken(boolean force, boolean autoSelect) {
     if (!force && this.token != null)
       return Optional.of(this.token);
     force |= this.token == null;
-    final Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
+    Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
     if (selected.isPresent()) {
       DeviceCertificateEntry e = (DeviceCertificateEntry)selected.get();
       Optional<IDevice> device = e.getNative();
@@ -126,35 +169,6 @@ public enum PjeCertificate implements IPjeTokenAccess {
       }
     }
     return Optional.empty();
-  }
-
-  public IPjeAuthStrategy getAuthStrategy() {
-    return this.strategy;
-  }
-
-  public void setAuthStrategy(IPjeAuthStrategy strategy) {
-    if (strategy != null) {
-      PjeConfig.save(this.strategy = strategy);
-      this.logout();
-      this.close();      
-    }
-  }
-  
-  @Override
-  public void logout() {
-    if (token != null) {
-      token.logout(true);
-      token = null;
-    }
-  }
-  
-  @Override
-  public final void close() { 
-    try {
-      this.devManager.close();
-    } finally {
-      this.token = null;
-    }
   }
 
   @Override
@@ -180,7 +194,7 @@ public enum PjeCertificate implements IPjeTokenAccess {
     do {
       IPjeToken pjeToken = getToken(force, autoSelect).orElseThrow(lambda(LoginCanceledException::new));
       try {
-        return SIGNER4J.invoke(pjeToken::login);
+        return pjeToken.login();
       } catch (LoginCanceledException e) {
         throw of(e);
       } catch (NoTokenPresentException e) {

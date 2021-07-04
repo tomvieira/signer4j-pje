@@ -41,25 +41,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import com.github.signer4j.imp.Config;
 import com.github.utils4j.gui.imp.SimpleFrame;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
+import br.jus.cnj.pje.office.gui.PjeImages;
 
 public class PjeOfficeDesktop extends SimpleFrame {
   private static final long serialVersionUID = 1L;
   
-  private JPanel contentPane;  
+  private JPanel contentPane; 
+  private JButton btnMain;
 
-  public PjeOfficeDesktop(IBootable finishingCode, PopupMenu popup) {
+  public PjeOfficeDesktop(IBootable boot, PopupMenu popup) {
     super("PjeOffice - " + Version.current(), PjeConfig.getIcon());
     contentPane = new JPanel();
     contentPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
     contentPane.setLayout(new BorderLayout(0, 0));
-    ImageIcon viewport = new ImageIcon(Config.getIcon());
-    JButton btnMain = new JButton("");
+    ImageIcon viewport = new ImageIcon(PjeConfig.getIcon());
+    btnMain = new JButton("");
     btnMain.add(popup);
     btnMain.setIcon(viewport);
     btnMain.addMouseListener(new MouseAdapter() {
@@ -69,7 +70,7 @@ public class PjeOfficeDesktop extends SimpleFrame {
     });
     this.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
-        finishingCode.exit();
+        boot.exit();
       }
     });
     contentPane.add(btnMain, BorderLayout.CENTER);
@@ -80,8 +81,13 @@ public class PjeOfficeDesktop extends SimpleFrame {
     setLocationRelativeTo(null);
   }
   
+  public void setOnline(boolean online) {
+    btnMain.setIcon(online ? PjeImages.PJE_ICON_ONLINE.asIcon().get() : PjeImages.PJE_ICON.asIcon().get());
+  }
+  
   @Override
   protected void onEscPressed(ActionEvent e) {
     ;//nothing to do (escape esc key)
   }
+
 }

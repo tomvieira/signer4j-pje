@@ -1,6 +1,7 @@
 package br.jus.cnj.pje.office.core.imp.sec;
 
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeSecurityPermissor;
 import br.jus.cnj.pje.office.task.IMainParams;
 
 public enum PjeSecurity implements IPjeSecurityAgent {
@@ -34,12 +35,12 @@ public enum PjeSecurity implements IPjeSecurityAgent {
     agent.setProductionMode();
   }
   
-  public IPjeSecurityAgent safe() {
+  public IPjeSecurityPermissor safe() {
     agent = PjeSecurityAgent.SAFE;
     return this;
   }
   
-  public IPjeSecurityAgent unsafe() {
+  public IPjeSecurityPermissor unsafe() {
     agent = PjeSecurityAgent.UNSAFE;
     return this;
   }

@@ -105,7 +105,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showCertificates() {
     checkIsAlive();
-    PjeCertificate.ACCESSOR.showCertificates(true, false);
+    PjeTokenAccessor.INSTANCE.showCertificates(true, false);
   }
 
   @Override
@@ -159,25 +159,25 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void setAuthStrategy(PjeAuthStrategy strategy) {
     checkIsAlive();
-    PjeCertificate.ACCESSOR.setAuthStrategy(strategy);
+    PjeTokenAccessor.INSTANCE.setAuthStrategy(strategy);
   }
   
   @Override
   public boolean isAwayStrategy() {
     checkIsAlive();
-    return AWAYS == PjeCertificate.ACCESSOR.getAuthStrategy();
+    return AWAYS == PjeTokenAccessor.INSTANCE.getAuthStrategy();
   }
 
   @Override
   public boolean isOneTimeStrategy() {
     checkIsAlive();
-    return ONE_TIME == PjeCertificate.ACCESSOR.getAuthStrategy();
+    return ONE_TIME == PjeTokenAccessor.INSTANCE.getAuthStrategy();
   }
 
   @Override
   public boolean isConfirmStrategy() {
     checkIsAlive();
-    return CONFIRM == PjeCertificate.ACCESSOR.getAuthStrategy();
+    return CONFIRM == PjeTokenAccessor.INSTANCE.getAuthStrategy();
   }
   
   @Override
@@ -206,7 +206,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   protected void onCommanderKill() {
     LOGGER.info("Killing PjeOffice");
     this.dettector.stop();
-    PjeCertificate.ACCESSOR.close();
+    PjeTokenAccessor.INSTANCE.close();
     LOGGER.info("Fechada instância certificate acessor");
     this.lifeCycle.onKill();
     this.lifeCycle = null;
@@ -217,7 +217,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     checkIsAlive();
     LOGGER.info("Máquina bloqueada pelo usuário");
     stopCommander();
-    PjeCertificate.ACCESSOR.close();
+    PjeTokenAccessor.INSTANCE.close();
   }
 
   @Override
@@ -303,7 +303,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void logout() {
     checkIsAlive();
-    startAsync(PjeCertificate.ACCESSOR::logout);    
+    startAsync(PjeTokenAccessor.INSTANCE::logout);    
   }
   
   @Override
