@@ -29,6 +29,7 @@ package br.jus.cnj.pje.office.imp;
 
 import static br.jus.cnj.pje.office.gui.PjeImages.PJE_ICON_TRAY;
 import static br.jus.cnj.pje.office.gui.PjeImages.PJE_ICON_TRAY_ONLINE;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.awt.Frame;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IToken;
+import com.github.utils4j.gui.imp.SwingTools;
 import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IBootable;
@@ -66,7 +68,10 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
 
     @Override
     protected void setOnline(boolean online) {
-      trayIcon.setImage(online ? PJE_ICON_TRAY_ONLINE.asImage().get() : PJE_ICON_TRAY.asImage().get());      
+      invokeLater(() -> trayIcon.setImage(online ? 
+        PJE_ICON_TRAY_ONLINE.asImage().get() : 
+        PJE_ICON_TRAY.asImage().get())
+      );
     }
     
     @Override
@@ -124,7 +129,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
 
     @Override
     protected void setOnline(boolean online) {
-      desktop.setOnline(online);
+      invokeLater(() -> desktop.setOnline(online));
     }
     
     @Override
