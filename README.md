@@ -1,10 +1,6 @@
 # signer4j-pje
 Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJeOffice). Esta NÃO é a implementação oficial do CNJ - trata-se apenas de um exercício prático de programação de um assinador de documentos com as características daquele mantido pelo CNJ mas com o propósito de validar os recursos da api [Signer4j](https://github.com/l3onardo-oliv3ira/signer4j) utilizada para leitura de certificados digitais A1 e A3 bem como assinatura de dados em diferentes formatos.
 
-## Testes
-* Assinador Offline
-* Alguns sistemas do TRT/TRF
-
 ## Telas
 ### Modo bandeja
 Acesso padrão aos recursos do assinador.
