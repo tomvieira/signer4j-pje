@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IAutenticadorParams.PJE_TAREFA_AUTENTICADOR_PARAM;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
 
@@ -15,12 +14,12 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.IAutenticadorParams;
+import br.jus.cnj.pje.office.core.ITarefaAutenticador;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-class PjeAutenticadorTask extends PjeAbstractTask {
+class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
 
   private static enum Stage implements IStage {
     AUTHENTICATING_USER("Autenticação de usuário");
@@ -43,18 +42,13 @@ class PjeAutenticadorTask extends PjeAbstractTask {
   
   private String mensagem;
   
-  public PjeAutenticadorTask(Params request, IAutenticadorParams pojo) {
-    super(request.of(PJE_TAREFA_AUTENTICADOR_PARAM, pojo));
+  public PjeAutenticadorTask(Params request, ITarefaAutenticador pojo) {
+    super(request, pojo);
   }
   
-  protected final IAutenticadorParams getAutenticadorParams() {
-    return getParameterValue(PJE_TAREFA_AUTENTICADOR_PARAM);
-  }
-
   @Override
   protected void validateParams() throws TaskException {
-    super.validateParams();
-    final IAutenticadorParams params = getAutenticadorParams();
+    final ITarefaAutenticador params = getPojoParams();
     this.enviarPara = checkIfPresent(params.getEnviarPara(), "enviarPara"); 
     this.mensagem = checkIfPresent(params.getMensagem(), "mensagem");
     this.algorithm = checkIfSupportedSig(params

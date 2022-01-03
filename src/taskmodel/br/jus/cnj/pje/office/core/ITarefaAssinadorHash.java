@@ -3,10 +3,8 @@ package br.jus.cnj.pje.office.core;
 import java.util.List;
 import java.util.Optional;
 
-public interface IAssinadorHashParams {
+public interface ITarefaAssinadorHash {
 
-  String PJE_TAREFA_ASSINADOR_HASH = IAssinadorHashParams.class.getSimpleName();
-  
   boolean isModoTeste();
 
   boolean isDeslogarKeyStore();

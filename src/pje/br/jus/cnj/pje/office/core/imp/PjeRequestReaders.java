@@ -10,19 +10,25 @@ enum PjeRequestReaders implements Supplier<IRequestReader<Params>>{
   CNJ_ASSINADOR("cnj.assinador"){
     @Override
     public IRequestReader<Params> get() {
-      return PjeAssinadorReader.INSTANCE;
+      return TarefaAssinadorReader.INSTANCE;
     }
   },
   CNJ_ASSINADOR_HASH("cnj.assinadorHash"){
     @Override
     public IRequestReader<Params> get() {
-      return PjeAssinadorHashReader.INSTANCE;
+      return TarefaAssinadorHashReader.INSTANCE;
     }
   },
   CNJ_AUTENTICADOR("cnj.autenticador"){
     @Override
     public IRequestReader<Params> get() {
-      return PjeAutenticadorReader.INSTANCE;
+      return TarefaAutenticadorReader.INSTANCE;
+    }
+  },
+  CNJ_ASSINADOR_BASE64("") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaAssinadorBase64Reader.INSTANCE;
     }
   },
   SSO_AUTENTICADOR("sso.autenticador"){

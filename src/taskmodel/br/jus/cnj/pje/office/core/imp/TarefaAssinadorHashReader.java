@@ -15,17 +15,13 @@ import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
-import br.jus.cnj.pje.office.core.IAssinadorHashParams;
+import br.jus.cnj.pje.office.core.ITarefaAssinadorHash;
 
-class PjeAssinadorHashReader extends AbstractRequestReader<Params, PjeAssinadorHashReader.TarefaAssinadorHash>{
+class TarefaAssinadorHashReader extends AbstractRequestReader<Params, TarefaAssinadorHashReader.TarefaAssinadorHash>{
 
-  public static final PjeAssinadorHashReader INSTANCE = new PjeAssinadorHashReader();
+  public static final TarefaAssinadorHashReader INSTANCE = new TarefaAssinadorHashReader();
 
-  public PjeAssinadorHashReader() {
-    super(TarefaAssinadorHash.class);
-  }
-  
-  static final class TarefaAssinadorHash implements IAssinadorHashParams {
+  static final class TarefaAssinadorHash implements ITarefaAssinadorHash {
     private boolean modoTeste;
     private boolean deslogarKeyStore = true;
 
@@ -95,6 +91,10 @@ class PjeAssinadorHashReader extends AbstractRequestReader<Params, PjeAssinadorH
     }
   }
 
+  private TarefaAssinadorHashReader() {
+    super(TarefaAssinadorHash.class);
+  }
+  
   @Override
   protected ITask<?> createTask(Params output, TarefaAssinadorHash pojo) throws IOException {
     return new PjeAssinadorHashTask(output, pojo);

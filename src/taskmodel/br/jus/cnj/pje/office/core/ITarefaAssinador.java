@@ -6,19 +6,17 @@ import java.util.Optional;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignatureType;
 
-public interface IAssinadorParams {
-  
-  String PJE_TAREFA_ASSINADOR_PARAM = IAssinadorParams.class.getSimpleName();
+public interface ITarefaAssinador {
   
   List<IArquivo> getArquivos();
 
   Optional<String> getEnviarPara();
 
-  Optional<IPjeSignerMode> getModo();
+  Optional<IPjeSignMode> getModo();
 
   Optional<ISignatureType> getTipoAssinatura();
 
-  boolean isDeslogarKeyStore(); //TODO ignorar isso?
+  boolean isDeslogarKeyStore();
 
   Optional<ISignatureAlgorithm> getAlgoritmoHash();
 

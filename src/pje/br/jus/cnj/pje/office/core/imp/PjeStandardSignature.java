@@ -7,14 +7,14 @@ import com.github.signer4j.ICMSSigner;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.IAssinadorParams;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.core.IStandardSignature;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 
 enum PjeStandardSignature implements IStandardSignature {
   ENVELOPED() {
     @Override
-    public IByteProcessor getByteProcessor(IPjeToken token, IAssinadorParams params) {
+    public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {
       Args.requireNonNull(token, "token is null");
       return token.xmlSignerBuilder().build();
     }
@@ -22,7 +22,7 @@ enum PjeStandardSignature implements IStandardSignature {
   
   NOT_ENVELOPED(){
     @Override
-    public IStandardSignature checkIfDependentParamsIsPresent(IAssinadorParams params) throws TaskException  {
+    public IStandardSignature checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
       PjeTaskChecker.checkIfNull(params, "params is null");
       PjeTaskChecker.checkIfPresent(params.getAlgoritmoHash(), "algoritmoHash");
       PjeTaskChecker.checkIfPresent(params.getTipoAssinatura(), "tipoAssinatura");
@@ -30,7 +30,7 @@ enum PjeStandardSignature implements IStandardSignature {
     }
 
     @Override
-    public IByteProcessor getByteProcessor(IPjeToken token, IAssinadorParams params) {
+    public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {
       Args.requireNonNull(token, "token is null");
       Args.requireNonNull(params, "param is null");
       return token.cmsSignerBuilder()
@@ -42,7 +42,7 @@ enum PjeStandardSignature implements IStandardSignature {
   }; 
 
   @Override
-  public IStandardSignature checkIfDependentParamsIsPresent(IAssinadorParams params) throws TaskException  {
+  public IStandardSignature checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
     return this;
   }
   
