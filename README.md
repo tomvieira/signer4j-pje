@@ -7,9 +7,13 @@ Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJ
 
 ## Telas
 ### Modo bandeja
+Acesso padrão aos recursos do assinador.
+
 ![Modo Systray](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/modo-systray.png)
 
 ### Modo desktop
+Acesso alternativos para sistemas onde a bandeja/systray não esteja disponível.
+
 ![Modo Desktop](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/modo-desktop.png)
 
 ### Autenticação
@@ -32,3 +36,8 @@ Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJ
 
 ### Listagem de servidores disponíveis
 ![Servidores Disponíveis](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/servidores-disponiveis.png)
+
+### Assinador Offline
+Para assinatura offline única ou em lote de documentos de qualquer natureza sem limitações para o tamanho do lote.
+
+![Servidores Disponíveis](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/assinatura-offline.png)
