@@ -22,21 +22,17 @@ import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.core.IArquivo;
-import br.jus.cnj.pje.office.core.IAssinadorParams;
-import br.jus.cnj.pje.office.core.IPjeSignerMode;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
+import br.jus.cnj.pje.office.core.IPjeSignMode;
 import br.jus.cnj.pje.office.core.IStandardSignature;
 
-public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinadorReader.TarefaAssinador>{
+public class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinadorReader.TarefaAssinador>{
 
-  public static final PjeAssinadorReader INSTANCE = new PjeAssinadorReader();
+  public static final TarefaAssinadorReader INSTANCE = new TarefaAssinadorReader();
 
-  PjeAssinadorReader() {
-    super(TarefaAssinador.class);
-  }
+  static final class TarefaAssinador implements ITarefaAssinador {
 
-  static final class TarefaAssinador implements IAssinadorParams {
-
-    private PjeSignerMode modo;
+    private PjeSignMode modo;
     
     private String enviarPara;
 
@@ -56,7 +52,7 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
     }
     
     @Override
-    public final Optional<IPjeSignerMode> getModo() {
+    public final Optional<IPjeSignMode> getModo() {
       return ofNullable(this.modo);
     }
     
@@ -122,10 +118,14 @@ public class PjeAssinadorReader extends AbstractRequestReader<Params, PjeAssinad
       return this.paramsEnvio == null ? emptyList() : unmodifiableList(this.paramsEnvio);
     }
   }
+  
+  private TarefaAssinadorReader() {
+    super(TarefaAssinador.class);
+  }
 
   @Override
   protected ITask<?> createTask(Params output, TarefaAssinador pojo) throws IOException {
-    Optional<IPjeSignerMode> mode = pojo.getModo();
+    Optional<IPjeSignMode> mode = pojo.getModo();
     if (!mode.isPresent()) {
       throw new IOException("Parameter 'modoAssinatura' (local/remoto) not found!");
     }

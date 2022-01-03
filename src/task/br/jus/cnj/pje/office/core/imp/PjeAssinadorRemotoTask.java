@@ -12,7 +12,7 @@ import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivo;
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
-import br.jus.cnj.pje.office.core.IAssinadorParams;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.core.IPjeClient;
 
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
@@ -32,14 +32,14 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   
   private String enviarPara;
   
-  PjeAssinadorRemotoTask(Params request, IAssinadorParams pojo) {
+  PjeAssinadorRemotoTask(Params request, ITarefaAssinador pojo) {
     super(request, pojo);
   }
   
   @Override
   protected void validateParams() throws TaskException {
     super.validateParams();
-    final IAssinadorParams params = getAssinadorParams();
+    final ITarefaAssinador params = getPojoParams();
     this.arquivos = PjeTaskChecker.checkIfNull(params.getArquivos(), "arquivos");
     this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara");
   }

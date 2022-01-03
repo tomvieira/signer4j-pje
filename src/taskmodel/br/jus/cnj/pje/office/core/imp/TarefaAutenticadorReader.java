@@ -9,13 +9,13 @@ import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
-import br.jus.cnj.pje.office.core.IAutenticadorParams;
+import br.jus.cnj.pje.office.core.ITarefaAutenticador;
 
-class PjeAutenticadorReader extends AbstractRequestReader<Params, PjeAutenticadorReader.TarefaAutenticador>{
+class TarefaAutenticadorReader extends AbstractRequestReader<Params, TarefaAutenticadorReader.TarefaAutenticador>{
 
-  public static final PjeAutenticadorReader INSTANCE = new PjeAutenticadorReader();
+  public static final TarefaAutenticadorReader INSTANCE = new TarefaAutenticadorReader();
 
-  static final class TarefaAutenticador implements IAutenticadorParams {
+  static final class TarefaAutenticador implements ITarefaAutenticador {
     private String enviarPara;
     private String mensagem;
     private String token;
@@ -42,7 +42,7 @@ class PjeAutenticadorReader extends AbstractRequestReader<Params, PjeAutenticado
     }
   }
 
-  private PjeAutenticadorReader() {
+  private TarefaAutenticadorReader() {
     super(TarefaAutenticador.class);
   }
 

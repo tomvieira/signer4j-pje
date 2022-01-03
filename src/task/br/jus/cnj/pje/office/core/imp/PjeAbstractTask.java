@@ -26,9 +26,11 @@ import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
+abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(PjeAbstractTask.class);
+  
+  private static final String POJO_REQUEST_PARAM_NAME = PjeAbstractTask.class.getSimpleName() + ".pojo";
   
   private static enum Stage implements IStage {
     
@@ -50,15 +52,16 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
     }
   };
   
-  protected PjeAbstractTask(Params request) {
+  protected PjeAbstractTask(Params request, T pojo) {
     super(request);
+    request.of(POJO_REQUEST_PARAM_NAME, pojo);
   }
   
   @Override
   public final String getId() {
     return getMainRequest().getTarefaId().get();
   }
-
+  
   private final IPjeMainParams getMainRequest() {
     return getParameterValue(PJE_MAIN_REQUEST_PARAM);
   }
@@ -72,9 +75,9 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
   }
   
   protected final AtomicBoolean getLocalRequest() {
-    return getParameterValue(IPjeRequest.PJE_LOCAL_REQUEST);
+    return getParameterValue(IPjeRequest.PJE_REQUEST_LOCAL);
   }
-
+  
   protected final IPjeSecurityAgent getSecurityAgent() {
     return getParameterValue(IPjeSecurityAgent.PJE_SECURITY_AGENT_PARAM);
   }
@@ -97,6 +100,10 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
 
   protected final IPjeClient getPjeClient() {
     return PjeClientMode.clientFrom(getServerAddress());
+  }
+  
+  protected final T getPojoParams() {
+    return getParameterValue(POJO_REQUEST_PARAM_NAME);
   }
   
   protected void checkMainParams() throws TaskException {
@@ -154,8 +161,7 @@ abstract class PjeAbstractTask extends AbstractTask<IPjeResponse>{
     }
   }
 
-  protected void validateParams() throws TaskException {
-  }
+  protected abstract void validateParams() throws TaskException;
   
   protected abstract ITaskResponse<IPjeResponse> doGet() throws TaskException;
 }

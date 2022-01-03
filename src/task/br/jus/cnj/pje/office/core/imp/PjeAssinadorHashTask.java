@@ -1,11 +1,9 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IAssinadorHashParams.PJE_TAREFA_ASSINADOR_HASH;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
@@ -19,12 +17,12 @@ import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
-import br.jus.cnj.pje.office.core.IAssinadorHashParams;
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.ITarefaAssinadorHash;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-class PjeAssinadorHashTask extends PjeAbstractTask {
+class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
 
   private static enum Stage implements IStage {
     HASH_SIGNING("Assinatura de HASH's");
@@ -49,18 +47,13 @@ class PjeAssinadorHashTask extends PjeAbstractTask {
 
   private List<IAssinadorHashArquivo> arquivos;
 
-  public PjeAssinadorHashTask(Params request, IAssinadorHashParams pojo) {
-    super(request.of(PJE_TAREFA_ASSINADOR_HASH, pojo));
-  }
-
-  protected final IAssinadorHashParams getAssinadorHashParams() {
-    return getParameterValue(PJE_TAREFA_ASSINADOR_HASH);
+  public PjeAssinadorHashTask(Params request, ITarefaAssinadorHash pojo) {
+    super(request, pojo);
   }
 
   @Override
   protected void validateParams() throws TaskException {
-    super.validateParams();
-    IAssinadorHashParams params = getAssinadorHashParams();
+    ITarefaAssinadorHash params = getPojoParams();
     this.algorithm = checkIfSupportedSig(params.getAlgoritmoAssinatura(), "algoritmoAssinatura");
     this.uploadUrl = checkIfPresent(params.getUploadUrl(), "uploadUrl");
     this.modoTeste = params.isModoTeste();

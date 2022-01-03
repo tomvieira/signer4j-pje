@@ -38,13 +38,6 @@ import br.jus.cnj.pje.office.core.Version;
 
 class PjeClientBuilder  {
 
-  private static final long MIN_INTERVAL = 1000;
-  private static final long MIN_TIMEOUT = 5000;
-
-  private long attemptInterval = 3000;
-
-  private long attemptTimeout  = 15000;
-
   private HttpClientBuilder clientBuilder = HttpClients.custom();
   
   private final Version version;
@@ -56,23 +49,11 @@ class PjeClientBuilder  {
   public final IPjeClient build() {
     PjeClient client = new PjeClient(
       clientBuilder.build(), 
-      attemptInterval, 
-      attemptTimeout, 
       version
     );
     return client;    
   }
   
-  public final PjeClientBuilder setAtteptInterval(long interval) {
-    this.attemptInterval = interval < MIN_INTERVAL ? MIN_INTERVAL: interval;
-    return this;
-  }
-
-  public final PjeClientBuilder setAtteptTimeout(long timeout) {
-    this.attemptTimeout = timeout < MIN_TIMEOUT ? MIN_TIMEOUT : timeout;
-    return this;
-  }
-
   public final PjeClientBuilder setRequestExecutor(final HttpRequestExecutor requestExec) {
     clientBuilder.setRequestExecutor(requestExec);
     return this;

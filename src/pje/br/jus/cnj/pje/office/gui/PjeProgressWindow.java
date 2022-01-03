@@ -190,9 +190,11 @@ class PjeProgressWindow extends SimpleFrame implements IPjeProgressView {
 
   public IProgressFactory getProgressFactory() {
     return () -> {
-      threadContext = Thread.currentThread();
       checkDispose();
       progress.reset(() -> threadContext = null);
+      progress.setThread((Thread t) -> threadContext = t);
+      progress.applyThread();
+      
       stepToken = progress.stepObservable().subscribe(e -> {
         progressBar.setIndeterminate(true);
         final int step = e.getStep();

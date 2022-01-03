@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IAssinadorParams.PJE_TAREFA_ASSINADOR_PARAM;
 import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
@@ -19,13 +18,13 @@ import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
-import br.jus.cnj.pje.office.core.IAssinadorParams;
-import br.jus.cnj.pje.office.core.IPjeSignerMode;
+import br.jus.cnj.pje.office.core.IPjeSignMode;
 import br.jus.cnj.pje.office.core.IStandardSignature;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-abstract class PjeAssinadorTask extends PjeAbstractTask {
+abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
   private static enum Stage implements IStage {
     
@@ -47,29 +46,24 @@ abstract class PjeAssinadorTask extends PjeAbstractTask {
     }
   }
   
-  protected IPjeSignerMode modo;
+  protected IPjeSignMode modo;
 
   private IStandardSignature padraoAssinatura;
   
-  public PjeAssinadorTask(Params request, IAssinadorParams pojo) {
-    super(request.of(PJE_TAREFA_ASSINADOR_PARAM, pojo));
-  }
-  
-  protected final IAssinadorParams getAssinadorParams() {
-    return getParameterValue(PJE_TAREFA_ASSINADOR_PARAM);
+  public PjeAssinadorTask(Params request, ITarefaAssinador pojo) {
+    super(request, pojo);
   }
   
   @Override
   protected void validateParams() throws TaskException {
-    super.validateParams();
-    IAssinadorParams params = getAssinadorParams();
+    ITarefaAssinador params = getPojoParams();
     this.modo = checkIfPresent(params.getModo(), "modo");
     this.padraoAssinatura = checkIfPresent(params.getPadraoAssinatura(), "padraoAssinatura").checkIfDependentParamsIsPresent(params);
   }
   
   @Override
-  protected final ITaskResponse<IPjeResponse> doGet() throws TaskException {
-    final IAssinadorParams params = getAssinadorParams();
+  protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
+    final ITarefaAssinador params = getPojoParams();
     boolean fail = false;
     IProgress progress = getProgress();
 

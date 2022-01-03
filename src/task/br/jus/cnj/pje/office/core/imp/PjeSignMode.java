@@ -7,34 +7,34 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.ITask;
 
-import br.jus.cnj.pje.office.core.IAssinadorParams;
-import br.jus.cnj.pje.office.core.IPjeSignerMode;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
+import br.jus.cnj.pje.office.core.IPjeSignMode;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-public enum PjeSignerMode implements IPjeSignerMode {
+public enum PjeSignMode implements IPjeSignMode {
   LOCAL("LOCAL") {
     @Override
-    public ITask<IPjeResponse> getTask(Params params, IAssinadorParams pojo) {
+    public ITask<IPjeResponse> getTask(Params params, ITarefaAssinador pojo) {
       return new PjeAssinadorLocalTask(params, pojo);
     }
   }, 
   REMOTO("REMOTO"){
     @Override
-    public ITask<IPjeResponse> getTask(Params params, IAssinadorParams pojo) {
+    public ITask<IPjeResponse> getTask(Params params, ITarefaAssinador pojo) {
       return new PjeAssinadorRemotoTask(params, pojo);
     }
   };
 
-  private static final PjeSignerMode[] VALUES = PjeSignerMode.values(); 
+  private static final PjeSignMode[] VALUES = PjeSignMode.values(); 
   
   @JsonCreator
-  public static IPjeSignerMode fromString(final String key) {
+  public static IPjeSignMode fromString(final String key) {
     return get(key).orElse(null);
   }
 
   private String name;
   
-  PjeSignerMode(String name) {
+  PjeSignMode(String name) {
     this.name = name;
   }
   
@@ -43,8 +43,8 @@ public enum PjeSignerMode implements IPjeSignerMode {
     return name.toLowerCase();
   }
 
-  public static Optional<IPjeSignerMode> get(String name) {
-    for(PjeSignerMode a: VALUES) {
+  public static Optional<IPjeSignMode> get(String name) {
+    for(PjeSignMode a: VALUES) {
       if (a.name.equalsIgnoreCase(name))
         return Optional.of(a);
     }

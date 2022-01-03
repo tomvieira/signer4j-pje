@@ -1,7 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.imp.Args.requireNonNull;
-import static com.github.signer4j.imp.Args.requirePositive;
 import static com.github.signer4j.imp.Args.requireText;
 
 import java.io.IOException;
@@ -26,21 +25,24 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.Retryable;
 import com.github.signer4j.imp.Runner;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Supplier;
 import com.github.signer4j.imp.TemporaryException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
+import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
@@ -54,14 +56,10 @@ class PjeClient implements IPjeClient {
   }
 
   private final Version version;
-  private final long attemptTimeout; 
-  private final long attemptInterval;
   private final CloseableHttpClient client;
 
-  PjeClient(CloseableHttpClient client, long attemptInterval, long attemptTimeout, Version version) {
+  PjeClient(CloseableHttpClient client, Version version) {
     this.client = requireNonNull(client, "client is null");
-    this.attemptInterval = requirePositive(attemptInterval, "attemptInterval is null");
-    this.attemptTimeout = requirePositive(attemptTimeout, "attemptTimeout is null");
     this.version = requireNonNull(version, "version is null");
   }
  
@@ -134,6 +132,19 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files)  throws PjeServerException  {
+    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+    String jsonBody;
+    try {
+      jsonBody = new ObjectMapper().writeValueAsString(files);
+    } catch (JsonProcessingException e) {
+      throw new PjeServerException("Não foi possível serializar a lista de arquivos assinados", e);
+    }
+    StringEntity requestEntity = new StringEntity(jsonBody, ContentType.APPLICATION_JSON);
+    postRequest.setEntity((HttpEntity)requestEntity);
+    return postRequest;
+  }
+  
   @Override
   public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PjeServerException {
     final Supplier<HttpGet> supplier = () -> createGet(
@@ -181,38 +192,45 @@ class PjeClient implements IPjeClient {
     );
     post(supplier, ResultChecker.IF_ERROR_THROW);
   }
+  
+  @Override
+  public void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files) throws PjeServerException {
+    final Supplier<HttpPost> supplier = () -> createPostRequest(
+      requireText(endPoint, "empty endPoint"), 
+      requireText(session, "session empty"),
+      requireText(userAgent, "userAgent null"), 
+      requireNonNull(files, "files null")
+    );
+    post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
+  }
 
   private void post(final Supplier<HttpPost> supplier, Runner<String, PjeServerException> checkResults)
     throws PjeServerException {
     try {
-      Retryable.attempt(attemptInterval, attemptTimeout, () -> {
-        final HttpPost postRequest = supplier.get();
-        try(CloseableHttpResponse response = client.execute(postRequest)) {
-          HttpEntity entity = response.getEntity();
-          if (entity == null) {
-            throw new TemporaryException("Servidor não foi capaz de retornar dados");
-          }
-          try {
-            int code = response.getCode();
-            if (!isSuccess(code)) { 
-              throw new TemporaryException("Servidor retornando status code: " + code);
-            }
-            String responseText;
-            try {
-              responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
-            } catch (ParseException | IOException e) {
-              throw new TemporaryException(e);
-            }
-            checkResults.exec(responseText);
-          }finally {
-            EntityUtils.consumeQuietly(entity);
-          }
-        } catch (IOException e) {
-          throw new TemporaryException("Não foi possível executar o post", e);
-        } finally {
-          postRequest.clear(); //help gc! :)
+      final HttpPost postRequest = supplier.get();
+      try(CloseableHttpResponse response = client.execute(postRequest)) {
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+          throw new PjeServerException("Servidor não foi capaz de retornar dados");
         }
-      }); 
+        try {
+          int code = response.getCode();
+          if (!isSuccess(code)) { 
+            throw new PjeServerException("Servidor retornando status code: " + code);
+          }
+          String responseText;
+          try {
+            responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
+          } catch (ParseException | IOException e) {
+            throw new PjeServerException(e);
+          }
+          checkResults.exec(responseText);
+        }finally {
+          EntityUtils.consumeQuietly(entity);
+        }
+      } finally {
+        postRequest.clear(); //help gc! :)
+      }
     }catch(PjeServerException e) {
       throw e;
     }catch(CancellationException e) {
@@ -225,40 +243,33 @@ class PjeClient implements IPjeClient {
   private void get(final Supplier<HttpGet> supplier, final IDownloadStatus status) throws PjeServerException {
     try {
       AtomicInteger attempt = new AtomicInteger(0);
-      Retryable.attempt(attemptInterval, attemptTimeout, () -> {
-        final OutputStream output = status.onNewTry(attempt.incrementAndGet());
-        if (output == null) {
-          throw new TemporaryException("Não é possível gravar download em output nulo");
-        }
-        final HttpGet get = supplier.get();
-       
-        try(CloseableHttpResponse response = client.execute(get)) {
-          HttpEntity entity = response.getEntity();
-          if (entity == null) {
-            throw new TemporaryException("Servidor não foi capaz de retornar dados");
-          }
-          try {
-            final long total = entity.getContentLength();
-            final InputStream input = entity.getContent();
-            status.onStartDownload(total);
-            final byte[] buffer = new byte[32 * 1024];
-            status.onStatus(total, 0);
-            for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
-              output.write(buffer, 0, length);
-            status.onEndDownload();
-          } catch(Exception e) {
-            status.onDownloadFail(e);
-            throw new TemporaryException("Falha durante o download do arquivo", e);
-          } finally {
-            EntityUtils.consumeQuietly(entity);
-          }
-        } catch (IOException e) {
-          throw new TemporaryException("Não foi possível executar o get", e);
-        } finally {
-          get.clear(); //help gc!
-        }
-      }); 
+      final OutputStream output = status.onNewTry(attempt.incrementAndGet());
 
+      final HttpGet get = supplier.get();
+     
+      try(CloseableHttpResponse response = client.execute(get)) {
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+          throw new TemporaryException("Servidor não foi capaz de retornar dados");
+        }
+        try {
+          final long total = entity.getContentLength();
+          final InputStream input = entity.getContent();
+          status.onStartDownload(total);
+          final byte[] buffer = new byte[32 * 1024];
+          status.onStatus(total, 0);
+          for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
+            output.write(buffer, 0, length);
+          status.onEndDownload();
+        } catch(Exception e) {
+          status.onDownloadFail(e);
+          throw new TemporaryException("Falha durante o download do arquivo", e);
+        } finally {
+          EntityUtils.consumeQuietly(entity);
+        }
+      } finally {
+        get.clear(); //help gc!
+      }
     } catch(PjeServerException e) {
       throw e;
     } catch(CancellationException e) {
@@ -297,5 +308,6 @@ class PjeClient implements IPjeClient {
     private static final String SERVER_SUCCESS_RESPONSE = "Sucesso";
     private static final String SERVER_FAIL_RESPONSE    = "Erro:"; 
   }
+
 }
 
