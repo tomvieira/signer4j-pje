@@ -8,3 +8,4 @@ import br.jus.cnj.pje.office.web.IPjeResponse;
 public interface IPjeSignMode {
   ITask<IPjeResponse> getTask(Params output, ITarefaAssinador pojo);
 }
+
