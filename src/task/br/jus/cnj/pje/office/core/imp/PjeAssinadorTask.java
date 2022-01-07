@@ -19,7 +19,7 @@ import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IPjeSignMode;
-import br.jus.cnj.pje.office.core.IStandardSignature;
+import br.jus.cnj.pje.office.core.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -48,7 +48,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   
   protected IPjeSignMode modo;
 
-  private IStandardSignature padraoAssinatura;
+  private IAssinaturaPadrao padraoAssinatura;
   
   public PjeAssinadorTask(Params request, ITarefaAssinador pojo) {
     super(request, pojo);

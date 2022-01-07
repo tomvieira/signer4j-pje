@@ -25,7 +25,7 @@ enum PjeRequestReaders implements Supplier<IRequestReader<Params>>{
       return TarefaAutenticadorReader.INSTANCE;
     }
   },
-  CNJ_ASSINADOR_BASE64("") {
+  CNJ_ASSINADOR_BASE64("cnj.assinadorBase64") {
     @Override
     public IRequestReader<Params> get() {
       return TarefaAssinadorBase64Reader.INSTANCE;
