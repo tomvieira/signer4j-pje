@@ -4,7 +4,6 @@ import static br.jus.cnj.pje.office.core.imp.TarefaAssinadorReader.AssinadorArqu
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.Dates.stringNow;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
-import static com.github.signer4j.imp.Threads.async;
 import static com.github.signer4j.imp.Throwables.tryRun;
 
 import java.io.File;
@@ -19,15 +18,13 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.gui.utils.DefaultFileChooser;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Params;
-import com.github.signer4j.imp.Threads;
-import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgress;
+import com.github.signer4j.progress.IProgressView;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.ITarefaAssinador;
-import br.jus.cnj.pje.office.gui.PjeProgressView;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 class PjeAssinadorLocalTask extends PjeAssinadorTask {
@@ -61,17 +58,12 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   @Override
   protected final ITaskResponse<IPjeResponse> doGet() throws TaskException {
     if (localRequest) {
-      //finaliza a requisição atual e abre-se uma nova thread para processar 
-      //os arquivos.
-      async(() -> {
-        Threads.sleep(2000); //importante aguardar um tempo para finalizar a primeira requisição
-        IProgress progress = PjeProgressView.INSTANCE.get().get();
-        PjeAssinadorLocalTask.super.getParams().of(IProgress.PROGRESS_PARAM, progress);
-        PjeProgressView.INSTANCE.display();
+      run(() -> {
+        IProgressView progress = getNewProgress();
+        progress.display();
         tryRun(super::doGet);
-        PjeProgressView.INSTANCE.undisplay();
+        progress.undisplay();
         progress.stackTracer(s -> LOGGER.info(s.toString()));
-        progress.dispose();
       });
       return PjeResponse.SUCCESS;
     }

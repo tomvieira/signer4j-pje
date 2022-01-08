@@ -7,8 +7,6 @@ public interface IPjeRequest {
 
   String PJE_REQUEST_PARAMETER_CACHE = "u";
   
-  String PJE_REQUEST_LOCAL = "lr";
-
   Optional<String> getParameterR();
   
   Optional<String> getParameterU();

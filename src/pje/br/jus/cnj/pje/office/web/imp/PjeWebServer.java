@@ -15,6 +15,7 @@ import com.github.signer4j.IExitable;
 import com.github.signer4j.imp.HttpTools;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
+import com.github.signer4j.progress.imp.ProgressFactory;
 import com.github.signer4j.task.ITaskRequestExecutor;
 import com.github.signer4j.task.exception.TaskExecutorException;
 import com.sun.net.httpserver.Filter;
@@ -23,14 +24,12 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
-import br.jus.cnj.pje.office.core.IPjeProgressView;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
-import br.jus.cnj.pje.office.gui.PjeProgressView;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -181,11 +180,11 @@ public class PjeWebServer implements IPjeWebServer {
   }
   
   private PjeWebServer(IExitable exitable, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(exitable, tokenAccess, securityAgent, PjeProgressView.INSTANCE, PjeProgressView.INSTANCE.get());
+    this(exitable, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
   }
 
-  private PjeWebServer(IExitable exitable, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IPjeProgressView view, IProgressFactory factory) {
-    this.executor = new PjeTaskRequestExecutor(view, factory, tokenAccess, securityAgent, localRequest);
+  private PjeWebServer(IExitable exitable, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+    this.executor = new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent, localRequest);
     this.exitable = exitable;
   }
   
@@ -281,6 +280,7 @@ public class PjeWebServer implements IPjeWebServer {
   public synchronized void stop(boolean kill) {
     if (isStarted()) {
       LOGGER.info("Parando servidor PjeWebServer");
+      Throwables.tryRun(executor::close);
       Throwables.tryRun(setup::shutdown);
       try {
         stopHttp();

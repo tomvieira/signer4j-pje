@@ -13,7 +13,7 @@ import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.progress.imp.InterruptedProgress;
+import com.github.signer4j.progress.imp.ProgressException;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -148,7 +148,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       }
       progress.end();
     }catch(Exception e) {
-      cancel = e instanceof InterruptedProgress;
+      cancel = e instanceof ProgressException;
       fail |= index != size;
     }finally {
       token.logout(); //params.isDeslogarKeyStore() //TODO entender esse parâmetro que vem do servidor!

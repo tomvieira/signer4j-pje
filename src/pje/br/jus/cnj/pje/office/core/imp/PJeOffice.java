@@ -23,7 +23,6 @@ import com.github.signer4j.imp.WindowLockDettector;
 
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
-import br.jus.cnj.pje.office.gui.PjeProgressView;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
@@ -78,7 +77,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showActivities() {
     checkIsAlive();
-    PjeProgressView.INSTANCE.display();
+    //PjeProgressView.INSTANCE.display();
   }
 
   @Override
