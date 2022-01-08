@@ -13,13 +13,13 @@ import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.progress.imp.InterruptedProgress;
+import com.github.signer4j.progress.imp.ProgressException;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
+import br.jus.cnj.pje.office.core.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.core.IPjeSignMode;
-import br.jus.cnj.pje.office.core.IStandardSignature;
 import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -48,7 +48,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   
   protected IPjeSignMode modo;
 
-  private IStandardSignature padraoAssinatura;
+  private IAssinaturaPadrao padraoAssinatura;
   
   public PjeAssinadorTask(Params request, ITarefaAssinador pojo) {
     super(request, pojo);
@@ -148,7 +148,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       }
       progress.end();
     }catch(Exception e) {
-      cancel = e instanceof InterruptedProgress;
+      cancel = e instanceof ProgressException;
       fail |= index != size;
     }finally {
       token.logout(); //params.isDeslogarKeyStore() //TODO entender esse parâmetro que vem do servidor!

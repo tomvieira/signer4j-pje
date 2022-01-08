@@ -84,7 +84,7 @@ public class PjeMainRequestReader extends AbstractRequestReader<Params, PjeMainR
     
     reader.read(task.get(), output);
     
-    IParam taskParam = output.get(ITask.TASK_INSTANCE);
+    IParam taskParam = output.get(ITask.PARAM_NAME);
     
     if (!taskParam.isPresent()) {
       throw new IOException("Unabled to create instance of 'idTarefa': " + taskId.get());

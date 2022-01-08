@@ -13,8 +13,6 @@ public enum PjeImages implements IPicture {
   
   PJE_SERVER("/server.png"),
   
-  PJE_LOG("/log.png"),
-  
   PJE_ICON_TRAY("/pje-icon-16.png");
   
   final String path;

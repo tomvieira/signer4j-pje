@@ -7,11 +7,11 @@ import com.github.signer4j.ICMSSigner;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.core.ITarefaAssinador;
-import br.jus.cnj.pje.office.core.IStandardSignature;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 
-enum PjeStandardSignature implements IStandardSignature {
+enum AssinaturaPadrao implements IAssinaturaPadrao {
   ENVELOPED() {
     @Override
     public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {
@@ -22,7 +22,7 @@ enum PjeStandardSignature implements IStandardSignature {
   
   NOT_ENVELOPED(){
     @Override
-    public IStandardSignature checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
+    public IAssinaturaPadrao checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
       PjeTaskChecker.checkIfNull(params, "params is null");
       PjeTaskChecker.checkIfPresent(params.getAlgoritmoHash(), "algoritmoHash");
       PjeTaskChecker.checkIfPresent(params.getTipoAssinatura(), "tipoAssinatura");
@@ -42,12 +42,12 @@ enum PjeStandardSignature implements IStandardSignature {
   }; 
 
   @Override
-  public IStandardSignature checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
+  public IAssinaturaPadrao checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
     return this;
   }
   
   @JsonCreator
-  public static PjeStandardSignature fromString(final String key) {
+  public static AssinaturaPadrao fromString(final String key) {
     return key == null ? NOT_ENVELOPED : valueOf(key.toUpperCase());
   }
 

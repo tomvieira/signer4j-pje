@@ -20,5 +20,5 @@ public interface ITarefaAssinador {
 
   Optional<ISignatureAlgorithm> getAlgoritmoHash();
 
-  Optional<IStandardSignature> getPadraoAssinatura();
+  Optional<IAssinaturaPadrao> getPadraoAssinatura();
 }

@@ -22,9 +22,9 @@ import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.core.IArquivo;
-import br.jus.cnj.pje.office.core.ITarefaAssinador;
+import br.jus.cnj.pje.office.core.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.core.IPjeSignMode;
-import br.jus.cnj.pje.office.core.IStandardSignature;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 
 public class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinadorReader.TarefaAssinador>{
 
@@ -38,7 +38,7 @@ public class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaA
 
     private boolean deslogarKeyStore = true;
 
-    private PjeStandardSignature padraoAssinatura;
+    private AssinaturaPadrao padraoAssinatura;
     
     private SignatureType tipoAssinatura = SignatureType.ATTACHED;
     
@@ -67,7 +67,7 @@ public class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaA
     }
 
     @Override
-    public final Optional<IStandardSignature> getPadraoAssinatura() {
+    public final Optional<IAssinaturaPadrao> getPadraoAssinatura() {
       return ofNullable(this.padraoAssinatura);
     }
 

@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static br.jus.cnj.pje.office.core.imp.PjeConfig.authStrategy;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
@@ -58,6 +59,13 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     }
   }
   
+  private class FilePathStrategy extends AbstractStrategy {
+    @Override
+    public void lookup(IDriverVisitor visitor) {
+      a3Libraries.forEach(fp -> createAndVisit(Paths.get(fp.getPath()), visitor));
+    }
+  }
+
   private static List<ICertificateEntry> toEntries(List<IDevice> devices) {
     final List<ICertificateEntry> entries = new ArrayList<>();
     devices.forEach(d -> d.getCertificates()
@@ -66,24 +74,17 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
       .forEach(c -> entries.add(new CertifiateEntry(d, c))));
     return entries;
   }
-  
-  private volatile IPjeToken token;
-  
-  private IPjeAuthStrategy strategy;
 
   private final ICustomDeviceManager devManager;
-  
-  private List<IFilePath> a3Libraries = new ArrayList<>();
-
-  private List<IFilePath> a1Files = new ArrayList<>();
+  private volatile IPjeToken token;
+  private IPjeAuthStrategy strategy;
+  private List<IFilePath> a3Libraries = new ArrayList<>(), a1Files = new ArrayList<>();
+  private boolean autoForce = true;
 
   private PjeCertificateAcessor() {
-    this.strategy = PjeAuthStrategy.valueOf(PjeConfig
-        .authStrategy()
-        .orElse(AWAYS.name())
-        .toUpperCase());
     PjeConfig.loadA3Paths(a3Libraries::add);
     PjeConfig.loadA1Paths(a1Files::add);
+    this.strategy = PjeAuthStrategy.valueOf(authStrategy().orElse(AWAYS.name()).toUpperCase());
     this.devManager = new DeviceManager(notDuplicated()
       .more(new EnvironmentStrategy())
       .more(new FilePathStrategy())
@@ -91,15 +92,54 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     this.devManager.install(toPaths(a1Files));
   }
   
-  private class FilePathStrategy extends AbstractStrategy {
-    @Override
-    public void lookup(IDriverVisitor visitor) {
-      a3Libraries.forEach(fp -> createAndVisit(Paths.get(fp.getPath()), visitor));
-    }
+  private IPjeToken toToken(IDevice device) {
+    return new PjeToken(device.getSlot().getToken(), strategy);
   }
   
-  private boolean autoForce = true;
- 
+  private void onNewDevices(List<IFilePath> a1List, List<IFilePath> a3List) {
+    this.a3Libraries = a3List;
+    this.a1Files = a1List;
+    this.autoForce = true;
+    this.close();
+    this.devManager.install(toPaths(a1List));
+  }
+
+  private Optional<IPjeToken> getToken(boolean force, boolean autoSelect) {
+    if (!force && token != null)
+      return Optional.of(token);
+    force |= token == null;
+    final Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
+    if (selected.isPresent()) {
+      CertifiateEntry e = (CertifiateEntry)selected.get();
+      Optional<IDevice> device = e.device();
+      if (device.isPresent()) {
+        return Optional.of(token = toToken(device.get()));
+      }
+    }
+    return Optional.empty();
+  }
+
+  public synchronized IPjeAuthStrategy getAuthStrategy() {
+    return this.strategy;
+  }
+
+  public synchronized void setAuthStrategy(IPjeAuthStrategy strategy) {
+    if (strategy != null) {
+      PjeConfig.save(this.strategy = strategy);
+      this.close();
+    }
+  } 
+  
+  //Jamais poderá ser sincronizado porque a thread de requisição trava this em get e a thread do swing não conseguirá fechar a instancia
+  @Override
+  public final void close() { 
+    try {
+      devManager.close();
+    } finally {
+      token = null;
+    }
+  }
+
   @Override
   public synchronized Optional<ICertificateEntry> showCertificates(boolean force, boolean autoSelect) {
     Optional<ICertificateEntry> selected;
@@ -114,54 +154,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     this.autoForce = false;
     this.close();
     return selected;
-  }
-  
-  private void onNewDevices(List<IFilePath> a1List, List<IFilePath> a3List) {
-    this.a3Libraries = a3List;
-    this.a1Files = a1List;
-    this.autoForce = true;
-    this.close();
-    this.devManager.install(toPaths(a1List));
-  }
-
-  public synchronized void setAuthStrategy(IPjeAuthStrategy strategy) {
-    if (strategy != null) {
-      PjeConfig.save(this.strategy = strategy);
-      this.close();
-    }
-  } 
-  
-  public synchronized IPjeAuthStrategy getAuthStrategy() {
-    return this.strategy;
-  }
-
-  private IPjeToken toToken(IDevice device) {
-    return new PjeToken(device.getSlot().getToken(), strategy);
-  }
-  
-  //Jamais poderá ser sincronizado porque a thread de requisição trava this em get e a thread do swing não conseguirá fechar a instancia
-  @Override
-  public void close() { 
-    try {
-      devManager.close();
-    } finally {
-      token = null;
-    }
-  }
-  
-  private Optional<IPjeToken> getToken(boolean force, boolean autoSelect) {
-    if (!force && token != null)
-      return Optional.of(token);
-    force |= token == null;
-    final Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
-    if (selected.isPresent()) {
-      CertifiateEntry e = (CertifiateEntry)selected.get();
-      Optional<IDevice> device = e.device();
-      if (device.isPresent()) {
-        return Optional.of(token = toToken(device.get()));
-      }
-    }
-    return Optional.empty();
   }
   
   @Override

@@ -5,6 +5,7 @@ import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static com.github.signer4j.gui.alert.PermissionDeniedAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpHeaders;
@@ -22,8 +23,8 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeMainParams;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
+import br.jus.cnj.pje.office.core.ITaskExecutorParams;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
-import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
@@ -75,7 +76,15 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final AtomicBoolean getLocalRequest() {
-    return getParameterValue(IPjeRequest.PJE_REQUEST_LOCAL);
+    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_LOCAL);
+  }
+  
+  protected final ExecutorService getRequestExecutor() {
+    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_EXECUTOR);
+  }
+  
+  protected final void run(Runnable runnable) {
+    getRequestExecutor().execute(runnable);
   }
   
   protected final IPjeSecurityAgent getSecurityAgent() {
