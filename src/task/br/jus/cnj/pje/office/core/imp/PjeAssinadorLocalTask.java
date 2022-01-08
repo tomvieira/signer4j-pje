@@ -18,7 +18,6 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.gui.utils.DefaultFileChooser;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Params;
-import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IProgressView;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
@@ -59,11 +58,12 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   protected final ITaskResponse<IPjeResponse> doGet() throws TaskException {
     if (localRequest) {
       run(() -> {
-        IProgressView progress = getNewProgress();
+        IProgressView progress = newProgress();
         progress.display();
         tryRun(super::doGet);
         progress.undisplay();
         progress.stackTracer(s -> LOGGER.info(s.toString()));
+        progress.dispose();
       });
       return PjeResponse.SUCCESS;
     }

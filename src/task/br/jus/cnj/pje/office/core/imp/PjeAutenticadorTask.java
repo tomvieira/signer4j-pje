@@ -14,8 +14,8 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.ITarefaAutenticador;
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.ITarefaAutenticador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 

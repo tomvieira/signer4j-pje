@@ -12,8 +12,8 @@ import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IArquivo;
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
-import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   

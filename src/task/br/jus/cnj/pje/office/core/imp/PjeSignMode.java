@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.ITask;
 
-import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.core.IPjeSignMode;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 public enum PjeSignMode implements IPjeSignMode {

@@ -7,8 +7,8 @@ import com.github.signer4j.ICMSSigner;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.core.IAssinaturaPadrao;
+import br.jus.cnj.pje.office.core.ITarefaAssinador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 
 enum AssinaturaPadrao implements IAssinaturaPadrao {
