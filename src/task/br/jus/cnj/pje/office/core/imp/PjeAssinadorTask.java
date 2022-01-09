@@ -152,7 +152,6 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       fail |= index != size;
     }finally {
       token.logout(); //params.isDeslogarKeyStore() //TODO entender esse parâmetro que vem do servidor!
-      System.gc();
     }
     
     if (!fail) {

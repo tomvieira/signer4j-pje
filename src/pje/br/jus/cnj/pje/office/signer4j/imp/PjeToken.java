@@ -19,7 +19,9 @@ import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.signer4j.IPjeXmlSignerBuilder;
 
 public class PjeToken extends TokenWrapper implements IPjeToken {
-
+  
+  private static final ICertificateChooserFactory PJE = (k, c) -> new PjeCertificateListAcessor(k, c);
+  
   private final Runnable DISPOSE_ACTION = () -> logout(true);
   
   private final IPjeAuthStrategy strategy;
@@ -37,29 +39,39 @@ public class PjeToken extends TokenWrapper implements IPjeToken {
   
   @Override
   public final ISignerBuilder signerBuilder() {
-    return super.signerBuilder((k, c) -> new PjeCertificateListAcessor(k, c));
+    return super.signerBuilder(PJE);
   }
   
   @Override
   public final ICMSSignerBuilder cmsSignerBuilder() {
-    return super.cmsSignerBuilder((k, c) -> new PjeCertificateListAcessor(k,  c));
+    return super.cmsSignerBuilder(PJE);
   }
 
   @Override
   public final IPKCS7SignerBuilder pkcs7SignerBuilder() {
-    return super.pkcs7SignerBuilder((k, c) -> new PjeCertificateListAcessor(k,  c));
+    return super.pkcs7SignerBuilder(PJE);
   }
 
   @Override
   public final IPjeXmlSignerBuilder xmlSignerBuilder()  {
-    return xmlSignerBuilder((k, c) -> new PjeCertificateListAcessor(k, c));
+    return xmlSignerBuilder(PJE);
   }
   
   @Override
   public final IPjeXmlSignerBuilder xmlSignerBuilder(ICertificateChooserFactory factory) {
     requireNonNull(factory, "factory is null");
     checkIfAvailable();
-    return createBuilder(factory.apply(getKeyStoreAccess(), getCertificates()));
+    return createBuilder(createChooser(factory));
+  }
+  
+  @Override
+  public final ICertificateChooser createChooser(ICertificateChooserFactory factory) {
+    return factory.apply(getKeyStoreAccess(), getCertificates());
+  }
+  
+  @Override
+  public final ICertificateChooser createChooser() {
+    return createChooser(PJE);
   }
 
   private final IPjeXmlSignerBuilder createBuilder(ICertificateChooser chooser) {

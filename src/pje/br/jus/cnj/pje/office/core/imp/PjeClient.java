@@ -145,6 +145,14 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64)  throws PjeServerException  {
+    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+    List<NameValuePair> parameters = new ArrayList<>();
+    parameters.add(new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64));
+    postRequest.setEntity((HttpEntity)new UrlEncodedFormEntity(parameters));
+    return postRequest;
+  }
+  
   @Override
   public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PjeServerException {
     final Supplier<HttpGet> supplier = () -> createGet(
@@ -203,9 +211,19 @@ class PjeClient implements IPjeClient {
     );
     post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
   }
+  
+  @Override
+  public void send(String endPoint, String session, String userAgent, String certificateChain64) throws PjeServerException {
+    final Supplier<HttpPost> supplier = () -> createPostRequest(
+      requireText(endPoint, "empty endPoint"), 
+      requireText(session, "session empty"),
+      requireText(userAgent, "userAgent null"), 
+      requireText(certificateChain64, "certificateChain64 empty")
+    );
+    post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
+  }
 
-  private void post(final Supplier<HttpPost> supplier, Runner<String, PjeServerException> checkResults)
-    throws PjeServerException {
+  private void post(final Supplier<HttpPost> supplier, Runner<String, PjeServerException> checkResults) throws PjeServerException {
     try {
       final HttpPost postRequest = supplier.get();
       try(CloseableHttpResponse response = client.execute(postRequest)) {
@@ -308,6 +326,5 @@ class PjeClient implements IPjeClient {
     private static final String SERVER_SUCCESS_RESPONSE = "Sucesso";
     private static final String SERVER_FAIL_RESPONSE    = "Erro:"; 
   }
-
 }
 
