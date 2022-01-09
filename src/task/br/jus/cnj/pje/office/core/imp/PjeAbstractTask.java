@@ -68,7 +68,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   private final IPjeTokenAccess getTokenAccess() {
-    return getParameterValue(IPjeTokenAccess.TOKEN_ACCESS);
+    return getParameterValue(IPjeTokenAccess.PARAM_NAME);
   }
 
   private final String getServerAddress() {
@@ -88,7 +88,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final IPjeSecurityAgent getSecurityAgent() {
-    return getParameterValue(IPjeSecurityAgent.PJE_SECURITY_AGENT_PARAM);
+    return getParameterValue(IPjeSecurityAgent.PARAM_NAME);
   }
   
   protected final String getEndpointFor(String sendTo) {

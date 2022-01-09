@@ -93,7 +93,7 @@ public class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase
           LOGGER.warn("'conteudoBase64' não encontrado na lista vinda do servidor. Entrada ignorada");
           continue;
         }
-        byte[] input = Base64.base64Decode(arquivo.getConteudoBase64().get());
+        byte[] input = Base64.base64Decode(base64.get());
         progress.step("Assinando arquivo %s de tamanho %s", i, input.length);
         
         try {
