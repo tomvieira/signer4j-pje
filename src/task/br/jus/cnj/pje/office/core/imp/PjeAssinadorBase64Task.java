@@ -82,13 +82,13 @@ public class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase
       for(int i = 0; i < total; i++) {
         IAssinadorBase64Arquivo arquivo = arquivos.get(i);
         Optional<String> hashDoc = arquivo.getHashDoc();
-        if (hashDoc.isEmpty()) {
+        if (!hashDoc.isPresent()) {
           progress.step("Ignorada entrada %s", i);
           LOGGER.warn("'hashDoc' nao encontrado na lista vinda do servidor. Entrada ignorada");
           continue;
         }
         Optional<String> base64 = arquivo.getConteudoBase64();
-        if (base64.isEmpty()) {
+        if (!base64.isPresent()) {
           progress.step("Ignorada entrada %s", i);
           LOGGER.warn("'conteudoBase64' não encontrado na lista vinda do servidor. Entrada ignorada");
           continue;

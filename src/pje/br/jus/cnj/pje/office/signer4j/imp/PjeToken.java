@@ -65,11 +65,6 @@ public class PjeToken extends TokenWrapper implements IPjeToken {
   }
   
   @Override
-  public final ICertificateChooser createChooser(ICertificateChooserFactory factory) {
-    return factory.apply(getKeyStoreAccess(), getCertificates());
-  }
-  
-  @Override
   public final ICertificateChooser createChooser() {
     return createChooser(PJE);
   }
