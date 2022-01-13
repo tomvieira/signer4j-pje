@@ -90,20 +90,20 @@ class PjeClient implements IPjeClient {
     return createRequest(new HttpGet(endPoint), session, userAgent);
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String assinatura, String cadeiaCertificado) {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-    parameters.add(new BasicNameValuePair("assinatura", assinatura));
-    parameters.add(new BasicNameValuePair("cadeiaCertificado", cadeiaCertificado));
+    parameters.add(new BasicNameValuePair("assinatura", signedData.getSignature64()));
+    parameters.add(new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()));
     postRequest.setEntity(new UrlEncodedFormEntity(parameters));
     return postRequest;
   }
 
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String assinatura, String cadeiaCertificado, IAssinadorHashArquivo file) {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-    parameters.add(new BasicNameValuePair("assinatura", assinatura));
-    parameters.add(new BasicNameValuePair("cadeiaCertificado", cadeiaCertificado));
+    parameters.add(new BasicNameValuePair("assinatura", signedData.getSignature64()));
+    parameters.add(new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()));
     parameters.add(new BasicNameValuePair("id", file.getId().get()));
     parameters.add(new BasicNameValuePair("codIni", file.getCodIni().get()));
     parameters.add(new BasicNameValuePair("hash", file.getHash().get()));
@@ -139,7 +139,7 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64)  throws PJeClientException  {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64) throws Exception  {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     List<NameValuePair> parameters = new ArrayList<>();
     parameters.add(new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64));
@@ -171,8 +171,7 @@ class PjeClient implements IPjeClient {
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
       requireText(userAgent, "userAgent null"), 
-      requireText(signedData.getSignature64(), "signature64 is empty"), 
-      requireText(signedData.getCertificateChain64(), "chain64 is empty")
+      requireNonNull(signedData, "signed data null")
     );
     post(supplier, ResultChecker.IF_ERROR_THROW);
   }
@@ -184,8 +183,7 @@ class PjeClient implements IPjeClient {
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
       requireText(userAgent, "userAgent null"), 
-      requireText(signedData.getSignature64(), "signature64 is empty"), 
-      requireText(signedData.getCertificateChain64(), "chain64 is empty"),
+      requireNonNull(signedData, "signedData null"),
       requireNonNull(file, "file is null")
     );
     post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
@@ -228,7 +226,7 @@ class PjeClient implements IPjeClient {
   public void send(String endPoint, String session, String userAgent, IDadosSSO dadosSSO) throws PJeClientException {
     final Supplier<HttpPost> supplier = () -> createJsonPostRequest(
       requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
+      requireNonNull(session, "session is null"), //single sign on has empty string session but not null
       requireText(userAgent, "userAgent null"), 
       requireNonNull(dadosSSO , "dadosSSO is empty")
     );

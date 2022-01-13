@@ -17,7 +17,7 @@ class PjeAutenticadorSSOTask extends PjeAutenticadorTask {
   }
   
   protected String token;
-  
+
   @Override
   protected void validateParams() throws TaskException {
     super.validateParams();
