@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Params;
+import com.github.signer4j.imp.Strings;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
@@ -99,7 +100,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final String getSession() {
-    return getMainRequest().getSessao().get();
+    //Browser can send empty document.cookie, so we handle it as empty string
+    return getMainRequest().getSessao().orElse(Strings.empty()); 
   }
   
   protected final IPjeToken loginToken() {
@@ -116,7 +118,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   protected void checkMainParams() throws TaskException {
     IMainParams main = getMainRequest();
-    PjeTaskChecker.checkIfPresent(main.getSessao(), "sessao");
     PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
     PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
     PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
