@@ -43,7 +43,7 @@ public class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
           getUserAgent(), 
           certificateChain64
         );
-      } catch (PjeServerException e) {
+      } catch (PJeClientException e) {
         throw new TaskException("Não foi possível enviar cadeia de certificados", e);
       }
       return PjeResponse.SUCCESS;

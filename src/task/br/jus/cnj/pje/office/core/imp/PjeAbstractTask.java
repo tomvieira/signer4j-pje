@@ -1,7 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IPjeMainParams.PJE_MAIN_REQUEST_PARAM;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
+import static br.jus.cnj.pje.office.core.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.signer4j.gui.alert.PermissionDeniedAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
@@ -19,8 +18,8 @@ import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 import com.github.signer4j.task.imp.AbstractTask;
 
+import br.jus.cnj.pje.office.core.IMainParams;
 import br.jus.cnj.pje.office.core.IPjeClient;
-import br.jus.cnj.pje.office.core.IPjeMainParams;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.ITaskExecutorParams;
@@ -63,7 +62,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getMainRequest().getTarefaId().get();
   }
   
-  private final IPjeMainParams getMainRequest() {
+  private final IMainParams getMainRequest() {
     return getParameterValue(PJE_MAIN_REQUEST_PARAM);
   }
   
@@ -116,11 +115,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected void checkMainParams() throws TaskException {
-    IPjeMainParams main = getMainRequest();
-    checkIfPresent(main.getSessao(), "sessao");
-    checkIfPresent(main.getServidor(), "servidor");
-    checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
-    checkIfPresent(main.getAplicacao(), "aplicacao");
+    IMainParams main = getMainRequest();
+    PjeTaskChecker.checkIfPresent(main.getSessao(), "sessao");
+    PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
+    PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
+    PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
   }
 
   protected final void checkParams() throws TaskException {
@@ -159,7 +158,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected void checkServerPermission() throws TaskException {
-    final IPjeMainParams params = getMainRequest();
+    final IMainParams params = getMainRequest();
     StringBuilder whyNot = new StringBuilder();
     if (!getSecurityAgent().isPermitted(params, whyNot)) {
       String cause = whyNot.toString();

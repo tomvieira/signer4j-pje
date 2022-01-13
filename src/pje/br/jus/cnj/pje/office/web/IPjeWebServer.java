@@ -6,9 +6,13 @@ import io.reactivex.Observable;
 
 public interface IPjeWebServer {
   
+  int HTTP_PORT = 8800;
+  
+  int HTTPS_PORT = 8801; 
+
   String BASE_END_POINT = "/pjeOffice/";
   
-  String SHUTDOWN_ENDPOINT = BASE_END_POINT + "shutdown/";
+  String SHUTDOWN_ENDPOINT = BASE_END_POINT + "shutdown/";  
   
   enum LifeCycle {
     STARTUP,

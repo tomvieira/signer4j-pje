@@ -43,7 +43,7 @@ class PjeWebServerSetup implements IPjeWebServerSetup{
   }
   
   PjeWebServerSetup usingPort(int port) {
-    this.port = port;
+    this.port = Args.requirePositive(port, "port can't must be positive");
     return this;
   }
   

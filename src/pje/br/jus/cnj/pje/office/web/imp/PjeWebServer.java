@@ -226,14 +226,14 @@ public class PjeWebServer implements IPjeWebServer {
   
   private void startHttps() throws IOException {
     if (httpsServer == null) {
-      httpsServer = PjeServerMode.newHttps(setup.usingPort(8801));
+      httpsServer = PjeServerMode.newHttps(setup.usingPort(IPjeWebServer.HTTPS_PORT));
       httpsServer.start();
     }
   }
 
   private void startHttp() throws IOException {
     if (httpServer == null) {
-      httpServer = PjeServerMode.newHttp(setup.usingPort(8800));
+      httpServer = PjeServerMode.newHttp(setup.usingPort(IPjeWebServer.HTTP_PORT));
       httpServer.start();
     }
   }

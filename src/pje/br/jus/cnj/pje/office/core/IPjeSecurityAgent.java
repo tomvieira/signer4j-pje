@@ -6,5 +6,5 @@ public interface IPjeSecurityAgent {
   
   void refresh();
   
-  boolean isPermitted(IPjeMainParams params, StringBuilder whyNot);
+  boolean isPermitted(IMainParams params, StringBuilder whyNot);
 }

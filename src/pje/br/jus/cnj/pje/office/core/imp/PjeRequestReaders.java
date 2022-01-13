@@ -34,7 +34,7 @@ enum PjeRequestReaders implements Supplier<IRequestReader<Params>>{
   SSO_AUTENTICADOR("sso.autenticador"){
     @Override
     public IRequestReader<Params> get() {
-      return NotImplementedReader.INSTANCE; //we have to go back here!
+      return TarefaAutenticadorSSOReader.INSTANCE;
     }
   };
 

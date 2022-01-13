@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -32,18 +31,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
+import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.Runner;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Supplier;
-import com.github.signer4j.imp.TemporaryException;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.core.IDadosSSO;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
 
@@ -54,6 +53,14 @@ class PjeClient implements IPjeClient {
   private static boolean isSuccess(int code) {
     return code < 400;
   }
+  
+  private static String toJson(Object instance) throws PJeClientException {
+    try {
+      return Objects.toJson(instance);
+    } catch (JsonProcessingException e) {
+      throw new PJeClientException("Não foi possível serializar instancia em Json", e);
+    }    
+  }  
 
   private final Version version;
   private final CloseableHttpClient client;
@@ -132,20 +139,7 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files)  throws PjeServerException  {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
-    String jsonBody;
-    try {
-      jsonBody = new ObjectMapper().writeValueAsString(files);
-    } catch (JsonProcessingException e) {
-      throw new PjeServerException("Não foi possível serializar a lista de arquivos assinados", e);
-    }
-    StringEntity requestEntity = new StringEntity(jsonBody, ContentType.APPLICATION_JSON);
-    postRequest.setEntity((HttpEntity)requestEntity);
-    return postRequest;
-  }
-  
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64)  throws PjeServerException  {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64)  throws PJeClientException  {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     List<NameValuePair> parameters = new ArrayList<>();
     parameters.add(new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64));
@@ -153,8 +147,15 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
+  private HttpPost createJsonPostRequest(String endPoint, String session, String userAgent, Object pojo) throws Exception {
+    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+    postRequest.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
+    postRequest.setEntity(new StringEntity(toJson(pojo), ContentType.APPLICATION_JSON));
+    return postRequest;
+  }
+
   @Override
-  public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PjeServerException {
+  public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PJeClientException {
     final Supplier<HttpGet> supplier = () -> createGet(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
@@ -164,7 +165,7 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, ISignedData signedData) throws PjeServerException {
+  public void send(String endPoint, String session, String userAgent, ISignedData signedData) throws PJeClientException {
     requireNonNull(signedData, "signedData is null");
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
@@ -177,7 +178,7 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PjeServerException {
+  public void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException {
     requireNonNull(signedData, "signedData is null");
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
@@ -191,7 +192,7 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file) throws PjeServerException {
+  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file) throws PJeClientException {
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
@@ -202,8 +203,8 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files) throws PjeServerException {
-    final Supplier<HttpPost> supplier = () -> createPostRequest(
+  public void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files) throws PJeClientException {
+    final Supplier<HttpPost> supplier = () -> createJsonPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
       requireText(userAgent, "userAgent null"), 
@@ -213,7 +214,7 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, String certificateChain64) throws PjeServerException {
+  public void send(String endPoint, String session, String userAgent, String certificateChain64) throws PJeClientException {
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
@@ -222,53 +223,59 @@ class PjeClient implements IPjeClient {
     );
     post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
   }
+  
+  @Override
+  public void send(String endPoint, String session, String userAgent, IDadosSSO dadosSSO) throws PJeClientException {
+    final Supplier<HttpPost> supplier = () -> createJsonPostRequest(
+      requireText(endPoint, "empty endPoint"), 
+      requireText(session, "session empty"),
+      requireText(userAgent, "userAgent null"), 
+      requireNonNull(dadosSSO , "dadosSSO is empty")
+    );
+    post(supplier, ResultChecker.QUIETLY);
+  }  
 
-  private void post(final Supplier<HttpPost> supplier, Runner<String, PjeServerException> checkResults) throws PjeServerException {
+  private void post(final Supplier<HttpPost> supplier, Runner<String, PJeClientException> checkResults) throws PJeClientException {
     try {
       final HttpPost postRequest = supplier.get();
+
       try(CloseableHttpResponse response = client.execute(postRequest)) {
-        HttpEntity entity = response.getEntity();
-        if (entity == null) {
-          throw new PjeServerException("Servidor não foi capaz de retornar dados");
+        int code = response.getCode();
+        if (!isSuccess(code)) { 
+          throw new PJeClientException("Servidor retornando status code: " + code);
         }
-        try {
-          int code = response.getCode();
-          if (!isSuccess(code)) { 
-            throw new PjeServerException("Servidor retornando status code: " + code);
-          }
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
           String responseText;
           try {
             responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
           } catch (ParseException | IOException e) {
-            throw new PjeServerException(e);
+            throw new PJeClientException(e);
+          } finally {
+            EntityUtils.consumeQuietly(entity);
           }
           checkResults.exec(responseText);
-        }finally {
-          EntityUtils.consumeQuietly(entity);
         }
-      } finally {
-        postRequest.clear(); //help gc! :)
       }
-    }catch(PjeServerException e) {
+    }catch(PJeClientException e) {
       throw e;
     }catch(CancellationException e) {
-      throw new PjeServerException("Operação cancelada. Os dados não foram enviados ao servidor.", e);
+      throw new PJeClientException("Operação cancelada. Os dados não foram enviados ao servidor.", e);
     }catch(Exception e) {
-      throw new PjeServerException("Não foi possivel enviar dados ao servidor. ", e);
+      throw new PJeClientException("Não foi possivel enviar dados ao servidor. ", e);
     }
   }
   
-  private void get(final Supplier<HttpGet> supplier, final IDownloadStatus status) throws PjeServerException {
+  private void get(final Supplier<HttpGet> supplier, final IDownloadStatus status) throws PJeClientException {
     try {
-      AtomicInteger attempt = new AtomicInteger(0);
-      final OutputStream output = status.onNewTry(attempt.incrementAndGet());
+      final OutputStream output = status.onNewTry(1);
 
       final HttpGet get = supplier.get();
      
       try(CloseableHttpResponse response = client.execute(get)) {
         HttpEntity entity = response.getEntity();
         if (entity == null) {
-          throw new TemporaryException("Servidor não foi capaz de retornar dados");
+          throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + response.getCode());
         }
         try {
           final long total = entity.getContentLength();
@@ -281,45 +288,51 @@ class PjeClient implements IPjeClient {
           status.onEndDownload();
         } catch(Exception e) {
           status.onDownloadFail(e);
-          throw new TemporaryException("Falha durante o download do arquivo", e);
+          throw new PJeClientException("Falha durante o download do arquivo", e);
         } finally {
           EntityUtils.consumeQuietly(entity);
         }
       } finally {
-        get.clear(); //help gc!
+        get.clear();
       }
-    } catch(PjeServerException e) {
+    } catch(PJeClientException e) {
       throw e;
     } catch(CancellationException e) {
-      throw new PjeServerException("Download cancelado!", e);
+      throw new PJeClientException("Download cancelado!", e);
     } catch(Exception e) {
-      throw new PjeServerException("Não foi possivel baixar dados do servidor.", e);
+      throw new PJeClientException("Não foi possivel baixar dados do servidor.", e);
     }
   }
   
   
-  private static enum ResultChecker implements Runner<String, PjeServerException> {
+  private static enum ResultChecker implements Runner<String, PJeClientException> {
     
     IF_ERROR_THROW() {
       @Override
-      public void exec(String response) throws PjeServerException {
+      public void exec(String response) throws PJeClientException {
         final int length = response.length();
         if (response.startsWith(SERVER_FAIL_RESPONSE)) { 
           String message = length > SERVER_FAIL_RESPONSE.length() ? 
             response.substring(SERVER_FAIL_RESPONSE.length()) : 
             "Desconhecido";
-          throw new PjeServerException("Servidor retornou Erro: '" + message.trim() + "'");
+          throw new PJeClientException("Servidor retornou Erro: '" + message.trim() + "'");
         }
       }
     },
     
     IF_NOT_SUCCESS_THROW() {
       @Override
-      public void exec(String response) throws PjeServerException {
+      public void exec(String response) throws PJeClientException {
         if (response.startsWith(SERVER_SUCCESS_RESPONSE))
           return;
         IF_ERROR_THROW.exec(response);
-        throw new PjeServerException("Servidor não recebeu arquivo enviado");
+        throw new PJeClientException("Servidor não recebeu arquivo enviado");
+      }
+    }, 
+    
+    QUIETLY() {
+      @Override
+      public void exec(String response) throws PJeClientException {
       }
     };
     

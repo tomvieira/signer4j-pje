@@ -67,7 +67,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       });
       return PjeResponse.SUCCESS;
     }
-    return super.doGet();
+    return PjeResponse.FAIL;
   }
 
   @Override

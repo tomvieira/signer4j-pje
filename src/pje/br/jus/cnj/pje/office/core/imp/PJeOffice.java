@@ -3,12 +3,14 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
+import static com.github.signer4j.imp.HttpTools.touchQuietly;
 import static com.github.signer4j.imp.Strings.getQuietly;
 import static com.github.signer4j.imp.Threads.async;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
+import java.security.Security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
 import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.HttpTools;
 import com.github.signer4j.imp.States;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.WindowLockDettector;
@@ -25,6 +26,7 @@ import com.github.signer4j.progress.imp.ProgressFactory;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
+import br.jus.cnj.pje.office.provider.PJeProvider;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
 import br.jus.cnj.pje.office.web.imp.PjeWebServer;
@@ -34,6 +36,10 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PJeOffice.class);
 
+  static {
+    Security.addProvider(new PJeProvider());
+  }
+  
   private IPjeWebServer webServer;
 
   private IPjeLifeCycleHook lifeCycle;
@@ -47,6 +53,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   private PJeOffice(IWindowLockDettector dettector, IPjeLifeCycleHook hook) {
+    
     Args.requireNonNull(dettector, "dettector is null");
     Args.requireNonNull(hook, "hook is null");
     this.dettector = dettector.notifyTo(this);
@@ -247,14 +254,13 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     
     String paramRequest = getQuietly(() -> encode(request, UTF_8.toString()), "").get();
 
-    Threads.async(() ->  {
+    async(() ->  {
       try {
         webServer.setAllowLocalRequest(true);
-        HttpTools.sendGetRequestAndDisconnect(
-          "http://127.0.0.1:8800" + webServer.getTaskEndpoint() + 
+        touchQuietly(
+          "http://127.0.0.1:" + IPjeWebServer.HTTP_PORT + webServer.getTaskEndpoint() + 
           "?r=" + paramRequest + 
-          "&u=" + System.currentTimeMillis(),
-          "PjeOffice (Offline Signer)"
+          "&u=" + System.currentTimeMillis()         
         );
         LOGGER.info("Finalizada requisição local");
       }finally {

@@ -1,8 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
-
 import java.util.List;
 
 import com.github.signer4j.ISignatureAlgorithm;
@@ -54,8 +51,8 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
   @Override
   protected void validateParams() throws TaskException {
     ITarefaAssinadorHash params = getPojoParams();
-    this.algorithm = checkIfSupportedSig(params.getAlgoritmoAssinatura(), "algoritmoAssinatura");
-    this.uploadUrl = checkIfPresent(params.getUploadUrl(), "uploadUrl");
+    this.algorithm = PjeTaskChecker.checkIfSupportedSig(params.getAlgoritmoAssinatura(), "algoritmoAssinatura");
+    this.uploadUrl = PjeTaskChecker.checkIfPresent(params.getUploadUrl(), "uploadUrl");
     this.modoTeste = params.isModoTeste();
     this.arquivos =  params.getArquivos();
   }
@@ -94,9 +91,9 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       do {
         try {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
-          final String id = checkIfPresent(file.getId(), "id");
-          final String hash = checkIfPresent(file.getHash(), "hash");
-          checkIfPresent(file.getCodIni(), "codIni");
+          final String id = PjeTaskChecker.checkIfPresent(file.getId(), "id");
+          final String hash = PjeTaskChecker.checkIfPresent(file.getHash(), "hash");
+          PjeTaskChecker.checkIfPresent(file.getCodIni(), "codIni");
           final byte[] content = hashToBytes(hash);
           
           progress.step("Documento Id: %s", id);
@@ -114,7 +111,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
     
           try {
             client.send(endPoint, session, userAgent, signedData, file);
-          } catch (PjeServerException e) {
+          } catch (PJeClientException e) {
             throw new TaskException("Não foi possível enviar o arquivo id: " + id, e);
           }
           
