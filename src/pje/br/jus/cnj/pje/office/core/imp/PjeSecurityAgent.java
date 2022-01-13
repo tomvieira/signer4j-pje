@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Args;
 
-import br.jus.cnj.pje.office.core.IPjeMainParams;
+import br.jus.cnj.pje.office.core.IMainParams;
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
@@ -53,7 +53,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
   }
   
   @Override
-  public boolean isPermitted(IPjeMainParams params, StringBuilder whyNot) {
+  public boolean isPermitted(IMainParams params, StringBuilder whyNot) {
     
     Optional<String> opCode = params.getCodigoSeguranca();
     if (!opCode.isPresent()) {

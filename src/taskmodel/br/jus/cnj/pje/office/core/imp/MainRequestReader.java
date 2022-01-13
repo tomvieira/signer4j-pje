@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.IPjeMainParams.PJE_MAIN_REQUEST_PARAM;
+import static br.jus.cnj.pje.office.core.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.signer4j.imp.Strings.optional;
 
 import java.io.IOException;
@@ -12,13 +12,13 @@ import com.github.signer4j.task.IRequestReader;
 import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
-import br.jus.cnj.pje.office.core.IPjeMainParams;
+import br.jus.cnj.pje.office.core.IMainParams;
 
-public class PjeMainRequestReader extends AbstractRequestReader<Params, PjeMainRequestReader.MainRequest>{
+public class MainRequestReader extends AbstractRequestReader<Params, MainRequestReader.MainRequest>{
 
-  public static final PjeMainRequestReader MAIN = new PjeMainRequestReader();
+  public static final MainRequestReader MAIN = new MainRequestReader();
 
-  static final class MainRequest implements IPjeMainParams {
+  static final class MainRequest implements IMainParams {
     private String aplicacao;
     private String servidor;
     private String sessao;
@@ -57,7 +57,7 @@ public class PjeMainRequestReader extends AbstractRequestReader<Params, PjeMainR
     }
   }
 
-  private PjeMainRequestReader() {
+  private MainRequestReader() {
     super(MainRequest.class);
   }
 

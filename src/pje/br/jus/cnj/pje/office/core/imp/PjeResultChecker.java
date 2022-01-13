@@ -2,17 +2,17 @@ package br.jus.cnj.pje.office.core.imp;
 
 import com.github.signer4j.imp.Caller;
 
-enum PjeResultChecker implements Caller<String, Void, PjeServerException> {
+enum PjeResultChecker implements Caller<String, Void, PJeClientException> {
   
   IF_ERROR_THROW() {
     @Override
-    public Void call(String response) throws PjeServerException {
+    public Void call(String response) throws PJeClientException {
       final int length = response.length();
       if (response.startsWith(SERVER_RESPONSE_TEXT_FAIL)) { 
         String message = length > SERVER_RESPONSE_TEXT_FAIL.length() ? 
           response.substring(SERVER_RESPONSE_TEXT_FAIL.length()) : 
           "Desconhecido";
-        throw new PjeServerException("Servidor retornou Erro: '" + message.trim() + "'");
+        throw new PJeClientException("Servidor retornou Erro: '" + message.trim() + "'");
       }
       return null;
     }
@@ -20,12 +20,12 @@ enum PjeResultChecker implements Caller<String, Void, PjeServerException> {
   
   IF_NOT_SUCCESS_THROW() {
     @Override
-    public Void call(String response) throws PjeServerException {
+    public Void call(String response) throws PJeClientException {
       if (!response.startsWith(SERVER_RESPONSE_TEXT_SUCCESS)) {
         IF_ERROR_THROW.call(response);
         return null; //success!
       }
-      throw new PjeServerException("Servidor não recebeu arquivo enviado");
+      throw new PJeClientException("Servidor não recebeu arquivo enviado");
     }
   };
   

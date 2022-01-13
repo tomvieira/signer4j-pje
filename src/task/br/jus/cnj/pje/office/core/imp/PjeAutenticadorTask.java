@@ -1,8 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
-
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
@@ -14,7 +11,6 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.ITarefaAutenticador;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -38,9 +34,9 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
   
   private ISignatureAlgorithm algorithm;
 
-  private String enviarPara;
+  protected String enviarPara;
   
-  private String mensagem;
+  protected String mensagem;
   
   public PjeAutenticadorTask(Params request, ITarefaAutenticador pojo) {
     super(request, pojo);
@@ -49,9 +45,9 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
   @Override
   protected void validateParams() throws TaskException {
     final ITarefaAutenticador params = getPojoParams();
-    this.enviarPara = checkIfPresent(params.getEnviarPara(), "enviarPara"); 
-    this.mensagem = checkIfPresent(params.getMensagem(), "mensagem");
-    this.algorithm = checkIfSupportedSig(params
+    this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara"); 
+    this.mensagem = PjeTaskChecker.checkIfPresent(params.getMensagem(), "mensagem");
+    this.algorithm = PjeTaskChecker.checkIfSupportedSig(params
       .getAlgoritmoAssinatura()
       .orElse(SignatureAlgorithm.MD5withRSA.getName()), 
       "algoritmoAssinatura"
@@ -84,16 +80,23 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
     }
     
     progress.step("Enviando assinatura para o servidor.");
-    final IPjeClient client = getPjeClient();
     try {
-      client.send(getEndpointFor(enviarPara), getSession(), getUserAgent(), signedData);
+      send(signedData);
     }catch(Exception e) {
       TaskException ex =  new TaskException("Não foi possível enviar os dados ao servidor", e);
       progress.abort(ex);
       throw ex;
-    }
-    
+    }  
     progress.end();
     return PjeResponse.SUCCESS;
+  }
+
+  protected void send(ISignedData signedData) throws Exception {
+    getPjeClient().send(
+      getEndpointFor(enviarPara), 
+      getSession(), 
+      getUserAgent(), 
+      signedData
+    );
   }
 }

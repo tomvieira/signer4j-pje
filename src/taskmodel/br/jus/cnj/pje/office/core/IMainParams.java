@@ -2,9 +2,9 @@ package br.jus.cnj.pje.office.core;
 
 import java.util.Optional;
 
-public interface IPjeMainParams {
+public interface IMainParams {
 
-  String PJE_MAIN_REQUEST_PARAM = IPjeMainParams.class.getSimpleName() + ".instance";
+  String PJE_MAIN_REQUEST_PARAM = IMainParams.class.getSimpleName() + ".instance";
   
   Optional<String> getServidor();
 

@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.web.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeMainRequestReader.MAIN;
+import static br.jus.cnj.pje.office.core.imp.MainRequestReader.MAIN;
 
 import java.io.IOException;
 import java.util.Optional;

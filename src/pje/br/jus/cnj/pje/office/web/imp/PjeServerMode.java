@@ -1,6 +1,8 @@
 package br.jus.cnj.pje.office.web.imp;
 
 
+import static com.github.signer4j.imp.HttpTools.touchQuietly;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.BindException;
@@ -15,7 +17,6 @@ import javax.net.ssl.SSLEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.HttpTools;
 import com.github.signer4j.imp.Threads;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
@@ -125,7 +126,7 @@ enum PjeServerMode {
   
   private static void sendShutdownRequest(int port) {
     LOGGER.info("Tentativa de shutdown da porta {}", port);
-    HttpTools.sendGetRequest("http://127.0.0.1:" + port + IPjeWebServer.SHUTDOWN_ENDPOINT);
+    touchQuietly("http://127.0.0.1:" + port + IPjeWebServer.SHUTDOWN_ENDPOINT);
   }
 
   protected abstract <T extends HttpServer> T setup(IPjeWebServerSetup setup) throws IOException;

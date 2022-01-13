@@ -1,9 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfNotEmpty;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfSupportedSig;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,9 +56,9 @@ public class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase
   @Override
   protected void validateParams() throws TaskException {
    ITarefaAssinadorBase64 pojo = getPojoParams();
-   this.algoritmoAssinatura = checkIfSupportedSig(pojo.getAlgoritmoAssinatura(), "algoritmoAssinatura");
-   this.uploadUrl = checkIfPresent(pojo.getUploadUrl(), "uploadUrl");
-   this.arquivos = checkIfNotEmpty(pojo.getArquivos(), "arquivos");
+   this.algoritmoAssinatura = PjeTaskChecker.checkIfSupportedSig(pojo.getAlgoritmoAssinatura(), "algoritmoAssinatura");
+   this.uploadUrl = PjeTaskChecker.checkIfPresent(pojo.getUploadUrl(), "uploadUrl");
+   this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos");
   }
 
   @Override

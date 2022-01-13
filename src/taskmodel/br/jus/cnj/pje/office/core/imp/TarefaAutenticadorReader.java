@@ -42,7 +42,7 @@ class TarefaAutenticadorReader extends AbstractRequestReader<Params, TarefaAuten
     }
   }
 
-  private TarefaAutenticadorReader() {
+  protected TarefaAutenticadorReader() {
     super(TarefaAutenticador.class);
   }
 

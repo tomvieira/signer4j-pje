@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeTaskChecker.checkIfPresent;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
@@ -57,8 +56,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   @Override
   protected void validateParams() throws TaskException {
     ITarefaAssinador params = getPojoParams();
-    this.modo = checkIfPresent(params.getModo(), "modo");
-    this.padraoAssinatura = checkIfPresent(params.getPadraoAssinatura(), "padraoAssinatura").checkIfDependentParamsIsPresent(params);
+    this.modo = PjeTaskChecker.checkIfPresent(params.getModo(), "modo");
+    this.padraoAssinatura = PjeTaskChecker.checkIfPresent(params.getPadraoAssinatura(), "padraoAssinatura").checkIfDependentParamsIsPresent(params);
   }
   
   @Override

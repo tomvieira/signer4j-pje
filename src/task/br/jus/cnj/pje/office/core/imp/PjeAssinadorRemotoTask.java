@@ -75,7 +75,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       final DownloadStatus status = new DownloadStatus(progress);
       try {
         client.down(endPoint, session, userAgent, status);
-      } catch (PjeServerException e) {
+      } catch (PJeClientException e) {
         TaskException ex = new TaskException("Não foi possível realizar o download de " + url);
         progress.abort(ex);
         throw ex;
@@ -109,7 +109,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
         getUserAgent(), 
         arquivo
       );
-    } catch (PjeServerException e) {
+    } catch (PJeClientException e) {
       throw new TaskException("Não foi possível enviar o arquivo para o servidor: " + endPoint);
     }
   }
