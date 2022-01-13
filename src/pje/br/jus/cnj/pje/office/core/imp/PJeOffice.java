@@ -10,7 +10,6 @@ import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
-import java.security.Security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import com.github.signer4j.progress.imp.ProgressFactory;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
-import br.jus.cnj.pje.office.provider.PJeProvider;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
 import br.jus.cnj.pje.office.web.imp.PjeWebServer;
@@ -36,10 +34,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PJeOffice.class);
 
-  static {
-    Security.addProvider(new PJeProvider());
-  }
-  
   private IPjeWebServer webServer;
 
   private IPjeLifeCycleHook lifeCycle;
