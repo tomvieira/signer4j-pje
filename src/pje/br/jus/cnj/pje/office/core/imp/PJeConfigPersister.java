@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import com.github.signe4j.imp.function.Performable;
 import com.github.signer4j.imp.ConfigPersister;
-import com.github.signer4j.imp.Exec;
 import com.github.signer4j.imp.SignerConfig;
 import com.github.signer4j.imp.Strings;
 
@@ -58,7 +58,7 @@ class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister 
   }
 
   @Override
-  public void loadServerAccess(Exec<IPjeServerAccess> add) {
+  public void loadServerAccess(Performable<IPjeServerAccess> add) {
     Properties properties = new Properties();
     if (!open(properties))
       return;
@@ -69,7 +69,7 @@ class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister 
         LOGGER.warn("Arquivo de configuração em formato inválido: {}", members);
         continue;
       }
-      add.exec(PjeServerAccess.fromString(members));
+      add.perform(PjeServerAccess.fromString(members));
     }
   }
 }

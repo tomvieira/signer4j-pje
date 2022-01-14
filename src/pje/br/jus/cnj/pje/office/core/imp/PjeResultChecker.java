@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import com.github.signer4j.imp.Caller;
+import com.github.signe4j.imp.function.Caller;
 
 enum PjeResultChecker implements Caller<String, Void, PJeClientException> {
   
