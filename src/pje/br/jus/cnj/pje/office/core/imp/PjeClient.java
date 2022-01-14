@@ -31,13 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.signe4j.imp.function.Runnable;
+import com.github.signe4j.imp.function.Supplier;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
-import com.github.signer4j.imp.Runner;
 import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.Supplier;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
@@ -155,7 +155,8 @@ class PjeClient implements IPjeClient {
   }
 
   @Override
-  public void down(String endPoint, String session, String userAgent, final IDownloadStatus status) throws PJeClientException {
+  public void down(String endPoint, String session, String userAgent, IDownloadStatus status) throws PJeClientException {
+    requireNonNull(status, "status is null");
     final Supplier<HttpGet> supplier = () -> createGet(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
@@ -233,7 +234,7 @@ class PjeClient implements IPjeClient {
     post(supplier, ResultChecker.QUIETLY);
   }  
 
-  private void post(final Supplier<HttpPost> supplier, Runner<String, PJeClientException> checkResults) throws PJeClientException {
+  private void post(final Supplier<HttpPost> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
     try {
       final HttpPost postRequest = supplier.get();
 
@@ -252,7 +253,7 @@ class PjeClient implements IPjeClient {
           } finally {
             EntityUtils.consumeQuietly(entity);
           }
-          checkResults.exec(responseText);
+          checkResults.run(responseText);
         }
       }
     }catch(PJeClientException e) {
@@ -264,7 +265,7 @@ class PjeClient implements IPjeClient {
     }
   }
   
-  private void get(final Supplier<HttpGet> supplier, final IDownloadStatus status) throws PJeClientException {
+  private void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws PJeClientException {
     try {
       final OutputStream output = status.onNewTry(1);
 
@@ -303,11 +304,11 @@ class PjeClient implements IPjeClient {
   }
   
   
-  private static enum ResultChecker implements Runner<String, PJeClientException> {
+  private static enum ResultChecker implements Runnable<String, PJeClientException> {
     
     IF_ERROR_THROW() {
       @Override
-      public void exec(String response) throws PJeClientException {
+      public void run(String response) throws PJeClientException {
         final int length = response.length();
         if (response.startsWith(SERVER_FAIL_RESPONSE)) { 
           String message = length > SERVER_FAIL_RESPONSE.length() ? 
@@ -320,17 +321,17 @@ class PjeClient implements IPjeClient {
     
     IF_NOT_SUCCESS_THROW() {
       @Override
-      public void exec(String response) throws PJeClientException {
+      public void run(String response) throws PJeClientException {
         if (response.startsWith(SERVER_SUCCESS_RESPONSE))
           return;
-        IF_ERROR_THROW.exec(response);
+        IF_ERROR_THROW.run(response);
         throw new PJeClientException("Servidor não recebeu arquivo enviado");
       }
     }, 
     
     QUIETLY() {
       @Override
-      public void exec(String response) throws PJeClientException {
+      public void run(String response) throws PJeClientException {
       }
     };
     
