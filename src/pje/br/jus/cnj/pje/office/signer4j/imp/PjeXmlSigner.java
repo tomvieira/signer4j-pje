@@ -39,10 +39,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.github.signer4j.ICertificateChooser;
+import com.github.signer4j.IChoice;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.IChoice;
 import com.github.signer4j.imp.OpenByteArrayOutputStream;
 import com.github.signer4j.imp.Providers;
 import com.github.signer4j.imp.SecurityObject;

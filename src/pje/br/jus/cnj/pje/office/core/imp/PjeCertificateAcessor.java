@@ -1,10 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeConfig.authStrategy;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
-import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static com.github.signer4j.IFilePath.toPaths;
-import static com.github.signer4j.imp.LookupStrategy.notDuplicated;
 import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 import static com.github.signer4j.imp.SwingTools.isTrue;
@@ -30,6 +27,7 @@ import com.github.signer4j.imp.DefaultCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
 import com.github.signer4j.imp.EnvironmentStrategy;
 import com.github.signer4j.imp.IDriverVisitor;
+import com.github.signer4j.imp.LookupStrategy;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
@@ -75,21 +73,30 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     return entries;
   }
 
-  private final ICustomDeviceManager devManager;
+
   private volatile IPjeToken token;
-  private IPjeAuthStrategy strategy;
-  private List<IFilePath> a3Libraries = new ArrayList<>(), a1Files = new ArrayList<>();
+
   private boolean autoForce = true;
+
+  private IPjeAuthStrategy strategy;
+
+  private final ICustomDeviceManager devManager;
+
+  private List<IFilePath> a1Files = new ArrayList<>();
+  
+  private List<IFilePath> a3Libraries = new ArrayList<>();
 
   private PjeCertificateAcessor() {
     PjeConfig.loadA3Paths(a3Libraries::add);
     PjeConfig.loadA1Paths(a1Files::add);
-    this.strategy = PjeAuthStrategy.valueOf(authStrategy().orElse(AWAYS.name()).toUpperCase());
-    this.devManager = new DeviceManager(notDuplicated()
+    this.devManager = new DeviceManager(LookupStrategy
+      .notDuplicated()
       .more(new EnvironmentStrategy())
       .more(new FilePathStrategy())
     );
     this.devManager.install(toPaths(a1Files));
+    this.strategy = PjeAuthStrategy.valueOf(PjeConfig.authStrategy().orElse(PjeAuthStrategy.AWAYS.name()).toUpperCase());   
+
   }
   
   private IPjeToken toToken(IDevice device) {
