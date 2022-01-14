@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 
 import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificates;
+import com.github.signer4j.IChoice;
 import com.github.signer4j.IKeyStoreAccess;
 import com.github.signer4j.imp.DefaultChooser;
-import com.github.signer4j.imp.IChoice;
 import com.github.signer4j.imp.exception.Signer4JException;
 
 public class PjeCertificateListAcessor extends DefaultChooser {
