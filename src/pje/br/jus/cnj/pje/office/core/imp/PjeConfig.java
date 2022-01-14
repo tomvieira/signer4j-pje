@@ -2,8 +2,8 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.util.Optional;
 
-import com.github.signe4j.imp.function.Performable;
 import com.github.signer4j.imp.Config;
+import com.github.signer4j.imp.function.Performable;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;

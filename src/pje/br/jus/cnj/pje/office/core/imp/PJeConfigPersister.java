@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import com.github.signe4j.imp.function.Performable;
 import com.github.signer4j.imp.ConfigPersister;
 import com.github.signer4j.imp.SignerConfig;
 import com.github.signer4j.imp.Strings;
+import com.github.signer4j.imp.function.Performable;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;

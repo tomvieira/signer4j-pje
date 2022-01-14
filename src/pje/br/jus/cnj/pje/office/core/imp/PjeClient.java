@@ -31,13 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.signe4j.imp.function.Runnable;
-import com.github.signe4j.imp.function.Supplier;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.Strings;
+import com.github.signer4j.imp.function.Runnable;
+import com.github.signer4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
