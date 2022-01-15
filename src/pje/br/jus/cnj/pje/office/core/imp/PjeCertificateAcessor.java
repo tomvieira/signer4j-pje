@@ -73,7 +73,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     return entries;
   }
 
-
   private volatile IPjeToken token;
 
   private boolean autoForce = true;
@@ -126,11 +125,11 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     return Optional.empty();
   }
 
-  public synchronized IPjeAuthStrategy getAuthStrategy() {
+  public IPjeAuthStrategy getAuthStrategy() {
     return this.strategy;
   }
 
-  public synchronized void setAuthStrategy(IPjeAuthStrategy strategy) {
+  public void setAuthStrategy(IPjeAuthStrategy strategy) {
     if (strategy != null) {
       PjeConfig.save(this.strategy = strategy);
       this.close();
@@ -148,7 +147,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   }
 
   @Override
-  public synchronized Optional<ICertificateEntry> showCertificates(boolean force, boolean autoSelect) {
+  public Optional<ICertificateEntry> showCertificates(boolean force, boolean autoSelect) {
     Optional<ICertificateEntry> selected;
     do {
       List<IDevice> devices = this.devManager.getDevices(autoForce || force); 
@@ -164,7 +163,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   }
   
   @Override
-  public synchronized  IPjeToken get() {
+  public IPjeToken get() {
     boolean force = false, autoSelect = true;
     int times = 0;
     do {

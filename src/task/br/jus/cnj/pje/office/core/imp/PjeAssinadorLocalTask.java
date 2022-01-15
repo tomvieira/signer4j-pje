@@ -19,6 +19,7 @@ import com.github.signer4j.gui.utils.DefaultFileChooser;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgressView;
+import com.github.signer4j.progress.imp.ProgressException;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -126,7 +127,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     }
   }
   
-  private File chooseDestination() throws TaskException {
+  private File chooseDestination() {
     final JFileChooser chooser = new DefaultFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
@@ -134,7 +135,8 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       case JFileChooser.APPROVE_OPTION:
         return chooser.getSelectedFile(); 
       default:
-        throw new TaskException("Operação cancelada pelo usuário");
+        Thread.currentThread().interrupt();
+        throw getProgress().abort(new ProgressException("Execução cancelada pelo usuário"));
     }
   }
 }
