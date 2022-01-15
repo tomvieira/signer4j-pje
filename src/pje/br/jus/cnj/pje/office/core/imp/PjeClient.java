@@ -76,7 +76,7 @@ class PjeClient implements IPjeClient {
   }
   
   private <T extends BasicHttpRequest> T createRequest(T request, String session, String userAgent) {
-    request.setHeader("Cookie", session);
+    request.setHeader(HttpHeaders.COOKIE, session);
     request.setHeader("versao", version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
     return request;

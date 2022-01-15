@@ -15,6 +15,7 @@ import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificateListUI.ICertificateEntry;
 import com.github.signer4j.ICustomDeviceManager;
 import com.github.signer4j.IDevice;
+import com.github.signer4j.IDriverVisitor;
 import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
 import com.github.signer4j.gui.CertificateListUI;
@@ -25,9 +26,6 @@ import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
 import com.github.signer4j.imp.DefaultCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
-import com.github.signer4j.imp.EnvironmentStrategy;
-import com.github.signer4j.imp.IDriverVisitor;
-import com.github.signer4j.imp.LookupStrategy;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
 import com.github.signer4j.imp.exception.LoginCanceledException;
@@ -51,7 +49,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     CertifiateEntry(IDevice device, ICertificate certificate) {
       super(Optional.ofNullable(device), certificate);
     }
-    
     Optional<IDevice> device() {
       return super.device;
     }
@@ -63,7 +60,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
       a3Libraries.forEach(fp -> createAndVisit(Paths.get(fp.getPath()), visitor));
     }
   }
-
+  
   private static List<ICertificateEntry> toEntries(List<IDevice> devices) {
     final List<ICertificateEntry> entries = new ArrayList<>();
     devices.forEach(d -> d.getCertificates()
@@ -86,13 +83,9 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   private List<IFilePath> a3Libraries = new ArrayList<>();
 
   private PjeCertificateAcessor() {
-    PjeConfig.loadA3Paths(a3Libraries::add);
     PjeConfig.loadA1Paths(a1Files::add);
-    this.devManager = new DeviceManager(LookupStrategy
-      .notDuplicated()
-      .more(new EnvironmentStrategy())
-      .more(new FilePathStrategy())
-    );
+    PjeConfig.loadA3Paths(a3Libraries::add);
+    this.devManager = new DeviceManager(new FilePathStrategy());
     this.devManager.install(toPaths(a1Files));
     this.strategy = PjeAuthStrategy.valueOf(PjeConfig.authStrategy().orElse(PjeAuthStrategy.AWAYS.name()).toUpperCase());   
 
