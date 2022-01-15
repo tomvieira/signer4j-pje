@@ -2,6 +2,8 @@ package br.jus.cnj.pje.office.web.imp;
 
 import java.io.IOException;
 
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.sun.net.httpserver.Headers;
@@ -27,7 +29,7 @@ final class PjeHttpExchangeResponse implements IPjeResponse {
   
   public void writeJson(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
-    headers.set("Content-Type", "application/json");
+    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
     write(data);
   }
 }

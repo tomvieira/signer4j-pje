@@ -136,7 +136,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     }
   } 
   
-  //Jamais poderá ser sincronizado porque a thread de requisição trava this em get e a thread do swing não conseguirá fechar a instancia
   @Override
   public final void close() { 
     try {
