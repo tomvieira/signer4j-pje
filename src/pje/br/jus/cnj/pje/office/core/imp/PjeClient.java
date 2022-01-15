@@ -167,7 +167,6 @@ class PjeClient implements IPjeClient {
   
   @Override
   public void send(String endPoint, String session, String userAgent, ISignedData signedData) throws PJeClientException {
-    requireNonNull(signedData, "signedData is null");
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
@@ -179,7 +178,6 @@ class PjeClient implements IPjeClient {
   
   @Override
   public void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException {
-    requireNonNull(signedData, "signedData is null");
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
