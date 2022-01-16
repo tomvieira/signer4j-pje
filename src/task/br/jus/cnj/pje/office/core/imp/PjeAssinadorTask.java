@@ -120,6 +120,9 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
             progress.step(message + " -> " + e.getMessage());
             progress.end();
             throw new TemporaryException(e);
+          }catch(ProgressException e) {
+            --index;
+            throw e;
           }
           progress.end();
         }catch(TemporaryException e) {
