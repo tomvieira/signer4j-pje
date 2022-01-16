@@ -7,6 +7,9 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
+import static com.github.signer4j.imp.Throwables.tryRun;
+import static javax.swing.UIManager.getSystemLookAndFeelClassName;
+import static javax.swing.UIManager.setLookAndFeel;
 
 import java.awt.CheckboxMenuItem;
 import java.awt.Menu;
@@ -33,6 +36,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
   
   static {
     PjeConfig.setup();
+    tryRun(() -> setLookAndFeel(getSystemLookAndFeelClassName()), true);
   }
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeApp.class);
