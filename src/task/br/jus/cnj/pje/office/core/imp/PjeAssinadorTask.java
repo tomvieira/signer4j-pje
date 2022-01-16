@@ -63,7 +63,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
     final ITarefaAssinador params = getPojoParams();
-    boolean fail = false;
+    
     IProgress progress = getProgress();
 
     progress.begin(Stage.SELECTING_FILES);
@@ -78,7 +78,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     IPjeToken token = loginToken();
     
     boolean cancel = false;
-    int index = 0;
+    int index = 0, success = 0;
     try {
       IByteProcessor processor = padraoAssinatura.getByteProcessor(token, params);
       
@@ -93,21 +93,18 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           try {
             file.sign(processor);
           } catch (IOException e) {
-            fail = true;
             String message = "Arquivo ignorado. Não foi possível ler os bytes do arquivo temporário: ";
             LOGGER.warn(message + file.toString());
             progress.step(message + e.getMessage());
             progress.end();
             throw new TemporaryException(e);
           } catch (UnsupportedCosignException e) {
-            fail = true;
             String message = "Arquivo ignorado. Co-assinatura não é suportada: ";
             LOGGER.warn(message + file.toString());
             progress.step(message + e.getMessage());
             progress.end();
             throw new TemporaryException(e);
           } catch (Signer4JException e) {
-            fail = true;
             String message = "Arquivo ignorado:  " + file.toString();
             LOGGER.warn(message, e);
             progress.step(message + " -> " +  e.getMessage());
@@ -117,22 +114,17 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           try {
             progress.step("Enviando arquivo '%s'", fileName);
             send(file);
+            success++;
           }catch(TaskException e) {
-            fail = true;
             String message = "Arquivo ignorado:  " + file.toString();
             LOGGER.warn(message, e);
             progress.step(message + " -> " + e.getMessage());
             progress.end();
             throw new TemporaryException(e);
-          }catch(ProgressException e) {
-            fail = true;
-            throw e;
           }
           progress.end();
         }catch(TemporaryException e) {
-          fail = true;
           progress.abort(e);
-
           int remainder = size - index - 1;
           if (remainder > 0) {
             if (!token.isAuthenticated()) {
@@ -158,7 +150,9 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       token.logout();
     }
     
-    if (!fail && !cancel) {
+    boolean fail = success != size;
+    
+    if (!fail) {
       invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
       return PjeResponse.SUCCESS;
     }
