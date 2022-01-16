@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Streams;
+import com.github.signer4j.progress.imp.IAttachable;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
@@ -30,7 +31,7 @@ import br.jus.cnj.pje.office.core.Version;
 enum PjeClientMode {
   HTTP("http") {
     @Override
-    protected IPjeClient createClient(PjeClientBuilder builder) {
+    protected PjeClient createClient(PjeClientBuilder builder) {
       return builder.evictExpiredConnections()
         .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
         .setDefaultRequestConfig(REQUEST_CONFIG)
@@ -39,7 +40,7 @@ enum PjeClientMode {
   },
   HTTPS("https") {
     @Override
-    protected IPjeClient createClient(PjeClientBuilder builder) {
+    protected PjeClient createClient(PjeClientBuilder builder) {
       final KeyStore keyStore;
       try(final InputStream input = PjeClientMode.class.getResourceAsStream("/PjeOffice.jks")) {
         keyStore = KeyStore.getInstance("jks");
@@ -73,7 +74,7 @@ enum PjeClientMode {
       .setCookieSpec(StandardCookieSpec.IGNORE).build();
     
 
-  private IPjeClient client;
+  private PjeClient client;
 
   private final String name;
   
@@ -81,8 +82,8 @@ enum PjeClientMode {
     this.name = name;
   }
   
-  public static IPjeClient clientFrom(String address) {
-    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient();
+  public static IPjeClient clientFrom(String address, IAttachable attachable) {
+    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient(attachable);
   }
 
   
@@ -93,11 +94,11 @@ enum PjeClientMode {
     LOGGER.info("Cliente HTTPS closed");
   }
   
-  private final IPjeClient getClient() {
-    return client != null ? client : (client = createClient(
-      new PjeClientBuilder(Version.current())
-        .setDefaultRequestConfig(REQUEST_CONFIG))
-    );
+  private final IPjeClient getClient(IAttachable attachable) {
+    if (client == null)
+      client = createClient(new PjeClientBuilder(Version.current()).setDefaultRequestConfig(REQUEST_CONFIG));
+    client.setAttachable(attachable);
+    return client;
   }
   
   private void close() {
@@ -107,6 +108,6 @@ enum PjeClientMode {
     }
   }
   
-  protected abstract IPjeClient createClient(PjeClientBuilder builder);
+  protected abstract PjeClient createClient(PjeClientBuilder builder);
   
 }

@@ -12,6 +12,7 @@ import java.util.concurrent.CancellationException;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
@@ -25,7 +26,6 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,7 @@ import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
+import com.github.signer4j.progress.imp.IAttachable;
 
 import br.jus.cnj.pje.office.core.IArquivoAssinado;
 import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
@@ -64,10 +65,15 @@ class PjeClient implements IPjeClient {
 
   private final Version version;
   private final CloseableHttpClient client;
+  private IAttachable attachable = (r) -> {};
 
   PjeClient(CloseableHttpClient client, Version version) {
     this.client = requireNonNull(client, "client is null");
     this.version = requireNonNull(version, "version is null");
+  }
+  
+  void setAttachable(IAttachable attachable) {
+    this.attachable = attachable == null ? this.attachable : attachable;
   }
  
   @Override
@@ -75,10 +81,11 @@ class PjeClient implements IPjeClient {
     this.client.close();
   }
   
-  private <T extends BasicHttpRequest> T createRequest(T request, String session, String userAgent) {
+  private <T extends HttpUriRequestBase> T createRequest(T request, String session, String userAgent) {
     request.setHeader(HttpHeaders.COOKIE, session);
     request.setHeader("versao", version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
+    attachable.attach(request::abort);
     return request;
   }
 
@@ -268,7 +275,7 @@ class PjeClient implements IPjeClient {
       final OutputStream output = status.onNewTry(1);
 
       final HttpGet get = supplier.get();
-     
+
       try(CloseableHttpResponse response = client.execute(get)) {
         HttpEntity entity = response.getEntity();
         if (entity == null) {

@@ -33,7 +33,6 @@ import org.apache.hc.core5.http.config.Lookup;
 import org.apache.hc.core5.http.impl.io.HttpRequestExecutor;
 import org.apache.hc.core5.util.TimeValue;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
 
 class PjeClientBuilder  {
@@ -41,12 +40,13 @@ class PjeClientBuilder  {
   private HttpClientBuilder clientBuilder = HttpClients.custom();
   
   private final Version version;
+  
 
   public PjeClientBuilder(Version version) {
     this.version = requireNonNull(version, "version is null");
   }
   
-  public final IPjeClient build() {
+  public final PjeClient build() {
     PjeClient client = new PjeClient(
       clientBuilder.build(), 
       version

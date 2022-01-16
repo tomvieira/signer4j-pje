@@ -3,6 +3,7 @@ package br.jus.cnj.pje.office.web.imp;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static java.awt.Toolkit.getDefaultToolkit;
+import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -125,8 +126,16 @@ public class PjeWebServer implements IPjeWebServer {
       return BASE_END_POINT + "requisicao/";
     }
     
+    private String cachedU = "";
+    
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+      String noCache = request.getParameterU().orElse(Long.toString(currentTimeMillis()));
+      if (cachedU.equals(noCache)) {
+          PjeResponse.FAIL.processResponse(response);
+          return;
+      }
+      cachedU = noCache;
       if (!running.getAndSet(true)) {
         try {
           PjeWebServer.this.executor.execute(request, response);

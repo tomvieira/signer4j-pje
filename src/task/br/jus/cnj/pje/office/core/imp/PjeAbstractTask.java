@@ -109,7 +109,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
 
   protected final IPjeClient getPjeClient() {
-    return PjeClientMode.clientFrom(getServerAddress());
+    return PjeClientMode.clientFrom(getServerAddress(), getProgress());
   }
   
   protected final T getPojoParams() {
