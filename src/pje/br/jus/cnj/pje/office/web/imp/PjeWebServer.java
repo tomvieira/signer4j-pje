@@ -7,6 +7,7 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,11 +81,11 @@ public class PjeWebServer implements IPjeWebServer {
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       Headers response = request.getResponseHeaders();
-      response.set("Access-Control-Allow-Origin", "*");
-      response.set("Access-Control-Allow-Credentials", "true");
-      response.set("Access-Control-Allow-Methods", "GET");
-      response.set("Access-Control-Max-Age", "86400"); //one day!
-      response.set("Access-Control-Allow-Headers", "X-Requested-With,Origin,Content-Type, Accept");
+      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
+      response.set(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
+      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With,Origin,Content-Type, Accept");
       chain.doFilter(request);
     }
   }
