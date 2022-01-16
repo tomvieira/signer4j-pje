@@ -121,7 +121,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
             progress.end();
             throw new TemporaryException(e);
           }catch(ProgressException e) {
-            --index;
+            fail = true;
             throw e;
           }
           progress.end();
@@ -151,7 +151,6 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       progress.end();
     }catch(Exception e) {
       cancel = e instanceof ProgressException;
-      fail |= index != size;
     }finally {
       token.logout(); //params.isDeslogarKeyStore() //TODO entender esse parâmetro que vem do servidor!
     }
