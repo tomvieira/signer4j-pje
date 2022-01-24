@@ -126,7 +126,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
         }catch(TemporaryException e) {
           progress.abort(e);
           int remainder = size - index - 1;
-          if (remainder > 0) {
+          if (remainder >= 0) {
             if (!token.isAuthenticated()) {
               try {
                 token = loginToken();
