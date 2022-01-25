@@ -47,7 +47,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   private PJeOffice(IWindowLockDettector dettector, IPjeLifeCycleHook hook) {
-    
     Args.requireNonNull(dettector, "dettector is null");
     Args.requireNonNull(hook, "hook is null");
     this.dettector = dettector.notifyTo(this);

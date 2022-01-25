@@ -18,6 +18,7 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +33,7 @@ enum PjeClientMode {
   HTTP("http") {
     @Override
     protected PjeClient createClient(PjeClientBuilder builder) {
-      return builder.evictExpiredConnections()
-        .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-        .setDefaultRequestConfig(REQUEST_CONFIG)
-        .build();
+      return builder.build();
     }
   },
   HTTPS("https") {
@@ -54,10 +52,7 @@ enum PjeClientMode {
         final HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
           .setSSLSocketFactory(sslSocketFactory)
           .build();
-        return builder.setConnectionManager(cm)
-          .evictExpiredConnections()
-          .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-          .build();
+        return builder.setConnectionManager(cm).build();
       } catch (Exception e) {
         throw new RuntimeException("Impossível instanciar PjeClient em HTTPS", e);
       }
@@ -66,14 +61,6 @@ enum PjeClientMode {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeClientMode.class);
   
-  private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
-      .setResponseTimeout(Timeout.ofSeconds(60))//Timeout.DISABLED) //This is SO Timeout. Default to infinit!
-      .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
-      .setConnectTimeout(Timeout.of(3, TimeUnit.MINUTES))
-      .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES))
-      .setCookieSpec(StandardCookieSpec.IGNORE).build();
-    
-
   private PjeClient client;
 
   private final String name;
@@ -95,8 +82,19 @@ enum PjeClientMode {
   }
   
   private final IPjeClient getClient(IAttachable attachable) {
-    if (client == null)
-      client = createClient(new PjeClientBuilder(Version.current()).setDefaultRequestConfig(REQUEST_CONFIG));
+    if (client == null) {
+      client = createClient(new PjeClientBuilder(Version.current())
+          .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+          .evictExpiredConnections()
+          .evictIdleConnections(TimeValue.ofMinutes(1))
+          .setDefaultRequestConfig(RequestConfig.custom()
+              .setResponseTimeout(Timeout.ofSeconds(60))
+              .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
+              .setConnectTimeout(Timeout.of(3, TimeUnit.MINUTES))
+              .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES))
+              .setCookieSpec(StandardCookieSpec.IGNORE).build())
+          );
+    }
     client.setAttachable(attachable);
     return client;
   }
