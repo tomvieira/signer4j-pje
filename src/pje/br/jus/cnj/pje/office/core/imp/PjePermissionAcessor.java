@@ -10,7 +10,7 @@ import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.gui.alert.PjePermissionAccessor;
 
-public enum PjePermissionAcessor implements IPjePermissionAccessor {
+enum PjePermissionAcessor implements IPjePermissionAccessor {
   PRODUCTION(){
     private final IPjePermissionAccessor acessor = new PjePermissionAccessor();
     

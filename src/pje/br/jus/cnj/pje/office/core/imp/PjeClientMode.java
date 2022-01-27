@@ -29,7 +29,7 @@ import com.github.signer4j.progress.imp.IAttachable;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
 
-enum PjeClientMode {
+public enum PjeClientMode {
   HTTP("http") {
     @Override
     protected PjeClient createClient(PjeClientBuilder builder) {

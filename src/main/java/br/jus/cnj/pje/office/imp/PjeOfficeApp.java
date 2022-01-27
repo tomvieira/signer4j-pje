@@ -54,7 +54,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
   private PjeOfficeApp(IPjeFrontEnd frontEnd) {
     this.office = new PJeOffice(this);
     this.frontEnd = frontEnd;
-    this.jvmHook = Threads.shutdownHookAdd(office::exit, "JVMShutDownHook");
+    this.jvmHook = Threads.shutdownHookAdd(office::finish, "JVMShutDownHook");
   }
 
   @Override
@@ -134,7 +134,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
     });
 
     MenuItem mnuExit   = new MenuItem("Sair");
-    mnuExit.addActionListener(e ->  office.exit());
+    mnuExit.addActionListener(e ->  office.finish());
 
     Menu mnuOption = new Menu("Opções");
     mnuOption.add(mnuLog);

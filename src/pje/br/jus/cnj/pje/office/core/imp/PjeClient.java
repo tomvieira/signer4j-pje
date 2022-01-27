@@ -40,12 +40,12 @@ import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
 import com.github.signer4j.progress.imp.IAttachable;
 
-import br.jus.cnj.pje.office.core.IArquivoAssinado;
-import br.jus.cnj.pje.office.core.IAssinadorBase64ArquivoAssinado;
-import br.jus.cnj.pje.office.core.IAssinadorHashArquivo;
-import br.jus.cnj.pje.office.core.IDadosSSO;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
+import br.jus.cnj.pje.office.task.IArquivoAssinado;
+import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
+import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.task.IDadosSSO;
 
 class PjeClient implements IPjeClient {
 

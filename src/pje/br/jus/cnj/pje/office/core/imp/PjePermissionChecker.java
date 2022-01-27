@@ -17,7 +17,7 @@ import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPermissionChecker;
 
-public enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
+enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
   DEVMODE() {
     @Override
     public void checkAccessPermission(IPjeServerAccess token) throws PjePermissionDeniedException  {

@@ -1,19 +1,20 @@
 package br.jus.cnj.pje.office.imp;
 
+import java.awt.Frame;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.Window.Type;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.PjeImages;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
@@ -22,33 +23,43 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
   SYSTRAY("Versão Systray") {
     private SystemTray tray;
     private TrayIcon trayIcon;
+    private Frame trayFrame;
     
     @Override
-    public void install(IPjeOffice office, PopupMenu menu) throws Exception {
+    public void install(IFinishable office, PopupMenu menu) throws Exception {
+      this.trayFrame = new Frame("");
+      this.trayFrame.setType(Type.UTILITY);
+      this.trayFrame.setUndecorated(true);
+      this.trayFrame.setResizable(false);
+      this.trayFrame.setVisible(true);
       this.tray = SystemTray.getSystemTray();
       this.trayIcon = new TrayIcon(PjeImages.PJE_ICON_TRAY.asImage());
-      //this.trayIcon.setImageAutoSize(true);
       this.trayIcon.setPopupMenu(menu);
       this.trayIcon.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {
           if (e.getButton() != MouseEvent.BUTTON3) {
-            MessageAlert.display("Menu acessível com botão auxiliar do mouse.");
+            trayFrame.add(menu);
+            menu.show(trayFrame, e.getX(), e.getY());
+            trayFrame.removeAll();
           }
         }
       });
-      trayIcon.setToolTip("PjeOffice - Assinador do Pje.\nClique com botão auxiliar para ver o menu.");
+      trayIcon.setToolTip("PjeOffice - Assinador do Pje.");
       this.tray.add(trayIcon);
     }
 
     @Override
     protected void doDispose() {
+      LOGGER.debug("Removendo components do frame utilitario");
+      this.trayFrame.removeAll();
       LOGGER.debug("Anulando PopupMenu em trayIcon");
       trayIcon.setPopupMenu(null);
       LOGGER.debug("Removendo trayIcon de tray");
       tray.remove(trayIcon);
-      LOGGER.debug("Anulando atributos trayIcon e tray");
+      LOGGER.debug("Anulando atributos frame, trayIcon e tray");
       trayIcon = null;
       tray = null;
+      trayFrame = null;
     }
 
     @Override
@@ -61,7 +72,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     private PjeOfficeDesktop desktop;
     
     @Override
-    public void install(IPjeOffice office, PopupMenu menu) {
+    public void install(IFinishable office, PopupMenu menu) {
       this.desktop = new PjeOfficeDesktop(office, menu);
       this.desktop.showToFront();
     }
