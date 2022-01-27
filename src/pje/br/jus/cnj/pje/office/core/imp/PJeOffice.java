@@ -27,7 +27,7 @@ import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
-import br.jus.cnj.pje.office.web.imp.PjeWebServer;
+import br.jus.cnj.pje.office.web.imp.PJeWebServerFactory;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
@@ -160,7 +160,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private void startWebServer() {
     if (this.webServer == null) {
-      this.webServer = new PjeWebServer(this);
+      this.webServer = PJeWebServerFactory.DEFAULT.create(this);
       this.ticket = this.webServer.lifeCycle().subscribe(cycle -> {
         switch(cycle) {
         case STARTUP:
@@ -214,7 +214,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
   
   @Override
-  public void exit(long delay) {
+  public void finish(long delay) {
     checkIsAlive();
     final Runnable action = () -> {
       Threads.sleep(delay);

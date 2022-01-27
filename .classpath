@@ -16,6 +16,9 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src/task"/>
 	<classpathentry kind="src" path="src/taskmodel"/>
+	<classpathentry kind="src" path="src/gui"/>
+	<classpathentry kind="src" path="src/web"/>
+	<classpathentry kind="src" path="src/signer4j"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

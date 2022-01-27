@@ -7,6 +7,10 @@ import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
+import br.jus.cnj.pje.office.task.IArquivoAssinado;
+import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
+import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.task.IDadosSSO;
 
 public interface IPjeClient extends AutoCloseable {
   

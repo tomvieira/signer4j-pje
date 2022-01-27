@@ -2,14 +2,14 @@ package br.jus.cnj.pje.office;
 
 import java.awt.PopupMenu;
 
-import br.jus.cnj.pje.office.core.IPjeOffice;
+import com.github.signer4j.IFinishable;
 
 public interface IPjeFrontEnd {
   String getTitle();
   
   IPjeFrontEnd next();
   
-  void install(IPjeOffice office, PopupMenu menu) throws Exception;
+  void install(IFinishable office, PopupMenu menu) throws Exception;
   
   void dispose();
 }

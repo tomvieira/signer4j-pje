@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 
-public class PJeServerAccessWrapper implements IPjeServerAccess {
+class PJeServerAccessWrapper implements IPjeServerAccess {
 
   private IPjeServerAccess access;
   
