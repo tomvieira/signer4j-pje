@@ -15,7 +15,6 @@ import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.task.imp.ArquivoAssinado;
 
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   

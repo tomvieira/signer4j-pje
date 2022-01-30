@@ -6,8 +6,6 @@ import java.util.Optional;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignatureType;
 
-import br.jus.cnj.pje.office.task.IPjeSignMode;
-
 public interface ITarefaAssinador {
   
   List<IArquivo> getArquivos();

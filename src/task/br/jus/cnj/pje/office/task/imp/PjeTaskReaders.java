@@ -6,12 +6,6 @@ import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.IRequestReader;
 import com.github.signer4j.task.NotImplementedReader;
 
-import br.jus.cnj.pje.office.task.imp.TarefaAssinadorBase64Reader;
-import br.jus.cnj.pje.office.task.imp.TarefaAssinadorHashReader;
-import br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader;
-import br.jus.cnj.pje.office.task.imp.TarefaAutenticadorReader;
-import br.jus.cnj.pje.office.task.imp.TarefaAutenticadorSSOReader;
-
 enum PjeTaskReaders implements Supplier<IRequestReader<Params>>{
   CNJ_ASSINADOR("cnj.assinador"){
     @Override

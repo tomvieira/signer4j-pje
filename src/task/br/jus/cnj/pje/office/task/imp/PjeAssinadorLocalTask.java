@@ -26,27 +26,24 @@ import com.github.signer4j.task.exception.TaskException;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.task.imp.ArquivoAssinado;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 class PjeAssinadorLocalTask extends PjeAssinadorTask {
   
   private static final String PJE_DESTINATION_PARAM = "PjeAssinadorLocalTask.destinationDir";
 
-  private boolean localRequest;
-  
   PjeAssinadorLocalTask(Params request, ITarefaAssinador pojo) {
     super(request, pojo);
   }
 
   @Override
   protected void checkMainParams() throws TaskException { 
-    ;// do NOT remove this override implementation!
+    ; //explicit empty statement overrided implementation
   }
     
   @Override
   protected void checkServerPermission() throws TaskException {
-    if (!(localRequest = getLocalRequest().getAndSet(false))) {
+    if (!getLocalRequest().getAndSet(false)) {
       throw new TaskException("Permissão negada. Solicitação de execução de recursos locais vindo de origem desconhecida ou duplicada"); 
     }
   }
@@ -59,18 +56,15 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
 
   @Override
   protected final ITaskResponse<IPjeResponse> doGet() throws TaskException {
-    if (localRequest) {
-      run(() -> {
-        IProgressView progress = newProgress();
-        progress.display();
-        tryRun(super::doGet);
-        progress.undisplay();
-        progress.stackTracer(s -> LOGGER.info(s.toString()));
-        progress.dispose();
-      });
-      return PjeResponse.SUCCESS;
-    }
-    return PjeResponse.FAIL;
+    runAsync(() -> {
+      IProgressView progress = newProgress();
+      progress.display();
+      tryRun(super::doGet);
+      progress.undisplay();
+      progress.stackTracer(s -> LOGGER.info(s.toString()));
+      progress.dispose();
+    });
+    return PjeResponse.SUCCESS;
   }
 
   @Override

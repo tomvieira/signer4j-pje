@@ -17,7 +17,6 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 import br.jus.cnj.pje.office.task.IAssinadorBase64Arquivo;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorBase64;
-import br.jus.cnj.pje.office.task.imp.PjeAssinadorBase64Task;
 
 class TarefaAssinadorBase64Reader extends AbstractRequestReader<Params, TarefaAssinadorBase64Reader.TarefaAssinadorBase64>{
 

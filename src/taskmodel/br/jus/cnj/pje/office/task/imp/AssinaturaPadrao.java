@@ -10,7 +10,6 @@ import com.github.signer4j.task.exception.TaskException;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.task.imp.PjeTaskChecker;
 
 enum AssinaturaPadrao implements IAssinaturaPadrao {
   ENVELOPED() {
