@@ -88,7 +88,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     this.devManager = new DeviceManager(new FilePathStrategy());
     this.devManager.install(toPaths(a1Files));
     this.strategy = PjeAuthStrategy.valueOf(PjeConfig.authStrategy().orElse(PjeAuthStrategy.AWAYS.name()).toUpperCase());   
-
   }
   
   private IPjeToken toToken(IDevice device) {

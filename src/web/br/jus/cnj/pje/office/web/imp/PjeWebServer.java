@@ -3,10 +3,10 @@ package br.jus.cnj.pje.office.web.imp;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static java.awt.Toolkit.getDefaultToolkit;
-import static java.lang.System.currentTimeMillis;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.HttpTools;
+import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.progress.imp.ProgressFactory;
@@ -120,22 +121,20 @@ class PjeWebServer implements IPjeWebServer {
   
   private class TaskRequestHandler extends PjeRequestHandler {
     private final AtomicBoolean running = new AtomicBoolean(false);
+    private final AtomicReference<String> cachedU = new AtomicReference<String>(Ids.next());
     
     @Override
     public String getEndPoint() {
       return BASE_END_POINT + "requisicao/";
     }
     
-    private String cachedU = "";
-    
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      String noCache = request.getParameterU().orElse(Long.toString(currentTimeMillis()));
-      if (cachedU.equals(noCache)) {
-          PjeResponse.FAIL.processResponse(response);
-          return;
-      }
-      cachedU = noCache;
+      String noCache = request.getParameterU().orElse(Ids.next());      
+      if (cachedU.getAndSet(noCache).equals(noCache)) { 
+        PjeResponse.FAIL.processResponse(response); //browser can submit two or more request for some cache or reattempt timeout reason
+        return;
+      }      
       if (!running.getAndSet(true)) {
         try {
           PjeWebServer.this.executor.execute(request, response);
@@ -146,6 +145,7 @@ class PjeWebServer implements IPjeWebServer {
           running.set(false);
         }
       } else {
+        cachedU.set(Ids.next());
         invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
         PjeResponse.FAIL.processResponse(response);
       }
