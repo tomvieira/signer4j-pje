@@ -18,6 +18,11 @@ enum AssinaturaPadrao implements IAssinaturaPadrao {
       Args.requireNonNull(token, "token is null");
       return token.xmlSignerBuilder().build();
     }
+
+    @Override
+    public String getExtension() {
+      return ".xml";
+    }
   },
   
   NOT_ENVELOPED(){
@@ -38,6 +43,11 @@ enum AssinaturaPadrao implements IAssinaturaPadrao {
         .usingSignatureType(params.getTipoAssinatura().get())
         .usingConfig((p, o) -> ((ICMSSigner)p).usingAttributes((Boolean)o))
         .build();
+    }
+
+    @Override
+    public String getExtension() {
+      return ".p7s";
     }
   }; 
 

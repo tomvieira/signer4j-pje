@@ -111,8 +111,8 @@ class PjeClient implements IPjeClient {
     final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
     parameters.add(new BasicNameValuePair("assinatura", signedData.getSignature64()));
     parameters.add(new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()));
-    parameters.add(new BasicNameValuePair("id", file.getId().get()));
-    parameters.add(new BasicNameValuePair("codIni", file.getCodIni().get()));
+    parameters.add(new BasicNameValuePair("id", file.getId().orElse("")));
+    parameters.add(new BasicNameValuePair("codIni", file.getCodIni().orElse("")));
     parameters.add(new BasicNameValuePair("hash", file.getHash().get()));
     if (file.getIdTarefa().isPresent())
       parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
@@ -120,26 +120,24 @@ class PjeClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file) {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final ISignedData signedData  = file.getSignedData().get();
     final String fileName         = file.getNome().get();
     final List<String> sendParams = file.getParamsEnvio();
     final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-    builder.addPart(file.getFileFieldName(), new ByteArrayBody(signedData.getSignature(), fileName));
+    builder.addPart(file.getFileFieldName(), new ByteArrayBody(signedData.getSignature(), fileName + extension));
     sendParams.forEach(s -> {
-      String param = Strings.trim(s);
-      if (param.length() < 3) {
-        LOGGER.warn("Parametros com formato inválido (não será enviado): '{}'", param);
-        return;
-      }
-      int idx = s.indexOf('=');
+      final String param = Strings.trim(s);
+      final int idx = param.indexOf('=');
+      String value, key;
       if (idx < 0) {
-        LOGGER.warn("Parametros com formato inválido (não será enviado): '{}'", param);
-        return;
+        LOGGER.warn("Parâmetro com formato inválido (): '{}'", param);
+        key = param; value = "";
+      } else {
+        key = param.substring(0, idx).trim();
+        value = param.substring(idx + 1).trim();
       }
-      final String key = s.substring(0, idx).trim();
-      final String value = s.substring(idx + 1).trim();
       builder.addPart(key, new StringBody(value, ContentType.TEXT_PLAIN));
     });
     postRequest.setEntity(builder.build());
@@ -196,12 +194,13 @@ class PjeClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file) throws PJeClientException {
+  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) throws PJeClientException {
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
       requireText(userAgent, "userAgent null"), 
-      requireNonNull(file, "file is null")
+      requireNonNull(file, "file is null"),
+      requireText(extension, "extension is null")
     );
     post(supplier, ResultChecker.IF_ERROR_THROW);
   }

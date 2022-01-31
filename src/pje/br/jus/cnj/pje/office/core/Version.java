@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core;
 import com.github.signer4j.imp.Constants;
 
 public enum Version {
-  _1_0_24("1.0.24");
+  _2_0_0("2.0.0");
   
   private String version;
 

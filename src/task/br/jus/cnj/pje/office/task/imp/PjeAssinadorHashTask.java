@@ -1,5 +1,7 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static br.jus.cnj.pje.office.task.imp.PjeTaskChecker.checkIfPresent;
+
 import java.util.List;
 
 import com.github.signer4j.ISignatureAlgorithm;
@@ -93,10 +95,8 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       do {
         try {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
-          final String id = PjeTaskChecker.checkIfPresent(file.getId(), "id");
-          final String hash = PjeTaskChecker.checkIfPresent(file.getHash(), "hash");
-          PjeTaskChecker.checkIfPresent(file.getCodIni(), "codIni");
-          final byte[] content = hashToBytes(hash);
+          
+          final String id = file.getId().orElse("[" + i + "]");
           
           progress.step("Documento Id: %s", id);
           
@@ -105,7 +105,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
             signedData = SignedData.forTest();
           } else {
             try {
-              signedData = signer.process(content);
+              signedData = signer.process(hashToBytes(checkIfPresent(file.getHash(), "hash")));
             } catch (Signer4JException e) {
               throw new TaskException("Não foi possível assinar o arquivo id: " + id, e);
             }
@@ -120,7 +120,10 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
         }catch(Exception e) {
           fail = true;
           progress.abort(e);
-          progress.begin(Stage.HASH_SIGNING, size - i - 1); //TODO eu deveria mesmo continuar?
+          int remainder = size - i - 1;
+          if (remainder > 0) {
+            progress.begin(Stage.HASH_SIGNING, remainder); 
+          }
         }
         
       }while(++i < size);

@@ -49,7 +49,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   
   protected IPjeSignMode modo;
 
-  private IAssinaturaPadrao padraoAssinatura;
+  protected IAssinaturaPadrao padraoAssinatura;
   
   public PjeAssinadorTask(Params request, ITarefaAssinador pojo) {
     super(request, pojo);

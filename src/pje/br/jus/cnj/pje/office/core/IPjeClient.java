@@ -22,7 +22,7 @@ public interface IPjeClient extends AutoCloseable {
 
   void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException;
 
-  void send(String endPoint, String session, String userAgent, IArquivoAssinado file) throws PJeClientException;
+  void send(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) throws PJeClientException;
   
   void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files)  throws PJeClientException;
   

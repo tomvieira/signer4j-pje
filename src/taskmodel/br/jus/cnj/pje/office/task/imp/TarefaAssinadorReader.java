@@ -38,7 +38,7 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinado
 
     private boolean deslogarKeyStore = true;
 
-    private AssinaturaPadrao padraoAssinatura;
+    private AssinaturaPadrao padraoAssinatura = AssinaturaPadrao.NOT_ENVELOPED;
     
     private SignatureType tipoAssinatura = SignatureType.ATTACHED;
     
