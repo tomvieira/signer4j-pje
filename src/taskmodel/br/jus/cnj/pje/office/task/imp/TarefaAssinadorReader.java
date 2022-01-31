@@ -25,7 +25,6 @@ import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.IPjeSignMode;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.task.imp.PjeSignMode;
 
 class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinadorReader.TarefaAssinador>{
 

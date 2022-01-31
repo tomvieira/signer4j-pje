@@ -5,7 +5,6 @@ import static com.github.signer4j.imp.Strings.trim;
 import java.io.InputStream;
 import java.net.ProxySelector;
 import java.security.KeyStore;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
@@ -18,7 +17,6 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.ssl.SSLContexts;
-import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +70,6 @@ public enum PjeClientMode {
   public static IPjeClient clientFrom(String address, IAttachable attachable) {
     return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient(attachable);
   }
-
   
   public static void closeClients() {
     HTTP.close();
@@ -83,15 +80,18 @@ public enum PjeClientMode {
   
   private final IPjeClient getClient(IAttachable attachable) {
     if (client == null) {
+      final Timeout _1m = Timeout.ofMinutes(1);
+      final Timeout _3m = Timeout.ofMinutes(3);
+      final Timeout _30s = Timeout.ofSeconds(30);
       client = createClient(new PjeClientBuilder(Version.current())
           .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
           .evictExpiredConnections()
-          .evictIdleConnections(TimeValue.ofMinutes(1))
+          .evictIdleConnections(_1m)
           .setDefaultRequestConfig(RequestConfig.custom()
-              .setResponseTimeout(Timeout.ofSeconds(60))
-              .setConnectionRequestTimeout(Timeout.of(3, TimeUnit.MINUTES))
-              .setConnectTimeout(Timeout.of(3, TimeUnit.MINUTES))
-              .setConnectionKeepAlive(Timeout.of(3, TimeUnit.MINUTES))
+              .setResponseTimeout(_30s)
+              .setConnectTimeout(_3m)              
+              .setConnectionKeepAlive(_3m)
+              .setConnectionRequestTimeout(_3m)
               .setCookieSpec(StandardCookieSpec.IGNORE).build())
           );
     }

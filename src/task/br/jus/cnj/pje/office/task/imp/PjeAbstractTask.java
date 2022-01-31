@@ -81,11 +81,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(ITaskExecutorParams.PJE_REQUEST_LOCAL);
   }
   
-  protected final ExecutorService getRequestExecutor() {
+  private ExecutorService getRequestExecutor() {
     return getParameterValue(ITaskExecutorParams.PJE_REQUEST_EXECUTOR);
   }
   
-  protected final void run(Runnable runnable) {
+  protected final void runAsync(Runnable runnable) {
     getRequestExecutor().execute(runnable);
   }
   

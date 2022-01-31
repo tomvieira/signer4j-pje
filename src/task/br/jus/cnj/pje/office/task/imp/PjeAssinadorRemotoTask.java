@@ -15,7 +15,6 @@ import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.task.imp.ArquivoAssinado;
 
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   
@@ -79,8 +78,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
         client.down(endPoint, session, userAgent, status);
       } catch (PJeClientException e) {
         TaskException ex = new TaskException("Não foi possível realizar o download de " + url);
-        progress.abort(ex);
-        throw ex;
+        throw progress.abort(ex);
       }
       tempFiles.add(new ArquivoAssinado(arquivo, status.getDownloadedFile()) {
         @Override

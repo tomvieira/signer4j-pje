@@ -16,7 +16,6 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorHash;
-import br.jus.cnj.pje.office.task.imp.PjeAssinadorHashTask;
 
 class TarefaAssinadorHashReader extends AbstractRequestReader<Params, TarefaAssinadorHashReader.TarefaAssinadorHash>{
 

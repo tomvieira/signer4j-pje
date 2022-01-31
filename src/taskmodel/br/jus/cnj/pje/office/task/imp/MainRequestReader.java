@@ -13,7 +13,6 @@ import com.github.signer4j.task.ITask;
 import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.IMainParams;
-import br.jus.cnj.pje.office.task.imp.PjeTaskReaders;
 
 public class MainRequestReader extends AbstractRequestReader<Params, MainRequestReader.MainRequest>{
 
