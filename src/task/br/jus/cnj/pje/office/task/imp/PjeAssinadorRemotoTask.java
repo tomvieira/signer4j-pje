@@ -107,7 +107,8 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
         endPoint, 
         getSession(), 
         getUserAgent(), 
-        arquivo
+        arquivo,
+        padraoAssinatura.getExtension()
       );
     } catch (PJeClientException e) {
       throw new TaskException("Não foi possível enviar o arquivo para o servidor: " + endPoint);
