@@ -43,14 +43,15 @@ public class PjeOfficeDesktop extends SimpleFrame {
     });
     this.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
-        finishingCode.finish();
+        finishingCode.exit();
       }
     });
     contentPane.add(btnMain, BorderLayout.CENTER);
     setLocationRelativeTo(null);
   }
   
+  @Override
   protected void onEscPressed(ActionEvent e) {
-    ;//
+    ;//nothing to do (escape esc key)
   }
 }

@@ -214,7 +214,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
   
   @Override
-  public void finish(long delay) {
+  public void exit(long delay) {
     checkIsAlive();
     final Runnable action = () -> {
       Threads.sleep(delay);
@@ -228,6 +228,12 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
       return;
     }
     async(action);
+  }
+  
+  @Override
+  public void logout() {
+    checkIsAlive();
+    async(PjeCertificateAcessor.INSTANCE::logout);    
   }
   
   @Override

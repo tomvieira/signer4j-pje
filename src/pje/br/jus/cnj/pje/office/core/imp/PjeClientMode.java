@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.imp.Streams;
-import com.github.signer4j.progress.imp.IAttachable;
+import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
@@ -67,8 +67,8 @@ public enum PjeClientMode {
     this.name = name;
   }
   
-  public static IPjeClient clientFrom(String address, IAttachable attachable) {
-    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient(attachable);
+  public static IPjeClient clientFrom(String address, ICanceller canceller) {
+    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient(canceller);
   }
   
   public static void closeClients() {
@@ -78,7 +78,7 @@ public enum PjeClientMode {
     LOGGER.info("Cliente HTTPS closed");
   }
   
-  private final IPjeClient getClient(IAttachable attachable) {
+  private final IPjeClient getClient(ICanceller canceller) {
     if (client == null) {
       final Timeout _1m = Timeout.ofMinutes(1);
       final Timeout _3m = Timeout.ofMinutes(3);
@@ -95,7 +95,7 @@ public enum PjeClientMode {
               .setCookieSpec(StandardCookieSpec.IGNORE).build())
           );
     }
-    client.setAttachable(attachable);
+    client.setCanceller(canceller);
     return client;
   }
   

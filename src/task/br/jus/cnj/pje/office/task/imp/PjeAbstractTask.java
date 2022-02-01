@@ -69,7 +69,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(PJE_MAIN_REQUEST_PARAM);
   }
   
-  private final IPjeTokenAccess getTokenAccess() {
+  protected final IPjeTokenAccess getTokenAccess() {
     return getParameterValue(IPjeTokenAccess.PARAM_NAME);
   }
 
@@ -102,7 +102,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final String getSession() {
-    //Browser can send empty document.cookie, so we handle it as empty string
     return getMainRequest().getSessao().orElse(Strings.empty()); 
   }
   
@@ -146,6 +145,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.step("Acesso permitido");
       progress.end();
       
+      beforeGet();
+      
       progress.begin(Stage.TASK_EXECUTION);
       progress.step("Executando a tarefa '%s'", getId());
       ITaskResponse<IPjeResponse> response = doGet(); 
@@ -160,6 +161,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   }
   
+  protected void beforeGet() {}
+
   protected void checkServerPermission() throws TaskException {
     final IMainParams params = getMainRequest();
     StringBuilder whyNot = new StringBuilder();

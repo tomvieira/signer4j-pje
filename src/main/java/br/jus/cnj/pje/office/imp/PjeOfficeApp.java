@@ -54,7 +54,7 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
   private PjeOfficeApp(IPjeFrontEnd frontEnd) {
     this.office = new PJeOffice(this);
     this.frontEnd = frontEnd;
-    this.jvmHook = Threads.shutdownHookAdd(office::finish, "JVMShutDownHook");
+    this.jvmHook = Threads.shutdownHookAdd(office::exit, "JVMShutDownHook");
   }
 
   @Override
@@ -122,19 +122,19 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
     MenuItem mnuLog = new MenuItem("Registro de atividades");
     mnuLog.addActionListener(e -> office.showActivities());
     
-    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Ativar modo desenvolvedor");
+    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo Treinamento");
     mnuDev.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED){
-        mnuDev.setLabel("Desativar modo desenvolvedor");
+        mnuDev.setLabel("Modo Treinamento");
         office.setDevMode();
       } else {
-        mnuDev.setLabel("Ativar modo desenvolvedor");
+        mnuDev.setLabel("Modo Treinamento");
         office.setProductionMode();
       }
     });
 
     MenuItem mnuExit   = new MenuItem("Sair");
-    mnuExit.addActionListener(e ->  office.finish());
+    mnuExit.addActionListener(e ->  office.exit());
 
     Menu mnuOption = new Menu("Opções");
     mnuOption.add(mnuLog);

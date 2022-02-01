@@ -16,7 +16,8 @@ public interface ITarefaAssinador {
 
   Optional<ISignatureType> getTipoAssinatura();
 
-  boolean isDeslogarKeyStore();
+  @Deprecated
+  boolean isDeslogarKeyStore(); //TODO isso foi mal implementado originalmente!
 
   Optional<ISignatureAlgorithm> getAlgoritmoHash();
 

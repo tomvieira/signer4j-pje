@@ -166,6 +166,20 @@ class PjeWebServer implements IPjeWebServer {
     }
   }
   
+  private class LogoutRequestHandler extends PjeRequestHandler {
+    @Override
+    public String getEndPoint() {
+      return LOGOUT_ENDPOINT;
+    }
+    
+    @Override
+    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+      LOGGER.info("Recebida requisição de logout do certificado");
+      PjeResponse.SUCCESS.processResponse(response);
+      PjeWebServer.this.logout();
+    }    
+  } 
+  
   private IFinishable finishingCode;
   private HttpServer httpServer;
   private HttpsServer httpsServer;
@@ -178,6 +192,7 @@ class PjeWebServer implements IPjeWebServer {
   private final IPjeRequestHandler task = new TaskRequestHandler();
   private final IPjeRequestHandler vers = new VersionRequestHandler();
   private final IPjeRequestHandler exit = new ShutdownRequestHandler();
+  private final IPjeRequestHandler vaza = new LogoutRequestHandler();
 
   private final AtomicBoolean localRequest = new AtomicBoolean(false);
 
@@ -188,7 +203,7 @@ class PjeWebServer implements IPjeWebServer {
   PjeWebServer(IFinishable finishingCode) {
     this(finishingCode, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
-  
+
   private PjeWebServer(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
     this(finishingCode, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
   }
@@ -231,7 +246,11 @@ class PjeWebServer implements IPjeWebServer {
   }
   
   private void exit() {
-    finishingCode.finish(1500);
+    finishingCode.exit(1500);
+  }
+  
+  private void logout() {
+    finishingCode.logout();
   }
   
   private void startHttps() throws IOException {
@@ -273,7 +292,8 @@ class PjeWebServer implements IPjeWebServer {
           .usingHandler(ping)
           .usingHandler(vers)
           .usingHandler(task)
-          .usingHandler(exit);
+          .usingHandler(exit)
+          .usingHandler(vaza);
         
         startHttp();
         startHttps();
