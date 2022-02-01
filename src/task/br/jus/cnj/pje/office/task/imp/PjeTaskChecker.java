@@ -51,12 +51,12 @@ final class PjeTaskChecker {
   }
 
   public static ISignatureAlgorithm checkIfSupportedSig(String algorithm, String paramName) throws TaskException {
-    throwIf(!SignatureAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm);
+    throwIf(!SignatureAlgorithm.isSupported(algorithm), "Algoritmo '%s' não é suportado", algorithm);
     return SignatureAlgorithm.get(algorithm).get();
   }
   
   private static IHashAlgorithm checkIfSupportedHash(String algorithm, String paramName) throws TaskException {
-    throwIf(!HashAlgorithm.isSupported(algorithm), "Algoritmo '%' não é suportado", algorithm);
+    throwIf(!HashAlgorithm.isSupported(algorithm), "Algoritmo '%s' não é suportado", algorithm);
     return HashAlgorithm.get(algorithm).get();
   }
   
