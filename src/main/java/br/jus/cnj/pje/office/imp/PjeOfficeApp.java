@@ -125,10 +125,8 @@ public class PjeOfficeApp implements IPjeLifeCycleHook {
     CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo Treinamento");
     mnuDev.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED){
-        mnuDev.setLabel("Modo Treinamento");
         office.setDevMode();
       } else {
-        mnuDev.setLabel("Modo Treinamento");
         office.setProductionMode();
       }
     });
