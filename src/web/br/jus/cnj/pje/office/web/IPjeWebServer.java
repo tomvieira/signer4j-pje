@@ -12,7 +12,9 @@ public interface IPjeWebServer {
 
   String BASE_END_POINT = "/pjeOffice/";
   
-  String SHUTDOWN_ENDPOINT = BASE_END_POINT + "shutdown/";  
+  String SHUTDOWN_ENDPOINT = BASE_END_POINT + "shutdown"; 
+  
+  String LOGOUT_ENDPOINT = BASE_END_POINT + "logout";
   
   enum LifeCycle {
     STARTUP,

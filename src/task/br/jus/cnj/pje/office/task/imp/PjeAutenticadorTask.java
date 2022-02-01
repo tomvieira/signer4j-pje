@@ -55,6 +55,14 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
     );
   }
   
+  /**
+   * Garante que a senha seja solicitada em todo ato de autenticação! 
+   */
+  @Override
+  protected final void beforeGet() {
+    getTokenAccess().logout();
+  }  
+
   @Override
   public ITaskResponse<IPjeResponse> doGet() throws TaskException {
     

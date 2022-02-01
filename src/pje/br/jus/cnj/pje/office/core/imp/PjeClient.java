@@ -38,7 +38,7 @@ import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
-import com.github.signer4j.progress.imp.IAttachable;
+import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
@@ -65,15 +65,18 @@ class PjeClient implements IPjeClient {
 
   private final Version version;
   private final CloseableHttpClient client;
-  private IAttachable attachable = (r) -> {};
+  
+  private ICanceller canceller = ICanceller.NOTHING;
 
   PjeClient(CloseableHttpClient client, Version version) {
     this.client = requireNonNull(client, "client is null");
     this.version = requireNonNull(version, "version is null");
   }
   
-  void setAttachable(IAttachable attachable) {
-    this.attachable = attachable == null ? this.attachable : attachable;
+  void setCanceller(ICanceller canceller) {
+    if (canceller != null) {
+      this.canceller = canceller;
+    }
   }
  
   @Override
@@ -85,7 +88,7 @@ class PjeClient implements IPjeClient {
     request.setHeader(HttpHeaders.COOKIE, session);
     request.setHeader("versao", version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
-    attachable.attach(request::abort);
+    canceller.cancelCode(request::abort);
     return request;
   }
 

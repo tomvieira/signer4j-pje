@@ -126,7 +126,15 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
       PjeConfig.save(this.strategy = strategy);
       this.close();
     }
-  } 
+  }
+  
+  @Override
+  public void logout() {
+    if (token != null) {
+      token.logout(true);
+      token = null;
+    }
+  }
   
   @Override
   public final void close() { 

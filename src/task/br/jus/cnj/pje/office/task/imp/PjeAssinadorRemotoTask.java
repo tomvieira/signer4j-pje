@@ -77,8 +77,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       try {
         client.down(endPoint, session, userAgent, status);
       } catch (PJeClientException e) {
-        TaskException ex = new TaskException("Não foi possível realizar o download de " + url);
-        throw progress.abort(ex);
+        throw progress.abort(new TaskException("Não foi possível realizar o download de " + url));
       }
       tempFiles.add(new ArquivoAssinado(arquivo, status.getDownloadedFile()) {
         @Override
