@@ -84,15 +84,16 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
           LOGGER.warn("'hashDoc' nao encontrado na lista vinda do servidor. Entrada ignorada");
           continue;
         }
+        
         Optional<String> base64 = arquivo.getConteudoBase64();
         if (!base64.isPresent()) {
           progress.step("Ignorada entrada %s", i);
           LOGGER.warn("'conteudoBase64' não encontrado na lista vinda do servidor. Entrada ignorada");
           continue;
         }
+        
         byte[] input = Base64.base64Decode(base64.get());
         progress.step("Assinando arquivo %s de tamanho %s", i, input.length);
-        
         try {
           saida.add(new AssinadorBase64ArquivoAssinado(
             hashDoc.get(),
@@ -115,7 +116,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
             }
             progress.begin(Stage.FILE_SIGNING, remainder);
           }
-        }finally {
+        } finally {
           input = null;
           arquivo.dispose();
         }

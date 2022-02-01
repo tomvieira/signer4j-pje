@@ -1,5 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static java.security.Security.addProvider;
+
 import java.util.Optional;
 
 import com.github.signer4j.imp.Config;
@@ -8,9 +10,14 @@ import com.github.signer4j.imp.function.Performable;
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.gui.PjeImages;
+import br.jus.cnj.pje.office.provider.PJeProvider;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
 public class PjeConfig extends Config {
+  
+  static {
+    addProvider(new PJeProvider());
+  }
   
   private PjeConfig() {}
   
