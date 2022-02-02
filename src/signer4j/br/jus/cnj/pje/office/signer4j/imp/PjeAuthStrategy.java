@@ -7,6 +7,7 @@ import com.github.signer4j.gui.alert.TokenUseAlert;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 import com.github.signer4j.imp.exception.Signer4JException;
 
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
 
@@ -73,5 +74,9 @@ public enum PjeAuthStrategy implements IPjeAuthStrategy{
   
   public String geLabel() {
     return label;
+  }
+
+  public static IPjeAuthStrategy getDefault() {
+    return valueOf(PjeConfig.authStrategy().orElse(AWAYS.name()).toUpperCase());   
   }
 }

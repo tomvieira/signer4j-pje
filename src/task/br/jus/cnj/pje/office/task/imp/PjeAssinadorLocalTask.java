@@ -19,7 +19,6 @@ import com.github.signer4j.gui.utils.DefaultFileChooser;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgressView;
-import com.github.signer4j.progress.imp.ProgressException;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -68,13 +67,13 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   @Override
-  protected IArquivoAssinado[] selectFiles() throws TaskException {
+  protected IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException {
     DefaultFileChooser chooser = new DefaultFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     chooser.setMultiSelectionEnabled(true);
     chooser.setDialogTitle("Selecione o(s) arquivo(s) a ser(em) assinado(s)");
     if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
-      throw new TaskException("Operação cancelada pelo usuário");
+      throwCancel();
     }
     int size;
     final File[] files = chooser.getSelectedFiles();
@@ -90,7 +89,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   @Override
-  protected void send(IArquivoAssinado arquivo) throws TaskException {
+  protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
     Args.requireNonNull(arquivo, "arquivo is null");
     Optional<ISignedData> signature = arquivo.getSignedData();
     if (!signature.isPresent()) {
@@ -101,7 +100,8 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     
     File destination;
     do {
-      destination = params.isPresent(PJE_DESTINATION_PARAM) ?  params.getValue(PJE_DESTINATION_PARAM) : 
+      destination = params.isPresent(PJE_DESTINATION_PARAM) ?  
+        params.getValue(PJE_DESTINATION_PARAM) : 
         chooseDestination();
       if (destination.canWrite()) 
         break;
@@ -123,7 +123,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     }
   }
   
-  private File chooseDestination() {
+  private File chooseDestination() throws InterruptedException {
     final JFileChooser chooser = new DefaultFileChooser();
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
@@ -131,8 +131,8 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       case JFileChooser.APPROVE_OPTION:
         return chooser.getSelectedFile(); 
       default:
-        Thread.currentThread().interrupt();
-        throw getProgress().abort(new ProgressException("Execução cancelada pelo usuário"));
+        throwCancel();
+        return null;
     }
   }
 }

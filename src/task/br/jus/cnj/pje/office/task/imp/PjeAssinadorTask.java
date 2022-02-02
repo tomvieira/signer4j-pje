@@ -12,7 +12,6 @@ import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.progress.imp.ProgressException;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
@@ -63,25 +62,26 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   }
   
   @Override
-  protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
+  protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     final ITarefaAssinador params = getPojoParams();
     
-    IProgress progress = getProgress();
+    final IProgress progress = getProgress();
 
+    int success = 0, size = -1;
+    
     progress.begin(Stage.SELECTING_FILES);
     
     final IArquivoAssinado[] files = selectFiles();
-    final int size = files.length;
+    size = files.length;
     
     progress.step("Selecionados '%s' arquivo(s)", size);
     progress.end();
     
     progress.begin(Stage.PROCESSING_FILES, size);
     IPjeToken token = loginToken();
-    
-    boolean cancel = false;
-    int index = 0, success = 0;
     try {
+      int index = 0;
+    
       IByteProcessor processor = padraoAssinatura.getByteProcessor(token, params);
       
       for(final IArquivoAssinado file: files) {
@@ -146,24 +146,20 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
         }
       }
       progress.end();
-    }catch(Exception e) {
-      cancel = e instanceof ProgressException;
-    }finally {
+    } finally {
       token.logout();
     }
     
-    boolean fail = success != size;
-    
-    if (!fail) {
-      invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
-      return PjeResponse.SUCCESS;
+    if (success != size) {
+      invokeLater(() -> display("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades."));
+      return PjeResponse.FAIL;
     }
-    String detail = cancel ? "Operação cancelada pelo usuário." : "Alguns arquivos NÃO puderam ser assinados.";
-    invokeLater(() -> display(detail + "\nVeja detalhes no registro de atividades."));
-    return PjeResponse.FAIL;
+    
+    invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
+    return PjeResponse.SUCCESS;
   }
   
-  protected abstract IArquivoAssinado[] selectFiles() throws TaskException;
+  protected abstract IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException;
 
-  protected abstract void send(IArquivoAssinado arquivo) throws TaskException;
+  protected abstract void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException;
 }

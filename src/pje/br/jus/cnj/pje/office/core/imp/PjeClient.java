@@ -243,9 +243,9 @@ class PjeClient implements IPjeClient {
 
   private void post(final Supplier<HttpPost> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
     try {
-      final HttpPost postRequest = supplier.get();
+      final HttpPost post = supplier.get();
 
-      try(CloseableHttpResponse response = client.execute(postRequest)) {
+      try(CloseableHttpResponse response = client.execute(post)) {
         int code = response.getCode();
         if (!isSuccess(code)) { 
           throw new PJeClientException("Servidor retornando status code: " + code);

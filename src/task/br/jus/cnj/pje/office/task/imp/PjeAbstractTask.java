@@ -1,8 +1,9 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
-import static com.github.signer4j.gui.alert.PermissionDeniedAlert.display;
+import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
+import static com.github.signer4j.progress.IProgress.CANCELED_OPERATION_MESSAGE;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,6 +12,7 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.gui.alert.PermissionDeniedAlert;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.progress.IProgress;
@@ -30,9 +32,9 @@ import br.jus.cnj.pje.office.task.ITaskExecutorParams;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
-
-  protected static final Logger LOGGER = LoggerFactory.getLogger(PjeAbstractTask.class);
   
+  protected static final Logger LOGGER = LoggerFactory.getLogger(PjeAbstractTask.class);
+
   private static final String POJO_REQUEST_PARAM_NAME = PjeAbstractTask.class.getSimpleName() + ".pojo";
   
   private static enum Stage implements IStage {
@@ -75,6 +77,15 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
 
   private final String getServerAddress() {
     return getMainRequest().getServidor().get();
+  }
+  
+  protected void throwCancel() throws InterruptedException {
+    throwCancel(CANCELED_OPERATION_MESSAGE);
+  }
+  
+  protected void throwCancel(String message) throws InterruptedException {
+    Thread.currentThread().interrupt();
+    throw getProgress().abort(new InterruptedException(message));
   }
   
   protected final AtomicBoolean getLocalRequest() {
@@ -132,6 +143,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   @Override
   public final ITaskResponse<IPjeResponse> get() {
     final IProgress progress = getProgress();
+    Throwable fail;
     try {
       progress.begin(Stage.PREPARING_PARAMETERS);
       progress.step("Preparando parâmetros de execução");
@@ -154,11 +166,14 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.end();
       
       return response;
+    } catch(InterruptedException e) {
+      fail = progress.abort(e);
+      invokeLater(() -> display(CANCELED_OPERATION_MESSAGE));
     } catch(Exception e) {
-      progress.abort(e);
-      LOGGER.error("Nâo foi possível executar a tarefa " + getId(), e);
-      return PjeResponse.FAIL;
+      fail = progress.abort(e);
     }
+    LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
+    return PjeResponse.FAIL;
   }
   
   protected void beforeGet() {}
@@ -169,7 +184,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     if (!getSecurityAgent().isPermitted(params, whyNot)) {
       String cause = whyNot.toString();
       if (!cause.isEmpty()) {
-        invokeLater(() -> display(cause));
+        invokeLater(() -> PermissionDeniedAlert.display(cause));
       }
       throw new TaskException("Permissão negada. " + cause);
     }
@@ -177,5 +192,5 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
 
   protected abstract void validateParams() throws TaskException;
   
-  protected abstract ITaskResponse<IPjeResponse> doGet() throws TaskException;
+  protected abstract ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException;
 }

@@ -4,7 +4,6 @@ import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
@@ -36,10 +35,8 @@ class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
         throw new TaskException("Escolha do certificado cancelada", e);
       }
       
-      IPjeClient client = getPjeClient();
-    
       try {
-        client.send(
+        getPjeClient().send(
           getEndpointFor(uploadUrl), 
           getSession(),
           getUserAgent(), 

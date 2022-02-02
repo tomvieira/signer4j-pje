@@ -63,7 +63,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
   }
 
   @Override
-  protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
+  protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     
     final IProgress progress = getProgress();
     
@@ -145,5 +145,4 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
       token.logout();
     }
   }
-
 }

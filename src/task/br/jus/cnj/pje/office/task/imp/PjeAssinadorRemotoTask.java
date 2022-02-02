@@ -46,7 +46,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   }
 
   @Override
-  protected IArquivoAssinado[] selectFiles() throws TaskException {
+  protected IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException {
     if (arquivos.isEmpty()) {
       throw new TaskException("A requisição não informou qualquer URL para download dos arquivos");
     }
@@ -73,7 +73,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       final String endPoint = getEndpointFor(url);
       
       progress.step("Baixando url: %s", endPoint);
-      final DownloadStatus status = new DownloadStatus(progress);
+      final DownloadStatus status = new DownloadStatus();
       try {
         client.down(endPoint, session, userAgent, status);
       } catch (PJeClientException e) {
@@ -99,7 +99,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   }
   
   @Override
-  protected void send(IArquivoAssinado arquivo) throws TaskException {
+  protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
     final String endPoint = getEndpointFor(enviarPara);
     try {
       getPjeClient().send(

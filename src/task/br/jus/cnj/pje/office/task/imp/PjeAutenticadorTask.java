@@ -56,7 +56,7 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
   }
   
   /**
-   * Garante que a senha seja solicitada em todo ato de autenticação! 
+   * Garante que a senha seja solicitada em todo ato de autenticação em PjeAuthenticatorTask e suas derivações 
    */
   @Override
   protected final void beforeGet() {
@@ -64,10 +64,10 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
   }  
 
   @Override
-  public ITaskResponse<IPjeResponse> doGet() throws TaskException {
+  public ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     
     final IProgress progress = getProgress();
-    
+
     progress.begin(Stage.AUTHENTICATING_USER);
 
     progress.step("Recebida a mensagem '%s'", mensagem);

@@ -13,6 +13,7 @@ import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.impl.routing.SystemDefaultRoutePlanner;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
@@ -65,6 +66,10 @@ public enum PjeClientMode {
   
   private PjeClientMode(String name) {
     this.name = name;
+  }
+  
+  public static IPjeClient clientFrom(String address) {
+    return clientFrom(address, ICanceller.NOTHING);
   }
   
   public static IPjeClient clientFrom(String address, ICanceller canceller) {

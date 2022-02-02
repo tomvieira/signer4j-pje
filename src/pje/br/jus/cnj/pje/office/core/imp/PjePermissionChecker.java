@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Base64;
 import com.github.signer4j.imp.Certificates;
@@ -42,7 +45,7 @@ enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
       
       final byte[] decriptedBytes;
       try {
-        decriptedBytes = Ciphers.decryptWithRsa(cryptedBytes, this.key);
+        decriptedBytes = Ciphers.decryptWithRsa(cryptedBytes, KEY);
       } catch (Exception e) {
         throw new PjePermissionDeniedException("Não foi possível descriptografar código de segurança. Acesso negado!", e);
       }
@@ -80,13 +83,15 @@ enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
     }
   };
   
-  protected final PublicKey key;
+  private static final Logger LOGGER = LoggerFactory.getLogger(PjePermissionChecker.class);
   
-  PjePermissionChecker() {
+  protected static PublicKey KEY;
+  
+  static {
     try(InputStream is = IPjeSecurityAgent.class.getResourceAsStream("/PJeOffice.cer")) {
-      this.key = Certificates.create(is).getPublicKey();
+      KEY = Certificates.create(is).getPublicKey();
     } catch (CertificateException | IOException e) {
-      throw new RuntimeException("Unabled to read public key from 'PjeOffice.cer'");
+      LOGGER.error("Unabled to read public key from 'PjeOffice.cer'", e);
     }
   }
 }

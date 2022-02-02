@@ -71,7 +71,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
   }
   
   @Override
-  protected ITaskResponse<IPjeResponse> doGet() throws TaskException {
+  protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
 
     final int size = arquivos.size();
     if (size == 0) {

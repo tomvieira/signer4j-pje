@@ -2,6 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static com.github.signer4j.IFilePath.toPaths;
+import static com.github.signer4j.imp.DeviceCertificateEntry.toEntries;
 import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
 import static com.github.signer4j.imp.SwingTools.invokeAndWait;
 import static com.github.signer4j.imp.SwingTools.isTrue;
@@ -11,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificateListUI.ICertificateEntry;
-import com.github.signer4j.ICustomDeviceManager;
 import com.github.signer4j.IDevice;
+import com.github.signer4j.IDeviceManager;
 import com.github.signer4j.IDriverVisitor;
 import com.github.signer4j.IFilePath;
 import com.github.signer4j.TokenType;
@@ -24,7 +24,7 @@ import com.github.signer4j.gui.alert.NoTokenPresentAlert;
 import com.github.signer4j.gui.alert.TokenLockedAlert;
 import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
-import com.github.signer4j.imp.DefaultCertificateEntry;
+import com.github.signer4j.imp.DeviceCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
@@ -45,15 +45,6 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   
   INSTANCE;
   
-  private static class CertifiateEntry extends DefaultCertificateEntry {
-    CertifiateEntry(IDevice device, ICertificate certificate) {
-      super(Optional.ofNullable(device), certificate);
-    }
-    Optional<IDevice> device() {
-      return super.device;
-    }
-  }
-  
   private class FilePathStrategy extends AbstractStrategy {
     @Override
     public void lookup(IDriverVisitor visitor) {
@@ -61,22 +52,13 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     }
   }
   
-  private static List<ICertificateEntry> toEntries(List<IDevice> devices) {
-    final List<ICertificateEntry> entries = new ArrayList<>();
-    devices.forEach(d -> d.getCertificates()
-      .stream()
-      .filter(SUPPORTED_CERTIFICATE)
-      .forEach(c -> entries.add(new CertifiateEntry(d, c))));
-    return entries;
-  }
-
   private volatile IPjeToken token;
 
   private boolean autoForce = true;
 
   private IPjeAuthStrategy strategy;
 
-  private final ICustomDeviceManager devManager;
+  private final IDeviceManager devManager;
 
   private List<IFilePath> a1Files = new ArrayList<>();
   
@@ -85,9 +67,8 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   private PjeCertificateAcessor() {
     PjeConfig.loadA1Paths(a1Files::add);
     PjeConfig.loadA3Paths(a3Libraries::add);
-    this.devManager = new DeviceManager(new FilePathStrategy());
-    this.devManager.install(toPaths(a1Files));
-    this.strategy = PjeAuthStrategy.valueOf(PjeConfig.authStrategy().orElse(PjeAuthStrategy.AWAYS.name()).toUpperCase());   
+    this.strategy = PjeAuthStrategy.getDefault();
+    this.devManager = new DeviceManager(new FilePathStrategy()).install(toPaths(a1Files));
   }
   
   private IPjeToken toToken(IDevice device) {
@@ -103,15 +84,15 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   }
 
   private Optional<IPjeToken> getToken(boolean force, boolean autoSelect) {
-    if (!force && token != null)
-      return Optional.of(token);
-    force |= token == null;
+    if (!force && this.token != null)
+      return Optional.of(this.token);
+    force |= this.token == null;
     final Optional<ICertificateEntry> selected = showCertificates(force, autoSelect);
     if (selected.isPresent()) {
-      CertifiateEntry e = (CertifiateEntry)selected.get();
-      Optional<IDevice> device = e.device();
+      DeviceCertificateEntry e = (DeviceCertificateEntry)selected.get();
+      Optional<IDevice> device = e.getNative();
       if (device.isPresent()) {
-        return Optional.of(token = toToken(device.get()));
+        return Optional.of(this.token = toToken(device.get()));
       }
     }
     return Optional.empty();
@@ -139,9 +120,9 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   @Override
   public final void close() { 
     try {
-      devManager.close();
+      this.devManager.close();
     } finally {
-      token = null;
+      this.token = null;
     }
   }
 
@@ -149,9 +130,9 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   public Optional<ICertificateEntry> showCertificates(boolean force, boolean autoSelect) {
     Optional<ICertificateEntry> selected;
     do {
-      List<IDevice> devices = this.devManager.getDevices(autoForce || force); 
+      List<IDevice> devices = this.devManager.getDevices(this.autoForce || force); 
       selected = CertificateListUI.display(
-        toEntries(devices), 
+        toEntries(devices, SUPPORTED_CERTIFICATE), 
         autoSelect, 
         this::onNewDevices
       );
