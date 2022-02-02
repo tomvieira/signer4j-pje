@@ -5,6 +5,7 @@ import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static java.awt.Toolkit.getDefaultToolkit;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IFinishable;
-import com.github.signer4j.imp.HttpTools;
 import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
@@ -53,12 +53,12 @@ class PjeWebServer implements IPjeWebServer {
 
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
-      String remote = request.getRemoteAddress().getAddress().getHostAddress().trim();
-      if (!HttpTools.isLocalHost(remote)) {
-        String local = request.getLocalAddress().getAddress().getHostAddress().trim();
+      InetAddress remote = request.getRemoteAddress().getAddress();
+      if (!remote.isLoopbackAddress()) {
+        InetAddress local = request.getLocalAddress().getAddress();
         String message = "Identificado acesso indevido ao seu PjeOffice.\n" +
-         "IP remoto: " + remote + "\n" +
-         "IP local: " + local + "\n" +
+         "IP remoto: " + remote.getHostAddress() + "\n" +
+         "IP local: " + local.getHostAddress() + "\n" +
          "Por favor, remova seu certificado do computador\n" +
          "e notifique este alerta ao suporte em segurança!";
         LOGGER.warn(message);
