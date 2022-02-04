@@ -39,12 +39,11 @@ import br.jus.cnj.pje.office.web.PjeHeaders;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
-@SuppressWarnings({ "restriction"})
 class PjeWebServer implements IPjeWebServer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeWebServer.class);
 
-  private class AccessFilter extends Filter {
+  private static class AccessFilter extends Filter {
     @Override
     public String description() {
       return "Access filter";
@@ -73,7 +72,7 @@ class PjeWebServer implements IPjeWebServer {
     }
   }
   
-  private class CorsFilter extends Filter {
+  private static class CorsFilter extends Filter {
     @Override
     public String description() {
       return "Cors filter";
@@ -96,7 +95,7 @@ class PjeWebServer implements IPjeWebServer {
     }
   }
   
-  private class PingRequestHandler extends PjeRequestHandler {
+  private static class PingRequestHandler extends PjeRequestHandler {
     @Override
     public String getEndPoint() {
       return BASE_END_POINT;
@@ -109,7 +108,7 @@ class PjeWebServer implements IPjeWebServer {
     }
   }
   
-  private class VersionRequestHandler extends PjeRequestHandler {
+  private static class VersionRequestHandler extends PjeRequestHandler {
     @Override
     public String getEndPoint() {
       return BASE_END_POINT + "versao/";
@@ -119,32 +118,6 @@ class PjeWebServer implements IPjeWebServer {
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.debug("Recebido pedido de versão");
       response.writeJson(Version.jsonBytes());
-    }
-  }
-  
-  private class TaskRequestHandler extends PjeRequestHandler {
-    private final AtomicBoolean running = new AtomicBoolean(false);
-    
-    @Override
-    public String getEndPoint() {
-      return BASE_END_POINT + "requisicao/";
-    }
-    
-    @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      if (!running.getAndSet(true)) {
-        try {
-          PjeWebServer.this.executor.execute(request, response);
-        } catch (TaskExecutorException e) {
-          LOGGER.error("Exceção no ciclo de vida da requisição", e);
-          PjeResponse.FAIL.processResponse(response);
-        }finally {
-          running.set(false);
-        }
-      } else {
-        invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
-        PjeResponse.FAIL.processResponse(response);
-      }
     }
   }
   
@@ -175,6 +148,32 @@ class PjeWebServer implements IPjeWebServer {
       PjeWebServer.this.logout();
     }    
   } 
+  
+  private class TaskRequestHandler extends PjeRequestHandler {
+    private final AtomicBoolean running = new AtomicBoolean(false);
+    
+    @Override
+    public String getEndPoint() {
+      return BASE_END_POINT + "requisicao/";
+    }
+    
+    @Override
+    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+      if (!running.getAndSet(true)) {
+        try {
+          PjeWebServer.this.executor.execute(request, response);
+        } catch (TaskExecutorException e) {
+          LOGGER.error("Exceção no ciclo de vida da requisição", e);
+          PjeResponse.FAIL.processResponse(response);
+        }finally {
+          running.set(false);
+        }
+      } else {
+        invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
+        PjeResponse.FAIL.processResponse(response);
+      }
+    }
+  }
   
   private IFinishable finishingCode;
   private HttpServer httpServer;
