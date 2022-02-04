@@ -11,10 +11,9 @@ import com.sun.net.httpserver.Filter;
 
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 
-@SuppressWarnings("restriction")
 class PjeWebServerSetup implements IPjeWebServerSetup{
   
-  private int port = 8800;
+  private int port = PjeWebServer.HTTP_PORT;
   
   private final List<Filter> filters = new ArrayList<>();
 
