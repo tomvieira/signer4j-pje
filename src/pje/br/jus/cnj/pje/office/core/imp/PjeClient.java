@@ -22,6 +22,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -53,7 +54,7 @@ class PjeClient implements IPjeClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeClient.class);
   
   private static boolean isSuccess(int code) {
-    return code < 400;
+    return code < HttpStatus.SC_BAD_REQUEST;
   }
   
   private static String toJson(Object instance) throws PJeClientException {
@@ -275,8 +276,7 @@ class PjeClient implements IPjeClient {
   
   private void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws PJeClientException {
     try {
-      final OutputStream output = status.onNewTry(1);
-
+      
       final HttpGet get = supplier.get();
 
       try(CloseableHttpResponse response = client.execute(get)) {
@@ -284,21 +284,27 @@ class PjeClient implements IPjeClient {
         if (entity == null) {
           throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + response.getCode());
         }
-        try {
+
+        try(OutputStream output = status.onNewTry(1)) {
+          
           final long total = entity.getContentLength();
           final InputStream input = entity.getContent();
+          
           status.onStartDownload(total);
-          final byte[] buffer = new byte[32 * 1024];
+          final byte[] buffer = new byte[128 * 1024];
+          
           status.onStatus(total, 0);
           for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
             output.write(buffer, 0, length);
           status.onEndDownload();
+        
         } catch(Exception e) {
           status.onDownloadFail(e);
           throw new PJeClientException("Falha durante o download do arquivo", e);
         } finally {
           EntityUtils.consumeQuietly(entity);
         }
+        
       } finally {
         get.clear();
       }
