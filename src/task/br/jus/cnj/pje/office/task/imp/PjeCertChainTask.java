@@ -30,7 +30,7 @@ class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
     try {
       String certificateChain64;
       try {
-        certificateChain64 = token.createChooser().choose().getCertificate64();
+        certificateChain64 = token.createChooser().choose().getCertificateChain64();
       } catch (Exception e) {
         throw new TaskException("Escolha do certificado cancelada", e);
       }
