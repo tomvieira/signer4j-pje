@@ -6,5 +6,6 @@ public interface ITarefaCertChain {
   
   public Optional<String> getUploadUrl();
   
+  @Deprecated
   public boolean isDeslogarKeyStore();
 }

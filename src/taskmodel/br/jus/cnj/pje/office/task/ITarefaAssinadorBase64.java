@@ -11,6 +11,7 @@ public interface ITarefaAssinadorBase64 {
 
   List<IAssinadorBase64Arquivo> getArquivos();
 
+  @Deprecated
   boolean isDeslogarKeyStore();
 
 }

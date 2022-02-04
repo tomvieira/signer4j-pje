@@ -7,6 +7,7 @@ public interface ITarefaAssinadorHash {
 
   boolean isModoTeste();
 
+  @Deprecated
   boolean isDeslogarKeyStore();
 
   Optional<String> getAlgoritmoAssinatura();
