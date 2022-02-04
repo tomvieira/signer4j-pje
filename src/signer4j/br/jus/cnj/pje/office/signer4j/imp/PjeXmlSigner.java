@@ -180,7 +180,7 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
     @Override
     public final IPjeXmlSigner build() {
       PjeXmlSigner signer = new PjeXmlSigner(chooser, dispose);
-      Throwables.throwRuntime(() -> {
+      Throwables.tryRuntime(() -> {
         final XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM", Providers.installJsr105Provider());
         final KeyInfoFactory keyInfoFactory = xmlSignatureFactory.getKeyInfoFactory();
 

@@ -7,14 +7,12 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IFinishable;
-import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.progress.imp.ProgressFactory;
@@ -37,6 +35,7 @@ import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
+import br.jus.cnj.pje.office.web.PjeHeaders;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -84,12 +83,16 @@ class PjeWebServer implements IPjeWebServer {
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       Headers response = request.getResponseHeaders();
       response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
-      response.set(CorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
       response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With,Origin,Content-Type, Accept");
-      chain.doFilter(request);
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+      response.set(CorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
+      if ("OPTIONS".equalsIgnoreCase(request.getRequestMethod())) {
+        request.sendResponseHeaders(HttpStatus.SC_NO_CONTENT, PjeHeaders.NO_RESPONSE_BODY);
+      }else {
+        chain.doFilter(request);
+      }
     }
   }
   
@@ -121,7 +124,6 @@ class PjeWebServer implements IPjeWebServer {
   
   private class TaskRequestHandler extends PjeRequestHandler {
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private final AtomicReference<String> cachedU = new AtomicReference<String>(Ids.next());
     
     @Override
     public String getEndPoint() {
@@ -130,11 +132,6 @@ class PjeWebServer implements IPjeWebServer {
     
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      String noCache = request.getParameterU().orElse(Ids.next());      
-      if (cachedU.getAndSet(noCache).equals(noCache)) { 
-        PjeResponse.FAIL.processResponse(response); //browser can submit two or more request for some cache or reattempt timeout reason
-        return;
-      }      
       if (!running.getAndSet(true)) {
         try {
           PjeWebServer.this.executor.execute(request, response);
@@ -145,7 +142,6 @@ class PjeWebServer implements IPjeWebServer {
           running.set(false);
         }
       } else {
-        cachedU.set(Ids.next());
         invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
         PjeResponse.FAIL.processResponse(response);
       }

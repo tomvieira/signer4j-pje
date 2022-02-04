@@ -13,7 +13,6 @@ import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.impl.routing.SystemDefaultRoutePlanner;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
-import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
@@ -94,7 +93,7 @@ public enum PjeClientMode {
           .evictIdleConnections(_1m)
           .setDefaultRequestConfig(RequestConfig.custom()
               .setResponseTimeout(_30s)
-              .setConnectTimeout(_3m)              
+              .setConnectTimeout(_3m)    
               .setConnectionKeepAlive(_3m)
               .setConnectionRequestTimeout(_3m)
               .setCookieSpec(StandardCookieSpec.IGNORE).build())
