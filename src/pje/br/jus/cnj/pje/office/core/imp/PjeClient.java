@@ -46,6 +46,7 @@ import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.IDadosSSO;
+import br.jus.cnj.pje.office.web.PjeHeaders;
 
 class PjeClient implements IPjeClient {
 
@@ -86,7 +87,7 @@ class PjeClient implements IPjeClient {
   
   private <T extends HttpUriRequestBase> T createRequest(T request, String session, String userAgent) {
     request.setHeader(HttpHeaders.COOKIE, session);
-    request.setHeader("versao", version.toString());
+    request.setHeader(PjeHeaders.VERSION, version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
     canceller.cancelCode(request::abort);
     return request;

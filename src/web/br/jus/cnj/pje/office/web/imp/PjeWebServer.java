@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,7 @@ import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
+import br.jus.cnj.pje.office.web.CorsHeaders;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -83,11 +83,12 @@ class PjeWebServer implements IPjeWebServer {
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       Headers response = request.getResponseHeaders();
-      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
-      response.set(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
-      response.set(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With,Origin,Content-Type, Accept");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET");
+      response.set(CorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
+      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With,Origin,Content-Type, Accept");
       chain.doFilter(request);
     }
   }
@@ -106,7 +107,6 @@ class PjeWebServer implements IPjeWebServer {
   }
   
   private class VersionRequestHandler extends PjeRequestHandler {
-    
     @Override
     public String getEndPoint() {
       return BASE_END_POINT + "versao/";
