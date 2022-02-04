@@ -65,7 +65,7 @@ class PjeWebServer implements IPjeWebServer {
           getDefaultToolkit().beep();
           display(message);
         });
-        request.sendResponseHeaders(HttpStatus.SC_UNAUTHORIZED, 0);
+        request.sendResponseHeaders(HttpStatus.SC_UNAUTHORIZED, PjeHeaders.NO_RESPONSE_BODY);
         request.close();
       } else {
         chain.doFilter(request);
