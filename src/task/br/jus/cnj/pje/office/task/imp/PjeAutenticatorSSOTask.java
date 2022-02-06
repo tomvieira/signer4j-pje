@@ -10,9 +10,9 @@ import com.github.signer4j.task.exception.TaskException;
 import br.jus.cnj.pje.office.task.IDadosSSO;
 import br.jus.cnj.pje.office.task.ITarefaAutenticador;
 
-class PjeAutenticadorSSOTask extends PjeAutenticadorTask {
+class PjeAutenticatorSSOTask extends PjeAutenticatorTask {
 
-  public PjeAutenticadorSSOTask(Params request, ITarefaAutenticador pojo) {
+  public PjeAutenticatorSSOTask(Params request, ITarefaAutenticador pojo) {
     super(request, pojo);
   }
   

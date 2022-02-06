@@ -16,7 +16,7 @@ import br.jus.cnj.pje.office.task.ITarefaAutenticador;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
-class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
+class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
 
   private static enum Stage implements IStage {
     AUTHENTICATING_USER("Autenticação de usuário");
@@ -39,7 +39,7 @@ class PjeAutenticadorTask extends PjeAbstractTask<ITarefaAutenticador> {
   
   protected String mensagem;
   
-  public PjeAutenticadorTask(Params request, ITarefaAutenticador pojo) {
+  public PjeAutenticatorTask(Params request, ITarefaAutenticador pojo) {
     super(request, pojo);
   }
   

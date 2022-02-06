@@ -48,6 +48,6 @@ class TarefaAutenticadorReader extends AbstractRequestReader<Params, TarefaAuten
 
   @Override
   protected ITask<?> createTask(Params output, TarefaAutenticador pojo) throws IOException{
-    return new PjeAutenticadorTask(output, pojo);
+    return new PjeAutenticatorTask(output, pojo);
   }
 }

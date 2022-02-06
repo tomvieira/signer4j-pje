@@ -137,6 +137,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     PjeCertificateAcessor.INSTANCE.close();
     LOGGER.info("Fechada instância certificate acessor");
     this.lifeCycle.onKill();
+    this.lifeCycle = null;
   }
 
   @Override

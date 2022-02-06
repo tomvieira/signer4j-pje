@@ -14,6 +14,6 @@ class TarefaAutenticadorSSOReader extends TarefaAutenticadorReader{
 
   @Override
   protected ITask<?> createTask(Params output, TarefaAutenticador pojo) throws IOException{
-    return new PjeAutenticadorSSOTask(output, pojo);
+    return new PjeAutenticatorSSOTask(output, pojo);
   }
 }
