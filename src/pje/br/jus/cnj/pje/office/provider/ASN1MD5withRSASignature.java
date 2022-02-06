@@ -36,10 +36,12 @@ public class ASN1MD5withRSASignature extends Signature implements Cloneable {
     this.provider = "";
   }
 
+  @Override
   public void engineInitVerify(final PublicKey publicKey) throws InvalidKeyException {
     throw new IllegalArgumentException("Para verificar assinatura, usar o MD5withRSA.");
   }
 
+  @Override
   public void engineInitSign(final PrivateKey privateKey) throws InvalidKeyException {
     try {
       if (privateKey.getClass().getCanonicalName().equals("sun.security.mscapi.RSAPrivateKey")) {

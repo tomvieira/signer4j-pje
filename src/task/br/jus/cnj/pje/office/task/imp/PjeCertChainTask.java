@@ -5,10 +5,10 @@ import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.ITarefaCertChain;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
 
@@ -45,7 +45,7 @@ class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
       } catch (PJeClientException e) {
         throw new TaskException("Não foi possível enviar cadeia de certificados", e);
       }
-      return PjeResponse.SUCCESS;
+      return PjeWebResponse.SUCCESS;
     }finally {
       token.logout();
     }

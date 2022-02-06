@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.DownloadStatus;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgress;
@@ -101,6 +102,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   
   @Override
   protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
+    Args.requireNonNull(arquivo, "arquivo is null");
     final String endPoint = getEndpointFor(enviarPara);
     try {
       getPjeClient().send(

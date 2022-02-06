@@ -12,7 +12,7 @@ import com.sun.net.httpserver.HttpExchange;
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
 @SuppressWarnings("restriction")
-final class PjeHttpExchangeResponse implements IPjeResponse {
+public final class PjeHttpExchangeResponse implements IPjeResponse {
 
   private final HttpExchange response;
   

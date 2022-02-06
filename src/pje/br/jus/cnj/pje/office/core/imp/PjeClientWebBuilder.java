@@ -33,244 +33,246 @@ import org.apache.hc.core5.http.config.Lookup;
 import org.apache.hc.core5.http.impl.io.HttpRequestExecutor;
 import org.apache.hc.core5.util.TimeValue;
 
+import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
 
-class PjeClientBuilder  {
+class PjeClientWebBuilder implements IPjeClientBuilder  {
 
   private HttpClientBuilder clientBuilder = HttpClients.custom();
   
   private final Version version;
-  
 
-  public PjeClientBuilder(Version version) {
+  public PjeClientWebBuilder(Version version) {
     this.version = requireNonNull(version, "version is null");
   }
   
-  public final PjeClient build() {
-    PjeClient client = new PjeClient(
+  @Override
+  public final IPjeClient build() {
+    PjeWebClient client = new PjeWebClient(
       clientBuilder.build(), 
       version
     );
     return client;    
   }
   
-  public final PjeClientBuilder setRequestExecutor(final HttpRequestExecutor requestExec) {
+  public final IPjeClientBuilder setRequestExecutor(final HttpRequestExecutor requestExec) {
     clientBuilder.setRequestExecutor(requestExec);
     return this;
   }
   
-  public final PjeClientBuilder setConnectionManager(final HttpClientConnectionManager connManager) {
+  public final IPjeClientBuilder setConnectionManager(final HttpClientConnectionManager connManager) {
     this.clientBuilder.setConnectionManager(connManager);
     return this;
   }
   
-  public final PjeClientBuilder setConnectionManagerShared(
+  public final IPjeClientBuilder setConnectionManagerShared(
       final boolean shared) {
     clientBuilder.setConnectionManagerShared(false);
     return this;
   }
   
-  public final PjeClientBuilder setConnectionReuseStrategy(
+  public final IPjeClientBuilder setConnectionReuseStrategy(
       final ConnectionReuseStrategy reuseStrategy) {
     clientBuilder.setConnectionReuseStrategy(reuseStrategy);
     return this;
   }
   
-  public final PjeClientBuilder setKeepAliveStrategy(
+  public final IPjeClientBuilder setKeepAliveStrategy(
       final ConnectionKeepAliveStrategy keepAliveStrategy) {
     clientBuilder.setKeepAliveStrategy(keepAliveStrategy);
     return this;
   }
   
-  public final PjeClientBuilder setTargetAuthenticationStrategy(
+  public final IPjeClientBuilder setTargetAuthenticationStrategy(
       final AuthenticationStrategy targetAuthStrategy) {
     clientBuilder.setTargetAuthenticationStrategy(targetAuthStrategy);
     return this;
   }
   
-  public final PjeClientBuilder setProxyAuthenticationStrategy(
+  public final IPjeClientBuilder setProxyAuthenticationStrategy(
       final AuthenticationStrategy proxyAuthStrategy) {
     clientBuilder.setProxyAuthenticationStrategy(proxyAuthStrategy);
     return this;
   }
   
-  public final PjeClientBuilder setUserTokenHandler(final UserTokenHandler userTokenHandler) {
+  public final IPjeClientBuilder setUserTokenHandler(final UserTokenHandler userTokenHandler) {
     clientBuilder.setUserTokenHandler(userTokenHandler);
     return this;
   }
   
-  public final PjeClientBuilder disableConnectionState() {
+  public final IPjeClientBuilder disableConnectionState() {
     clientBuilder.disableConnectionState();
     return this;
   }
   
-  public final PjeClientBuilder setSchemePortResolver(
+  public final IPjeClientBuilder setSchemePortResolver(
       final SchemePortResolver schemePortResolver) {
     clientBuilder.setSchemePortResolver(schemePortResolver);
     return this;
   }
   
-  public final PjeClientBuilder setUserAgent(final String userAgent) {
+  public final IPjeClientBuilder setUserAgent(final String userAgent) {
     clientBuilder.setUserAgent(userAgent);
     return this;
   }
   
-  public final PjeClientBuilder setDefaultHeaders(final Collection<? extends Header> defaultHeaders) {
+  public final IPjeClientBuilder setDefaultHeaders(final Collection<? extends Header> defaultHeaders) {
     clientBuilder.setDefaultHeaders(defaultHeaders);
     return this;
   }
   
-  public final PjeClientBuilder addResponseInterceptorFirst(final HttpResponseInterceptor interceptor) {
+  public final IPjeClientBuilder addResponseInterceptorFirst(final HttpResponseInterceptor interceptor) {
     clientBuilder.addResponseInterceptorFirst(interceptor);
     return this;
   }
   
-  public final PjeClientBuilder addResponseInterceptorLast(final HttpResponseInterceptor interceptor) {
+  public final IPjeClientBuilder addResponseInterceptorLast(final HttpResponseInterceptor interceptor) {
     clientBuilder.addResponseInterceptorLast(interceptor);
     return this;
   }
   
-  public final PjeClientBuilder addRequestInterceptorFirst(final HttpRequestInterceptor interceptor) {
+  public final IPjeClientBuilder addRequestInterceptorFirst(final HttpRequestInterceptor interceptor) {
     clientBuilder.addRequestInterceptorFirst(interceptor);
     return this;
   }
   
-  public final PjeClientBuilder addRequestInterceptorLast(final HttpRequestInterceptor interceptor) {
+  public final IPjeClientBuilder addRequestInterceptorLast(final HttpRequestInterceptor interceptor) {
     clientBuilder.addRequestInterceptorLast(interceptor);
     return this;
   }
 
-  public final PjeClientBuilder addExecInterceptorBefore(final String existing, final String name, final ExecChainHandler interceptor) {
+  public final IPjeClientBuilder addExecInterceptorBefore(final String existing, final String name, final ExecChainHandler interceptor) {
     clientBuilder.addExecInterceptorBefore(existing, name, interceptor);
     return this;
   }
   
-  public final PjeClientBuilder addExecInterceptorAfter(final String existing, final String name, final ExecChainHandler interceptor) {
+  public final IPjeClientBuilder addExecInterceptorAfter(final String existing, final String name, final ExecChainHandler interceptor) {
     clientBuilder.addExecInterceptorAfter(existing, name, interceptor);
     return this;
   }
   
-  public final PjeClientBuilder replaceExecInterceptor(final String existing, final ExecChainHandler interceptor) {
+  public final IPjeClientBuilder replaceExecInterceptor(final String existing, final ExecChainHandler interceptor) {
     clientBuilder.replaceExecInterceptor(existing, interceptor);
     return this;
   }
 
-  public final PjeClientBuilder addExecInterceptorFirst(final String name, final ExecChainHandler interceptor) {
+  public final IPjeClientBuilder addExecInterceptorFirst(final String name, final ExecChainHandler interceptor) {
     clientBuilder.addExecInterceptorFirst(name, interceptor);
     return this;
   }
   
-  public final PjeClientBuilder addExecInterceptorLast(final String name, final ExecChainHandler interceptor) {
+  public final IPjeClientBuilder addExecInterceptorLast(final String name, final ExecChainHandler interceptor) {
     clientBuilder.addExecInterceptorLast(name, interceptor);
     return this;
   }
   
-  public final PjeClientBuilder disableCookieManagement() {
+  public final IPjeClientBuilder disableCookieManagement() {
     clientBuilder.disableCookieManagement();
     return this;
   }
   
-  public final PjeClientBuilder disableContentCompression() {
+  public final IPjeClientBuilder disableContentCompression() {
     clientBuilder.disableContentCompression();
     return this;
   }
   
-  public final PjeClientBuilder disableAuthCaching() {
+  public final IPjeClientBuilder disableAuthCaching() {
     clientBuilder.disableAuthCaching();
     return this;
   }
   
-  public final PjeClientBuilder setRetryStrategy(final HttpRequestRetryStrategy retryStrategy) {
+  public final IPjeClientBuilder setRetryStrategy(final HttpRequestRetryStrategy retryStrategy) {
     clientBuilder.setRetryStrategy(retryStrategy);
     return this;
   }
   
-  public final PjeClientBuilder disableAutomaticRetries() {
+  public final IPjeClientBuilder disableAutomaticRetries() {
     clientBuilder.disableAutomaticRetries();
     return this;
   }
   
-  public final PjeClientBuilder setProxy(final HttpHost proxy) {
+  public final IPjeClientBuilder setProxy(final HttpHost proxy) {
     clientBuilder.setProxy(proxy);
     return this;
   }
   
-  public final PjeClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
+  public final PjeClientWebBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
     clientBuilder.setRoutePlanner(routePlanner);
     return this;
   }
 
-  public final PjeClientBuilder setRedirectStrategy(final RedirectStrategy redirectStrategy) {
+  public final IPjeClientBuilder setRedirectStrategy(final RedirectStrategy redirectStrategy) {
     clientBuilder.setRedirectStrategy(redirectStrategy);
     return this;
   }
   
-  public final PjeClientBuilder disableRedirectHandling() {
+  public final IPjeClientBuilder disableRedirectHandling() {
     clientBuilder.disableRedirectHandling();
     return this;
   }
   
-  public final PjeClientBuilder setConnectionBackoffStrategy(
+  public final IPjeClientBuilder setConnectionBackoffStrategy(
       final ConnectionBackoffStrategy connectionBackoffStrategy) {
     clientBuilder.setConnectionBackoffStrategy(connectionBackoffStrategy);
     return this;
   }
   
-  public final PjeClientBuilder setBackoffManager(final BackoffManager backoffManager) {
+  public final IPjeClientBuilder setBackoffManager(final BackoffManager backoffManager) {
     clientBuilder.setBackoffManager(backoffManager);
     return this;
   }
   
-  public final PjeClientBuilder setDefaultCookieStore(final CookieStore cookieStore) {
+  public final IPjeClientBuilder setDefaultCookieStore(final CookieStore cookieStore) {
     clientBuilder.setDefaultCookieStore(cookieStore);
     return this;
   }
   
-  public final PjeClientBuilder setDefaultCredentialsProvider(
+  public final IPjeClientBuilder setDefaultCredentialsProvider(
       final CredentialsProvider credentialsProvider) {
     clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
     return this;
   }
   
-  public final PjeClientBuilder setDefaultAuthSchemeRegistry(
+  public final IPjeClientBuilder setDefaultAuthSchemeRegistry(
       final Lookup<AuthSchemeFactory> authSchemeRegistry) {
     clientBuilder.setDefaultAuthSchemeRegistry(authSchemeRegistry);
     return this;
   }
 
-  public final PjeClientBuilder setDefaultCookieSpecRegistry(
+  public final IPjeClientBuilder setDefaultCookieSpecRegistry(
       final Lookup<CookieSpecFactory> cookieSpecRegistry) {
     clientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry);
     return this;
   }
   
-  public final PjeClientBuilder setContentDecoderRegistry(
+  public final IPjeClientBuilder setContentDecoderRegistry(
       final LinkedHashMap<String, InputStreamFactory> contentDecoderMap) {
     clientBuilder.setContentDecoderRegistry(contentDecoderMap);
     return this;
   }
   
-  public final PjeClientBuilder setDefaultRequestConfig(final RequestConfig config) {
+  public final PjeClientWebBuilder setDefaultRequestConfig(final RequestConfig config) {
     clientBuilder.setDefaultRequestConfig(config);
     return this;
   }
   
-  public final PjeClientBuilder useSystemProperties() {
+  public final IPjeClientBuilder useSystemProperties() {
     clientBuilder.useSystemProperties();
     return this;
   }
   
-  public final PjeClientBuilder evictExpiredConnections() {
+  public final PjeClientWebBuilder evictExpiredConnections() {
     clientBuilder.evictExpiredConnections();
     return this;
   }
 
-  public final PjeClientBuilder evictIdleConnections(final TimeValue maxIdleTime) {
+  public final PjeClientWebBuilder evictIdleConnections(final TimeValue maxIdleTime) {
     clientBuilder.evictIdleConnections(maxIdleTime);
     return this;
   }
 
-  public final PjeClientBuilder disableDefaultUserAgent() {
+  public final IPjeClientBuilder disableDefaultUserAgent() {
     clientBuilder.disableDefaultUserAgent();
     return this;
   }

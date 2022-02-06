@@ -1,4 +1,4 @@
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.web.imp;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import com.github.signer4j.task.ITaskResponse;
 
 import br.jus.cnj.pje.office.web.IPjeResponse;
 
-public enum PjeResponse implements ITaskResponse<IPjeResponse> {
+public enum PjeWebResponse implements ITaskResponse<IPjeResponse> {
   //A .gif file with 1 pixels
   SUCCESS("R0lGODlhAQABAPAAAEz/AAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="), 
   
@@ -16,7 +16,7 @@ public enum PjeResponse implements ITaskResponse<IPjeResponse> {
 
   private byte[] content;
 
-  PjeResponse(String base64Content) {
+  PjeWebResponse(String base64Content) {
     this.content = Base64.base64Decode(base64Content);
   }
   

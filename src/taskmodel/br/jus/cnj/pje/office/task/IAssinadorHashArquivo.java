@@ -12,5 +12,5 @@ public interface IAssinadorHashArquivo {
 
   Optional<Long> getIdTarefa();
 
-  Optional<Boolean> getIsBin(); //TODO não é usado em lugar algum?
+  Optional<Boolean> getIsBin(); //TODO não é usado em lugar algum do lado do assinador?
 }

@@ -1,4 +1,4 @@
-package br.jus.cnj.pje.office.web.imp;
+package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.MainRequestReader.MAIN;
 

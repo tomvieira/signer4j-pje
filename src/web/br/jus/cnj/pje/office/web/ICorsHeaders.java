@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.web;
 
 import org.apache.hc.core5.http.HttpHeaders;
 
-public interface CorsHeaders {
+public interface ICorsHeaders {
   String ACCESS_CONTROL_ALLOW_CREDENTIALS       = HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS;
   String ACCESS_CONTROL_ALLOW_HEADERS           = HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS;
   String ACCESS_CONTROL_ALLOW_METHODS           = HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS;

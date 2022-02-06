@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static com.github.signer4j.imp.Streams.closeQuietly;
 import static com.github.signer4j.imp.Strings.trim;
 
 import java.io.InputStream;
@@ -21,36 +22,36 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.Streams;
 import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
 
 public enum PjeClientMode {
-  HTTP("http") {
+  NATIVE("native") {
     @Override
-    protected PjeClient createClient(PjeClientBuilder builder) {
-      return builder.build();
+    protected IPjeClientBuilder createBuilder() {
+      return new PjeClientExtensionBuilder();
     }
   },
+  HTTP("http"),
   HTTPS("https") {
     @Override
-    protected PjeClient createClient(PjeClientBuilder builder) {
-      final KeyStore keyStore;
+    protected IPjeClientBuilder createBuilder(){
       try(final InputStream input = PjeClientMode.class.getResourceAsStream("/PjeOffice.jks")) {
-        keyStore = KeyStore.getInstance("jks");
+        final KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(input, "pjeoffice".toCharArray());
         final SSLContext sslcontext = SSLContexts.custom()
-            .loadTrustMaterial(keyStore, new TrustAllStrategy()) //TODO we need to review this trust strategy!
-            .build();
+          .loadTrustMaterial(keyStore, new TrustAllStrategy()) //TODO we need to review this trust strategy!
+          .build();
         final SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create()
           .setSslContext(sslcontext)
           .build();
         final HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
           .setSSLSocketFactory(sslSocketFactory)
           .build();
-        return builder.setConnectionManager(cm).build();
+        return ((PjeClientWebBuilder)super.createBuilder()).setConnectionManager(cm);
       } catch (Exception e) {
         throw new RuntimeException("Impossível instanciar PjeClient em HTTPS", e);
       }
@@ -59,12 +60,11 @@ public enum PjeClientMode {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeClientMode.class);
   
-  private PjeClient client;
-
-  private final String name;
-  
-  private PjeClientMode(String name) {
-    this.name = name;
+  public static void closeClients() {
+    for(PjeClientMode mode: values()) {
+      mode.close();
+      LOGGER.info("client " + mode.name + " closed");
+    }
   }
   
   public static IPjeClient clientFrom(String address) {
@@ -72,32 +72,25 @@ public enum PjeClientMode {
   }
   
   public static IPjeClient clientFrom(String address, ICanceller canceller) {
-    return (trim(address).toLowerCase().startsWith(HTTPS.name) ? HTTPS : HTTP).getClient(canceller);
+    String protocol = trim(address).toLowerCase();
+    return (protocol.startsWith(NATIVE.name) ? 
+      NATIVE : protocol.startsWith(HTTP.name) ? 
+      HTTP : 
+      HTTPS)
+    .getClient(canceller);
   }
   
-  public static void closeClients() {
-    HTTP.close();
-    LOGGER.info("Cliente HTTP closed");
-    HTTPS.close();
-    LOGGER.info("Cliente HTTPS closed");
-  }
+  private IPjeClient client;
+
+  private final String name;
   
-  private final IPjeClient getClient(ICanceller canceller) {
+  private PjeClientMode(String name) {
+    this.name = name;
+  }
+    
+  protected final IPjeClient getClient(ICanceller canceller) {
     if (client == null) {
-      final Timeout _1m = Timeout.ofMinutes(1);
-      final Timeout _3m = Timeout.ofMinutes(3);
-      final Timeout _30s = Timeout.ofSeconds(30);
-      client = createClient(new PjeClientBuilder(Version.current())
-          .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-          .evictExpiredConnections()
-          .evictIdleConnections(_1m)
-          .setDefaultRequestConfig(RequestConfig.custom()
-              .setResponseTimeout(_30s)
-              .setConnectTimeout(_3m)    
-              .setConnectionKeepAlive(_3m)
-              .setConnectionRequestTimeout(_3m)
-              .setCookieSpec(StandardCookieSpec.IGNORE).build())
-          );
+      client = createBuilder().build();
     }
     client.setCanceller(canceller);
     return client;
@@ -105,11 +98,25 @@ public enum PjeClientMode {
   
   private void close() {
     if (client != null) {
-      Streams.closeQuietly(client);
-      this.client = null;
+      closeQuietly(client);
+      client = null;
     }
   }
-  
-  protected abstract PjeClient createClient(PjeClientBuilder builder);
-  
+
+  protected IPjeClientBuilder createBuilder() {
+    final Timeout _1m = Timeout.ofMinutes(1);
+    final Timeout _3m = Timeout.ofMinutes(3);
+    final Timeout _30s = Timeout.ofSeconds(30);
+    return new PjeClientWebBuilder(Version.current())
+      .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+      .evictExpiredConnections()
+      .evictIdleConnections(_1m)
+      .setDefaultRequestConfig(RequestConfig.custom()
+        .setResponseTimeout(_30s)
+        .setConnectTimeout(_3m)    
+        .setConnectionKeepAlive(_3m)
+        .setConnectionRequestTimeout(_3m)
+        .setCookieSpec(StandardCookieSpec.IGNORE).build()
+      );
+  }
 }

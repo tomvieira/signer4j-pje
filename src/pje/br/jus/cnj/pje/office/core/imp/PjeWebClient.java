@@ -2,11 +2,12 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.imp.Args.requireNonNull;
 import static com.github.signer4j.imp.Args.requireText;
+import static com.github.signer4j.imp.Strings.trim;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
@@ -28,15 +29,12 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
-import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
 import com.github.signer4j.progress.imp.ICanceller;
@@ -47,12 +45,10 @@ import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.IDadosSSO;
-import br.jus.cnj.pje.office.web.PjeHeaders;
+import br.jus.cnj.pje.office.web.IPjeHeaders;
 
-class PjeClient implements IPjeClient {
+class PjeWebClient implements IPjeClient {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PjeClient.class);
-  
   private static boolean isSuccess(int code) {
     return code < HttpStatus.SC_BAD_REQUEST;
   }
@@ -70,12 +66,13 @@ class PjeClient implements IPjeClient {
   
   private ICanceller canceller = ICanceller.NOTHING;
 
-  PjeClient(CloseableHttpClient client, Version version) {
+  PjeWebClient(CloseableHttpClient client, Version version) {
     this.client = requireNonNull(client, "client is null");
     this.version = requireNonNull(version, "version is null");
   }
   
-  void setCanceller(ICanceller canceller) {
+  @Override
+  public final void setCanceller(ICanceller canceller) {
     if (canceller != null) {
       this.canceller = canceller;
     }
@@ -88,7 +85,7 @@ class PjeClient implements IPjeClient {
   
   private <T extends HttpUriRequestBase> T createRequest(T request, String session, String userAgent) {
     request.setHeader(HttpHeaders.COOKIE, session);
-    request.setHeader(PjeHeaders.VERSION, version.toString());
+    request.setHeader(IPjeHeaders.VERSION, version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
     canceller.cancelCode(request::abort);
     return request;
@@ -104,21 +101,21 @@ class PjeClient implements IPjeClient {
   
   private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
-    final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-    parameters.add(new BasicNameValuePair("assinatura", signedData.getSignature64()));
-    parameters.add(new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()));
-    postRequest.setEntity(new UrlEncodedFormEntity(parameters));
+    postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
+      new BasicNameValuePair("assinatura", signedData.getSignature64()),
+      new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64())
+    )));
     return postRequest;
   }
 
   private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
-    final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-    parameters.add(new BasicNameValuePair("assinatura", signedData.getSignature64()));
-    parameters.add(new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()));
-    parameters.add(new BasicNameValuePair("id", file.getId().orElse("")));
-    parameters.add(new BasicNameValuePair("codIni", file.getCodIni().orElse("")));
-    parameters.add(new BasicNameValuePair("hash", file.getHash().get()));
+    final List<NameValuePair> parameters = Arrays.asList(
+      new BasicNameValuePair("assinatura", signedData.getSignature64()),
+      new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()),
+      new BasicNameValuePair("id", file.getId().orElse("")),
+      new BasicNameValuePair("codIni", file.getCodIni().orElse("")),
+      new BasicNameValuePair("hash", file.getHash().get()));
     if (file.getIdTarefa().isPresent())
       parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
     postRequest.setEntity(new UrlEncodedFormEntity(parameters));
@@ -127,33 +124,27 @@ class PjeClient implements IPjeClient {
   
   private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
-    final ISignedData signedData  = file.getSignedData().get();
-    final String fileName         = file.getNome().get();
-    final List<String> sendParams = file.getParamsEnvio();
     final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-    builder.addPart(file.getFileFieldName(), new ByteArrayBody(signedData.getSignature(), fileName + extension));
-    sendParams.forEach(s -> {
-      final String param = Strings.trim(s);
-      final int idx = param.indexOf('=');
-      String value, key;
-      if (idx < 0) {
-        LOGGER.warn("Parâmetro com formato inválido (): '{}'", param);
-        key = param; value = "";
-      } else {
-        key = param.substring(0, idx).trim();
-        value = param.substring(idx + 1).trim();
-      }
-      builder.addPart(key, new StringBody(value, ContentType.TEXT_PLAIN));
-    });
+    builder.addPart(file.getFileFieldName(), new ByteArrayBody(
+      file.getSignedData().get().getSignature(), 
+      file.getNome().get() + extension
+    ));
+    file.getParamsEnvio().stream().map(param -> {
+      int idx = (param = trim(param)).indexOf('=');
+      return new BasicNameValuePair(
+        idx < 0 ? param : param.substring(idx),  
+        idx < 0 ? ""    : param.substring(idx + 1)
+      );
+    }).forEach(nv -> builder.addPart(nv.getName(), new StringBody(nv.getValue(), ContentType.TEXT_PLAIN)));
     postRequest.setEntity(builder.build());
     return postRequest;
   }
   
   private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64) throws Exception  {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
-    List<NameValuePair> parameters = new ArrayList<>();
-    parameters.add(new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64));
-    postRequest.setEntity((HttpEntity)new UrlEncodedFormEntity(parameters));
+    postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
+      new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64)
+    )));
     return postRequest;
   }
   
@@ -276,7 +267,6 @@ class PjeClient implements IPjeClient {
   
   private void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws PJeClientException {
     try {
-      
       final HttpGet get = supplier.get();
 
       try(CloseableHttpResponse response = client.execute(get)) {
@@ -284,7 +274,6 @@ class PjeClient implements IPjeClient {
         if (entity == null) {
           throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + response.getCode());
         }
-
         try(OutputStream output = status.onNewTry(1)) {
           
           final long total = entity.getContentLength();

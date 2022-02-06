@@ -1,32 +1,26 @@
 package br.jus.cnj.pje.office.web.imp;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.net.URLEncodedUtils;
+import org.apache.hc.core5.net.URIBuilder;
 
-import com.github.signer4j.imp.Constants;
 import com.sun.net.httpserver.HttpExchange;
 
 import br.jus.cnj.pje.office.web.IPjeRequest;
 
 @SuppressWarnings("restriction")
-final class PjeHttpExchangeRequest implements IPjeRequest {
+public final class PjeHttpExchangeRequest implements IPjeRequest {
 
   private final String userAgent;
 
   private final List<NameValuePair> queryParams;
 
-  public PjeHttpExchangeRequest(HttpExchange request) { 
-    this(request, Constants.DEFAULT_CHARSET);
-  }
-
-  public PjeHttpExchangeRequest(HttpExchange request, Charset charset) {
-    this.queryParams = parseParams(request.getRequestURI(), charset);
+  public PjeHttpExchangeRequest(HttpExchange request) {
+    this.queryParams = parseParams(request.getRequestURI());
     this.userAgent = request.getRequestHeaders().getFirst(HttpHeaders.USER_AGENT);
   }
 
@@ -46,10 +40,10 @@ final class PjeHttpExchangeRequest implements IPjeRequest {
   }
   
   private Optional<String> getParameter(String key) {
-    return queryParams.stream().filter(n -> key.equalsIgnoreCase(n.getName())).map(n -> n.getValue()).findFirst();
+    return queryParams.stream().filter(n -> n.getName().equalsIgnoreCase(key)).map(n -> n.getValue()).findFirst();
   }
   
-  private static List<NameValuePair> parseParams(URI uri, Charset charset) {
-    return URLEncodedUtils.parse(uri, charset);
+  private static List<NameValuePair> parseParams(URI uri) {
+    return new URIBuilder(uri).getQueryParams();
   }
 }

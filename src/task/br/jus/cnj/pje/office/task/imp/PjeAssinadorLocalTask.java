@@ -22,10 +22,10 @@ import com.github.signer4j.progress.IProgressView;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorLocalTask extends PjeAssinadorTask {
   
@@ -63,7 +63,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       progress.stackTracer(s -> LOGGER.info(s.toString()));
       progress.dispose();
     });
-    return PjeResponse.SUCCESS;
+    return PjeWebResponse.SUCCESS;
   }
 
   @Override
@@ -91,6 +91,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   @Override
   protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
     Args.requireNonNull(arquivo, "arquivo is null");
+    
     Optional<ISignedData> signature = arquivo.getSignedData();
     if (!signature.isPresent()) {
       throw new TaskException("Arquivo não foi assinado!");

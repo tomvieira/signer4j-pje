@@ -15,7 +15,6 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.core.imp.UnsupportedCosignException;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
@@ -23,6 +22,7 @@ import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.IPjeSignMode;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
@@ -152,11 +152,11 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     
     if (success != size) {
       invokeLater(() -> display("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades."));
-      return PjeResponse.FAIL;
+      return PjeWebResponse.FAIL;
     }
     
     invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
-    return PjeResponse.SUCCESS;
+    return PjeWebResponse.SUCCESS;
   }
   
   protected abstract IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException;

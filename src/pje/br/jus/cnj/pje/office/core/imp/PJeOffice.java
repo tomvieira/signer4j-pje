@@ -3,11 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static com.github.signer4j.imp.HttpTools.touchQuietly;
-import static com.github.signer4j.imp.Strings.getQuietly;
 import static com.github.signer4j.imp.Threads.async;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 
@@ -22,19 +18,19 @@ import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.WindowLockDettector;
 import com.github.signer4j.progress.imp.ProgressFactory;
 
+import br.jus.cnj.pje.office.core.IPjeCommander;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
-import br.jus.cnj.pje.office.web.IPjeWebServer;
-import br.jus.cnj.pje.office.web.imp.PJeWebServerFactory;
+import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PJeOffice.class);
 
-  private IPjeWebServer webServer;
+  private IPjeCommander<?,?> commander;
 
   private IPjeLifeCycleHook lifeCycle;
 
@@ -118,24 +114,24 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
   
   private void reset() {
-    stopWebServer();
+    stopCommander();
     startWebServer();
   }
 
-  protected void onWebServerStart() {
+  protected void onCommanderStart() {
     LOGGER.info("Servidor web iniciado e pronto para receber requisições.");
     this.dettector.start();
     PjeSecurityAgent.INSTANCE.refresh();
     lifeCycle.onStartup();
   }
 
-  protected void onWebServerStop() {
+  protected void onCommanderStop() {
     LOGGER.info("Servidor web parado. Requisições indisponíveis");
     PjeClientMode.closeClients();
     lifeCycle.onShutdown();
   }
   
-  protected void onWebServerKill() {
+  protected void onCommanderKill() {
     LOGGER.info("Killing PjeOffice");
     this.dettector.stop();
     PjeCertificateAcessor.INSTANCE.close();
@@ -147,7 +143,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   public void onMachineLocked(int value) {
     checkIsAlive();
     LOGGER.info("Máquina bloqueada pelo usuário");
-    stopWebServer();
+    stopCommander();
     PjeCertificateAcessor.INSTANCE.close();
   }
 
@@ -159,22 +155,22 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   private void startWebServer() {
-    if (this.webServer == null) {
-      this.webServer = PJeWebServerFactory.DEFAULT.create(this);
-      this.ticket = this.webServer.lifeCycle().subscribe(cycle -> {
+    if (this.commander == null) {
+      this.commander = PjeCommandFactory.DEFAULT.create(this);
+      this.ticket = this.commander.lifeCycle().subscribe(cycle -> {
         switch(cycle) {
         case STARTUP:
-          onWebServerStart();
+          onCommanderStart();
           break;
         case SHUTDOWN:
-          onWebServerStop();
+          onCommanderStop();
           break;
         case KILL:
-          onWebServerKill();
+          onCommanderKill();
         }
       });
       try {
-        this.webServer.start();
+        this.commander.start();
       } catch (IOException e) {
         LOGGER.warn("Não foi possível iniciar o servidor web", e);
         this.lifeCycle.onFailStart(e);
@@ -182,32 +178,32 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     }
   }
   
-  private void stopWebServer() {
-    stopWebServer(false);
+  private void stopCommander() {
+    stopCommander(false);
   }
 
-  private void stopWebServer(boolean kill) {
-    if (this.webServer != null) {
+  private void stopCommander(boolean kill) {
+    if (this.commander != null) {
       try {
-        this.webServer.stop(kill);
+        this.commander.stop(kill);
       } catch (IOException e) {
         LOGGER.warn("Não foi possível parar o servidor web em close", e);
         this.lifeCycle.onFailShutdown(e);
       } finally {
-        this.webServer = null;
+        this.commander = null;
         if (this.ticket != null)
           this.ticket.dispose();
         this.ticket = null;
       }
     } else if (kill) {
-      onWebServerKill();
+      onCommanderKill();
     }
   }
   
   @Override
   public void kill() {
     checkIsAlive();
-    this.stopWebServer(true);
+    this.stopCommander(true);
     this.lifeCycle = null;
     this.dettector = null;
     this.ticket = null;
@@ -239,33 +235,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showOfflineSigner() {
     checkIsAlive();
-    final String request = 
-      "{\"aplicacao\":\"Pje\"," + 
-      "\"servidor\":\"localhost\"," + 
-      "\"sessao\":\"localhost\"," + 
-      "\"codigoSeguranca\":\"localhost\"," + 
-      "\"tarefaId\":\"cnj.assinador\"," + 
-      "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
-      + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-      + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-      + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
-      "}";
-    
-    String paramRequest = getQuietly(() -> encode(request, UTF_8.toString()), "").get();
-
-    async(() ->  {
-      try {
-        webServer.setAllowLocalRequest(true);
-        touchQuietly(
-          "http://127.0.0.1:" + IPjeWebServer.HTTP_PORT + webServer.getTaskEndpoint() + 
-          "?r=" + paramRequest + 
-          "&u=" + System.currentTimeMillis()         
-        );
-        LOGGER.info("Finalizada requisição local");
-      }finally {
-        Threads.sleep(2000);        
-        webServer.setAllowLocalRequest(false);
-      }
-    });
+    commander.showOfflineSigner();
   }
 }

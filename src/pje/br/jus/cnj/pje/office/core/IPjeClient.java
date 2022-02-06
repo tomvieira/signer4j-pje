@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
+import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
@@ -31,5 +32,6 @@ public interface IPjeClient extends AutoCloseable {
   void send(String endPoint, String session, String userAgent, IDadosSSO dadosSSO) throws PJeClientException;;
   
   void close() throws IOException;
-  
+
+  void setCanceller(ICanceller canceller);
 }

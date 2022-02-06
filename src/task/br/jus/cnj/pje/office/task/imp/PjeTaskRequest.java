@@ -1,4 +1,4 @@
-package br.jus.cnj.pje.office.web.imp;
+package br.jus.cnj.pje.office.task.imp;
 
 import com.github.signer4j.task.imp.DefaultTaskRequest;
 

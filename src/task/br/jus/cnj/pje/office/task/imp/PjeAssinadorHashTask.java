@@ -17,11 +17,11 @@ import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorHash;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
 
@@ -132,6 +132,6 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       token.logout();
     }
     
-    return fail ? PjeResponse.FAIL : PjeResponse.SUCCESS;
+    return fail ? PjeWebResponse.FAIL : PjeWebResponse.SUCCESS;
   }
 }

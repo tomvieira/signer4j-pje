@@ -15,14 +15,13 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinadorBase64Arquivo;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorBase64;
 import br.jus.cnj.pje.office.task.imp.TarefaAssinadorBase64Reader.AssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
 
@@ -128,19 +127,22 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
       }
       
       progress.begin(Stage.FILE_SENDING);
-      final IPjeClient client = getPjeClient();
       try {
-        client.send(getEndpointFor(uploadUrl), getSession(), getUserAgent(), saida);
+        getPjeClient().send(
+          getEndpointFor(uploadUrl), 
+          getSession(), 
+          getUserAgent(), 
+          saida
+        );
       }catch(Exception e) {
-        TaskException ex =  new TaskException("Não foi possível enviar os dados ao servidor", e);
-        throw progress.abort(ex);
+        throw progress.abort(new TaskException("Não foi possível enviar os dados ao servidor", e));
       }finally {
         saida.forEach(IAssinadorBase64ArquivoAssinado::dispose);
         saida.clear();
         saida = null;
       }
       progress.end();
-      return PjeResponse.SUCCESS;
+      return PjeWebResponse.SUCCESS;
     }finally {
       token.logout();
     }

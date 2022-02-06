@@ -25,11 +25,11 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
 import br.jus.cnj.pje.office.task.ITaskExecutorParams;
 import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
@@ -162,7 +162,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.begin(Stage.TASK_EXECUTION);
       progress.step("Executando a tarefa '%s'", getId());
       ITaskResponse<IPjeResponse> response = doGet(); 
-      progress.step("Tarefa completa. Status de sucesso: %s", PjeResponse.SUCCESS.equals(response));
+      progress.step("Tarefa completa. Status de sucesso: %s", PjeWebResponse.SUCCESS.equals(response));
       progress.end();
       
       return response;
@@ -173,7 +173,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       fail = progress.abort(e);
     }
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
-    return PjeResponse.FAIL;
+    return PjeWebResponse.FAIL;
   }
   
   protected void beforeGet() {}

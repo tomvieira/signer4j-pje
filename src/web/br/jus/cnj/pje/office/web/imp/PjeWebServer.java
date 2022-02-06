@@ -1,23 +1,20 @@
 package br.jus.cnj.pje.office.web.imp;
 
 import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.signer4j.imp.HttpTools.touchQuietly;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
-import static java.awt.Toolkit.getDefaultToolkit;
+import static com.github.signer4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.progress.imp.ProgressFactory;
-import com.github.signer4j.task.ITaskRequestExecutor;
-import com.github.signer4j.task.exception.TaskExecutorException;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -28,20 +25,16 @@ import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.PjeCertificateAcessor;
-import br.jus.cnj.pje.office.core.imp.PjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeCommander;
 import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
-import br.jus.cnj.pje.office.web.CorsHeaders;
-import br.jus.cnj.pje.office.web.IPjeRequest;
+import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
+import br.jus.cnj.pje.office.web.ICorsHeaders;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
-import br.jus.cnj.pje.office.web.IPjeResponse;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
-import br.jus.cnj.pje.office.web.PjeHeaders;
-import io.reactivex.Observable;
-import io.reactivex.subjects.BehaviorSubject;
+import br.jus.cnj.pje.office.web.IPjeHeaders;
 
-class PjeWebServer implements IPjeWebServer {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(PjeWebServer.class);
+@SuppressWarnings("restriction") 
+class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeResponse> implements IPjeWebServer {
 
   private static class AccessFilter extends Filter {
     @Override
@@ -53,18 +46,8 @@ class PjeWebServer implements IPjeWebServer {
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       InetAddress remote = request.getRemoteAddress().getAddress();
       if (!remote.isLoopbackAddress()) {
-        InetAddress local = request.getLocalAddress().getAddress();
-        String message = "Identificado acesso indevido ao seu PjeOffice.\n" +
-         "IP remoto: " + remote.getHostAddress() + "\n" +
-         "IP local: " + local.getHostAddress() + "\n" +
-         "Por favor, remova seu certificado do computador\n" +
-         "e notifique este alerta ao suporte em segurança!";
-        LOGGER.warn(message);
-        invokeLater(() -> {
-          getDefaultToolkit().beep();
-          display(message);
-        });
-        request.sendResponseHeaders(HttpStatus.SC_UNAUTHORIZED, PjeHeaders.NO_RESPONSE_BODY);
+        LOGGER.warn("Tentativa de acesso indevido a partir do ip: " + remote.getHostAddress());
+        request.sendResponseHeaders(HttpStatus.SC_UNAUTHORIZED, IPjeHeaders.NO_RESPONSE_BODY);
         request.close();
       } else {
         chain.doFilter(request);
@@ -81,15 +64,15 @@ class PjeWebServer implements IPjeWebServer {
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       Headers response = request.getResponseHeaders();
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-      response.set(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-      response.set(CorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
+      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
+      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
+      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+      response.set(ICorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
       if ("OPTIONS".equalsIgnoreCase(request.getRequestMethod())) {
-        request.sendResponseHeaders(HttpStatus.SC_NO_CONTENT, PjeHeaders.NO_RESPONSE_BODY);
-      }else {
+        request.sendResponseHeaders(HttpStatus.SC_NO_CONTENT, IPjeHeaders.NO_RESPONSE_BODY);
+      } else {
         chain.doFilter(request);
       }
     }
@@ -103,8 +86,7 @@ class PjeWebServer implements IPjeWebServer {
     
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      LOGGER.debug("Recebido pedido de ping");
-      PjeResponse.SUCCESS.processResponse(response);
+      PjeWebResponse.SUCCESS.processResponse(response);
     }
   }
   
@@ -116,7 +98,6 @@ class PjeWebServer implements IPjeWebServer {
 
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      LOGGER.debug("Recebido pedido de versão");
       response.writeJson(Version.jsonBytes());
     }
   }
@@ -130,7 +111,7 @@ class PjeWebServer implements IPjeWebServer {
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de parada do servidor");
-      PjeResponse.SUCCESS.processResponse(response);
+      PjeWebResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.exit();
     }
   }
@@ -144,14 +125,12 @@ class PjeWebServer implements IPjeWebServer {
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de logout do certificado");
-      PjeResponse.SUCCESS.processResponse(response);
+      PjeWebResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.logout();
     }    
   } 
   
   private class TaskRequestHandler extends PjeRequestHandler {
-    private final AtomicBoolean running = new AtomicBoolean(false);
-    
     @Override
     public String getEndPoint() {
       return BASE_END_POINT + "requisicao/";
@@ -159,26 +138,15 @@ class PjeWebServer implements IPjeWebServer {
     
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      if (!running.getAndSet(true)) {
-        try {
-          PjeWebServer.this.executor.execute(request, response);
-        } catch (TaskExecutorException e) {
-          LOGGER.error("Exceção no ciclo de vida da requisição", e);
-          PjeResponse.FAIL.processResponse(response);
-        }finally {
-          running.set(false);
-        }
-      } else {
-        invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
-        PjeResponse.FAIL.processResponse(response);
-      }
+      PjeWebServer.this.execute(request, response);
     }
   }
   
-  private IFinishable finishingCode;
   private HttpServer httpServer;
   private HttpsServer httpsServer;
   private PjeWebServerSetup setup;
+  
+  private final AtomicBoolean running = new AtomicBoolean(false);
 
   private final Filter cors   = new CorsFilter();
   private final Filter access = new AccessFilter();
@@ -189,75 +157,54 @@ class PjeWebServer implements IPjeWebServer {
   private final IPjeRequestHandler exit = new ShutdownRequestHandler();
   private final IPjeRequestHandler vaza = new LogoutRequestHandler();
 
-  private final AtomicBoolean localRequest = new AtomicBoolean(false);
-
-  private final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
-  
-  private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
-  
   PjeWebServer(IFinishable finishingCode) {
     this(finishingCode, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
-
+  
   private PjeWebServer(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
     this(finishingCode, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
   }
 
   private PjeWebServer(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
-    this.executor = new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent, localRequest);
-    this.finishingCode = finishingCode;
+    super(new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent), finishingCode);
   }
   
   @Override
-  public void setAllowLocalRequest(boolean enabled) {
-    this.localRequest.set(enabled);
-  }
-
-  @Override
-  public String getTaskEndpoint() {
-    return task.getEndPoint();
-  }
-  
-  private void notifyShutdown() {
-    startup.onNext(LifeCycle.SHUTDOWN);
-  }
-  
-  private void notifyStartup() {
-    startup.onNext(LifeCycle.STARTUP);
-  }
-  
-  private void notifyKill() {
-    startup.onNext(LifeCycle.KILL);
+  public void execute(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) {
+    if (!isStarted())
+      throw new IllegalStateException("web server not started!");
+    if (!running.getAndSet(true)) {
+      try {
+        super.execute(request, response);
+      }finally {
+        running.set(false);
+      }
+    } else {
+      invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
+      handleException(request, response, null);
+    }
   }
   
   @Override
-  public Observable<LifeCycle> lifeCycle() {
-    return startup;
+  protected void handleException(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response, Exception e) {
+    tryRun(() -> PjeWebResponse.FAIL.processResponse(response));
   }
-
+  
   @Override
   public synchronized boolean isStarted() {
     return setup != null;
   }
   
-  private void exit() {
-    finishingCode.exit(1500);
-  }
-  
-  private void logout() {
-    finishingCode.logout();
-  }
-  
   private void startHttps() throws IOException {
     if (httpsServer == null) {
-      httpsServer = PjeServerMode.newHttps(setup.usingPort(IPjeWebServer.HTTPS_PORT));
+      httpsServer = PjeServerMode.newHttps(setup.usingPort(HTTPS_PORT));
       httpsServer.start();
     }
   }
 
   private void startHttp() throws IOException {
     if (httpServer == null) {
-      httpServer = PjeServerMode.newHttp(setup.usingPort(IPjeWebServer.HTTP_PORT));
+      httpServer = PjeServerMode.newHttp(setup.usingPort(HTTP_PORT));
       httpServer.start();
     }
   }
@@ -289,7 +236,6 @@ class PjeWebServer implements IPjeWebServer {
           .usingHandler(task)
           .usingHandler(exit)
           .usingHandler(vaza);
-        
         startHttp();
         startHttps();
       } catch (IOException e) {
@@ -305,7 +251,7 @@ class PjeWebServer implements IPjeWebServer {
   public synchronized void stop(boolean kill) {
     if (isStarted()) {
       LOGGER.info("Parando servidor PjeWebServer");
-      Throwables.tryRun(executor::close);
+      super.stop(kill);
       Throwables.tryRun(setup::shutdown);
       try {
         stopHttp();
@@ -319,6 +265,15 @@ class PjeWebServer implements IPjeWebServer {
         notifyKill();
       }
     }
+  }
+
+  @Override
+  protected void doShowOfflineSigner(String paramRequest) {
+    touchQuietly(
+      "http://127.0.0.1:" + HTTP_PORT + task.getEndPoint() + 
+      "?r=" + paramRequest + 
+      "&u=" + System.currentTimeMillis()         
+    );
   }
 }
 

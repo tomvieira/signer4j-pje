@@ -15,18 +15,22 @@ public class NullMessageDigest extends MessageDigest implements Cloneable {
     this.engineReset();
   }
 
+  @Override
   public void engineUpdate(final byte b) {
     this.bOut.write(b);
   }
 
+  @Override
   public void engineUpdate(final byte[] b, final int offset, final int length) {
     this.bOut.write(b, offset, length);
   }
 
+  @Override
   public void engineReset() {
     this.bOut.reset();
   }
 
+  @Override
   public byte[] engineDigest() {
     final byte[] res = this.bOut.toByteArray();
     this.reset();
