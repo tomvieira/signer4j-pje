@@ -115,7 +115,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   
   private void reset() {
     stopCommander();
-    startWebServer();
+    startCommander();
   }
 
   protected void onCommanderStart() {
@@ -152,10 +152,10 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   public void onMachineUnlocked(int value) {
     checkIsAlive();
     LOGGER.info("Máquina desbloqueada pelo usuário");
-    startWebServer();
+    startCommander();
   }
 
-  private void startWebServer() {
+  private void startCommander() {
     if (this.commander == null) {
       this.commander = PjeCommandFactory.DEFAULT.create(this);
       this.ticket = this.commander.lifeCycle().subscribe(cycle -> {
