@@ -3,6 +3,7 @@ package br.jus.cnj.pje.office.core;
 import java.io.IOException;
 import java.util.List;
 
+import com.github.signer4j.IContentType;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.progress.imp.ICanceller;
@@ -23,7 +24,7 @@ public interface IPjeClient extends AutoCloseable {
 
   void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException;
 
-  void send(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) throws PJeClientException;
+  void send(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) throws PJeClientException;
   
   void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files)  throws PJeClientException;
   

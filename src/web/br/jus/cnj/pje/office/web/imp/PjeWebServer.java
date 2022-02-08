@@ -7,6 +7,8 @@ import static com.github.signer4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
@@ -29,9 +31,9 @@ import br.jus.cnj.pje.office.core.imp.PjeCommander;
 import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
 import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
 import br.jus.cnj.pje.office.web.ICorsHeaders;
+import br.jus.cnj.pje.office.web.IPjeHeaders;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
 import br.jus.cnj.pje.office.web.IPjeWebServer;
-import br.jus.cnj.pje.office.web.IPjeHeaders;
 
 @SuppressWarnings("restriction") 
 class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeResponse> implements IPjeWebServer {
@@ -142,6 +144,18 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
   }
   
+  private class PluginRequestHandler extends PjeRequestHandler {
+    @Override
+    public String getEndPoint() {
+      return BASE_END_POINT + "plugin";
+    }
+
+    @Override
+    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+      response.writeHtml(Files.readAllBytes(Paths.get("./plugin.html")));
+    }
+  }
+  
   private HttpServer httpServer;
   private HttpsServer httpsServer;
   private PjeWebServerSetup setup;
@@ -235,7 +249,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
           .usingHandler(vers)
           .usingHandler(task)
           .usingHandler(exit)
-          .usingHandler(vaza);
+          .usingHandler(vaza).usingHandler(new PluginRequestHandler());
         startHttp();
         startHttps();
       } catch (IOException e) {

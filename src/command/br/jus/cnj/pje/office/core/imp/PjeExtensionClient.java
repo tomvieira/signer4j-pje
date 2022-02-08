@@ -3,6 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import java.io.IOException;
 import java.util.List;
 
+import com.github.signer4j.IContentType;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.progress.imp.ICanceller;
@@ -28,7 +29,7 @@ public class PjeExtensionClient implements IPjeClient {
   }
 
   @Override
-  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) throws PJeClientException {
+  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType extension) throws PJeClientException {
   }
 
   @Override

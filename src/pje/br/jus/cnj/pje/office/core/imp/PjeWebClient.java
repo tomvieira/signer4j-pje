@@ -31,6 +31,7 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.signer4j.IContentType;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
@@ -50,7 +51,7 @@ import br.jus.cnj.pje.office.web.IPjeHeaders;
 class PjeWebClient implements IPjeClient {
 
   private static boolean isSuccess(int code) {
-    return code < HttpStatus.SC_BAD_REQUEST;
+    return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
   }
   
   private static String toJson(Object instance) throws PJeClientException {
@@ -122,12 +123,13 @@ class PjeWebClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) {
+  private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
     builder.addPart(file.getFileFieldName(), new ByteArrayBody(
       file.getSignedData().get().getSignature(), 
-      file.getNome().get() + extension
+      ContentType.create(contentType.getMineType(), contentType.getCharset()),
+      file.getNome().get() + contentType.getExtension()
     ));
     file.getParamsEnvio().stream().map(param -> {
       int idx = (param = trim(param)).indexOf('=');
@@ -190,13 +192,13 @@ class PjeWebClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, String extension) throws PJeClientException {
+  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) throws PJeClientException {
     final Supplier<HttpPost> supplier = () -> createPostRequest(
       requireText(endPoint, "empty endPoint"), 
       requireText(session, "session empty"),
       requireText(userAgent, "userAgent null"), 
       requireNonNull(file, "file is null"),
-      requireText(extension, "extension is null")
+      requireNonNull(contentType, "contentType is null")
     );
     post(supplier, ResultChecker.IF_ERROR_THROW);
   }
@@ -241,7 +243,7 @@ class PjeWebClient implements IPjeClient {
       try(CloseableHttpResponse response = client.execute(post)) {
         int code = response.getCode();
         if (!isSuccess(code)) { 
-          throw new PJeClientException("Servidor retornando status code: " + code);
+          throw new PJeClientException("Servidor retornando - HTTP Code: " + code);
         }
         HttpEntity entity = response.getEntity();
         if (entity != null) {
@@ -249,7 +251,7 @@ class PjeWebClient implements IPjeClient {
           try {
             responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
           } catch (ParseException | IOException e) {
-            throw new PJeClientException(e);
+            throw new PJeClientException("Falha na leitura de entity - HTTP Code: " + code, e);
           } finally {
             EntityUtils.consumeQuietly(entity);
           }
@@ -270,10 +272,13 @@ class PjeWebClient implements IPjeClient {
       final HttpGet get = supplier.get();
 
       try(CloseableHttpResponse response = client.execute(get)) {
+        int code = response.getCode();
+
         HttpEntity entity = response.getEntity();
         if (entity == null) {
-          throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + response.getCode());
+          throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + code);
         }
+        
         try(OutputStream output = status.onNewTry(1)) {
           
           final long total = entity.getContentLength();
@@ -289,11 +294,10 @@ class PjeWebClient implements IPjeClient {
         
         } catch(Exception e) {
           status.onDownloadFail(e);
-          throw new PJeClientException("Falha durante o download do arquivo", e);
+          throw new PJeClientException("Falha durante o download do arquivo - HTTP Code: " + code, e);
         } finally {
           EntityUtils.consumeQuietly(entity);
         }
-        
       } finally {
         get.clear();
       }
@@ -328,7 +332,7 @@ class PjeWebClient implements IPjeClient {
         if (response.startsWith(SERVER_SUCCESS_RESPONSE))
           return;
         IF_ERROR_THROW.run(response);
-        throw new PJeClientException("Servidor não recebeu arquivo enviado");
+        throw new PJeClientException("Servidor não recebeu dados enviados");
       }
     }, 
     

@@ -1,10 +1,15 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import java.nio.charset.Charset;
+
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ICMSSigner;
 import com.github.signer4j.imp.Args;
+import com.github.signer4j.imp.Constants;
+import com.github.signer4j.imp.Objects;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
@@ -12,20 +17,15 @@ import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
 enum AssinaturaPadrao implements IAssinaturaPadrao {
-  ENVELOPED() {
+  ENVELOPED(".xml",  "application/xml", Constants.UTF_8) {
     @Override
     public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {
       Args.requireNonNull(token, "token is null");
       return token.xmlSignerBuilder().build();
     }
-
-    @Override
-    public String getExtension() {
-      return ".xml";
-    }
   },
   
-  NOT_ENVELOPED(){
+  NOT_ENVELOPED(".p7s", "application/pkcs7-signature"){
     @Override
     public IAssinaturaPadrao checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
       PjeTaskChecker.checkIfNull(params, "params is null");
@@ -44,12 +44,21 @@ enum AssinaturaPadrao implements IAssinaturaPadrao {
         .usingConfig((p, o) -> ((ICMSSigner)p).usingAttributes((Boolean)o))
         .build();
     }
-
-    @Override
-    public String getExtension() {
-      return ".p7s";
-    }
   }; 
+  
+  private final String extension;
+  private final String mimeType;
+  private final Charset charset;
+  
+  private AssinaturaPadrao(String extension, String mimeType) {
+    this(extension, mimeType, null);
+  }
+
+  private AssinaturaPadrao(String extension, String mimeType, Charset charset) {
+    this.extension = extension;
+    this.mimeType = mimeType;
+    this.charset = charset;
+  }
 
   @Override
   public IAssinaturaPadrao checkIfDependentParamsIsPresent(ITarefaAssinador params) throws TaskException  {
@@ -64,6 +73,21 @@ enum AssinaturaPadrao implements IAssinaturaPadrao {
   @JsonValue
   public String getKey() {
     return this.name().toLowerCase();
+  }
+  
+  @Override
+  public String getExtension() {
+    return extension;
+  }
+
+  @Override
+  public String getMineType() {
+    return mimeType;
+  }
+
+  @Override
+  public String getCharset() {
+    return Objects.toString(charset, null);
   }
 }
 

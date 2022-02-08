@@ -27,6 +27,12 @@ public final class PjeHttpExchangeResponse implements IPjeResponse {
     response.getResponseBody().flush();
   }
   
+  public void writeHtml(byte[] data) throws IOException {
+    Headers headers = response.getResponseHeaders();
+    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_HTML.getMimeType());
+    write(data);
+  }
+  
   public void writeJson(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
