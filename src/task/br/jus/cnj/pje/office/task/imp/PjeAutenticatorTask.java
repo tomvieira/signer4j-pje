@@ -60,7 +60,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
    */
   @Override
   protected final void beforeGet() {
-    getTokenAccess().logout();
+    forceLogout();
   }  
 
   @Override

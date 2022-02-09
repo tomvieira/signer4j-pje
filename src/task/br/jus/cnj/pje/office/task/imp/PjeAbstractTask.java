@@ -71,7 +71,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(PJE_MAIN_REQUEST_PARAM);
   }
   
-  protected final IPjeTokenAccess getTokenAccess() {
+  private final IPjeTokenAccess getTokenAccess() {
     return getParameterValue(IPjeTokenAccess.PARAM_NAME);
   }
 
@@ -118,6 +118,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   protected final IPjeToken loginToken() {
     return getTokenAccess().get();
+  }
+  
+  protected final void forceLogout() {
+    getTokenAccess().logout();
   }
 
   protected final IPjeClient getPjeClient() {

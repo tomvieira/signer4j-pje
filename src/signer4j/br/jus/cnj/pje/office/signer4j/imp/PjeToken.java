@@ -6,11 +6,14 @@ import com.github.signer4j.ICMSSignerBuilder;
 import com.github.signer4j.ICertificateChooser;
 import com.github.signer4j.ICertificateChooserFactory;
 import com.github.signer4j.IPKCS7SignerBuilder;
+import com.github.signer4j.IPasswordCallbackHandler;
+import com.github.signer4j.IPasswordCollector;
 import com.github.signer4j.ISignerBuilder;
 import com.github.signer4j.IToken;
 import com.github.signer4j.exception.NotAuthenticatedException;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.TokenWrapper;
+import com.github.signer4j.imp.exception.LoginCanceledException;
 import com.github.signer4j.imp.exception.Signer4JException;
 
 import br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor;
@@ -74,9 +77,24 @@ public class PjeToken extends TokenWrapper implements IPjeToken {
   }
   
   @Override
-  public final IToken login() throws Signer4JException { 
+  public final IPjeToken login() throws Signer4JException { 
     strategy.login(super.token);
     return this;
+  }
+  
+  @Override
+  public IPjeToken login(IPasswordCallbackHandler callback) throws Signer4JException {
+    throw new LoginCanceledException("strategy for callback is not supported!");
+  }
+  
+  @Override
+  public IPjeToken login(IPasswordCollector collector) throws Signer4JException {
+    throw new LoginCanceledException("strategy for password collector is not supported!");
+  }
+
+  @Override
+  public IPjeToken login(char[] password) throws Signer4JException {
+    throw new LoginCanceledException("strategy for literal password is not supported!");
   }
   
   @Override
