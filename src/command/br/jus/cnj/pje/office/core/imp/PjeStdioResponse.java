@@ -4,16 +4,26 @@ import java.io.IOException;
 
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Constants;
-import com.github.signer4j.task.ITaskResponse;
 
-import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public class PjeStdioResponse implements ITaskResponse<IPjeResponse>{
+public class PjeStdioResponse extends PjeTaskResponse {
 
   private String output;
+  private boolean success;
   
   public PjeStdioResponse(String output) {
+    this(output, true);
+  }
+  
+  public PjeStdioResponse(String output, boolean success) {
     this.output = Args.requireNonNull(output, "output is null");
+    this.success = success;
+  }
+  
+  @Override
+  public final boolean isSuccess() {
+    return success;
   }
   
   @Override

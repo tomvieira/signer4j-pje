@@ -4,8 +4,6 @@ import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.HttpTools.touchQuietly;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static com.github.signer4j.imp.Throwables.tryRun;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -16,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.IFinishable;
-import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Throwables;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
@@ -271,10 +268,9 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
 
   @Override
   protected void doShowOfflineSigner(String request) {
-    String paramRequest = Strings.getQuietly(() -> encode(request, UTF_8.toString()), "").get();
     touchQuietly(
       "http://127.0.0.1:" + HTTP_PORT + task.getEndPoint() + 
-      "?r=" + paramRequest + 
+      "?r=" + request + 
       "&u=" + System.currentTimeMillis()         
     );
   }

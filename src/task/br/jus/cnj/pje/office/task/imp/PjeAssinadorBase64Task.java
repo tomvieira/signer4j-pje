@@ -15,13 +15,13 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinadorBase64Arquivo;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorBase64;
 import br.jus.cnj.pje.office.task.imp.TarefaAssinadorBase64Reader.AssinadorBase64ArquivoAssinado;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
 
@@ -127,11 +127,12 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
       }
       
       progress.begin(Stage.FILE_SENDING);
+      
+      PjeTaskResponse response;
+      
       try {
-        getPjeClient().send(
-          getEndpointFor(uploadUrl), 
-          getSession(), 
-          getUserAgent(), 
+        response = getPjeClient().send(
+          getTarget(uploadUrl),
           saida
         );
       }catch(Exception e) {
@@ -142,7 +143,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
         saida = null;
       }
       progress.end();
-      return PjeWebResponse.SUCCESS;
+      return response;
     }finally {
       token.logout();
     }

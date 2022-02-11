@@ -13,12 +13,12 @@ import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.Pair;
-import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.web.IPjeHeaders;
 
 public class PJeStdioClient extends AstractPjeClient<JSONObject> {
@@ -28,30 +28,30 @@ public class PJeStdioClient extends AstractPjeClient<JSONObject> {
   }
   
   @Override
-  protected <R extends JSONObject> R createOutput(R request, String session, String userAgent) {
-    request.put(HttpHeaders.COOKIE, session);
+  protected <R extends JSONObject> R createOutput(R request, IPjeTarget target) {
+    request.put(HttpHeaders.COOKIE, target.getSession());
     request.put(IPjeHeaders.VERSION, version.toString());
-    request.put(HttpHeaders.USER_AGENT, userAgent);
+    request.put(HttpHeaders.USER_AGENT, target.getUserAgent());
     return request;
   }
   
-  private JSONObject createOutput(String endPoint, String session, String userAgent) {
-    JSONObject out = createOutput(new JSONObject(), session, userAgent);
-    out.put("endPoint", endPoint);
+  private JSONObject createOutput(IPjeTarget target) {
+    JSONObject out = createOutput(new JSONObject(), target);
+    out.put("endPoint", target.getEndPoint());
     return out;
   }
 
   @Override
-  protected JSONObject createOutput(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
-    JSONObject out = createOutput(endPoint, session, userAgent);
+  protected JSONObject createOutput(IPjeTarget target, ISignedData signedData) throws Exception {
+    JSONObject out = createOutput(target);
     out.put("assinatura", signedData.getSignature64());
     out.put("cadeiaCertificado", signedData.getCertificateChain64());
     return out;
   }
 
   @Override
-  protected JSONObject createOutput(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
-    JSONObject out = createOutput(endPoint, session, userAgent);
+  protected JSONObject createOutput(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
+    JSONObject out = createOutput(target);
     out.put("assinatura", signedData.getSignature64());
     out.put("cadeiaCertificado", signedData.getCertificateChain64());
     out.put("id", file.getId().orElse(""));
@@ -63,8 +63,8 @@ public class PJeStdioClient extends AstractPjeClient<JSONObject> {
   }
 
   @Override
-  protected JSONObject createOutput(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) throws Exception {
-    JSONObject out = createOutput(endPoint, session, userAgent);
+  protected JSONObject createOutput(IPjeTarget target, IArquivoAssinado file, IContentType contentType) throws Exception {
+    JSONObject out = createOutput(target);
     JSONObject body = new JSONObject();
     body.put("mimeType", contentType.getMineType());
     body.put("charset", contentType.getCharset());
@@ -82,22 +82,22 @@ public class PJeStdioClient extends AstractPjeClient<JSONObject> {
   }
   
   @Override
-  protected JSONObject createOutput(String endPoint, String session, String userAgent, String certificateChain64) throws Exception {
-    JSONObject out = createOutput(endPoint, session, userAgent);
+  protected JSONObject createOutput(IPjeTarget target, String certificateChain64) throws Exception {
+    JSONObject out = createOutput(target);
     out.put("cadeiaDeCertificadosBase64", certificateChain64);
     return out;
   }
 
   @Override
-  protected JSONObject createOutput(String endPoint, String session, String userAgent, Object pojo) throws Exception {
-    JSONObject out = createOutput(endPoint, session, userAgent);
+  protected JSONObject createOutput(IPjeTarget target, Object pojo) throws Exception {
+    JSONObject out = createOutput(target);
     out.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     out.put("pojo", Objects.toJson(pojo));
     return out;
   }
   
   @Override
-  public void down(String endPoint, String session, String userAgent, IDownloadStatus status) throws PJeClientException {
+  public void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
     throw new PJeClientException("download not implemented");
   }
 
@@ -107,10 +107,9 @@ public class PJeStdioClient extends AstractPjeClient<JSONObject> {
   }
 
   @Override
-  protected void post(Supplier<JSONObject> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
+  protected PjeTaskResponse post(Supplier<JSONObject> supplier, ResultChecker checkResults) throws PJeClientException {
     try {
-      JSONObject json = supplier.get();
-      System.out.println(json.toString(2));
+      return new PjeStdioResponse(supplier.get().toString());
     } catch (Exception e) {
       throw new PJeClientException(e); 
     }

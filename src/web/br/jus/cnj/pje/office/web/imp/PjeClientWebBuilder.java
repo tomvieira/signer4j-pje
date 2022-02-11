@@ -1,4 +1,4 @@
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.web.imp;
 
 import static com.github.signer4j.imp.Args.requireNonNull;
 
@@ -37,7 +37,7 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
 
-class PjeClientWebBuilder implements IPjeClientBuilder  {
+public class PjeClientWebBuilder implements IPjeClientBuilder  {
 
   private HttpClientBuilder clientBuilder = HttpClients.custom();
   

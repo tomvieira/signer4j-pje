@@ -22,10 +22,10 @@ import com.github.signer4j.progress.IProgressView;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorLocalTask extends PjeAssinadorTask {
   
@@ -63,7 +63,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       progress.stackTracer(s -> LOGGER.info(s.toString()));
       progress.dispose();
     });
-    return PjeWebResponse.SUCCESS;
+    return PjeTaskResponse.NOTHING;
   }
 
   @Override
@@ -89,7 +89,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   @Override
-  protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
+  protected PjeTaskResponse send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
     Args.requireNonNull(arquivo, "arquivo is null");
     
     Optional<ISignedData> signature = arquivo.getSignedData();
@@ -122,6 +122,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       saved.delete();
       throw new TaskException("Não foi possível salvar o arquivo assinado.", e);
     }
+    return PjeTaskResponse.NOTHING;
   }
   
   private File chooseDestination() throws InterruptedException {

@@ -3,12 +3,14 @@ package br.jus.cnj.pje.office.core.imp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 
 import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.ThreadContext;
+import com.github.signer4j.imp.Throwables;
 
-import br.jus.cnj.pje.office.web.IPjeRequest;
-import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public class PjeStdioServer extends PjeCommander<IPjeRequest, IPjeResponse> {
 
@@ -50,8 +52,15 @@ public class PjeStdioServer extends PjeCommander<IPjeRequest, IPjeResponse> {
   }
 
   @Override
-  protected void doShowOfflineSigner(String paramRequest) {
-    System.out.println(paramRequest);
+  protected void doShowOfflineSigner(String request) {
+    final String r = "native://messaging/?" + 
+      "r=" + request + "&" +
+      "u=" + System.currentTimeMillis();
+    Throwables.tryRun(() -> submit(r));
+  }
+
+  private void submit(String input) throws URISyntaxException {
+    super.execute(new PjeSysinRequest(input), new PjeSysoutResponse());
   }
 
   private class StdioCycle extends ThreadContext {
@@ -71,10 +80,9 @@ public class PjeStdioServer extends PjeCommander<IPjeRequest, IPjeResponse> {
               Thread.currentThread().interrupt();
               return;
             }
-          String input = bf.readLine();
-          PjeStdioServer.this.execute(new PjeSysinRequest(input), new PjeSysoutResponse());
+          submit(bf.readLine());
         }while(true);
-      } catch (IOException e) {
+      } catch (IOException | URISyntaxException e) {
         e.printStackTrace();
       }
     }

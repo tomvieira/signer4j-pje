@@ -2,8 +2,6 @@ package br.jus.cnj.pje.office.core;
 
 import java.io.IOException;
 
-import br.jus.cnj.pje.office.web.IPjeRequest;
-import br.jus.cnj.pje.office.web.IPjeResponse;
 import io.reactivex.Observable;
 
 public interface IPjeCommander<I extends IPjeRequest, O extends IPjeResponse>  {

@@ -22,14 +22,14 @@ import com.github.signer4j.task.exception.TaskException;
 import com.github.signer4j.task.imp.AbstractTask;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
+import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.task.ITaskExecutorParams;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
@@ -62,11 +62,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     request.of(POJO_REQUEST_PARAM_NAME, pojo);
   }
   
-  @Override
-  public final String getId() {
-    return getMainRequest().getTarefaId().get();
-  }
-  
   private final IMainParams getMainRequest() {
     return getParameterValue(PJE_MAIN_REQUEST_PARAM);
   }
@@ -77,6 +72,26 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
 
   private final String getServerAddress() {
     return getMainRequest().getServidor().get();
+  }
+  
+  private ExecutorService getRequestExecutor() {
+    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_EXECUTOR);
+  }
+  
+  private final String getEndpointFor(String sendTo) {
+    return getServerAddress() + sendTo;
+  }
+
+  private final String getUserAgent() {
+    return getParameter(HttpHeaders.USER_AGENT).orElse(IPjeClient.PJE_DEFAULT_USER_AGENT);
+  }
+  
+  private final String getSession() {
+    return getMainRequest().getSessao().orElse(Strings.empty()); 
+  }
+  
+  protected final IPjeTarget getTarget(String sendTo) {
+    return new PjeTarget(getEndpointFor(sendTo), getUserAgent(), getSession());
   }
   
   protected void throwCancel() throws InterruptedException {
@@ -92,28 +107,12 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(ITaskExecutorParams.PJE_REQUEST_LOCAL);
   }
   
-  private ExecutorService getRequestExecutor() {
-    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_EXECUTOR);
-  }
-  
   protected final void runAsync(Runnable runnable) {
     getRequestExecutor().execute(runnable);
   }
   
   protected final IPjeSecurityAgent getSecurityAgent() {
     return getParameterValue(IPjeSecurityAgent.PARAM_NAME);
-  }
-  
-  protected final String getEndpointFor(String sendTo) {
-    return getServerAddress() + sendTo;
-  }
-
-  protected final String getUserAgent() {
-    return getParameter(HttpHeaders.USER_AGENT).orElse(IPjeClient.PJE_DEFAULT_USER_AGENT);
-  }
-  
-  protected final String getSession() {
-    return getMainRequest().getSessao().orElse(Strings.empty()); 
   }
   
   protected final IPjeToken loginToken() {
@@ -132,6 +131,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(POJO_REQUEST_PARAM_NAME);
   }
   
+  protected final ITaskResponse<IPjeResponse> fail(Throwable exception) {
+    return PjeClientMode.failFrom(getServerAddress()).apply(exception) ;
+  }
+  
   protected void checkMainParams() throws TaskException {
     IMainParams main = getMainRequest();
     PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
@@ -142,6 +145,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected final void checkParams() throws TaskException {
     checkMainParams();
     validateParams();
+  }
+  
+  @Override
+  public final String getId() {
+    return getMainRequest().getTarefaId().get();
   }
   
   @Override
@@ -166,7 +174,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.begin(Stage.TASK_EXECUTION);
       progress.step("Executando a tarefa '%s'", getId());
       ITaskResponse<IPjeResponse> response = doGet(); 
-      progress.step("Tarefa completa. Status de sucesso: %s", PjeWebResponse.SUCCESS.equals(response));
+      progress.step("Tarefa completa. Status de sucesso: %s", response.isSuccess());
       progress.end();
       
       return response;
@@ -177,7 +185,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       fail = progress.abort(e);
     }
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
-    return PjeWebResponse.FAIL;
+    return fail(fail);
   }
   
   protected void beforeGet() {}

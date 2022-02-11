@@ -1,12 +1,15 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.imp.Threads.async;
+import static java.net.URLEncoder.encode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Args;
+import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
@@ -14,11 +17,11 @@ import com.github.signer4j.progress.imp.ProgressFactory;
 import com.github.signer4j.task.ITaskRequestExecutor;
 
 import br.jus.cnj.pje.office.core.IPjeCommander;
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
-import br.jus.cnj.pje.office.web.IPjeRequest;
-import br.jus.cnj.pje.office.web.IPjeResponse;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -98,7 +101,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   public final void showOfflineSigner() {
     final String request = 
         "{\"aplicacao\":\"Pje\"," + 
-        "\"servidor\":\"localhost\"," + 
+        "\"servidor\":\"native\"," + 
         "\"sessao\":\"localhost\"," + 
         "\"codigoSeguranca\":\"localhost\"," + 
         "\"tarefaId\":\"cnj.assinador\"," + 
@@ -107,11 +110,11 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
         + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
         + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
         "}";
-    
+    String paramRequest = Strings.get(() -> encode(request, UTF_8.toString()), "").get();
     async(() ->  {
       try {
         this.executor.setAllowLocalRequest(true);
-        doShowOfflineSigner(request);
+        doShowOfflineSigner(paramRequest);
       }finally {
         Threads.sleep(1000);   
         this.executor.setAllowLocalRequest(false);

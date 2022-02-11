@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.io.IOException;
 
-import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public class PjeSysoutResponse implements IPjeResponse {
 

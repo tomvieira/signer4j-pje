@@ -11,10 +11,10 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.ITarefaAutenticador;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
 
@@ -87,20 +87,19 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
     }
     
     progress.step("Enviando assinatura para o servidor.");
+    PjeTaskResponse response;
     try {
-      send(signedData);
+      response = send(signedData);
     }catch(Exception e) {
       throw progress.abort(new TaskException("Não foi possível enviar os dados ao servidor", e));
     }  
     progress.end();
-    return PjeWebResponse.SUCCESS;
+    return response;
   }
 
-  protected void send(ISignedData signedData) throws Exception {
-    getPjeClient().send(
-      getEndpointFor(enviarPara), 
-      getSession(), 
-      getUserAgent(), 
+  protected PjeTaskResponse send(ISignedData signedData) throws Exception {
+    return getPjeClient().send(
+      getTarget(enviarPara),
       signedData
     );
   }

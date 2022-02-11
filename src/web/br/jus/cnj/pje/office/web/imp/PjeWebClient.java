@@ -1,9 +1,8 @@
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.web.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeWebClient.ResultChecker.IF_ERROR_THROW;
-import static br.jus.cnj.pje.office.core.imp.PjeWebClient.ResultChecker.IF_NOT_SUCCESS_THROW;
+import static br.jus.cnj.pje.office.web.imp.PjeWebClient.Checker.IF_ERROR_THROW;
+import static br.jus.cnj.pje.office.web.imp.PjeWebClient.Checker.IF_NOT_SUCCESS_THROW;
 import static com.github.signer4j.imp.Args.requireNonNull;
-import static com.github.signer4j.imp.Args.requireText;
 import static com.github.signer4j.imp.Strings.trim;
 
 import java.io.IOException;
@@ -37,12 +36,15 @@ import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
-import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.Version;
+import br.jus.cnj.pje.office.core.imp.AstractPjeClient;
+import br.jus.cnj.pje.office.core.imp.PJeClientException;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.web.IPjeHeaders;
 
 class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
@@ -64,25 +66,25 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   }
   
   @Override
-  protected <T extends HttpUriRequestBase> T createOutput(T request, String session, String userAgent) {
-    request.setHeader(HttpHeaders.COOKIE, session);
+  protected <T extends HttpUriRequestBase> T createOutput(T request, IPjeTarget target) {
+    request.setHeader(HttpHeaders.COOKIE, target.getSession());
     request.setHeader(IPjeHeaders.VERSION, version.toString());
-    request.setHeader(HttpHeaders.USER_AGENT, userAgent);
+    request.setHeader(HttpHeaders.USER_AGENT, target.getUserAgent());
     canceller.cancelCode(request::abort);
     return request;
   }
 
-  private HttpPost createPost(String endPoint, String session, String userAgent) {
-    return createOutput(new HttpPost(endPoint), session, userAgent);
+  private HttpPost createPost(IPjeTarget target) {
+    return createOutput(new HttpPost(target.getEndPoint()), target);
   }
   
-  private HttpGet createGet(String endPoint, String session, String userAgent) {
-    return createOutput(new HttpGet(endPoint), session, userAgent);
+  private HttpGet createGet(IPjeTarget target) {
+    return createOutput(new HttpGet(target.getEndPoint()), target);
   }
   
   @Override
-  protected HttpPost createOutput(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+  protected HttpPost createOutput(IPjeTarget target, ISignedData signedData) throws Exception {
+    final HttpPost postRequest = createPost(target);
     postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
       new BasicNameValuePair("assinatura", signedData.getSignature64()),
       new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64())
@@ -91,8 +93,8 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   }
 
   @Override
-  protected HttpPost createOutput(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+  protected HttpPost createOutput(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
+    final HttpPost postRequest = createPost(target);
     final List<NameValuePair> parameters = Arrays.asList(
       new BasicNameValuePair("assinatura", signedData.getSignature64()),
       new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()),
@@ -106,8 +108,8 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   }
   
   @Override
-  protected HttpPost createOutput(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+  protected HttpPost createOutput(IPjeTarget target, IArquivoAssinado file, IContentType contentType) {
+    final HttpPost postRequest = createPost(target);
     final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
     builder.addPart(file.getFileFieldName(), new ByteArrayBody(
       file.getSignedData().get().getSignature(), 
@@ -126,8 +128,8 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   }
   
   @Override
-  protected HttpPost createOutput(String endPoint, String session, String userAgent, String certificateChain64) throws Exception  {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+  protected HttpPost createOutput(IPjeTarget target, String certificateChain64) throws Exception  {
+    final HttpPost postRequest = createPost(target);
     postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
       new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64)
     )));
@@ -135,26 +137,24 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   }
   
   @Override
-  protected HttpPost createOutput(String endPoint, String session, String userAgent, Object pojo) throws Exception {
-    final HttpPost postRequest = createPost(endPoint, session, userAgent);
+  protected HttpPost createOutput(IPjeTarget target, Object pojo) throws Exception {
+    final HttpPost postRequest = createPost(target);
     postRequest.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     postRequest.setEntity(new StringEntity(Objects.toJson(pojo), ContentType.APPLICATION_JSON));
     return postRequest;
   }
 
   @Override
-  public void down(String endPoint, String session, String userAgent, IDownloadStatus status) throws PJeClientException {
+  public void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
     requireNonNull(status, "status is null");
     final Supplier<HttpGet> supplier = () -> createGet(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null")
+      requireNonNull(target, "target is null")
     );
     get(supplier, status);
   }
   
   @Override
-  protected void post(final Supplier<HttpUriRequestBase> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
+  protected PjeTaskResponse post(final Supplier<HttpUriRequestBase> supplier, ResultChecker checkResults) throws PJeClientException {
     try {
       final HttpPost post = (HttpPost)supplier.get();
 
@@ -175,6 +175,7 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
           }
           checkResults.run(responseText);
         }
+        return PjeWebResponse.SUCCESS;
       }
     }catch(PJeClientException e) {
       throw e;
@@ -228,7 +229,7 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
     }
   }
   
-  protected static enum ResultChecker implements AstractPjeClient.ResultChecker {
+  protected static enum Checker implements AstractPjeClient.ResultChecker {
     
     IF_ERROR_THROW() {
       @Override

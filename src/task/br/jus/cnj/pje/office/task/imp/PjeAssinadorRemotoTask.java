@@ -13,8 +13,10 @@ import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
+import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
@@ -55,8 +57,6 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
     final int size = arquivos.size();
     
     final IPjeClient client   = getPjeClient();
-    final String session      = getSession();
-    final String userAgent    = getUserAgent();
     final IProgress progress  = getProgress();
     
     progress.begin(Stage.DOWNLOADING_FILE, size);
@@ -71,12 +71,13 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
         continue;
       }
       final String url = oUrl.get();
-      final String endPoint = getEndpointFor(url);
       
-      progress.step("Baixando url: %s", endPoint);
+      final IPjeTarget target = getTarget(url);
+      
+      progress.step("Baixando url: %s", target.getEndPoint());
       final DownloadStatus status = new DownloadStatus();
       try {
-        client.down(endPoint, session, userAgent, status);
+        client.down(target, status);
       } catch (PJeClientException e) {
         throw progress.abort(new TaskException("Não foi possível realizar o download de " + url));
       }
@@ -101,19 +102,17 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   }
   
   @Override
-  protected void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
+  protected PjeTaskResponse send(IArquivoAssinado arquivo) throws TaskException, InterruptedException {
     Args.requireNonNull(arquivo, "arquivo is null");
-    final String endPoint = getEndpointFor(enviarPara);
+    IPjeTarget target = getTarget(enviarPara);
     try {
-      getPjeClient().send(
-        endPoint, 
-        getSession(), 
-        getUserAgent(), 
+      return getPjeClient().send(
+        target,
         arquivo,
         padraoAssinatura
       );
     } catch (PJeClientException e) {
-      throw new TaskException("Não foi possível enviar o arquivo para o servidor: " + endPoint);
+      throw new TaskException("Não foi possível enviar o arquivo para o servidor: " + target.getEndPoint());
     }
   }
 }

@@ -4,11 +4,11 @@ import com.github.signer4j.imp.Args;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.task.imp.TaskRequestExecutor;
 
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.task.ITaskExecutorParams;
-import br.jus.cnj.pje.office.web.IPjeRequest;
-import br.jus.cnj.pje.office.web.IPjeResponse;
 
 public class PjeTaskRequestExecutor extends TaskRequestExecutor<IPjeRequest, IPjeResponse, PjeTaskRequest> {
   

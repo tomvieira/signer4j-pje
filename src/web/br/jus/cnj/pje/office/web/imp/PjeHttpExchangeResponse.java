@@ -9,7 +9,7 @@ import org.apache.hc.core5.http.HttpStatus;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
-import br.jus.cnj.pje.office.web.IPjeResponse;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
 @SuppressWarnings("restriction")
 public final class PjeHttpExchangeResponse implements IPjeResponse {

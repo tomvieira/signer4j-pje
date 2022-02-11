@@ -16,12 +16,13 @@ import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponses;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
+import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorHash;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
 
@@ -78,13 +79,12 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       throw new TaskException("Não há dados a serem assinados");
     }
     
-    final String session     = getSession();
-    final String userAgent   = getUserAgent();
-    final String endPoint    = getEndpointFor(uploadUrl);
+    final IPjeTarget target     = getTarget(uploadUrl);
     final IPjeClient client  = getPjeClient();
     final IProgress progress = getProgress();
     
-    boolean fail = false;
+    boolean fail = false; 
+    PjeTaskResponses response = new PjeTaskResponses();
     final IPjeToken token = loginToken();
     try {
       final ISimpleSigner signer = token.signerBuilder().usingAlgorigthm(this.algorithm).build();
@@ -92,6 +92,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       progress.begin(Stage.HASH_SIGNING, size);
       
       int i = 0;
+      
       do {
         try {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
@@ -112,7 +113,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
           }
     
           try {
-            client.send(endPoint, session, userAgent, signedData, file);
+            response.add(client.send(target, signedData, file));
           } catch (PJeClientException e) {
             throw new TaskException("Não foi possível enviar o arquivo id: " + id, e);
           }
@@ -132,6 +133,6 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       token.logout();
     }
     
-    return fail ? PjeWebResponse.FAIL : PjeWebResponse.SUCCESS;
+    return fail ? fail(progress.getAbortCause()) : response;
   }
 }

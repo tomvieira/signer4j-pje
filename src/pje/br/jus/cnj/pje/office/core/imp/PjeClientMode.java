@@ -6,6 +6,7 @@ import static com.github.signer4j.imp.Strings.trim;
 import java.io.InputStream;
 import java.net.ProxySelector;
 import java.security.KeyStore;
+import java.util.function.Function;
 
 import javax.net.ssl.SSLContext;
 
@@ -22,14 +23,17 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
+import br.jus.cnj.pje.office.web.imp.PjeClientWebBuilder;
+import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 public enum PjeClientMode {
-  BROWSER("browser") {
+  NATIVE("native") {
     @Override
     protected IPjeClientBuilder createBuilder() {
       return new PjeClientExtensionBuilder();
@@ -73,11 +77,17 @@ public enum PjeClientMode {
   
   public static IPjeClient clientFrom(String address, ICanceller canceller) {
     String protocol = trim(address).toLowerCase();
-    return (protocol.startsWith(BROWSER.name) ? 
-      BROWSER : protocol.startsWith(HTTP.name) ? 
+    return (protocol.startsWith(NATIVE.name) ? 
+      NATIVE : protocol.startsWith(HTTP.name) ? 
       HTTP : 
       HTTPS)
     .getClient(canceller);
+  }
+  
+  public static Function<Throwable, PjeTaskResponse> failFrom(String address) {
+    return trim(address).toLowerCase().startsWith(NATIVE.name) ? 
+        (t) -> new PjeStdioResponse(Throwables.rootString(t)) :
+        (t) -> PjeWebResponse.FAIL;
   }
   
   private IPjeClient client;

@@ -7,6 +7,7 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Params;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IDadosSSO;
 import br.jus.cnj.pje.office.task.ITarefaAutenticador;
 
@@ -25,11 +26,9 @@ class PjeAutenticatorSSOTask extends PjeAutenticatorTask {
   }
   
   @Override
-  protected void send(ISignedData signedData) throws Exception {
-    getPjeClient().send(
-      getEndpointFor(enviarPara), 
-      getSession(), 
-      getUserAgent(), 
+  protected PjeTaskResponse send(ISignedData signedData) throws Exception {
+    return getPjeClient().send(
+      getTarget(enviarPara),
       new DadosSSO(token, mensagem, signedData)
     );
   }

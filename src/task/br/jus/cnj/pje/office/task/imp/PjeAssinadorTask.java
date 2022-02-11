@@ -15,14 +15,15 @@ import com.github.signer4j.progress.IStage;
 import com.github.signer4j.task.ITaskResponse;
 import com.github.signer4j.task.exception.TaskException;
 
+import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponses;
 import br.jus.cnj.pje.office.core.imp.UnsupportedCosignException;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.IPjeSignMode;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
-import br.jus.cnj.pje.office.web.IPjeResponse;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
@@ -77,6 +78,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     progress.step("Selecionados '%s' arquivo(s)", size);
     progress.end();
     
+    final PjeTaskResponses responses = new PjeTaskResponses();
+    
     progress.begin(Stage.PROCESSING_FILES, size);
     IPjeToken token = loginToken();
     try {
@@ -115,7 +118,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           }
           try {
             progress.step("Enviando arquivo '%s'", fileName);
-            send(file);
+            responses.add(send(file));
             success++;
           }catch(TaskException e) {
             String message = "Arquivo ignorado:  " + file.toString();
@@ -152,14 +155,14 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     
     if (success != size) {
       invokeLater(() -> display("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades."));
-      return PjeWebResponse.FAIL;
+      return fail(progress.getAbortCause());
     }
     
     invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
-    return PjeWebResponse.SUCCESS;
+    return responses;
   }
   
   protected abstract IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException;
 
-  protected abstract void send(IArquivoAssinado arquivo) throws TaskException, InterruptedException;
+  protected abstract PjeTaskResponse send(IArquivoAssinado arquivo) throws TaskException, InterruptedException;
 }
