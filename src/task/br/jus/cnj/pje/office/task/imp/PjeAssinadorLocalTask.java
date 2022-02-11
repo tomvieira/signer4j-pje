@@ -63,7 +63,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       progress.stackTracer(s -> LOGGER.info(s.toString()));
       progress.dispose();
     });
-    return PjeTaskResponse.NOTHING;
+    return success();
   }
 
   @Override
@@ -122,7 +122,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       saved.delete();
       throw new TaskException("Não foi possível salvar o arquivo assinado.", e);
     }
-    return PjeTaskResponse.NOTHING;
+    return success();
   }
   
   private File chooseDestination() throws InterruptedException {

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.ProxySelector;
 import java.security.KeyStore;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
 
@@ -33,7 +34,7 @@ import br.jus.cnj.pje.office.web.imp.PjeClientWebBuilder;
 import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
 
 public enum PjeClientMode {
-  NATIVE("native") {
+  STDIO("stdio") {
     @Override
     protected IPjeClientBuilder createBuilder() {
       return new PjeClientExtensionBuilder();
@@ -77,18 +78,25 @@ public enum PjeClientMode {
   
   public static IPjeClient clientFrom(String address, ICanceller canceller) {
     String protocol = trim(address).toLowerCase();
-    return (protocol.startsWith(NATIVE.name) ? 
-      NATIVE : protocol.startsWith(HTTP.name) ? 
+    return (protocol.startsWith(STDIO.name) ? 
+      STDIO : protocol.startsWith(HTTP.name) ? 
       HTTP : 
       HTTPS)
     .getClient(canceller);
   }
   
   public static Function<Throwable, PjeTaskResponse> failFrom(String address) {
-    return trim(address).toLowerCase().startsWith(NATIVE.name) ? 
-        (t) -> new PjeStdioResponse(Throwables.rootString(t)) :
-        (t) -> PjeWebResponse.FAIL;
+    return trim(address).toLowerCase().startsWith(STDIO.name) ? 
+      (t) -> new PjeStdioResponse(Throwables.rootString(t)) :
+      (t) -> PjeWebResponse.FAIL;
   }
+  
+  public static Supplier<PjeTaskResponse> successFrom(String address) {
+    return trim(address).toLowerCase().startsWith(STDIO.name) ?
+      () -> PjeTaskResponse.NOTHING :
+      () -> PjeWebResponse.SUCCESS;
+  }
+
   
   private IPjeClient client;
 

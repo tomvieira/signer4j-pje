@@ -267,7 +267,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   }
 
   @Override
-  protected void doShowOfflineSigner(String request) {
+  protected void openSigner(String request) {
     touchQuietly(
       "http://127.0.0.1:" + HTTP_PORT + task.getEndPoint() + 
       "?r=" + request + 

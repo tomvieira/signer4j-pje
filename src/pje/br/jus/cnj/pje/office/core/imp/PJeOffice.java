@@ -18,12 +18,12 @@ import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.WindowLockDettector;
 import com.github.signer4j.progress.imp.ProgressFactory;
 
+import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeCommander;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
-import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
@@ -35,18 +35,22 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   private IPjeLifeCycleHook lifeCycle;
 
   private IWindowLockDettector dettector;
+  
+  private IPjeCommandFactory factory;
 
   private Disposable ticket;
 
-  public PJeOffice(IPjeLifeCycleHook hook) { 
-    this(WindowLockDettector.getBest(), hook);
+  public PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory) { 
+    this(lifeCycle, factory, WindowLockDettector.getBest());
   }
 
-  private PJeOffice(IWindowLockDettector dettector, IPjeLifeCycleHook hook) {
+  private PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory, IWindowLockDettector dettector) {
     Args.requireNonNull(dettector, "dettector is null");
-    Args.requireNonNull(hook, "hook is null");
+    Args.requireNonNull(lifeCycle, "hook is null");
+    Args.requireNonNull(factory, "factory is null");
     this.dettector = dettector.notifyTo(this);
-    this.lifeCycle = hook;
+    this.lifeCycle = lifeCycle;
+    this.factory = factory;
   }
   
   private void checkIsAlive() throws IllegalStateException {
@@ -157,7 +161,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private void startCommander() {
     if (this.commander == null) {
-      this.commander = PjeCommandFactory.DEFAULT.create(this);
+      this.commander = factory.create(this);
       this.ticket = this.commander.lifeCycle().subscribe(cycle -> {
         switch(cycle) {
         case STARTUP:

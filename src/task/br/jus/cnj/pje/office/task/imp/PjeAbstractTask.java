@@ -26,6 +26,7 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
+import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
 import br.jus.cnj.pje.office.task.IPjeTarget;
@@ -133,6 +134,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   protected final ITaskResponse<IPjeResponse> fail(Throwable exception) {
     return PjeClientMode.failFrom(getServerAddress()).apply(exception) ;
+  }
+  
+  protected final PjeTaskResponse success() {
+    return PjeClientMode.successFrom(getServerAddress()).get();
   }
   
   protected void checkMainParams() throws TaskException {

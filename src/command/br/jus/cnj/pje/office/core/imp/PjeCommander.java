@@ -31,7 +31,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   
   private final IFinishable finishingCode;
   
-  private final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
+  protected final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
   
@@ -101,7 +101,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   public final void showOfflineSigner() {
     final String request = 
         "{\"aplicacao\":\"Pje\"," + 
-        "\"servidor\":\"native\"," + 
+        "\"servidor\":\"localhost\"," + 
         "\"sessao\":\"localhost\"," + 
         "\"codigoSeguranca\":\"localhost\"," + 
         "\"tarefaId\":\"cnj.assinador\"," + 
@@ -114,7 +114,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
     async(() ->  {
       try {
         this.executor.setAllowLocalRequest(true);
-        doShowOfflineSigner(paramRequest);
+        openSigner(paramRequest);
       }finally {
         Threads.sleep(1000);   
         this.executor.setAllowLocalRequest(false);
@@ -122,5 +122,5 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
     });
   }
 
-  protected abstract void doShowOfflineSigner(String paramRequest);
+  protected abstract void openSigner(String paramRequest);
 }

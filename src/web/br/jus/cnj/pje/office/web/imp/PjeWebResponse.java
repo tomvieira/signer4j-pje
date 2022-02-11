@@ -10,7 +10,7 @@ import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 public final class PjeWebResponse extends PjeTaskResponse {
   
   //A .gif file with 1 pixels
-  static final PjeWebResponse SUCCESS = new PjeWebResponse(true, 
+  public static final PjeWebResponse SUCCESS = new PjeWebResponse(true, 
       "R0lGODlhAQABAPAAAEz/AAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");
   
   //A .png file with 2 pixels

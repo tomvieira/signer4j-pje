@@ -52,7 +52,7 @@ public class PjeStdioServer extends PjeCommander<IPjeRequest, IPjeResponse> {
   }
 
   @Override
-  protected void doShowOfflineSigner(String request) {
+  protected void openSigner(String request) {
     final String r = "native://messaging/?" + 
       "r=" + request + "&" +
       "u=" + System.currentTimeMillis();
@@ -60,7 +60,12 @@ public class PjeStdioServer extends PjeCommander<IPjeRequest, IPjeResponse> {
   }
 
   private void submit(String input) throws URISyntaxException {
-    super.execute(new PjeSysinRequest(input), new PjeSysoutResponse());
+    executor.setAllowLocalRequest(true);
+    try {
+      super.execute(new PjeSysinRequest(input), new PjeSysoutResponse());
+    } finally {
+      executor.setAllowLocalRequest(false);
+    }
   }
 
   private class StdioCycle extends ThreadContext {
