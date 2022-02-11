@@ -2,6 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;
+import br.jus.cnj.pje.office.core.Version;
 
 class PjeClientExtensionBuilder implements IPjeClientBuilder {
 
@@ -9,6 +10,6 @@ class PjeClientExtensionBuilder implements IPjeClientBuilder {
   
   @Override
   public IPjeClient build() {
-    return new PjeExtensionClient();
+    return new PJeStdioClient(Version.current());
   }
 }

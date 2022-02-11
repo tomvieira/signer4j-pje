@@ -119,14 +119,14 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   protected void onCommanderStart() {
-    LOGGER.info("Servidor web iniciado e pronto para receber requisições.");
+    LOGGER.info("Commander iniciado e pronto para receber requisições.");
     this.dettector.start();
     PjeSecurityAgent.INSTANCE.refresh();
     lifeCycle.onStartup();
   }
 
   protected void onCommanderStop() {
-    LOGGER.info("Servidor web parado. Requisições indisponíveis");
+    LOGGER.info("Commander parado. Requisições indisponíveis");
     PjeClientMode.closeClients();
     lifeCycle.onShutdown();
   }

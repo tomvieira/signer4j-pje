@@ -2,7 +2,6 @@ package br.jus.cnj.pje.office.task.imp;
 
 import java.nio.charset.Charset;
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.IByteProcessor;

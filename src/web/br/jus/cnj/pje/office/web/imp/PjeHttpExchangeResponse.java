@@ -24,6 +24,11 @@ public final class PjeHttpExchangeResponse implements IPjeResponse {
   public void write(byte[] data) throws IOException {
     response.sendResponseHeaders(HttpStatus.SC_SUCCESS, data.length);
     response.getResponseBody().write(data);
+    flush();
+  }
+  
+  @Override
+  public void flush() throws IOException {
     response.getResponseBody().flush();
   }
   

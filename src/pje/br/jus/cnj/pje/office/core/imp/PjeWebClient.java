@@ -1,5 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static br.jus.cnj.pje.office.core.imp.PjeWebClient.ResultChecker.IF_ERROR_THROW;
+import static br.jus.cnj.pje.office.core.imp.PjeWebClient.ResultChecker.IF_NOT_SUCCESS_THROW;
 import static com.github.signer4j.imp.Args.requireNonNull;
 import static com.github.signer4j.imp.Args.requireText;
 import static com.github.signer4j.imp.Strings.trim;
@@ -30,7 +32,6 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.signer4j.IContentType;
 import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
@@ -38,45 +39,23 @@ import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
 import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
-import com.github.signer4j.progress.imp.ICanceller;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
-import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
-import br.jus.cnj.pje.office.task.IDadosSSO;
 import br.jus.cnj.pje.office.web.IPjeHeaders;
 
-class PjeWebClient implements IPjeClient {
+class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
 
   private static boolean isSuccess(int code) {
     return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
   }
   
-  private static String toJson(Object instance) throws PJeClientException {
-    try {
-      return Objects.toJson(instance);
-    } catch (JsonProcessingException e) {
-      throw new PJeClientException("Não foi possível serializar instancia em Json", e);
-    }    
-  }  
-
-  private final Version version;
   private final CloseableHttpClient client;
   
-  private ICanceller canceller = ICanceller.NOTHING;
-
   PjeWebClient(CloseableHttpClient client, Version version) {
+    super(version, IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
     this.client = requireNonNull(client, "client is null");
-    this.version = requireNonNull(version, "version is null");
-  }
-  
-  @Override
-  public final void setCanceller(ICanceller canceller) {
-    if (canceller != null) {
-      this.canceller = canceller;
-    }
   }
  
   @Override
@@ -84,7 +63,8 @@ class PjeWebClient implements IPjeClient {
     this.client.close();
   }
   
-  private <T extends HttpUriRequestBase> T createRequest(T request, String session, String userAgent) {
+  @Override
+  protected <T extends HttpUriRequestBase> T createOutput(T request, String session, String userAgent) {
     request.setHeader(HttpHeaders.COOKIE, session);
     request.setHeader(IPjeHeaders.VERSION, version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, userAgent);
@@ -93,14 +73,15 @@ class PjeWebClient implements IPjeClient {
   }
 
   private HttpPost createPost(String endPoint, String session, String userAgent) {
-    return createRequest(new HttpPost(endPoint), session, userAgent);
+    return createOutput(new HttpPost(endPoint), session, userAgent);
   }
   
   private HttpGet createGet(String endPoint, String session, String userAgent) {
-    return createRequest(new HttpGet(endPoint), session, userAgent);
+    return createOutput(new HttpGet(endPoint), session, userAgent);
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
+  @Override
+  protected HttpPost createOutput(String endPoint, String session, String userAgent, ISignedData signedData) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
       new BasicNameValuePair("assinatura", signedData.getSignature64()),
@@ -109,7 +90,8 @@ class PjeWebClient implements IPjeClient {
     return postRequest;
   }
 
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
+  @Override
+  protected HttpPost createOutput(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final List<NameValuePair> parameters = Arrays.asList(
       new BasicNameValuePair("assinatura", signedData.getSignature64()),
@@ -123,7 +105,8 @@ class PjeWebClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) {
+  @Override
+  protected HttpPost createOutput(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
     builder.addPart(file.getFileFieldName(), new ByteArrayBody(
@@ -142,7 +125,8 @@ class PjeWebClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createPostRequest(String endPoint, String session, String userAgent, String certificateChain64) throws Exception  {
+  @Override
+  protected HttpPost createOutput(String endPoint, String session, String userAgent, String certificateChain64) throws Exception  {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     postRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
       new BasicNameValuePair("cadeiaDeCertificadosBase64", certificateChain64)
@@ -150,10 +134,11 @@ class PjeWebClient implements IPjeClient {
     return postRequest;
   }
   
-  private HttpPost createJsonPostRequest(String endPoint, String session, String userAgent, Object pojo) throws Exception {
+  @Override
+  protected HttpPost createOutput(String endPoint, String session, String userAgent, Object pojo) throws Exception {
     final HttpPost postRequest = createPost(endPoint, session, userAgent);
     postRequest.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    postRequest.setEntity(new StringEntity(toJson(pojo), ContentType.APPLICATION_JSON));
+    postRequest.setEntity(new StringEntity(Objects.toJson(pojo), ContentType.APPLICATION_JSON));
     return postRequest;
   }
 
@@ -169,76 +154,9 @@ class PjeWebClient implements IPjeClient {
   }
   
   @Override
-  public void send(String endPoint, String session, String userAgent, ISignedData signedData) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null"), 
-      requireNonNull(signedData, "signed data null")
-    );
-    post(supplier, ResultChecker.IF_ERROR_THROW);
-  }
-  
-  @Override
-  public void send(String endPoint, String session, String userAgent, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null"), 
-      requireNonNull(signedData, "signedData null"),
-      requireNonNull(file, "file is null")
-    );
-    post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
-  }
-  
-  @Override
-  public void send(String endPoint, String session, String userAgent, IArquivoAssinado file, IContentType contentType) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null"), 
-      requireNonNull(file, "file is null"),
-      requireNonNull(contentType, "contentType is null")
-    );
-    post(supplier, ResultChecker.IF_ERROR_THROW);
-  }
-  
-  @Override
-  public void send(String endPoint, String session, String userAgent, List<IAssinadorBase64ArquivoAssinado> files) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createJsonPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null"), 
-      requireNonNull(files, "files null")
-    );
-    post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
-  }
-  
-  @Override
-  public void send(String endPoint, String session, String userAgent, String certificateChain64) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireText(session, "session empty"),
-      requireText(userAgent, "userAgent null"), 
-      requireText(certificateChain64, "certificateChain64 empty")
-    );
-    post(supplier, ResultChecker.IF_NOT_SUCCESS_THROW);
-  }
-  
-  @Override
-  public void send(String endPoint, String session, String userAgent, IDadosSSO dadosSSO) throws PJeClientException {
-    final Supplier<HttpPost> supplier = () -> createJsonPostRequest(
-      requireText(endPoint, "empty endPoint"), 
-      requireNonNull(session, "session is null"), //single sign on has empty string session but not null
-      requireText(userAgent, "userAgent null"), 
-      requireNonNull(dadosSSO , "dadosSSO is empty")
-    );
-    post(supplier, ResultChecker.QUIETLY);
-  }  
-
-  private void post(final Supplier<HttpPost> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
+  protected void post(final Supplier<HttpUriRequestBase> supplier, Runnable<String, PJeClientException> checkResults) throws PJeClientException {
     try {
-      final HttpPost post = supplier.get();
+      final HttpPost post = (HttpPost)supplier.get();
 
       try(CloseableHttpResponse response = client.execute(post)) {
         int code = response.getCode();
@@ -310,8 +228,7 @@ class PjeWebClient implements IPjeClient {
     }
   }
   
-  
-  private static enum ResultChecker implements Runnable<String, PJeClientException> {
+  protected static enum ResultChecker implements AstractPjeClient.ResultChecker {
     
     IF_ERROR_THROW() {
       @Override
@@ -333,12 +250,6 @@ class PjeWebClient implements IPjeClient {
           return;
         IF_ERROR_THROW.run(response);
         throw new PJeClientException("Servidor não recebeu dados enviados");
-      }
-    }, 
-    
-    QUIETLY() {
-      @Override
-      public void run(String response) throws PJeClientException {
       }
     };
     

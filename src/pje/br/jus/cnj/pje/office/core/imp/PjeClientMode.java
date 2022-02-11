@@ -29,7 +29,7 @@ import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
 
 public enum PjeClientMode {
-  NATIVE("native") {
+  BROWSER("browser") {
     @Override
     protected IPjeClientBuilder createBuilder() {
       return new PjeClientExtensionBuilder();
@@ -73,8 +73,8 @@ public enum PjeClientMode {
   
   public static IPjeClient clientFrom(String address, ICanceller canceller) {
     String protocol = trim(address).toLowerCase();
-    return (protocol.startsWith(NATIVE.name) ? 
-      NATIVE : protocol.startsWith(HTTP.name) ? 
+    return (protocol.startsWith(BROWSER.name) ? 
+      BROWSER : protocol.startsWith(HTTP.name) ? 
       HTTP : 
       HTTPS)
     .getClient(canceller);

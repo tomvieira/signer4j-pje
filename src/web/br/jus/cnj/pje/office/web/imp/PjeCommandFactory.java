@@ -7,7 +7,9 @@ import br.jus.cnj.pje.office.core.IPjeCommander;
 public enum PjeCommandFactory {
   DEFAULT;
 
-  public IPjeCommander<?, ?> create(IFinishable exitable) {
-    return new PjeWebServer(exitable);
+  public IPjeCommander<?, ?> create(IFinishable finishingCode) {
+    return 
+    //new PjeStdioServer(finishingCode);
+    new PjeWebServer(finishingCode);
   }
 }

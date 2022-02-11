@@ -4,6 +4,8 @@ import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.signer4j.imp.HttpTools.touchQuietly;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 import static com.github.signer4j.imp.Throwables.tryRun;
+import static java.net.URLEncoder.encode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,22 +16,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.IFinishable;
+import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Throwables;
-import com.github.signer4j.progress.IProgressFactory;
-import com.github.signer4j.progress.imp.ProgressFactory;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
-import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
-import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.Version;
-import br.jus.cnj.pje.office.core.imp.PjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.imp.PjeCommander;
-import br.jus.cnj.pje.office.core.imp.PjeSecurityAgent;
-import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
 import br.jus.cnj.pje.office.web.ICorsHeaders;
 import br.jus.cnj.pje.office.web.IPjeHeaders;
 import br.jus.cnj.pje.office.web.IPjeRequestHandler;
@@ -172,15 +168,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   private final IPjeRequestHandler vaza = new LogoutRequestHandler();
 
   PjeWebServer(IFinishable finishingCode) {
-    this(finishingCode, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
-  }
-  
-  private PjeWebServer(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(finishingCode, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
-  }
-
-  private PjeWebServer(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
-    super(new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent), finishingCode);
+    super(finishingCode);
   }
   
   @Override
@@ -282,7 +270,8 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   }
 
   @Override
-  protected void doShowOfflineSigner(String paramRequest) {
+  protected void doShowOfflineSigner(String request) {
+    String paramRequest = Strings.getQuietly(() -> encode(request, UTF_8.toString()), "").get();
     touchQuietly(
       "http://127.0.0.1:" + HTTP_PORT + task.getEndPoint() + 
       "?r=" + paramRequest + 

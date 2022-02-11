@@ -1,9 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Strings.getQuietly;
 import static com.github.signer4j.imp.Threads.async;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +9,13 @@ import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.Throwables;
+import com.github.signer4j.progress.IProgressFactory;
+import com.github.signer4j.progress.imp.ProgressFactory;
 import com.github.signer4j.task.ITaskRequestExecutor;
 
 import br.jus.cnj.pje.office.core.IPjeCommander;
+import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
+import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
 import br.jus.cnj.pje.office.web.IPjeRequest;
 import br.jus.cnj.pje.office.web.IPjeResponse;
@@ -31,7 +32,19 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
   
-  protected PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode) {
+  protected PjeCommander(IFinishable finishingCode) {
+    this(finishingCode, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  }
+  
+  protected PjeCommander(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+    this(finishingCode, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
+  }
+
+  protected PjeCommander(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+    this(new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent), finishingCode);
+  }
+  
+  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode) {
     this.executor = Args.requireNonNull(executor, "executor is null");
     this.finishingCode = Args.requireNonNull(finishingCode, "finishingCode is null");
   }
@@ -77,7 +90,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   }
   
   @Override
-  public void stop(boolean force) {
+  public void stop(boolean kill) {
     Throwables.tryRun(executor::close);
   }
   
@@ -94,11 +107,11 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
         + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
         + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
         "}";
-    String paramRequest = getQuietly(() -> encode(request, UTF_8.toString()), "").get();
+    
     async(() ->  {
       try {
         this.executor.setAllowLocalRequest(true);
-        doShowOfflineSigner(paramRequest);
+        doShowOfflineSigner(request);
       }finally {
         Threads.sleep(1000);   
         this.executor.setAllowLocalRequest(false);
