@@ -43,7 +43,7 @@ public enum PjeClientMode {
   CLIP("clip") {
     @Override
     protected IPjeClientBuilder createBuilder() {
-      return null;//new PjeClipClientBuilder();
+      return new PjeClipClientBuilder();
     }
   },
   HTTP("http"),
