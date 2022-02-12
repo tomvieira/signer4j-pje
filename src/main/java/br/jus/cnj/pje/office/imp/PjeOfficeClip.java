@@ -7,18 +7,18 @@ import static com.github.signer4j.imp.SwingTools.invokeLater;
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
 
-public class PjeOfficeWeb extends PjeOfficeClassic {
+public class PjeOfficeClip extends PjeOfficeClassic {
 
   private static PjeOfficeClassic createInstance(IPjeFrontEnd front) {
-    return new PjeOfficeWeb(front);
+    return new PjeOfficeClip(front);
   }
 
   public static void main(String[] args) {
     invokeLater(() ->  createInstance(getBest()).start());
   }
 
-  private PjeOfficeWeb(IPjeFrontEnd frontEnd) {
-    super(frontEnd, PjeCommandFactory.WEB);
+  private PjeOfficeClip(IPjeFrontEnd frontEnd) {
+    super(frontEnd, PjeCommandFactory.CLIP);
   }
 
   @Override

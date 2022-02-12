@@ -7,23 +7,17 @@ import com.github.signer4j.imp.Constants;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public class PjeStdioResponse extends PjeTaskResponse {
+public class PjeStdioTaskResponse extends PjeTaskResponse {
 
   private String output;
-  private boolean success;
   
-  public PjeStdioResponse(String output) {
+  public PjeStdioTaskResponse(String output) {
     this(output, true);
   }
   
-  public PjeStdioResponse(String output, boolean success) {
+  public PjeStdioTaskResponse(String output, boolean success) {
+    super(success);
     this.output = Args.requireNonNull(output, "output is null");
-    this.success = success;
-  }
-  
-  @Override
-  public final boolean isSuccess() {
-    return success;
   }
   
   @Override

@@ -2,15 +2,10 @@ package br.jus.cnj.pje.office.web.imp;
 
 import static br.jus.cnj.pje.office.web.imp.PjeWebClient.Checker.IF_ERROR_THROW;
 import static br.jus.cnj.pje.office.web.imp.PjeWebClient.Checker.IF_NOT_SUCCESS_THROW;
-import static com.github.signer4j.imp.Args.requireNonNull;
 import static com.github.signer4j.imp.Strings.trim;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -20,28 +15,21 @@ import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.entity.mime.StringBody;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import com.github.signer4j.IContentType;
-import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Objects;
-import com.github.signer4j.imp.function.Supplier;
 
+import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.core.imp.AstractPjeClient;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
-import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
+import br.jus.cnj.pje.office.core.imp.WebCodec;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.IPjeTarget;
@@ -49,22 +37,10 @@ import br.jus.cnj.pje.office.web.IPjeHeaders;
 
 class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
 
-  private static boolean isSuccess(int code) {
-    return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
-  }
-  
-  private final CloseableHttpClient client;
-  
   PjeWebClient(CloseableHttpClient client, Version version) {
-    super(version, IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
-    this.client = requireNonNull(client, "client is null");
+    super(version, new WebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
   }
  
-  @Override
-  public void close() throws IOException {
-    this.client.close();
-  }
-  
   @Override
   protected <T extends HttpUriRequestBase> T createOutput(T request, IPjeTarget target) {
     request.setHeader(HttpHeaders.COOKIE, target.getSession());
@@ -80,6 +56,11 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
   
   private HttpGet createGet(IPjeTarget target) {
     return createOutput(new HttpGet(target.getEndPoint()), target);
+  }
+  
+  @Override
+  protected HttpUriRequestBase createInput(IPjeTarget target) {
+    return createGet(target);
   }
   
   @Override
@@ -144,92 +125,7 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
     return postRequest;
   }
 
-  @Override
-  public void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
-    requireNonNull(status, "status is null");
-    final Supplier<HttpGet> supplier = () -> createGet(
-      requireNonNull(target, "target is null")
-    );
-    get(supplier, status);
-  }
-  
-  @Override
-  protected PjeTaskResponse post(final Supplier<HttpUriRequestBase> supplier, ResultChecker checkResults) throws PJeClientException {
-    try {
-      final HttpPost post = (HttpPost)supplier.get();
-
-      try(CloseableHttpResponse response = client.execute(post)) {
-        int code = response.getCode();
-        if (!isSuccess(code)) { 
-          throw new PJeClientException("Servidor retornando - HTTP Code: " + code);
-        }
-        HttpEntity entity = response.getEntity();
-        if (entity != null) {
-          String responseText;
-          try {
-            responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
-          } catch (ParseException | IOException e) {
-            throw new PJeClientException("Falha na leitura de entity - HTTP Code: " + code, e);
-          } finally {
-            EntityUtils.consumeQuietly(entity);
-          }
-          checkResults.run(responseText);
-        }
-        return PjeWebResponse.SUCCESS;
-      }
-    }catch(PJeClientException e) {
-      throw e;
-    }catch(CancellationException e) {
-      throw new PJeClientException("Operação cancelada. Os dados não foram enviados ao servidor.", e);
-    }catch(Exception e) {
-      throw new PJeClientException("Não foi possivel enviar dados ao servidor. ", e);
-    }
-  }
-  
-  private void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws PJeClientException {
-    try {
-      final HttpGet get = supplier.get();
-
-      try(CloseableHttpResponse response = client.execute(get)) {
-        int code = response.getCode();
-
-        HttpEntity entity = response.getEntity();
-        if (entity == null) {
-          throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + code);
-        }
-        
-        try(OutputStream output = status.onNewTry(1)) {
-          
-          final long total = entity.getContentLength();
-          final InputStream input = entity.getContent();
-          
-          status.onStartDownload(total);
-          final byte[] buffer = new byte[128 * 1024];
-          
-          status.onStatus(total, 0);
-          for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
-            output.write(buffer, 0, length);
-          status.onEndDownload();
-        
-        } catch(Exception e) {
-          status.onDownloadFail(e);
-          throw new PJeClientException("Falha durante o download do arquivo - HTTP Code: " + code, e);
-        } finally {
-          EntityUtils.consumeQuietly(entity);
-        }
-      } finally {
-        get.clear();
-      }
-    } catch(PJeClientException e) {
-      throw e;
-    } catch(CancellationException e) {
-      throw new PJeClientException("Download cancelado!", e);
-    } catch(Exception e) {
-      throw new PJeClientException("Não foi possivel baixar dados do servidor.", e);
-    }
-  }
-  
-  protected static enum Checker implements AstractPjeClient.ResultChecker {
+  protected static enum Checker implements IResultChecker {
     
     IF_ERROR_THROW() {
       @Override

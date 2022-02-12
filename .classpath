@@ -20,6 +20,7 @@
 	<classpathentry kind="src" path="src/command"/>
 	<classpathentry kind="src" path="src/web"/>
 	<classpathentry kind="src" path="src/signer4j"/>
+	<classpathentry kind="src" path="src/socket"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

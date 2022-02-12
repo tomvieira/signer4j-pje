@@ -50,7 +50,7 @@ public class PjeClientWebBuilder implements IPjeClientBuilder  {
   @Override
   public final IPjeClient build() {
     PjeWebClient client = new PjeWebClient(
-      clientBuilder.build(), 
+      clientBuilder.build(),
       version
     );
     return client;    
@@ -84,14 +84,12 @@ public class PjeClientWebBuilder implements IPjeClientBuilder  {
     return this;
   }
   
-  public final IPjeClientBuilder setTargetAuthenticationStrategy(
-      final AuthenticationStrategy targetAuthStrategy) {
+  public final IPjeClientBuilder setTargetAuthenticationStrategy(final AuthenticationStrategy targetAuthStrategy) {
     clientBuilder.setTargetAuthenticationStrategy(targetAuthStrategy);
     return this;
   }
   
-  public final IPjeClientBuilder setProxyAuthenticationStrategy(
-      final AuthenticationStrategy proxyAuthStrategy) {
+  public final IPjeClientBuilder setProxyAuthenticationStrategy(final AuthenticationStrategy proxyAuthStrategy) {
     clientBuilder.setProxyAuthenticationStrategy(proxyAuthStrategy);
     return this;
   }
@@ -106,8 +104,7 @@ public class PjeClientWebBuilder implements IPjeClientBuilder  {
     return this;
   }
   
-  public final IPjeClientBuilder setSchemePortResolver(
-      final SchemePortResolver schemePortResolver) {
+  public final IPjeClientBuilder setSchemePortResolver(final SchemePortResolver schemePortResolver) {
     clientBuilder.setSchemePortResolver(schemePortResolver);
     return this;
   }

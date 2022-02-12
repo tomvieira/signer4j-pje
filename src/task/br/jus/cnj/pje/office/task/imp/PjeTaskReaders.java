@@ -31,6 +31,12 @@ enum PjeTaskReaders implements Supplier<IRequestReader<Params>>{
       return TarefaAssinadorBase64Reader.INSTANCE;
     }
   },
+  TRF3_IMPRESSOR("trf3.impressor") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaImpressaoReader.INSTANCE;
+    }
+  },
   SSO_AUTENTICADOR("sso.autenticador"){
     @Override
     public IRequestReader<Params> get() {

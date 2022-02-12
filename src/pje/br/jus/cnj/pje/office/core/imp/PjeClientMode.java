@@ -31,7 +31,7 @@ import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.web.imp.PjeClientWebBuilder;
-import br.jus.cnj.pje.office.web.imp.PjeWebResponse;
+import br.jus.cnj.pje.office.web.imp.PjeWebTaskResponse;
 
 public enum PjeClientMode {
   STDIO("stdio") {
@@ -87,14 +87,14 @@ public enum PjeClientMode {
   
   public static Function<Throwable, PjeTaskResponse> failFrom(String address) {
     return trim(address).toLowerCase().startsWith(STDIO.name) ? 
-      (t) -> new PjeStdioResponse(Throwables.rootString(t)) :
-      (t) -> PjeWebResponse.FAIL;
+      (t) -> new PjeStdioTaskResponse(Throwables.rootString(t)) :
+      (t) -> PjeWebTaskResponse.FAIL;
   }
   
   public static Supplier<PjeTaskResponse> successFrom(String address) {
     return trim(address).toLowerCase().startsWith(STDIO.name) ?
       () -> PjeTaskResponse.NOTHING :
-      () -> PjeWebResponse.SUCCESS;
+      () -> PjeWebTaskResponse.SUCCESS;
   }
 
   

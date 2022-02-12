@@ -23,7 +23,7 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
     if (!u.isPresent()) {
       throw new TaskResolverException("Parâmetro 'u' não faz parte da requisição! (browser cache issue)");
     }
-
+	    
     Optional<String> r = request.getParameterR();
     if (!r.isPresent()) {
       throw new TaskResolverException("Unabled to resolve task with empty request 'r' param");

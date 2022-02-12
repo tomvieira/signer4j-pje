@@ -1,18 +1,19 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.AstractPjeClient.ResultChecker.QUIETLY;
 import static com.github.signer4j.imp.Args.requireNonNull;
 import static com.github.signer4j.imp.Args.requireText;
 
 import java.util.List;
 
 import com.github.signer4j.IContentType;
+import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.function.Runnable;
 import com.github.signer4j.imp.function.Supplier;
 import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IResultChecker;
+import br.jus.cnj.pje.office.core.ISocketCodec;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
@@ -22,26 +23,25 @@ import br.jus.cnj.pje.office.task.IPjeTarget;
 
 public abstract class AstractPjeClient<T> implements IPjeClient {
   
-  protected static interface ResultChecker extends Runnable<String, PJeClientException> {
-    static ResultChecker QUIETLY = (r) -> {};
-  }
-  
   protected final Version version;
   
   protected ICanceller canceller = ICanceller.NOTHING;
 
-  private final ResultChecker ifErrorThrow;
+  private final IResultChecker ifErrorThrow;
 
-  private final ResultChecker ifNotSuccessThrow;
+  private final IResultChecker ifNotSuccessThrow;
   
-  protected AstractPjeClient(Version version) {
-    this(version, QUIETLY, QUIETLY);
+  protected ISocketCodec<T> socket;
+  
+  protected AstractPjeClient(Version version, ISocketCodec<T> socket) {
+    this(version, socket, IResultChecker.NOTHING, IResultChecker.NOTHING);
   }
 
-  protected AstractPjeClient(Version version, ResultChecker ifError, ResultChecker ifNotSuccess) {
+  protected AstractPjeClient(Version version, ISocketCodec<T> socket, IResultChecker ifError, IResultChecker ifNotSuccess) {
     this.version = requireNonNull(version, "version is null");
     this.ifErrorThrow = requireNonNull(ifError, "ifError is null");
     this.ifNotSuccessThrow = requireNonNull(ifNotSuccess, "ifNotSuccess is null");
+    this.socket = requireNonNull(socket, "socket is null");
   }
   
   @Override
@@ -104,9 +104,34 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       requireNonNull(target, "target is null"), 
       requireNonNull(dadosSSO , "dadosSSO is empty")
     );
-    return post(supplier, ResultChecker.QUIETLY);
+    return post(supplier, IResultChecker.NOTHING);
   }  
+  
+  @Override
+  public final void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
+    requireNonNull(status, "status is null");
+    final Supplier<T> supplier = () -> createInput(
+      requireNonNull(target, "target is null")
+    );
+    this.socket.get(supplier, status);
+  }
+  
+  @Override
+  public void close() throws Exception {
+    this.socket.close();
+  }
 
+  private PjeTaskResponse post(final Supplier<T> supplier, IResultChecker checkResults) throws PJeClientException {
+    try {
+      return this.socket.post(supplier, checkResults);
+    } catch (PJeClientException e) {
+      throw e;
+    } catch(Exception e) {
+      throw new PJeClientException("post codec fail", e);
+    }
+  }
+  
+  protected abstract T createInput(IPjeTarget target);
   
   protected abstract <R extends T> R createOutput(R request, IPjeTarget target);
 
@@ -119,8 +144,6 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   protected abstract T createOutput(IPjeTarget target, IArquivoAssinado file, IContentType contentType) throws Exception;
 
   protected abstract T createOutput(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws Exception;
-  
-  protected abstract PjeTaskResponse post(final Supplier<T> supplier, ResultChecker checkResults) throws PJeClientException;
 }
 
 

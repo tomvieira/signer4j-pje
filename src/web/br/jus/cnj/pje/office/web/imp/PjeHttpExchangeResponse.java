@@ -34,13 +34,13 @@ public final class PjeHttpExchangeResponse implements IPjeResponse {
   
   public void writeHtml(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_HTML.getMimeType());
+    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_HTML.toString());
     write(data);
   }
   
   public void writeJson(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
     write(data);
   }
 }

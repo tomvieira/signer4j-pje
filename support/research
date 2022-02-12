@@ -7,3 +7,9 @@ https://www.w3.org/TR/webauthn/]
 Content Security Policy
 https://developers.google.com/web/fundamentals/security/csp
 https://scarybeastsecurity.blogspot.com/2009/12/generic-cross-browser-cross-domain.html
+https://stackoverflow.com/questions/25241444/security-of-native-messaging
+https://secgroup.dais.unive.it/projects/apduattacks/
+
+Você percebe, é claro, que o Native Messaging funcionará SOMENTE dentro dos limites da máquina: Com o Native Messaging, 
+o navegador se comunicará com seu aplicativo host por meio de stdin/stdout.Então, qual é exatamente o problema aqui? Se 
+os Hackers são capazes de ouvir seu stdin/stdout, eles já estão em sua máquina - você já perdeu.

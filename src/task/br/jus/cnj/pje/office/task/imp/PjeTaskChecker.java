@@ -60,8 +60,7 @@ final class PjeTaskChecker {
     return HashAlgorithm.get(algorithm).get();
   }
   
-  @SuppressWarnings("rawtypes")
-  public static List checkIfNotEmpty(List<?> content, String paramName) throws TaskException {
+  public static <T> List<T> checkIfNotEmpty(List<T> content, String paramName) throws TaskException {
     throwIf(content == null || content.isEmpty(), paramName);
     return content;
   }

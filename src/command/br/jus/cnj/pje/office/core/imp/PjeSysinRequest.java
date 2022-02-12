@@ -5,6 +5,6 @@ import java.net.URISyntaxException;
 
 public class PjeSysinRequest extends PjeUriRequest {
   public PjeSysinRequest(String uri) throws URISyntaxException {
-    super(new URI(uri));
+    super(new URI(uri), "java.lang.System.in");
   }
 }

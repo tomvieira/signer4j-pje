@@ -1,6 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.imp.Threads.async;
+import static com.github.signer4j.imp.Throwables.tryRun;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -11,7 +12,6 @@ import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Threads;
-import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.IProgressFactory;
 import com.github.signer4j.progress.imp.ProgressFactory;
 import com.github.signer4j.task.ITaskRequestExecutor;
@@ -29,27 +29,39 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(IPjeCommander.class);
   
+  private final String serverEndpoint;
+
   private final IFinishable finishingCode;
-  
+
   protected final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
+
   
-  protected PjeCommander(IFinishable finishingCode) {
-    this(finishingCode, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  protected PjeCommander(IFinishable finishingCode, String serverAddress) {
+    this(finishingCode, serverAddress, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
   
-  protected PjeCommander(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(finishingCode, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
+  protected PjeCommander(IFinishable finishingCode, String serverAddress, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+    this(finishingCode, serverAddress, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
   }
 
-  protected PjeCommander(IFinishable finishingCode, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
-    this(new PjeTaskRequestExecutor(factory, tokenAccess, securityAgent), finishingCode);
+  protected PjeCommander(IFinishable finishingCode, String serverAddress, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+    this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), finishingCode, serverAddress);
   }
   
-  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode) {
+  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode, String serverAddress) {
     this.executor = Args.requireNonNull(executor, "executor is null");
     this.finishingCode = Args.requireNonNull(finishingCode, "finishingCode is null");
+    this.serverEndpoint = Args.requireText(serverAddress, "serverAddress is empty");
+  }
+  
+  protected final String getServerEndpoint() {
+    return serverEndpoint;
+  }
+
+  protected final String getServerEndpoint(String path) {
+    return serverEndpoint + Strings.trim(path);
   }
 
   protected final void notifyShutdown() {
@@ -93,34 +105,38 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   }
   
   @Override
-  public void stop(boolean kill) {
-    Throwables.tryRun(executor::close);
+  public synchronized void stop(boolean kill) {
+    tryRun(executor::close);
+    tryRun(this::notifyShutdown);
+    if (kill) {
+      tryRun(this::notifyKill);
+    }
   }
   
   @Override
   public final void showOfflineSigner() {
     final String request = 
-        "{\"aplicacao\":\"Pje\"," + 
-        "\"servidor\":\"localhost\"," + 
-        "\"sessao\":\"localhost\"," + 
-        "\"codigoSeguranca\":\"localhost\"," + 
-        "\"tarefaId\":\"cnj.assinador\"," + 
-        "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
-        + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-        + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-        + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
-        "}";
-    String paramRequest = Strings.get(() -> encode(request, UTF_8.toString()), "").get();
+      "{\"aplicacao\":\"Pje\"," + 
+      "\"servidor\":\"nothing://\"," + 
+      "\"sessao\":\"\"," + 
+      "\"codigoSeguranca\":\"localhost\"," + 
+      "\"tarefaId\":\"cnj.assinador\"," + 
+      "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
+      + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
+      + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
+      + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
+      "}&u=" + System.currentTimeMillis();
+    String encodedRequest = Strings.get(() -> encode(request, UTF_8.toString()), "").get();
     async(() ->  {
       try {
         this.executor.setAllowLocalRequest(true);
-        openSigner(paramRequest);
+        openSigner("?r=" + encodedRequest);
       }finally {
         Threads.sleep(1000);   
         this.executor.setAllowLocalRequest(false);
       }
     });
-  }
-
-  protected abstract void openSigner(String paramRequest);
+  }    
+  
+  protected abstract void openSigner(String encodedRequest);
 }

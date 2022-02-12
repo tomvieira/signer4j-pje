@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.IFinishable;
-import com.github.signer4j.imp.Throwables;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -81,7 +80,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
-      PjeWebResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.SUCCESS.processResponse(response);
     }
   }
   
@@ -106,7 +105,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de parada do servidor");
-      PjeWebResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.exit();
     }
   }
@@ -120,7 +119,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     @Override
     protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de logout do certificado");
-      PjeWebResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.logout();
     }    
   } 
@@ -165,7 +164,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   private final IPjeRequestHandler vaza = new LogoutRequestHandler();
 
   PjeWebServer(IFinishable finishingCode) {
-    super(finishingCode);
+    super(finishingCode, "http://127.0.0.1:" + HTTP_PORT);
   }
   
   @Override
@@ -186,7 +185,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   
   @Override
   protected void handleException(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response, Exception e) {
-    tryRun(() -> PjeWebResponse.FAIL.processResponse(response));
+    tryRun(() -> PjeWebTaskResponse.FAIL.processResponse(response));
   }
   
   @Override
@@ -250,29 +249,21 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   public synchronized void stop(boolean kill) {
     if (isStarted()) {
       LOGGER.info("Parando servidor PjeWebServer");
-      super.stop(kill);
-      Throwables.tryRun(setup::shutdown);
+      tryRun(setup::shutdown);
       try {
         stopHttp();
         stopHttps();
       }finally {
+        super.stop(kill);
         setup = null;
         LOGGER.info("Servidor web parado");
-      }
-      notifyShutdown();
-      if (kill) {
-        notifyKill();
       }
     }
   }
 
   @Override
   protected void openSigner(String request) {
-    touchQuietly(
-      "http://127.0.0.1:" + HTTP_PORT + task.getEndPoint() + 
-      "?r=" + request + 
-      "&u=" + System.currentTimeMillis()         
-    );
+    touchQuietly(getServerEndpoint(task.getEndPoint()) + request + "&u=" + System.currentTimeMillis());
   }
 }
 

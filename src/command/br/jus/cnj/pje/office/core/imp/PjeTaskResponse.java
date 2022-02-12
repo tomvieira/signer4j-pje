@@ -7,11 +7,17 @@ import com.github.signer4j.task.ITaskResponse;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public abstract class PjeTaskResponse implements ITaskResponse<IPjeResponse> {
-  public static final PjeTaskResponse NOTHING = new PjeTaskResponse() {};
+  public static final PjeTaskResponse NOTHING = new PjeTaskResponse(true) {};
+  
+  private boolean success;
+  
+  protected PjeTaskResponse(boolean success) {
+    this.success = success;
+  }
   
   @Override
-  public boolean isSuccess() {
-    return true;
+  public final boolean isSuccess() {
+    return success;
   }
   
   @Override

@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
 
+import com.github.signer4j.imp.Strings;
+
 import br.jus.cnj.pje.office.core.IPjeRequest;
 
 public abstract class PjeUriRequest implements IPjeRequest {
@@ -15,9 +17,9 @@ public abstract class PjeUriRequest implements IPjeRequest {
 
   private final List<NameValuePair> queryParams;
   
-  protected PjeUriRequest(URI input) {
+  protected PjeUriRequest(URI input, String userAgent) {
     this.queryParams = parseParams(input);
-    this.userAgent = "stdio";
+    this.userAgent = Strings.trim(userAgent, "Unknown");
   }
 
   @Override
@@ -29,7 +31,7 @@ public abstract class PjeUriRequest implements IPjeRequest {
   public Optional<String> getParameterU() {
     return getParameter(PJE_REQUEST_PARAMETER_CACHE);
   }
-
+  
   @Override
   public Optional<String> getUserAgent() {
     return Optional.ofNullable(userAgent);

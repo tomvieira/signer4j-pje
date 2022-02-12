@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.core;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.github.signer4j.IContentType;
@@ -34,7 +33,5 @@ public interface IPjeClient extends AutoCloseable {
   
   PjeTaskResponse send(IPjeTarget target, IDadosSSO dadosSSO) throws PJeClientException;;
   
-  void close() throws IOException;
-
   void setCanceller(ICanceller canceller);
 }

@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core;
 import com.github.signer4j.imp.Constants;
 
 public enum Version {
-  _2_0_0("2.0.0");
+  _2_0_0("2.0.0"); //remember: last version must be first enum position
   
   private String version;
 
@@ -14,7 +14,7 @@ public enum Version {
   private static final Version[] VALUES = Version.values();
   
   public static Version current() {
-    return VALUES[VALUES.length - 1];
+    return VALUES[0];
   }
   
   public static byte[] jsonBytes() {
