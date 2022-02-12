@@ -1,30 +1,30 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
-import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Constants;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public class PjeStdioTaskResponse extends PjeTaskResponse {
+public class PjeStdioTaskResponse extends PjeStringTaskResponse {
 
-  private String output;
-  
   public PjeStdioTaskResponse(String output) {
-    this(output, true);
+    this(output, Constants.DEFAULT_CHARSET, true);
   }
   
-  public PjeStdioTaskResponse(String output, boolean success) {
-    super(success);
-    this.output = Args.requireNonNull(output, "output is null");
+  public PjeStdioTaskResponse(String output, Charset charset) {
+    this(output, charset, true);
+  }
+  
+  public PjeStdioTaskResponse(String output, Charset charset, boolean success) {
+    super(output, charset, success);
   }
   
   @Override
   public void processResponse(IPjeResponse response) throws IOException {
     response.write(toBytes(output.length()));
-    response.write(output.getBytes(Constants.UTF_8));
-    response.flush();
+    super.processResponse(response);
   }
   
   private static byte[] toBytes(int length) {

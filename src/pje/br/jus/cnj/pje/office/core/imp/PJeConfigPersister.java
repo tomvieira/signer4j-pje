@@ -3,11 +3,11 @@ package br.jus.cnj.pje.office.core.imp;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 import com.github.signer4j.imp.ConfigPersister;
 import com.github.signer4j.imp.SignerConfig;
 import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.function.Performable;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
@@ -58,7 +58,7 @@ class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister 
   }
 
   @Override
-  public void loadServerAccess(Performable<IPjeServerAccess> add) {
+  public void loadServerAccess(Consumer<IPjeServerAccess> add) {
     Properties properties = new Properties();
     if (!open(properties))
       return;
@@ -69,7 +69,7 @@ class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister 
         LOGGER.warn("Arquivo de configuração em formato inválido: {}", members);
         continue;
       }
-      add.perform(PjeServerAccess.fromString(members));
+      add.accept(PjeServerAccess.fromString(members));
     }
   }
 }

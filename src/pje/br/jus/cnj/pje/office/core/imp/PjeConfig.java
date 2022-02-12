@@ -3,9 +3,9 @@ package br.jus.cnj.pje.office.core.imp;
 import static java.security.Security.addProvider;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.github.signer4j.imp.Config;
-import com.github.signer4j.imp.function.Performable;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
@@ -29,7 +29,7 @@ public class PjeConfig extends Config {
     return (IPjeConfigPersister)Config.config();
   }
   
-  public static void loadServerAccess(Performable<IPjeServerAccess> add) {
+  public static void loadServerAccess(Consumer<IPjeServerAccess> add) {
     persister().loadServerAccess(add);
   }
 

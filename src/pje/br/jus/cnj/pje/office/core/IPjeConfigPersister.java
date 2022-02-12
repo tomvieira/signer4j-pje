@@ -1,16 +1,16 @@
 package br.jus.cnj.pje.office.core;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.github.signer4j.IConfigPersister;
-import com.github.signer4j.imp.function.Performable;
 
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 
 
 public interface IPjeConfigPersister extends IConfigPersister {
   
-  void loadServerAccess(Performable<IPjeServerAccess> add);
+  void loadServerAccess(Consumer<IPjeServerAccess> add);
 
   Optional<String> authStrategy(); 
 

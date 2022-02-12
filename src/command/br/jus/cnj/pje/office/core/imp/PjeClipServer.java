@@ -9,6 +9,7 @@ import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
 import com.github.signer4j.IFinishable;
+import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.Strings;
 
@@ -24,7 +25,7 @@ public class PjeClipServer extends PjeTextServer {
 
   @Override
   protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeClipRequest(input), new PjeClipResponse());
+    return of(new PjeClipRequest(input), new PjeClipResponse(Constants.DEFAULT_CHARSET));
   }
   
   @Override

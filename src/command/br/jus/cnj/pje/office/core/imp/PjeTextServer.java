@@ -42,7 +42,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
     if (isStarted()) {
       LOGGER.info("Parando PjeStdioServer");
       try {
-        this.context.stop();
+        this.context.stop(2000);
       }finally {
         super.stop(kill);
         PjeTextServer.this.started = false;

@@ -37,7 +37,13 @@ public enum PjeClientMode {
   STDIO("stdio") {
     @Override
     protected IPjeClientBuilder createBuilder() {
-      return new PjeClientExtensionBuilder();
+      return new PjeStdioClientBuilder();
+    }
+  },
+  CLIP("clip") {
+    @Override
+    protected IPjeClientBuilder createBuilder() {
+      return null;//new PjeClipClientBuilder();
     }
   },
   HTTP("http"),
@@ -86,8 +92,11 @@ public enum PjeClientMode {
   }
   
   public static Function<Throwable, PjeTaskResponse> failFrom(String address) {
-    return trim(address).toLowerCase().startsWith(STDIO.name) ? 
+    final String lower = trim(address).toLowerCase();
+    return lower.startsWith(STDIO.name) ? 
       (t) -> new PjeStdioTaskResponse(Throwables.rootString(t)) :
+      lower.startsWith(CLIP.name) ? 
+      (t) -> null :
       (t) -> PjeWebTaskResponse.FAIL;
   }
   
