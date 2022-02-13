@@ -79,7 +79,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
       throw new TaskException("Não há dados a serem assinados");
     }
     
-    final IPjeTarget target     = getTarget(uploadUrl);
+    final IPjeTarget target  = getTarget(uploadUrl);
     final IPjeClient client  = getPjeClient();
     final IProgress progress = getProgress();
     

@@ -1,3 +1,5 @@
+
+
 https://w3c.github.io/webappsec-secure-contexts/
 https://web-eid.eu/
 https://github.com/web-eid/web-eid-system-architecture-doc
@@ -13,3 +15,6 @@ https://secgroup.dais.unive.it/projects/apduattacks/
 Você percebe, é claro, que o Native Messaging funcionará SOMENTE dentro dos limites da máquina: Com o Native Messaging, 
 o navegador se comunicará com seu aplicativo host por meio de stdin/stdout.Então, qual é exatamente o problema aqui? Se 
 os Hackers são capazes de ouvir seu stdin/stdout, eles já estão em sua máquina - você já perdeu.
+https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/
+https://web.dev/samesite-cookies-explained/
+https://www.wired.com/story/how-to-audit-browser-extensions-security-chrome-firefox-edge-safari/

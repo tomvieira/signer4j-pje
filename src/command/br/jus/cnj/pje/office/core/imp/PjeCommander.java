@@ -21,11 +21,10 @@ import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.task.imp.PjeTaskRequestExecutor;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
-public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  implements IPjeCommander<I, O> {
+abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  implements IPjeCommander<I, O> {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(IPjeCommander.class);
   
@@ -36,24 +35,23 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   protected final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
+  
+  protected PjeCommander(IFinishable finishingCode, String serverEndpoint) {
+    this(finishingCode, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  }
+  
+  protected PjeCommander(IFinishable finishingCode, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+    this(finishingCode, serverEndpoint, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
+  }
 
-  
-  protected PjeCommander(IFinishable finishingCode, String serverAddress) {
-    this(finishingCode, serverAddress, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  protected PjeCommander(IFinishable finishingCode, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+    this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), finishingCode, serverEndpoint);
   }
   
-  protected PjeCommander(IFinishable finishingCode, String serverAddress, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(finishingCode, serverAddress, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
-  }
-
-  protected PjeCommander(IFinishable finishingCode, String serverAddress, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
-    this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), finishingCode, serverAddress);
-  }
-  
-  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode, String serverAddress) {
+  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode, String serverEndpoint) {
     this.executor = Args.requireNonNull(executor, "executor is null");
     this.finishingCode = Args.requireNonNull(finishingCode, "finishingCode is null");
-    this.serverEndpoint = Args.requireText(serverAddress, "serverAddress is empty");
+    this.serverEndpoint = Args.requireText(serverEndpoint, "serverEndpoint is empty");
   }
   
   protected final String getServerEndpoint() {
@@ -116,8 +114,8 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
   @Override
   public final void showOfflineSigner() {
     final String request = 
-      "{\"aplicacao\":\"Pje\"," + 
-      "\"servidor\":\"nothing://\"," + 
+      "{\"aplicacao\":\"PjeOffice\"," + 
+      "\"servidor\":\"" + serverEndpoint + "\"," + 
       "\"sessao\":\"\"," + 
       "\"codigoSeguranca\":\"localhost\"," + 
       "\"tarefaId\":\"cnj.assinador\"," + 
@@ -127,6 +125,7 @@ public abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse
       + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
       "}&u=" + System.currentTimeMillis();
     String encodedRequest = Strings.get(() -> encode(request, UTF_8.toString()), "").get();
+    System.out.println(encodedRequest);
     async(() ->  {
       try {
         this.executor.setAllowLocalRequest(true);

@@ -17,7 +17,7 @@ import java.awt.event.ItemListener;
 import com.github.signer4j.gui.alert.MessageAlert;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 
 public abstract class PjeOfficeClassic extends PjeOfficeApp {
   

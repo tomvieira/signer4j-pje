@@ -7,7 +7,7 @@ import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public class PjeStringTaskResponse extends PjeTaskResponse {
+class PjeStringTaskResponse extends PjeTaskResponse {
 
   protected final String output;
   protected final Charset charset;

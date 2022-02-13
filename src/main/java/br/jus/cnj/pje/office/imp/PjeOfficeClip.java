@@ -5,7 +5,7 @@ import static br.jus.cnj.pje.office.imp.PjeOfficeFrontEnd.getBest;
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 
 public class PjeOfficeClip extends PjeOfficeClassic {
 

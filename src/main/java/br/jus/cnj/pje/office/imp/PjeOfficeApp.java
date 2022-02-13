@@ -15,8 +15,8 @@ import com.github.signer4j.imp.Threads.ShutdownHookThread;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.imp.PJeOffice;
+import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
-import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
 
 public class PjeOfficeApp implements IPjeLifeCycleHook {
   

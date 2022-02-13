@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.imp;
 
 import static com.github.signer4j.imp.SwingTools.invokeLater;
 
-import br.jus.cnj.pje.office.web.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 
 public class PjeOfficeStdio extends PjeOfficeApp {
   
