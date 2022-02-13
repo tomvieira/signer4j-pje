@@ -50,14 +50,13 @@ public enum PjeAuthStrategy implements IPjeAuthStrategy{
   CONFIRM("Apenas confirmar uso do dispositivo"){
     @Override
     public void login(IToken token) throws Signer4JException {
-      if (token.isAuthenticated()) { 
-        if (!isTrue(TokenUseAlert::display)) {
-          token.logout();
-          throw new LoginCanceledException();
-        }
-        return;
+      if (!isTrue(TokenUseAlert::display)) {
+        token.logout();
+        throw new LoginCanceledException();
       }
-      token.login();
+      if (!token.isAuthenticated()) { 
+        token.login();
+      }
     }
   
     @Override

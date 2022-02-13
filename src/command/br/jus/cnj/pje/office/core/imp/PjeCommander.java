@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static com.github.signer4j.imp.Strings.get;
 import static com.github.signer4j.imp.Threads.async;
 import static com.github.signer4j.imp.Throwables.tryRun;
 import static java.net.URLEncoder.encode;
@@ -123,13 +124,13 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
       + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
       + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
       + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
-      "}&u=" + System.currentTimeMillis();
-    String encodedRequest = Strings.get(() -> encode(request, UTF_8.toString()), "").get();
-    System.out.println(encodedRequest);
+      "}";
+    
     async(() ->  {
+      String encodedRequest = get(() -> encode(request, UTF_8.toString()), "").get();
       try {
         this.executor.setAllowLocalRequest(true);
-        openSigner("?r=" + encodedRequest);
+        openSigner("?r=" + encodedRequest + "&u=" + System.currentTimeMillis());
       }finally {
         Threads.sleep(1000);   
         this.executor.setAllowLocalRequest(false);

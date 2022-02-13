@@ -66,6 +66,11 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
     public TextCycle(String contextName) {
       super(contextName);
     }
+    
+    @Override
+    protected void beforeRun() {
+      clearBuffer();
+    }
 
     @Override
     protected void doRun() {
@@ -95,6 +100,8 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
    tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
   }
   
+  protected void clearBuffer() {}
+
   protected abstract IPjeContext createContext(String input) throws Exception;
   
   protected abstract IPjeContext createContext() throws InterruptedException, Exception;

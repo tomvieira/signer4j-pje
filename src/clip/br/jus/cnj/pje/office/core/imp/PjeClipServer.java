@@ -5,6 +5,7 @@ import static br.jus.cnj.pje.office.core.imp.SimpleContext.of;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
@@ -21,6 +22,11 @@ class PjeClipServer extends PjeTextServer {
   
   public PjeClipServer(IFinishable finishingCode) {
     super(finishingCode, "clip://global-messaging");
+  }
+  
+  @Override
+  protected void clearBuffer() {
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
   }
 
   @Override
