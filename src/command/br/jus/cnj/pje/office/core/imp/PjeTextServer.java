@@ -85,14 +85,14 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
           LOGGER.info("Contexto não informado. Thread finalizada");
           break;
         }
-        submit(context);
+        new Thread(() -> submit(context)).start();
       }while(true);      
     }
   }
   
   @Override
   protected final void openSigner(String request) {
-    tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
+   tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
   }
   
   protected abstract IPjeContext createContext(String input) throws Exception;

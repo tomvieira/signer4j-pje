@@ -262,7 +262,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
 
   @Override
   protected void openSigner(String request) {
-    touchQuietly(getServerEndpoint(task.getEndPoint()) + request + "&u=" + System.currentTimeMillis());
+    touchQuietly(getServerEndpoint(task.getEndPoint()) + request);
   }
 }
 
