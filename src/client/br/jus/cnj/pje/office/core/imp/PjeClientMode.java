@@ -2,13 +2,11 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.imp.Streams.closeQuietly;
 import static com.github.signer4j.imp.Strings.trim;
-import static com.github.signer4j.imp.Throwables.rootString;
 
 import java.io.InputStream;
 import java.net.ProxySelector;
 import java.security.KeyStore;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
 
@@ -25,6 +23,7 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.imp.ICanceller;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
@@ -39,8 +38,13 @@ public enum PjeClientMode {
     }
 
     @Override
+    protected Function<String, PjeTaskResponse> success() {
+      return (o) -> new PjeStdioTaskResponse(o);
+    }
+
+    @Override
     protected Function<Throwable, PjeTaskResponse> fail() {
-      return (t) -> new PjeStdioTaskResponse(rootString(t));
+      return (t) -> new PjeStdioTaskResponse(Throwables.rootMessage(t));
     }
   },
   CLIP("clip") {
@@ -50,8 +54,13 @@ public enum PjeClientMode {
     }
 
     @Override
+    protected Function<String, PjeTaskResponse> success() {
+      return (o) -> new PjeClipTaskResponse(o);
+    }
+
+    @Override
     protected Function<Throwable, PjeTaskResponse> fail() {
-      return (t) -> new PjeClipTaskResponse(rootString(t));
+      return (t) -> new PjeClipTaskResponse(Throwables.rootMessage(t));
     }
   },
   HTTP("http") {
@@ -74,13 +83,13 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Function<Throwable, PjeTaskResponse> fail() {
-      return (t) -> PjeWebTaskResponse.FAIL;
+    protected Function< String, PjeTaskResponse> success() {
+      return (o) -> PjeWebTaskResponse.SUCCESS;
     }
 
     @Override
-    protected Supplier<PjeTaskResponse> success() {
-      return () -> PjeWebTaskResponse.SUCCESS;
+    protected Function<Throwable, PjeTaskResponse> fail() {
+      return (t) -> PjeWebTaskResponse.FAIL;
     }
   },
   HTTPS("https") {
@@ -111,7 +120,7 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Supplier<PjeTaskResponse> success() {
+    protected Function<String, PjeTaskResponse> success() {
       return HTTP.success();
     }
   },
@@ -151,7 +160,7 @@ public enum PjeClientMode {
     return from(trim(address).toLowerCase()).fail();
   }
   
-  public static Supplier<PjeTaskResponse> successFrom(String address) {
+  public static Function<String, PjeTaskResponse> successFrom(String address) {
     return from(trim(address).toLowerCase()).success();
   }
   
@@ -167,8 +176,8 @@ public enum PjeClientMode {
     return protocol;
   }
 
-  protected Supplier<PjeTaskResponse> success() {
-    return () -> PjeTaskResponse.NOTHING;
+  protected Function<String, PjeTaskResponse> success() {
+    return (o) -> PjeTaskResponse.NOTHING;
   }
   
   protected Function<Throwable, PjeTaskResponse> fail() {

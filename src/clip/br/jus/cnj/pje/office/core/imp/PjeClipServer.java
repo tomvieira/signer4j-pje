@@ -10,15 +10,13 @@ import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
 import com.github.signer4j.IFinishable;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
 
 class PjeClipServer extends PjeTextServer {
-
-  private String lastclip = Ids.next();
+  
+  private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   
   public PjeClipServer(IFinishable finishingCode) {
     super(finishingCode, "clip://global-messaging");
@@ -26,17 +24,16 @@ class PjeClipServer extends PjeTextServer {
   
   @Override
   protected void clearBuffer() {
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+    clipboard.setContents(new StringSelection(""), null);
   }
 
   @Override
   protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeClipRequest(input), new PjeClipResponse(Constants.DEFAULT_CHARSET));
+    return of(new PjeClipRequest(input), new PjeClipResponse());
   }
   
   @Override
-  protected IPjeContext createContext() throws InterruptedException, Exception {
-    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  protected String getUri() throws InterruptedException, Exception {
     do {
       Thread.sleep(1000);
       Optional<Transferable> content = Optional.ofNullable(clipboard.getContents(this));      
@@ -47,19 +44,9 @@ class PjeClipServer extends PjeTextServer {
       if (!t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
         continue;
       }
-      String input = Strings.trim((String)t.getTransferData(DataFlavor.stringFlavor));      
-      if (!canProccess(input)) {
-        LOGGER.info("Rejeitado: " + input); //TODO we have to go back here! change to DEBUG instead
-        lastclip = input;
-        continue;        
-      }
-      lastclip = input; 
-      return createContext(input);
+      String uri = Strings.trim((String)t.getTransferData(DataFlavor.stringFlavor));
+      return uri;
     }while(true);
-  }
-
-  private boolean canProccess(String input) {
-    return !lastclip.equals(input) && input.startsWith(getServerEndpoint());
   }
 }
 

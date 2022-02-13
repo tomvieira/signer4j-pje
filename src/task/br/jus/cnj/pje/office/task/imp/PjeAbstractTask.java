@@ -137,7 +137,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final PjeTaskResponse success() {
-    return PjeClientMode.successFrom(getServerAddress()).get();
+    return PjeClientMode.successFrom(getServerAddress()).apply("success");
+  }
+
+  protected final PjeTaskResponse success(String output) {
+    return PjeClientMode.successFrom(getServerAddress()).apply("success: " + output);
   }
   
   protected void checkMainParams() throws TaskException {

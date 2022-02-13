@@ -113,7 +113,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     final Supplier<T> supplier = () -> createInput(
       requireNonNull(target, "target is null")
     );
-    this.socket.get(supplier, status);
+    get(supplier, status);
   }
   
   @Override
@@ -128,6 +128,16 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       throw e;
     } catch(Exception e) {
       throw new PJeClientException("post codec fail", e);
+    }
+  }
+  
+  private void get(final Supplier<T> supplier, IDownloadStatus status) throws PJeClientException {
+    try {
+      this.socket.get(supplier, status);
+    } catch (PJeClientException e) {
+      throw e;
+    } catch(Exception e) {
+      throw new PJeClientException("get codec fail", e);
     }
   }
   

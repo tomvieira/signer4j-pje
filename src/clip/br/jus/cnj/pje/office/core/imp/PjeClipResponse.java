@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import com.github.signer4j.imp.Args;
+import com.github.signer4j.imp.Constants;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
@@ -13,6 +14,10 @@ class PjeClipResponse implements IPjeResponse {
   
   private final Charset charset;
 
+  public PjeClipResponse() {
+    this(Constants.DEFAULT_CHARSET);
+  }
+  
   public PjeClipResponse(Charset charset) {
     this.charset = Args.requireNonNull(charset, "charset is null");
   }

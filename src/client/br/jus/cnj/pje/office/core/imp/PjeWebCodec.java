@@ -22,7 +22,7 @@ import com.github.signer4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IResultChecker;
 
-class WebCodec extends SocketCodec<HttpUriRequestBase> {
+class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
 
   private static boolean isSuccess(int code) {
     return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
@@ -30,7 +30,7 @@ class WebCodec extends SocketCodec<HttpUriRequestBase> {
 
   private final CloseableHttpClient client;
   
-  public WebCodec(CloseableHttpClient client) {
+  public PjeWebCodec(CloseableHttpClient client) {
     this.client = Args.requireNonNull(client, "client is null");
   }
   
@@ -40,7 +40,7 @@ class WebCodec extends SocketCodec<HttpUriRequestBase> {
   }
 
   @Override
-  protected PjeTaskResponse doPost(final Supplier<HttpUriRequestBase> supplier, IResultChecker checkResults) throws Exception {
+  public PjeTaskResponse post(final Supplier<HttpUriRequestBase> supplier, IResultChecker checkResults) throws Exception {
     try {
       final HttpPost post = (HttpPost)supplier.get();
 
@@ -69,7 +69,7 @@ class WebCodec extends SocketCodec<HttpUriRequestBase> {
   }
   
   @Override
-  protected void doGet(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+  public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
     try {
       final HttpGet get = (HttpGet)supplier.get();
 

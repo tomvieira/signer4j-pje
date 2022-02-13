@@ -5,6 +5,7 @@ import static com.github.signer4j.imp.Throwables.tryRun;
 import java.io.IOException;
 
 import com.github.signer4j.IFinishable;
+import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.ThreadContext;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
@@ -19,7 +20,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
   
   public PjeTextServer(IFinishable finishingCode, String serverAddress) {
     super(finishingCode, serverAddress);
-    this.context = new TextCycle(serverAddress);
+    this.context = new URICapturer(serverAddress);
   }
   
   @Override
@@ -60,10 +61,19 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
       }
     }
   }
+  
+  protected void clearBuffer() {}
+  
+  @Override
+  protected final void openSigner(String request) {
+   tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
+  }
 
-  private class TextCycle extends ThreadContext {
+  private class URICapturer extends ThreadContext {
 
-    public TextCycle(String contextName) {
+    private String lastUri = Ids.next();
+    
+    public URICapturer(String contextName) {
       super(contextName);
     }
     
@@ -71,38 +81,54 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
     protected void beforeRun() {
       clearBuffer();
     }
+    
+    protected boolean isValid(String uri) {
+      return !lastUri.equals(uri) && uri.startsWith(getServerEndpoint());
+    }
 
+    private final IPjeContext checkAndGet(String uri) throws Exception {
+      if (!isValid(uri)) {
+        lastUri = uri;
+        throw new PjeRejectURIException(uri);
+      }
+      lastUri = uri;
+      return createContext(uri);
+    }
+    
     @Override
     protected void doRun() {
+      int errorCount = 0;
       do {
         final IPjeContext context;
         try {
-          context = createContext();
+          context = checkAndGet(getUri());
+          errorCount = 0;
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           LOGGER.warn("Thread interrompida", e);
           break;
         } catch (Exception e) {
           LOGGER.warn("Requisição mal formada", e);
-          continue;
+          if (++errorCount > 10) {
+            LOGGER.error("Total máximo de erros alcançado: {}. Thread finalizada", errorCount);
+            break;
+          }
+          if (!Thread.interrupted()) {
+            clearBuffer();
+            continue;
+          }
+          break;
         }
         if (context == null) {
           LOGGER.info("Contexto não informado. Thread finalizada");
           break;
         }
         new Thread(() -> submit(context)).start();
-      }while(true);      
+      }while(true);
     }
   }
   
-  @Override
-  protected final void openSigner(String request) {
-   tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
-  }
+  protected abstract String getUri() throws InterruptedException, Exception;
   
-  protected void clearBuffer() {}
-
-  protected abstract IPjeContext createContext(String input) throws Exception;
-  
-  protected abstract IPjeContext createContext() throws InterruptedException, Exception;
+  protected abstract IPjeContext createContext(String uri) throws Exception ;
 }

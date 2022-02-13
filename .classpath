@@ -20,7 +20,7 @@
 	<classpathentry kind="src" path="src/client"/>
 	<classpathentry kind="src" path="src/task"/>
 	<classpathentry kind="src" path="src/taskmodel"/>
-	<classpathentry kind="src" path="src/web"/>
+	<classpathentry kind="src" path="src/http"/>
 	<classpathentry kind="src" path="src/stdio"/>
 	<classpathentry kind="src" path="src/clip"/>
 	<classpathentry kind="src" path="resources"/>

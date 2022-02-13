@@ -35,9 +35,13 @@ import br.jus.cnj.pje.office.task.IPjeTarget;
 class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
 
   PjeWebClient(CloseableHttpClient client, Version version) {
-    super(version, new WebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
+    super(version, new PjeWebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
   }
- 
+  
+  PjeWebClient(PjeWebCodec codec, Version version) {
+    super(version, codec, IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
+  }
+  
   @Override
   protected <T extends HttpUriRequestBase> T createOutput(T request, IPjeTarget target) {
     request.setHeader(HttpHeaders.COOKIE, target.getSession());
@@ -126,7 +130,7 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
     
     IF_ERROR_THROW() {
       @Override
-      public void run(String response) throws PJeClientException {
+      public void run(String response) throws Exception {
         final int length = response.length();
         if (response.startsWith(SERVER_FAIL_RESPONSE)) { 
           String message = length > SERVER_FAIL_RESPONSE.length() ? 
@@ -139,7 +143,7 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
     
     IF_NOT_SUCCESS_THROW() {
       @Override
-      public void run(String response) throws PJeClientException {
+      public void run(String response) throws Exception {
         if (response.startsWith(SERVER_SUCCESS_RESPONSE))
           return;
         IF_ERROR_THROW.run(response);

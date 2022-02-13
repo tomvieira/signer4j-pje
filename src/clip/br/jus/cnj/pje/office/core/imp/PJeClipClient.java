@@ -2,6 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.nio.charset.Charset;
 
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.json.JSONObject;
 
 import com.github.signer4j.IDownloadStatus;
@@ -14,23 +15,27 @@ import br.jus.cnj.pje.office.core.Version;
 class PJeClipClient extends PjeClientWrapper {
 
   PJeClipClient(Version version, Charset charset) {
-    super(new PJeJsonClient(version, new PjeClipCodec(charset))); 
+    super(new PJeJsonClient(version, new PjeClipJsonCodec(charset))); 
   }
   
-  private static class PjeClipCodec extends SocketCodec<JSONObject> {
+  PJeClipClient(Version version, Charset charset, CloseableHttpClient client) {
+    super(new PjeWebClient(client, version));
+  }
+  
+  private static class PjeClipJsonCodec extends SocketCodec<JSONObject> {
     private final Charset charset;
     
-    PjeClipCodec(Charset charset) {
+    PjeClipJsonCodec(Charset charset) {
       this.charset = Args.requireNonNull(charset,  "charset is null");
     }
     
     @Override
-    protected PjeTaskResponse doPost(Supplier<JSONObject> supplier, IResultChecker checker) throws Exception {
+    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker) throws Exception {
       return new PjeClipTaskResponse(supplier.get().toString(), charset);
     }
 
     @Override
-    protected void doGet(Supplier<JSONObject> supplier, IDownloadStatus status) throws Exception {
+    public void get(Supplier<JSONObject> supplier, IDownloadStatus status) throws Exception {
       throw new UnsupportedOperationException();
     }
 

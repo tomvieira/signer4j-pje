@@ -122,7 +122,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       saved.delete();
       throw new TaskException("Não foi possível salvar o arquivo assinado.", e);
     }
-    return success();
+    return success(arquivo.getUrl().get());
   }
   
   private File chooseDestination() throws InterruptedException {
