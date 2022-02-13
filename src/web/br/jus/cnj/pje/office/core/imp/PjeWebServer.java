@@ -149,7 +149,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   
   private HttpServer httpServer;
   private HttpsServer httpsServer;
-  private PjeWebServerSetup setup;
+  private PjeWebServerBuilder setup;
   
   private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -225,7 +225,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     if (!isStarted()) {
       LOGGER.info("Iniciando servidor PjeWebServer");
       try {
-        this.setup = new PjeWebServerSetup()
+        this.setup = new PjeWebServerBuilder()
           .usingFilter(access)
           .usingFilter(cors)
           .usingHandler(ping)

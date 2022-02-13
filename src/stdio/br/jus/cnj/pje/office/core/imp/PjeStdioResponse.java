@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-class PjeSysoutResponse implements IPjeResponse {
+class PjeStdioResponse implements IPjeResponse {
 
   @Override
   public void write(byte[] data) throws IOException {

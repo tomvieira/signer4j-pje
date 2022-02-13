@@ -16,7 +16,7 @@ class PjeStdioServer extends PjeTextServer {
   }
 
   protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeSysinRequest(input), new PjeSysoutResponse());
+    return of(new PjeStdioRequest(input), new PjeStdioResponse());
   }
   
   @Override

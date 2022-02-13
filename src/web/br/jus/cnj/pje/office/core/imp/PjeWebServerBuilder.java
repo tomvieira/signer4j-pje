@@ -12,7 +12,7 @@ import com.sun.net.httpserver.Filter;
 import br.jus.cnj.pje.office.core.IPjeRequestHandler;
 
 @SuppressWarnings("restriction")
-class PjeWebServerSetup implements IPjeWebServerSetup{
+class PjeWebServerBuilder implements IPjeWebServerSetup{
   
   private int port = PjeWebServer.HTTP_PORT;
   
@@ -42,18 +42,18 @@ class PjeWebServerSetup implements IPjeWebServerSetup{
     return this.handlers.toArray(new IPjeRequestHandler[this.filters.size()]);
   }
   
-  PjeWebServerSetup usingPort(int port) {
+  PjeWebServerBuilder usingPort(int port) {
     this.port = Args.requirePositive(port, "port can't must be positive");
     return this;
   }
   
-  PjeWebServerSetup usingFilter(Filter filter) {
+  PjeWebServerBuilder usingFilter(Filter filter) {
     Args.requireNonNull(filter, "filter is null");
     this.filters.add(filter);
     return this;
   }
   
-  PjeWebServerSetup usingHandler(IPjeRequestHandler handler) {
+  PjeWebServerBuilder usingHandler(IPjeRequestHandler handler) {
     this.handlers.add(Args.requireNonNull(handler, "handler is null"));
     return this;
   }
