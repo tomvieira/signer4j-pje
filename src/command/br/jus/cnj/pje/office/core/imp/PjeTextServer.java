@@ -1,11 +1,13 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static com.github.signer4j.imp.Strings.trim;
 import static com.github.signer4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 
 import com.github.signer4j.IFinishable;
 import com.github.signer4j.imp.Ids;
+import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.ThreadContext;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
@@ -16,11 +18,11 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
 
   private boolean started = false;
 
-  private final ThreadContext context;
+  private final ThreadContext capturer;
   
   public PjeTextServer(IFinishable finishingCode, String serverAddress) {
     super(finishingCode, serverAddress);
-    this.context = new URICapturer(serverAddress);
+    this.capturer = new URICapturer(serverAddress);
   }
   
   @Override
@@ -28,7 +30,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
     if (!isStarted()) {
       LOGGER.info("Iniciando PjeStdioServer");
       this.started = true;
-      this.context.start();
+      this.capturer.start();
       notifyStartup();
     }
   }
@@ -43,7 +45,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
     if (isStarted()) {
       LOGGER.info("Parando PjeStdioServer");
       try {
-        this.context.stop(2000);
+        this.capturer.stop(2000);
       }finally {
         super.stop(kill);
         PjeTextServer.this.started = false;
@@ -86,13 +88,14 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
       return !lastUri.equals(uri) && uri.startsWith(getServerEndpoint());
     }
 
-    private final IPjeContext checkAndGet(String uri) throws Exception {
+    private final IPjeContext createContext() throws Exception {
+      String uri = trim(getUri());
       if (!isValid(uri)) {
         lastUri = uri;
         throw new PjeRejectURIException(uri);
       }
       lastUri = uri;
-      return createContext(uri);
+      return PjeTextServer.this.createContext(uri);
     }
     
     @Override
@@ -101,7 +104,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
       do {
         final IPjeContext context;
         try {
-          context = checkAndGet(getUri());
+          context = createContext();
           errorCount = 0;
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
