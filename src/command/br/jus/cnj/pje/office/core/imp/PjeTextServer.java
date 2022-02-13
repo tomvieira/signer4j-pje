@@ -6,8 +6,8 @@ import static com.github.signer4j.imp.Throwables.tryRun;
 import java.io.IOException;
 
 import com.github.signer4j.IFinishable;
+import com.github.signer4j.IThreadContext;
 import com.github.signer4j.imp.Ids;
-import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.ThreadContext;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
@@ -18,7 +18,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
 
   private boolean started = false;
 
-  private final ThreadContext capturer;
+  private final IThreadContext capturer;
   
   public PjeTextServer(IFinishable finishingCode, String serverAddress) {
     super(finishingCode, serverAddress);
@@ -84,15 +84,19 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
       clearBuffer();
     }
     
+    protected boolean isLast(String uri) {
+      return lastUri.equals(uri);
+    }
+    
     protected boolean isValid(String uri) {
-      return !lastUri.equals(uri) && uri.startsWith(getServerEndpoint());
+      return !isLast(uri) && uri.startsWith(getServerEndpoint());
     }
 
     private final IPjeContext createContext() throws Exception {
       String uri = trim(getUri());
       if (!isValid(uri)) {
         lastUri = uri;
-        throw new PjeRejectURIException(uri);
+        return null;
       }
       lastUri = uri;
       return PjeTextServer.this.createContext(uri);
@@ -123,8 +127,8 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
           break;
         }
         if (context == null) {
-          LOGGER.info("Contexto não informado. Thread finalizada");
-          break;
+          LOGGER.info("Contexto indisponível");
+          continue;
         }
         new Thread(() -> submit(context)).start();
       }while(true);
