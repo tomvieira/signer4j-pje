@@ -14,7 +14,7 @@ import com.github.signer4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
 
-class PjeClipServer extends PjeTextServer {
+class PjeClipServer extends PjeURIServer {
   
   private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   

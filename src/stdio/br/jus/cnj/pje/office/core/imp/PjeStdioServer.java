@@ -12,7 +12,7 @@ import com.github.signer4j.imp.InterruptibleInputStream;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
 
-class PjeStdioServer extends PjeTextServer {
+class PjeStdioServer extends PjeURIServer {
   
   private static final int MAX_BODY_SIZE = 8 * 1028 * 1024;
   
@@ -59,7 +59,11 @@ class PjeStdioServer extends PjeTextServer {
   }
   
   private static int toInt(byte[] bytes) {
-    return (bytes[3] << 24) & 0xff000000 | (bytes[2] << 16) & 0x00ff0000 | (bytes[1] << 8) & 0x0000ff00 | (bytes[0] << 0) & 0x000000ff;
+    return
+      (bytes[3] << 24) & 0xFF000000 | 
+      (bytes[2] << 16) & 0x00FF0000 | 
+      (bytes[1] << 8)  & 0x0000FF00 | 
+      (bytes[0] << 0)  & 0x000000FF;
   }
 }
 

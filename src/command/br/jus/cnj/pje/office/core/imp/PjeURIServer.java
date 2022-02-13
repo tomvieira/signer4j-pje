@@ -14,13 +14,13 @@ import br.jus.cnj.pje.office.core.IPjeContext;
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeResponse> {
+public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeResponse> {
 
   private boolean started = false;
 
   private final IThreadContext capturer;
   
-  public PjeTextServer(IFinishable finishingCode, String serverAddress) {
+  public PjeURIServer(IFinishable finishingCode, String serverAddress) {
     super(finishingCode, serverAddress);
     this.capturer = new URICapturer(serverAddress);
   }
@@ -48,7 +48,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
         this.capturer.stop(2000);
       }finally {
         super.stop(kill);
-        PjeTextServer.this.started = false;
+        PjeURIServer.this.started = false;
       }
     }
   }
@@ -99,7 +99,7 @@ public abstract class PjeTextServer extends PjeCommander<IPjeRequest, IPjeRespon
         return null;
       }
       lastUri = uri;
-      return PjeTextServer.this.createContext(uri);
+      return PjeURIServer.this.createContext(uri);
     }
     
     @Override
