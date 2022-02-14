@@ -18,7 +18,7 @@ import br.jus.cnj.pje.office.core.imp.PJeOffice;
 import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
 
-public class PjeOfficeApp implements IPjeLifeCycleHook {
+public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
   
   static {
     PjeConfig.setup();
