@@ -17,7 +17,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorHash;
 
-class TarefaAssinadorHashReader extends AbstractRequestReader<Params, TarefaAssinadorHashReader.TarefaAssinadorHash>{
+class TarefaAssinadorHashReader extends AbstractRequestReader<Params, ITarefaAssinadorHash>{
 
   public static final TarefaAssinadorHashReader INSTANCE = new TarefaAssinadorHashReader();
 
@@ -96,7 +96,7 @@ class TarefaAssinadorHashReader extends AbstractRequestReader<Params, TarefaAssi
   }
   
   @Override
-  protected ITask<?> createTask(Params output, TarefaAssinadorHash pojo) throws IOException {
+  protected ITask<?> createTask(Params output, ITarefaAssinadorHash pojo) throws IOException {
     return new PjeAssinadorHashTask(output, pojo);
   }
 }

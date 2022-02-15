@@ -1,13 +1,11 @@
 package br.jus.cnj.pje.office.core;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 
-public interface IPjeOffice extends IFinishable {
+public interface IPjeOffice extends IBootable {
   
-  void boot();
-
   void showCertificates();
 
   void showOfflineSigner();

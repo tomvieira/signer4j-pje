@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.gui.utils.SimpleFrame;
 import com.github.signer4j.imp.Config;
 
@@ -25,7 +25,7 @@ public class PjeOfficeDesktop extends SimpleFrame {
   
   private JPanel contentPane;
 
-  public PjeOfficeDesktop(IFinishable finishingCode, PopupMenu popup) {
+  public PjeOfficeDesktop(IBootable finishingCode, PopupMenu popup) {
     super("PjeOffice - " + Version.current());
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setBounds(100, 100, 336, 235);

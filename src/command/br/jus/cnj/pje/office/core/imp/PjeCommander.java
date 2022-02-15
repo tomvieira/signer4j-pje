@@ -9,7 +9,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Threads;
@@ -31,27 +31,27 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   private final String serverEndpoint;
 
-  private final IFinishable finishingCode;
+  protected final IBootable boot;
 
   protected final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
   
-  protected PjeCommander(IFinishable finishingCode, String serverEndpoint) {
-    this(finishingCode, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
+  protected PjeCommander(IBootable boot, String serverEndpoint) {
+    this(boot, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
   
-  protected PjeCommander(IFinishable finishingCode, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(finishingCode, serverEndpoint, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
+  protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+    this(boot, serverEndpoint, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
   }
 
-  protected PjeCommander(IFinishable finishingCode, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
-    this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), finishingCode, serverEndpoint);
+  protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+    this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), boot, serverEndpoint);
   }
   
-  private PjeCommander(PjeTaskRequestExecutor executor, IFinishable finishingCode, String serverEndpoint) {
+  private PjeCommander(PjeTaskRequestExecutor executor, IBootable boot, String serverEndpoint) {
     this.executor = Args.requireNonNull(executor, "executor is null");
-    this.finishingCode = Args.requireNonNull(finishingCode, "finishingCode is null");
+    this.boot = Args.requireNonNull(boot, "boot is null");
     this.serverEndpoint = Args.requireText(serverEndpoint, "serverEndpoint is empty");
   }
   
@@ -82,12 +82,12 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   @Override
   public final void exit() {
-    finishingCode.exit(1500);
+    boot.exit(1500);
   }
   
   @Override
   public final void logout() {
-    finishingCode.logout();
+    boot.logout();
   }
   
   @Override

@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeCommander;
@@ -8,20 +8,20 @@ import br.jus.cnj.pje.office.core.IPjeCommander;
 public enum PjeCommandFactory implements IPjeCommandFactory {
   STDIO() {
     @Override
-    public IPjeCommander<?, ?> create(IFinishable finishingCode) {
-      return new PjeStdioServer(finishingCode);
+    public IPjeCommander<?, ?> create(IBootable boot) {
+      return new PjeStdioServer(boot);
     }
   },
   CLIP() {
     @Override
-    public IPjeCommander<?, ?> create(IFinishable finishingCode) {
-      return new PjeClipServer(finishingCode);
+    public IPjeCommander<?, ?> create(IBootable boot) {
+      return new PjeClipServer(boot);
     }
   },
   WEB() {
     @Override
-    public IPjeCommander<?, ?> create(IFinishable finishingCode) {
-      return new PjeWebServer(finishingCode);
+    public IPjeCommander<?, ?> create(IBootable boot) {
+      return new PjeWebServer(boot);
     }
   }
 }

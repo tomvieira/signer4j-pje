@@ -15,7 +15,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.ITarefaImpressao;
 
-class TarefaImpressaoReader extends AbstractRequestReader<Params, TarefaImpressaoReader.TarefaImpressao>{
+class TarefaImpressaoReader extends AbstractRequestReader<Params, ITarefaImpressao>{
 
   public static final TarefaImpressaoReader INSTANCE = new TarefaImpressaoReader();
   
@@ -40,7 +40,7 @@ class TarefaImpressaoReader extends AbstractRequestReader<Params, TarefaImpressa
   }
   
   @Override
-  protected ITask<?> createTask(Params output, TarefaImpressao pojo) throws IOException {
+  protected ITask<?> createTask(Params output, ITarefaImpressao pojo) throws IOException {
     return new PjePrintingTask(output, pojo);
   }
 }

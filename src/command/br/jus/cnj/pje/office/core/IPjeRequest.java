@@ -12,4 +12,6 @@ public interface IPjeRequest {
   Optional<String> getParameterU();
   
   Optional<String> getUserAgent();
+
+  Optional<String> getOrigin();
 }

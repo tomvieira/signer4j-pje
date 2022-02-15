@@ -12,6 +12,8 @@ import com.github.signer4j.task.exception.TaskResolverException;
 
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.task.IMainParams;
+import br.jus.cnj.pje.office.task.imp.MainOrigin;
 
 enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, PjeTaskRequest> {
   INSTANCE;
@@ -28,14 +30,16 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
     if (!r.isPresent()) {
       throw new TaskResolverException("Unabled to resolve task with empty request 'r' param");
     }
-    
+
+    Optional<String> o = request.getOrigin();
+
     Optional<String> a = request.getUserAgent();
     
     String rValue = r.get();
     
     PjeTaskRequest tr;
     try {
-      tr = (PjeTaskRequest) MAIN.read(rValue, new PjeTaskRequest().of(HttpHeaders.USER_AGENT, a));
+      tr = (PjeTaskRequest) MAIN.read(rValue, new PjeTaskRequest().of(HttpHeaders.USER_AGENT, a), m -> new MainOrigin((IMainParams)m, o));
     } catch (IOException e) {
       throw new TaskResolverException("Unabled to read 'r' request parameter: " + rValue, e);
     }

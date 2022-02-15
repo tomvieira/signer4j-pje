@@ -9,7 +9,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
@@ -18,8 +18,8 @@ class PjeClipServer extends PjeURIServer {
   
   private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   
-  public PjeClipServer(IFinishable finishingCode) {
-    super(finishingCode, "clip://global-messaging");
+  public PjeClipServer(IBootable boot) {
+    super(boot, "clip://global-messaging");
   }
   
   @Override
@@ -29,7 +29,7 @@ class PjeClipServer extends PjeURIServer {
 
   @Override
   protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeClipRequest(input), new PjeClipResponse());
+    return of(new PjeClipRequest(input, boot.getOrigin()), new PjeClipResponse());
   }
   
   @Override

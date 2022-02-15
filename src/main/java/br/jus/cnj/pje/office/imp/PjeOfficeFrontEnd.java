@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
@@ -26,7 +26,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     private Frame trayFrame;
     
     @Override
-    public void install(IFinishable office, PopupMenu menu) throws Exception {
+    public void install(IBootable office, PopupMenu menu) throws Exception {
       this.trayFrame = new Frame("");
       this.trayFrame.setType(Type.UTILITY);
       this.trayFrame.setUndecorated(true);
@@ -72,7 +72,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
     private PjeOfficeDesktop desktop;
     
     @Override
-    public void install(IFinishable office, PopupMenu menu) {
+    public void install(IBootable office, PopupMenu menu) {
       this.desktop = new PjeOfficeDesktop(office, menu);
       this.desktop.showToFront();
     }

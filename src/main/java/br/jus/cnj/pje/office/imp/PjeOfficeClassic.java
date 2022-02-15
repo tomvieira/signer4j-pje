@@ -23,8 +23,8 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
   
   private IPjeFrontEnd frontEnd;
 
-  protected PjeOfficeClassic(IPjeFrontEnd frontEnd, PjeCommandFactory factory) {
-    super(factory);
+  protected PjeOfficeClassic(IPjeFrontEnd frontEnd, PjeCommandFactory factory, String... args) {
+    super(factory, args);
     this.frontEnd = requireNonNull(frontEnd, "frontEnd is null");
   }
 
@@ -104,7 +104,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
       MenuItem mnuDesk = new MenuItem(front.getTitle());
       mnuDesk.addActionListener(e -> {
         office.kill();
-        newInstance(front).start();
+        newInstance(front, office.getOrigin()).start();
       });
       mnuOption.add(mnuDesk);
     }
@@ -138,5 +138,5 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     Toolkit.getDefaultToolkit().beep();
   }
 
-  protected abstract PjeOfficeClassic newInstance(IPjeFrontEnd front);
+  protected abstract PjeOfficeClassic newInstance(IPjeFrontEnd front, String origin);
 }

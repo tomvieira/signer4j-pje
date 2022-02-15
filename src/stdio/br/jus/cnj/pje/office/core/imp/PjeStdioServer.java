@@ -6,7 +6,7 @@ import static com.github.signer4j.imp.Throwables.tryRun;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.InterruptibleInputStream;
 
@@ -18,8 +18,8 @@ class PjeStdioServer extends PjeURIServer {
   
   private final InputStream stdin = new InterruptibleInputStream(System.in);
 
-  public PjeStdioServer(IFinishable finishingCode) {
-    super(finishingCode, "stdio://native-messaging");
+  public PjeStdioServer(IBootable boot) {
+    super(boot, "stdio://native-messaging");
   }
   
   private void skip() throws IOException {
@@ -35,7 +35,7 @@ class PjeStdioServer extends PjeURIServer {
 
   @Override
   protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeStdioRequest(input), new PjeStdioResponse());
+    return of(new PjeStdioRequest(input, boot.getOrigin()), new PjeStdioResponse());
   }
   
   @Override

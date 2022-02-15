@@ -14,7 +14,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public class MainRequestReader extends AbstractRequestReader<Params, MainRequestReader.MainRequest>{
+public class MainRequestReader extends AbstractRequestReader<Params, IMainParams>{
 
   public static final MainRequestReader MAIN = new MainRequestReader();
 
@@ -55,6 +55,11 @@ public class MainRequestReader extends AbstractRequestReader<Params, MainRequest
     public Optional<String> getTarefa() {
       return optional(this.tarefa);
     }
+
+    @Override
+    public Optional<String> getOrigin() {
+      return Optional.empty();
+    }
   }
 
   private MainRequestReader() {
@@ -62,7 +67,7 @@ public class MainRequestReader extends AbstractRequestReader<Params, MainRequest
   }
 
   @Override
-  protected ITask<?> createTask(Params output, MainRequest main) throws IOException {
+  protected ITask<?> createTask(Params output, IMainParams main) throws IOException {
     output.of(PJE_MAIN_REQUEST_PARAM, main);
     
     Optional<String> app = main.getAplicacao();

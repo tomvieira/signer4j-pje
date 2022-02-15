@@ -1,8 +1,8 @@
 package br.jus.cnj.pje.office.core;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 
 public interface IPjeCommandFactory {
   
-  public IPjeCommander<?, ?> create(IFinishable finishingCode);
+  public IPjeCommander<?, ?> create(IBootable bootable);
 }

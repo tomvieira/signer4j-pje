@@ -11,7 +11,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.ITarefaAutenticador;
 
-class TarefaAutenticadorReader extends AbstractRequestReader<Params, TarefaAutenticadorReader.TarefaAutenticador>{
+class TarefaAutenticadorReader extends AbstractRequestReader<Params, ITarefaAutenticador>{
 
   public static final TarefaAutenticadorReader INSTANCE = new TarefaAutenticadorReader();
 
@@ -47,7 +47,7 @@ class TarefaAutenticadorReader extends AbstractRequestReader<Params, TarefaAuten
   }
 
   @Override
-  protected ITask<?> createTask(Params output, TarefaAutenticador pojo) throws IOException{
+  protected ITask<?> createTask(Params output, ITarefaAutenticador pojo) throws IOException{
     return new PjeAutenticatorTask(output, pojo);
   }
 }

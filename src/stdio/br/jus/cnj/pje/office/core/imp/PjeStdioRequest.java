@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 class PjeStdioRequest extends PjeUriRequest {
-  public PjeStdioRequest(String uri) throws URISyntaxException {
-    super(new URI(uri), "java.lang.System.in");
+  public PjeStdioRequest(String uri, String origin) throws URISyntaxException {
+    super(new URI(uri), "java.lang.System.in", origin);
   }
 }

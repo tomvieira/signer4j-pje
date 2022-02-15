@@ -7,6 +7,8 @@ public interface IMainParams {
   String PJE_MAIN_REQUEST_PARAM = IMainParams.class.getSimpleName() + ".instance";
   
   Optional<String> getServidor();
+  
+  Optional<String> getOrigin();
 
   Optional<String> getAplicacao();
 

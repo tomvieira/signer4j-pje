@@ -11,7 +11,7 @@ import com.github.signer4j.task.imp.AbstractRequestReader;
 
 import br.jus.cnj.pje.office.task.ITarefaCertChain;
 
-class TarefaCertChainReader extends AbstractRequestReader<Params, TarefaCertChainReader.TarefaCertChain> {
+class TarefaCertChainReader extends AbstractRequestReader<Params, ITarefaCertChain> {
 
   public static class TarefaCertChain implements ITarefaCertChain {
     private String uploadUrl;
@@ -34,7 +34,7 @@ class TarefaCertChainReader extends AbstractRequestReader<Params, TarefaCertChai
   }
   
   @Override
-  protected ITask<?> createTask(Params params, TarefaCertChain pojo) throws IOException {
+  protected ITask<?> createTask(Params params, ITarefaCertChain pojo) throws IOException {
     return new PjeCertChainTask(params, pojo);
   }
 }

@@ -9,20 +9,20 @@ import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
 
 public class PjeOfficeClip extends PjeOfficeClassic {
 
-  private static PjeOfficeClassic createInstance(IPjeFrontEnd front) {
-    return new PjeOfficeClip(front);
+  private static PjeOfficeClassic createInstance(IPjeFrontEnd front, String... args) {
+    return new PjeOfficeClip(front, args);
   }
 
   public static void main(String[] args) {
-    invokeLater(() ->  createInstance(getBest()).start());
+    invokeLater(() ->  createInstance(getBest(), new String[]{"clipboard"}).start());
   }
 
-  private PjeOfficeClip(IPjeFrontEnd frontEnd) {
-    super(frontEnd, PjeCommandFactory.CLIP);
+  private PjeOfficeClip(IPjeFrontEnd frontEnd, String... args) {
+    super(frontEnd, PjeCommandFactory.CLIP, args);
   }
 
   @Override
-  protected PjeOfficeClassic newInstance(IPjeFrontEnd front) {
-    return createInstance(front);
+  protected PjeOfficeClassic newInstance(IPjeFrontEnd front, String origin) {
+    return createInstance(front, origin);
   }
 }

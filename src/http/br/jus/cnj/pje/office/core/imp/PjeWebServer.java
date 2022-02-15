@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -33,8 +35,8 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     @Override
     public String description() {
       return "Access filter";
-    }
-
+    }    
+    
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       InetAddress remote = request.getRemoteAddress().getAddress();
@@ -56,13 +58,15 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
 
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
-      Headers response = request.getResponseHeaders();
-      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
-      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
-      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-      response.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-      response.set(ICorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
+      Headers respHeaders = request.getResponseHeaders();
+      Optional<String> origin = respHeaders.getOrDefault(IPjeHeaders.ORIGIN, Collections.emptyList()).stream().findFirst();
+      if (origin.isPresent())
+        respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin.get());
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_MAX_AGE, "86400"); //one day!
       if ("OPTIONS".equalsIgnoreCase(request.getRequestMethod())) {
         request.sendResponseHeaders(HttpStatus.SC_NO_CONTENT, IPjeHeaders.NO_RESPONSE_BODY);
       } else {
@@ -162,7 +166,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   private final IPjeRequestHandler exit = new ShutdownRequestHandler();
   private final IPjeRequestHandler vaza = new LogoutRequestHandler();
 
-  PjeWebServer(IFinishable finishingCode) {
+  PjeWebServer(IBootable finishingCode) {
     super(finishingCode, "http://127.0.0.1:" + HTTP_PORT);
   }
   

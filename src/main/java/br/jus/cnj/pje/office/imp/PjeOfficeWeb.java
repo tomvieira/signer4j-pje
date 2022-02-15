@@ -22,7 +22,7 @@ public class PjeOfficeWeb extends PjeOfficeClassic {
   }
 
   @Override
-  protected PjeOfficeClassic newInstance(IPjeFrontEnd front) {
+  protected PjeOfficeClassic newInstance(IPjeFrontEnd front, String origin) {
     return createInstance(front);
   }
 }

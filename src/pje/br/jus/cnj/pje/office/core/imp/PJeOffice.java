@@ -40,17 +40,21 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private Disposable ticket;
 
-  public PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory) { 
-    this(lifeCycle, factory, WindowLockDettector.getBest());
+  private final String origin;
+
+  public PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory, String origin) { 
+    this(lifeCycle, factory, origin, WindowLockDettector.getBest());
   }
 
-  private PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory, IWindowLockDettector dettector) {
-    Args.requireNonNull(dettector, "dettector is null");
+  private PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory, String origin, IWindowLockDettector dettector) {
     Args.requireNonNull(lifeCycle, "hook is null");
+    Args.requireNonNull(origin, "origin is null");
     Args.requireNonNull(factory, "factory is null");
+    Args.requireNonNull(dettector, "dettector is null");
     this.dettector = dettector.notifyTo(this);
     this.lifeCycle = lifeCycle;
     this.factory = factory;
+    this.origin = origin;
   }
   
   private void checkIsAlive() throws IllegalStateException {
@@ -115,6 +119,11 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   public boolean isConfirmStrategy() {
     checkIsAlive();
     return CONFIRM == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
+  }
+  
+  @Override
+  public final String getOrigin() {
+    return origin;
   }
   
   private void reset() {

@@ -18,7 +18,7 @@ import br.jus.cnj.pje.office.task.IAssinadorBase64Arquivo;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinadorBase64;
 
-class TarefaAssinadorBase64Reader extends AbstractRequestReader<Params, TarefaAssinadorBase64Reader.TarefaAssinadorBase64>{
+class TarefaAssinadorBase64Reader extends AbstractRequestReader<Params, ITarefaAssinadorBase64>{
 
   public static final TarefaAssinadorBase64Reader INSTANCE = new TarefaAssinadorBase64Reader();
 
@@ -111,7 +111,7 @@ class TarefaAssinadorBase64Reader extends AbstractRequestReader<Params, TarefaAs
   }
 
   @Override
-  protected ITask<?> createTask(Params params, TarefaAssinadorBase64 pojo) throws IOException {
+  protected ITask<?> createTask(Params params, ITarefaAssinadorBase64 pojo) throws IOException {
     return new PjeAssinadorBase64Task(params, pojo);
   }
 }

@@ -6,11 +6,16 @@ import static com.github.signer4j.imp.Throwables.tryRuntime;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
 
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.imp.Containers;
+import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.Threads.ShutdownHookThread;
+import com.github.signer4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
@@ -31,8 +36,8 @@ public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
   
   private ShutdownHookThread jvmHook;
   
-  protected PjeOfficeApp(PjeCommandFactory factory) {
-    this.office = new PJeOffice(this, factory);
+  protected PjeOfficeApp(PjeCommandFactory factory, String... args) {
+    this.office = new PJeOffice(this, factory, originFrom(args));
     this.jvmHook = Threads.shutdownHookAdd(office::exit, "JVMShutDownHook");
   }
 
@@ -53,5 +58,12 @@ public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
 
   protected void start() {
     office.boot();
+  }
+  
+  private static String originFrom(String ...args) {
+    if (Containers.isEmpty(args))
+      return Strings.empty();
+    String uri = args[0];
+    return Throwables.tryCall(() -> new URI(uri).toString(), Strings.empty());
   }
 }

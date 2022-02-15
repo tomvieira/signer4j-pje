@@ -77,10 +77,18 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       whyNot.append("Servidor do Pje não enviou parâmetro 'servidor'.");
       LOGGER.warn(whyNot.toString());
       return false;
-    }
+    }        
     
-    final String server = opServer.get();
-    final IPjeServerAccess serverRequest = new PjeServerAccess(app, server, code);
+    boolean isOriginSafe = checkIfSafe(app, code, params.getOrigin().get(), whyNot);
+    
+    boolean isPermittedIf = isOriginSafe && checkIfSafe(app, code, opServer.get(), whyNot);
+    
+    return isPermittedIf;    
+  }
+
+  boolean checkIfSafe(String app, String code, String target, StringBuilder whyNot) {
+    
+    final IPjeServerAccess serverRequest = new PjeServerAccess(app, target, code);
     final Optional<IPjeServerAccess> access = persister.hasPermission(serverRequest.getId());
     
     if (!access.isPresent()) {
@@ -93,7 +101,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
         }
         return AT_THIS_TIME.equals(time) || AWAYS.equals(time);
       } catch (PjePermissionDeniedException e) {
-        whyNot.append("Acesso não autorizado ao servidor: '" + server + 
+        whyNot.append("Acesso não autorizado ao servidor: '" + target + 
             "'.\nEste endereço não é reconhecido pelo CNJ.");
         LOGGER.warn(whyNot.toString(), e);
         return false;
@@ -101,10 +109,9 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     }
     boolean ok = access.get().isAutorized();
     if (!ok) {
-      whyNot.append("Acesso não autorizado ao servidor: '" + server + 
+      whyNot.append("Acesso não autorizado ao servidor: '" + target + 
           "'.\nRevise as configurações no menu 'Servidores autorizados' do PjeOffice.");
     }
     return ok;
   }
-
 }

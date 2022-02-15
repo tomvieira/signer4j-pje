@@ -26,7 +26,7 @@ import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.IPjeSignMode;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
-class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinadorReader.TarefaAssinador>{
+class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinador>{
 
   public static final TarefaAssinadorReader INSTANCE = new TarefaAssinadorReader();
 
@@ -124,7 +124,7 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, TarefaAssinado
   }
 
   @Override
-  protected ITask<?> createTask(Params output, TarefaAssinador pojo) throws IOException {
+  protected ITask<?> createTask(Params output, ITarefaAssinador pojo) throws IOException {
     Optional<IPjeSignMode> mode = pojo.getModo();
     if (!mode.isPresent()) {
       throw new IOException("Parameter 'modoAssinatura' (local/remoto) not found!");

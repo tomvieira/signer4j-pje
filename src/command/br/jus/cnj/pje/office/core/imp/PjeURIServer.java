@@ -5,7 +5,7 @@ import static com.github.signer4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 
-import com.github.signer4j.IFinishable;
+import com.github.signer4j.IBootable;
 import com.github.signer4j.IThreadContext;
 import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.ThreadContext;
@@ -20,8 +20,8 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
 
   private final IThreadContext capturer;
   
-  public PjeURIServer(IFinishable finishingCode, String serverAddress) {
-    super(finishingCode, serverAddress);
+  public PjeURIServer(IBootable boot, String serverAddress) {
+    super(boot, serverAddress);
     this.capturer = new URICapturer(serverAddress);
   }
   
