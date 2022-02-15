@@ -52,7 +52,6 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
 
   private List<IAssinadorBase64Arquivo> arquivos;
 
-  @SuppressWarnings("unchecked")
   @Override
   protected void validateParams() throws TaskException {
    ITarefaAssinadorBase64 pojo = getPojoParams();

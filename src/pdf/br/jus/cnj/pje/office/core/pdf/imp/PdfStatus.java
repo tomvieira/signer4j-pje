@@ -1,7 +1,9 @@
-package br.jus.cnj.pje.office.core.pdf;
+package br.jus.cnj.pje.office.core.pdf.imp;
 
 import java.io.File;
 import java.util.Optional;
+
+import br.jus.cnj.pje.office.core.pdf.IPdfStatus;
 
 public class PdfStatus implements IPdfStatus {
 

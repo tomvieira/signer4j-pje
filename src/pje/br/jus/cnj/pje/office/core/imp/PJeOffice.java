@@ -47,14 +47,10 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
 
   private PJeOffice(IPjeLifeCycleHook lifeCycle, IPjeCommandFactory factory, String origin, IWindowLockDettector dettector) {
-    Args.requireNonNull(lifeCycle, "hook is null");
-    Args.requireNonNull(origin, "origin is null");
-    Args.requireNonNull(factory, "factory is null");
-    Args.requireNonNull(dettector, "dettector is null");
-    this.dettector = dettector.notifyTo(this);
-    this.lifeCycle = lifeCycle;
-    this.factory = factory;
-    this.origin = origin;
+    this.lifeCycle = Args.requireNonNull(lifeCycle, "hook is null");
+    this.factory = Args.requireNonNull(factory, "factory is null");
+    this.origin = Args.requireNonNull(origin, "origin is null");
+    this.dettector =  Args.requireNonNull(dettector, "dettector is null").notifyTo(this);
   }
   
   private void checkIsAlive() throws IllegalStateException {
