@@ -59,9 +59,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     @Override
     public void doFilter(HttpExchange request, Chain chain) throws IOException {
       Headers respHeaders = request.getResponseHeaders();
-      Optional<String> origin = respHeaders.getOrDefault(IPjeHeaders.ORIGIN, Collections.emptyList()).stream().findFirst();
-      if (origin.isPresent())
-        respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin.get());
+      respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
       respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, "true");
       respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, OPTIONS, POST");
       respHeaders.set(ICorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Origin, X-Requested-With, Content-Type, Accept, Authorization");
