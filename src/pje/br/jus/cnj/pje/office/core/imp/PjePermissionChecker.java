@@ -35,7 +35,7 @@ enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
     }  
   },
   
-  PRODUCTION(){
+  PRODUCTION() {
     
     @Override
     public void checkAccessPermission(IPjeServerAccess access)  throws PjePermissionDeniedException {

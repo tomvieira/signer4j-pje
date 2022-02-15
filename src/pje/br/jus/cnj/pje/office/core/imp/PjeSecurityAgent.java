@@ -54,6 +54,12 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
   
   @Override
   public boolean isPermitted(IMainParams params, StringBuilder whyNot) {
+
+    boolean isOriginSecure = params.getOrigin().orElse("").endsWith(".jus.br");
+    if (!isOriginSecure) {
+      whyNot.append("A origem da requisição é desconhecida ou inválida (CSRF attack?)");
+      return false;
+    }
     
     Optional<String> opCode = params.getCodigoSeguranca();
     if (!opCode.isPresent()) {
@@ -79,14 +85,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }        
     
-    boolean isOriginSafe = checkIfSafe(app, code, params.getOrigin().get(), whyNot);
-    
-    boolean isPermittedIf = isOriginSafe && checkIfSafe(app, code, opServer.get(), whyNot);
-    
-    return isPermittedIf;    
-  }
-
-  boolean checkIfSafe(String app, String code, String target, StringBuilder whyNot) {
+    final String target = opServer.get();
     
     final IPjeServerAccess serverRequest = new PjeServerAccess(app, target, code);
     final Optional<IPjeServerAccess> access = persister.hasPermission(serverRequest.getId());
