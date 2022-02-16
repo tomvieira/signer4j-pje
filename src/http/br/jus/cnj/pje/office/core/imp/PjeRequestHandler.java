@@ -12,9 +12,7 @@ abstract class PjeRequestHandler implements IPjeRequestHandler {
 
   public final void handle(HttpExchange exchange) throws IOException {
     try {
-      //Requisições get por imagem não enviam o header origin (aguardando refatoração do lado Javascript). 
-      //Neste caso "mocamos" um origin FAKE até que chegue a requisição por POST verdadeira
-      process(new PjeHttpExchangeRequestFAKEOrigin(exchange), new PjeHttpExchangeResponse(exchange));
+      process(new PjeHttpExchangeRequest(exchange), new PjeHttpExchangeResponse(exchange));
     }finally {
       exchange.close();
     }
