@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.pdf.imp;
 
-import java.io.IOException;
-
 import br.jus.cnj.pje.office.core.pdf.IInputDesc;
 import br.jus.cnj.pje.office.core.pdf.IPdfHandler;
 import br.jus.cnj.pje.office.core.pdf.IPdfStatus;

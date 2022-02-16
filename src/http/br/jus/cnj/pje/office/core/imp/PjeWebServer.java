@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
