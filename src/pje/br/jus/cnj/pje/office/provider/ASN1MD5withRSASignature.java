@@ -19,11 +19,7 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.util.Arrays;
 
-/**
- * I'm ashamed of this class! Why didn't the CNJ decide to use an algorithm that was present and 
- * compatible with the standard implementations? He really needed to do this work around (gambiarra!)
- * @author CNJ
- */
+
 public class ASN1MD5withRSASignature extends Signature implements Cloneable {
   
   private static final String PROVIDER_SUN_MSCAPI = "SunMSCAPI";

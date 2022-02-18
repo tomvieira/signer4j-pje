@@ -11,7 +11,16 @@ import br.jus.cnj.pje.office.core.pdf.IPdfHandler;
 public class Main {
   
   public static void main(String[] args) {
-    IPdfHandler handler = new SplitBySizePdfHandler(100 * 1024 * 1024);
+    IPdfHandler[] handlers = new IPdfHandler[] {
+        new SplitBySizePdfHandler(10 * 1024 * 1024),
+        new SplitByCountPdfHandler(4),
+        new SplitByPagesPdfHandler(
+          new PageRange(1, 1),
+          new PageRange(3, 6),
+          new PageRange(10, 20),
+          new PageRange(25, 25)
+        )
+    };
     
     IInputDesc desc = new IInputDesc() {
       @Override
@@ -32,12 +41,16 @@ public class Main {
       }
       @Override
       public Iterable<Path> getInputPdfs() {
-        return Arrays.asList(Paths.get("D:/temp/1800MB.pdf"));
+        return Arrays.asList(Paths.get("D:/temp/60MB.pdf"));
       }
     };
-    handler.apply(desc).subscribe((s) -> {
-      System.out.println(s.getMessage());
-    });
+  
+    for(IPdfHandler handler: handlers) {
+      handler.apply(desc).subscribe((s) -> {
+        System.out.println(s.getMessage());
+      });
+      System.out.println("ANALISA E APAGA");
+    }
   }
 
 }
