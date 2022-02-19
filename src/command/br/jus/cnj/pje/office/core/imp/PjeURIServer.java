@@ -28,7 +28,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   @Override
   public synchronized void start() throws IOException {
     if (!isStarted()) {
-      LOGGER.info("Iniciando PjeStdioServer");
+      LOGGER.info("Iniciando " + getClass().getSimpleName());
       this.started = true;
       this.capturer.start();
       notifyStartup();
@@ -43,7 +43,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   @Override
   public synchronized void stop(boolean kill) {
     if (isStarted()) {
-      LOGGER.info("Parando PjeStdioServer");
+      LOGGER.info("Parando " + getClass().getSimpleName());
       try {
         this.capturer.stop(2000);
       }finally {

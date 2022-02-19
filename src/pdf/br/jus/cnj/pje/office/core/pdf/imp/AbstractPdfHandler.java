@@ -25,6 +25,10 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
   private final IPdfPageRange[] ranges;
   private int iterator = 0;
 
+  public AbstractPdfHandler() {
+    this(new PageRange());
+  }
+  
   public AbstractPdfHandler(IPdfPageRange... ranges) {
     this.ranges = Args.requireNonEmpty(ranges, "pages is empty");
   }
@@ -61,7 +65,7 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
           int pageNumber = 1;
   
           if (totalPages <= 1) {
-            fileOutput = desc.resolveOutput(valueOf(pageNumber));
+            fileOutput = desc.resolveOutput("pg_" + valueOf(pageNumber));
             try(OutputStream out = new FileOutputStream(fileOutput)) {
               Files.copy(f, out);
             }
@@ -69,8 +73,7 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
           } else {
             IPdfPageRange next = nextRange();
             while(next != null) {
-              int start = next.startPage();
-              int beginPage = pageNumber = start;
+              int start, beginPage = pageNumber = start = next.startPage();
               Document document = new Document();
               fileOutput = desc.resolveOutput(valueOf(pageNumber));
               PdfCopy copy = new PdfCopy(document , new FileOutputStream(fileOutput));
