@@ -103,6 +103,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     if (!targetHost.isPresent()) {
       whyNot.append("Parâmetro 'servidor' não define um 'host' válido -> " + target);
       LOGGER.warn(whyNot.toString());
+      return false;
     }
     
     Optional<String> nativeOrigin = params.getOrigin();

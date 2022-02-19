@@ -44,7 +44,7 @@ import com.github.signer4j.ISignedData;
 import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Constants;
 import com.github.signer4j.imp.OpenByteArrayOutputStream;
-import com.github.signer4j.imp.Providers;
+import com.github.signer4j.imp.ProviderInstaller;
 import com.github.signer4j.imp.SecurityObject;
 import com.github.signer4j.imp.SignException;
 import com.github.signer4j.imp.SignedData;
@@ -181,7 +181,7 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
     public final IPjeXmlSigner build() {
       PjeXmlSigner signer = new PjeXmlSigner(chooser, dispose);
       Throwables.tryRuntime(() -> {
-        final XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM", Providers.installJsr105Provider());
+        final XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM", ProviderInstaller.JSR105.install());
         final KeyInfoFactory keyInfoFactory = xmlSignatureFactory.getKeyInfoFactory();
 
         Transform envelopedTransform = xmlSignatureFactory.newTransform(

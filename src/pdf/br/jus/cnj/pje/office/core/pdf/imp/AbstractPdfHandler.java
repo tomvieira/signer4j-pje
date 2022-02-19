@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import com.github.signer4j.imp.Args;
 import com.itextpdf.text.Document;
@@ -56,8 +55,7 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
     final ObservableOnSubscribe<IPdfStatus> subscriber = (emitter) -> {
       File fileOutput = null;
       try {  
-        for(Path f: desc.getInputPdfs()) {
-          final File file = f.toFile();
+        for(File file: desc.getInputPdfs()) {
           emitter.onNext(new PdfStatus("Processando arquivo " + file.getName()));
           
           final PdfReader inputPdf = new PdfReader(file.getAbsolutePath());
@@ -67,7 +65,7 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
           if (totalPages <= 1) {
             fileOutput = desc.resolveOutput("pg_" + valueOf(pageNumber));
             try(OutputStream out = new FileOutputStream(fileOutput)) {
-              Files.copy(f, out);
+              Files.copy(file.toPath(), out);
             }
             emitter.onNext(new PdfStatus("Gerado arquivo " + fileOutput.getName(), fileOutput));
           } else {
