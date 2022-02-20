@@ -103,8 +103,9 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
       final IPjeFrontEnd front = frontEnd.next();
       MenuItem mnuDesk = new MenuItem(front.getTitle());
       mnuDesk.addActionListener(e -> {
+        final String origin = office.getOrigin();
         office.kill();
-        newInstance(front, office.getOrigin()).start();
+        newInstance(front, origin).start();
       });
       mnuOption.add(mnuDesk);
     }

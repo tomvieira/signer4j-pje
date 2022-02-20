@@ -2,6 +2,8 @@ package br.jus.cnj.pje.office.provider;
 
 import java.security.Provider;
 
+//Gambiarra braba! Essa classe tem que desaparecer!
+@Deprecated
 public class PJeProvider extends Provider {
   
   private static final long serialVersionUID = 1L;
