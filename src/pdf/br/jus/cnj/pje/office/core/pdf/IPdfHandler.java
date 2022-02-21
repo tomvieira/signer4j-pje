@@ -4,5 +4,5 @@ import java.util.function.Function;
 
 import io.reactivex.Observable;
 
-public interface IPdfHandler extends Function<IInputDesc, Observable<IPdfStatus>> {
+public interface IPdfHandler extends Function<IInputDescriptor, Observable<IPdfStatus>> {
 }

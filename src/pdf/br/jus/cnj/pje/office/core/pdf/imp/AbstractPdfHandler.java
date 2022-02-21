@@ -12,7 +12,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 
-import br.jus.cnj.pje.office.core.pdf.IInputDesc;
+import br.jus.cnj.pje.office.core.pdf.IInputDescriptor;
 import br.jus.cnj.pje.office.core.pdf.IPdfHandler;
 import br.jus.cnj.pje.office.core.pdf.IPdfPageRange;
 import br.jus.cnj.pje.office.core.pdf.IPdfStatus;
@@ -50,7 +50,7 @@ public abstract class AbstractPdfHandler implements IPdfHandler {
   }
   
   @Override
-  public Observable<IPdfStatus> apply(IInputDesc desc) {
+  public Observable<IPdfStatus> apply(IInputDescriptor desc) {
 
     final ObservableOnSubscribe<IPdfStatus> subscriber = (emitter) -> {
       File fileOutput = null;

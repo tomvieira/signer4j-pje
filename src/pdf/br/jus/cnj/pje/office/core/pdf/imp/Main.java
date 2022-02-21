@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import br.jus.cnj.pje.office.core.pdf.IInputDesc;
+import br.jus.cnj.pje.office.core.pdf.IInputDescriptor;
 import br.jus.cnj.pje.office.core.pdf.IPdfHandler;
 
 public class Main {
@@ -32,7 +32,7 @@ public class Main {
     Path baseInput = Paths.get("D:/temp/");
     int i = 0;
     for(IPdfHandler handler: handlers) {
-      IInputDesc desc = new InputDesc.Builder()
+      IInputDescriptor desc = new InputDescriptor.Builder()
         .add(baseInput.resolve("600MB.pdf").toFile())
         .output(baseInput.resolve(outputPath[i++]))
         .build();
