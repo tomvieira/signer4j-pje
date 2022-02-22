@@ -9,6 +9,7 @@ import com.github.signer4j.IBootable;
 import com.github.signer4j.IThreadContext;
 import com.github.signer4j.imp.Ids;
 import com.github.signer4j.imp.ThreadContext;
+import com.github.signer4j.imp.Threads;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
 import br.jus.cnj.pje.office.core.IPjeRequest;
@@ -130,7 +131,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
           LOGGER.info("Contexto indisponível");
           continue;
         }
-        new Thread(() -> submit(context)).start();
+        Threads.async("Tratando contexto: " + context.getId(), () -> submit(context));
       }while(true);
     }
   }

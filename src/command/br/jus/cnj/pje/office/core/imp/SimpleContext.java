@@ -20,14 +20,19 @@ public final class SimpleContext implements IPjeContext {
   private SimpleContext(IPjeRequest request, IPjeResponse response) {    
     pair = Pair.of(request, response);    
   }
+  
+  @Override
+  public final String getId() {
+    return getRequest().getId();
+  }  
 
   @Override
-  public IPjeRequest getRequest() {
+  public final IPjeRequest getRequest() {
     return pair.getKey();
   }
 
   @Override
-  public IPjeResponse getResponse() {
+  public final IPjeResponse getResponse() {
     return pair.getValue();
-  }  
+  }
 }

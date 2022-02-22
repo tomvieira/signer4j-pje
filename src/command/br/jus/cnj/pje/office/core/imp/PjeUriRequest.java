@@ -13,6 +13,8 @@ import br.jus.cnj.pje.office.core.IPjeRequest;
 
 public abstract class PjeUriRequest implements IPjeRequest {
 
+  private final URI uri;
+  
   private final String userAgent;
 
   private final List<NameValuePair> queryParams;
@@ -20,7 +22,7 @@ public abstract class PjeUriRequest implements IPjeRequest {
   private final Optional<String> origin;
   
   protected PjeUriRequest(URI input, String userAgent, String origin) {
-    this.queryParams = parseParams(input);
+    this.queryParams = parseParams(this.uri = input);
     this.userAgent = trim(userAgent, "Unknown");
     this.origin = Optional.of(trim(origin));
   }
@@ -43,6 +45,16 @@ public abstract class PjeUriRequest implements IPjeRequest {
   @Override
   public final Optional<String> getOrigin() {
     return origin;
+  }
+  
+  @Override
+  public final String getId() {
+    return uri.toString();
+  }
+  
+  @Override
+  public final String toString() {
+    return getId();
   }
   
   private Optional<String> getParameter(String key) {
