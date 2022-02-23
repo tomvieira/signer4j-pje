@@ -4,7 +4,7 @@ import com.github.signer4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.pdf.IPdfPageRange;
 
-public class SplitByCountPdfHandler extends AbstractPdfHandler {
+public class SplitByCountPdfHandler extends SplitByVolumePdfHandler {
 
   private final int pageCount;
   
@@ -13,7 +13,7 @@ public class SplitByCountPdfHandler extends AbstractPdfHandler {
   }
   
   @Override
-  protected boolean mustSplit(long currentCombined, IPdfPageRange range) {
+  protected boolean mustSplit(long currentCombined, IPdfPageRange range, long max, int totalPages) {
     return currentCombined >= pageCount;
   }
 }

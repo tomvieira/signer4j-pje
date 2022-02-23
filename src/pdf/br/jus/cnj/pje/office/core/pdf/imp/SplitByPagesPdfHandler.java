@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.pdf.imp;
 
 import br.jus.cnj.pje.office.core.pdf.IPdfPageRange;
 
-public class SplitByPagesPdfHandler extends AbstractPdfHandler{
+public class SplitByPagesPdfHandler extends SplitByVolumePdfHandler{
 
   public SplitByPagesPdfHandler(IPdfPageRange... ranges) {
     super(ranges);
@@ -14,7 +14,7 @@ public class SplitByPagesPdfHandler extends AbstractPdfHandler{
   }
   
   @Override
-  protected boolean mustSplit(long currentCombined, IPdfPageRange range) {
+  protected boolean mustSplit(long currentCombined, IPdfPageRange range, long max, int totalPages) {
     return currentCombined >= range.endPage();
   };
   

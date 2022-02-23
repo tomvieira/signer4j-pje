@@ -5,5 +5,6 @@ import java.util.Optional;
 
 public interface IPdfStatus {
   String getMessage();
+  int geCurrentPage();
   Optional<File> getOutput();
 }

@@ -22,12 +22,14 @@ import com.sun.net.httpserver.HttpsServer;
 
 import br.jus.cnj.pje.office.core.ICorsHeaders;
 import br.jus.cnj.pje.office.core.IPjeHeaders;
+import br.jus.cnj.pje.office.core.IPjeHttpExchangeRequest;
+import br.jus.cnj.pje.office.core.IPjeHttpExchangeResponse;
 import br.jus.cnj.pje.office.core.IPjeRequestHandler;
 import br.jus.cnj.pje.office.core.IPjeWebServer;
 import br.jus.cnj.pje.office.core.Version;
 
 @SuppressWarnings("restriction") 
-class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeResponse> implements IPjeWebServer {
+class PjeWebServer extends PjeCommander<IPjeHttpExchangeRequest, IPjeHttpExchangeResponse> implements IPjeWebServer {
 
   private static class AccessFilter extends Filter {
     @Override
@@ -78,7 +80,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
     
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       PjeWebTaskResponse.SUCCESS.processResponse(response);
     }
   }
@@ -90,7 +92,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
 
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       response.writeJson(Version.jsonBytes());
     }
   }
@@ -102,7 +104,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
     
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de parada do servidor");
       PjeWebTaskResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.exit();
@@ -116,7 +118,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
     
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de logout do certificado");
       PjeWebTaskResponse.SUCCESS.processResponse(response);
       PjeWebServer.this.logout();
@@ -130,7 +132,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
     
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       PjeWebServer.this.execute(request, response);
     }
   }
@@ -142,7 +144,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
     }
 
     @Override
-    protected void process(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) throws IOException {
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       response.writeHtml(Files.readAllBytes(Paths.get("./plugin.html")));
     }
   }
@@ -167,7 +169,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   }
   
   @Override
-  public void execute(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response) {
+  public void execute(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) {
     if (!isStarted())
       throw new IllegalStateException("web server not started!");
     if (!running.getAndSet(true)) {
@@ -183,7 +185,7 @@ class PjeWebServer extends PjeCommander<PjeHttpExchangeRequest, PjeHttpExchangeR
   }
   
   @Override
-  protected void handleException(PjeHttpExchangeRequest request, PjeHttpExchangeResponse response, Exception e) {
+  protected void handleException(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response, Exception e) {
     tryRun(() -> PjeWebTaskResponse.FAIL.processResponse(response));
   }
   

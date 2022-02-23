@@ -9,10 +9,10 @@ import org.apache.hc.core5.http.HttpStatus;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
-import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.IPjeHttpExchangeResponse;
 
 @SuppressWarnings("restriction")
-public final class PjeHttpExchangeResponse implements IPjeResponse {
+public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
 
   private final HttpExchange response;
   
@@ -32,12 +32,14 @@ public final class PjeHttpExchangeResponse implements IPjeResponse {
     response.getResponseBody().flush();
   }
   
+  @Override
   public void writeHtml(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_HTML.toString());
     write(data);
   }
   
+  @Override
   public void writeJson(byte[] data) throws IOException {
     Headers headers = response.getResponseHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());

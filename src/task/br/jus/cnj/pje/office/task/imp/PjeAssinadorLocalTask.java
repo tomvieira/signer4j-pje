@@ -75,9 +75,12 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
       throwCancel();
     }
+    return collectFiles(chooser.getSelectedFiles());
+  }
+
+  protected IArquivoAssinado[] collectFiles(File[] files) throws TaskException {
     int size;
-    final File[] files = chooser.getSelectedFiles();
-    if ((size = files.length) == 0) {
+    if (files == null || (size = files.length) == 0) {
       throw new TaskException("Nenhum arquivo selecionado");
     }
     IArquivoAssinado[] filesToSign = new IArquivoAssinado[size];
@@ -86,6 +89,19 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
       filesToSign[i++]= new ArquivoAssinado(newInstance(file, "assinado." + stringNow()), file);
     }
     return filesToSign;
+  }
+  
+  protected File chooseDestination() throws InterruptedException {
+    final JFileChooser chooser = new DefaultFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
+    switch(chooser.showOpenDialog(null)) {
+      case JFileChooser.APPROVE_OPTION:
+        return chooser.getSelectedFile(); 
+      default:
+        throwCancel();
+        return null;
+    }
   }
 
   @Override
@@ -106,8 +122,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
         chooseDestination();
       if (destination.canWrite()) 
         break;
-      final String destPath = destination.getAbsolutePath();
-      invokeAndWait(() -> display("Não há permissão de escrita na pasta:\n" + destPath + "\nEscolha uma nova!"));
+      showCanNotWriteMessage(destination);
       params.of(PJE_DESTINATION_PARAM, Optional.empty());
     }while(true);
       
@@ -124,17 +139,8 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     }
     return success(arquivo.getUrl().get());
   }
-  
-  private File chooseDestination() throws InterruptedException {
-    final JFileChooser chooser = new DefaultFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
-    switch(chooser.showOpenDialog(null)) {
-      case JFileChooser.APPROVE_OPTION:
-        return chooser.getSelectedFile(); 
-      default:
-        throwCancel();
-        return null;
-    }
+
+  protected void showCanNotWriteMessage(File destination) {
+    invokeAndWait(() -> display("Não há permissão de escrita na pasta:\n" + destination.getAbsolutePath() + "\nEscolha uma nova!"));
   }
 }

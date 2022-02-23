@@ -9,25 +9,29 @@ import br.jus.cnj.pje.office.task.IArquivo;
 
 class ArquivoWrapper implements IArquivo {
 
-  private IArquivo arquivo;
+  private final IArquivo arquivo;
   
   protected ArquivoWrapper(IArquivo arquivo) {
     this.arquivo = Args.requireNonNull(arquivo, "arquivo is null");
   }
   
-  public Optional<String> getUrl() {
+  @Override
+  public final Optional<String> getUrl() {
     return arquivo.getUrl();
   }
 
-  public Optional<String> getNome() {
+  @Override
+  public final Optional<String> getNome() {
     return arquivo.getNome();
   }
 
-  public boolean isTerAtributosAssinados() {
+  @Override
+  public final boolean isTerAtributosAssinados() {
     return arquivo.isTerAtributosAssinados();
   }
 
-  public List<String> getParamsEnvio() {
+  @Override
+  public final List<String> getParamsEnvio() {
     return arquivo.getParamsEnvio();
   }
 }

@@ -18,6 +18,12 @@ enum PjeSignMode implements IPjeSignMode {
       return new PjeAssinadorLocalTask(params, pojo);
     }
   }, 
+  DEFINIDO("DEFINIDO") {
+    @Override
+    public ITask<IPjeResponse> getTask(Params params, ITarefaAssinador pojo) {
+      return new PjeAssinadorLocalDefinido(params, pojo);
+    }
+  },
   REMOTO("REMOTO"){
     @Override
     public ITask<IPjeResponse> getTask(Params params, ITarefaAssinador pojo) {

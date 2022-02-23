@@ -89,7 +89,8 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
     }
     
     private AssinadorArquivo(File file, String prefix) {
-      this.nome = Args.requireNonNull(file, "file is null").getName() + "." + Strings.trim(prefix) + ".p7s";
+      Args.requireNonNull(file, "file is null");
+      this.nome = file.getName() + "." + Strings.trim(prefix) + ".p7s";
       this.url = file.getAbsolutePath();
     }
     
@@ -97,6 +98,8 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
     private String url;
     private boolean terAtributosAssinados = true;
     private List<String> paramsEnvio = new ArrayList<>();
+
+    private AssinadorArquivo(){}
 
     @Override
     public final Optional<String> getUrl() {

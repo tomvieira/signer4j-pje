@@ -5,9 +5,10 @@ import org.apache.hc.core5.http.HttpHeaders;
 import com.sun.net.httpserver.HttpExchange;
 
 import br.jus.cnj.pje.office.core.IPjeHeaders;
+import br.jus.cnj.pje.office.core.IPjeHttpExchangeRequest;
 
 @SuppressWarnings("restriction")
-public class PjeHttpExchangeRequest extends PjeUriRequest {
+public class PjeHttpExchangeRequest extends PjeUriRequest implements IPjeHttpExchangeRequest {
   public PjeHttpExchangeRequest(HttpExchange request) {
     super(
       request.getRequestURI(), 

@@ -12,4 +12,9 @@ public class JoinPdfHandler implements IPdfHandler {
     // TODO Auto-generated method stub
     return null;
   }
+
+  @Override
+  public void reset() {
+    
+  }
 }

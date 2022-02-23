@@ -9,23 +9,35 @@ public class PdfStatus implements IPdfStatus {
 
   private final String message;
   private final Optional<File> output;
+  private final int currentPage;
 
-  public PdfStatus(String message) {
-    this(message, null);
+  public PdfStatus(String message, int currentPage) {
+    this(message, currentPage, null);
   }
 
-  public PdfStatus(String message, File output) {
+  public PdfStatus(String message, int currentPage, File output) {
     this.message = message;
+    this.currentPage = currentPage;
     this.output = Optional.ofNullable(output);
   }
   
   @Override
-  public String getMessage() {
+  public final String getMessage() {
     return message;
+  }
+  
+  @Override
+  public final int geCurrentPage() {
+    return currentPage;
   }
 
   @Override
-  public Optional<File> getOutput() {
+  public final Optional<File> getOutput() {
     return output;
+  }
+  
+  @Override
+  public final String toString() {
+    return message + " pg: " + currentPage;
   }
 }
