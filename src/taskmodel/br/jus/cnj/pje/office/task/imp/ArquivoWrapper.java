@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.task.imp;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.signer4j.imp.Args;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.task.IArquivo;
 

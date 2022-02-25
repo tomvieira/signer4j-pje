@@ -1,13 +1,13 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.imp.Strings.optional;
+import static com.github.utils4j.imp.Strings.optional;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.task.ITask;
-import com.github.signer4j.task.imp.AbstractRequestReader;
+import com.github.taskresolver4j.ITask;
+import com.github.taskresolver4j.imp.AbstractRequestReader;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.ITarefaAutenticador;
 

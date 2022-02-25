@@ -4,7 +4,7 @@ package br.jus.cnj.pje.office.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static com.github.signer4j.imp.Args.requireNonNull;
+import static com.github.utils4j.imp.Args.requireNonNull;
 
 import java.awt.CheckboxMenuItem;
 import java.awt.Menu;

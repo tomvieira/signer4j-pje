@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.io.IOException;
 
-import com.github.signer4j.imp.Args;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 

@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core;
 
-import com.github.signer4j.IBootable;
+import br.jus.cnj.pje.office.IBootable;
 
 public interface IPjeCommandFactory {
   

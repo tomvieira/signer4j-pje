@@ -1,7 +1,6 @@
 package br.jus.cnj.pje.office.core;
 
-import com.github.signer4j.IBootable;
-
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 
 public interface IPjeOffice extends IBootable {

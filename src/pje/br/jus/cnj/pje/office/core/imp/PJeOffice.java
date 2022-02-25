@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static com.github.signer4j.imp.Threads.async;
+import static com.github.utils4j.imp.Threads.async;
 
 import java.io.IOException;
 
@@ -12,11 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.States;
-import com.github.signer4j.imp.Threads;
 import com.github.signer4j.imp.WindowLockDettector;
-import com.github.signer4j.progress.imp.ProgressFactory;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.States;
+import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeCommander;
@@ -78,7 +77,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showActivities() {
     checkIsAlive();
-    ProgressFactory.DEFAULT.display();
+    PjeProgressFactory.DEFAULT.display();
   }
 
   @Override

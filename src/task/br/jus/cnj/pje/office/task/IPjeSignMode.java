@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.task;
 
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.task.ITask;
+import com.github.taskresolver4j.ITask;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 

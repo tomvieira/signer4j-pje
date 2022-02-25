@@ -1,22 +1,21 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Strings.get;
-import static com.github.signer4j.imp.Threads.async;
-import static com.github.signer4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.Strings.get;
+import static com.github.utils4j.imp.Threads.async;
+import static com.github.utils4j.imp.Throwables.tryRun;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.Threads;
 import com.github.signer4j.progress.IProgressFactory;
-import com.github.signer4j.progress.imp.ProgressFactory;
-import com.github.signer4j.task.ITaskRequestExecutor;
+import com.github.taskresolver4j.ITaskRequestExecutor;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Strings;
+import com.github.utils4j.imp.Threads;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeCommander;
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
@@ -28,7 +27,7 @@ import io.reactivex.subjects.BehaviorSubject;
 abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  implements IPjeCommander<I, O> {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(IPjeCommander.class);
-  
+
   private final String serverEndpoint;
 
   protected final IBootable boot;
@@ -42,7 +41,7 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   }
   
   protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
-    this(boot, serverEndpoint, tokenAccess, securityAgent, ProgressFactory.DEFAULT);
+    this(boot, serverEndpoint, tokenAccess, securityAgent, PjeProgressFactory.DEFAULT);
   }
 
   protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {

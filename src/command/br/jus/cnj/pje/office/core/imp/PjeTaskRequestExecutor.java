@@ -1,8 +1,8 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import com.github.signer4j.imp.Args;
 import com.github.signer4j.progress.IProgressFactory;
-import com.github.signer4j.task.imp.TaskRequestExecutor;
+import com.github.taskresolver4j.imp.TaskRequestExecutor;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;

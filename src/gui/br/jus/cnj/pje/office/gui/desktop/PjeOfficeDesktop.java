@@ -14,11 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.gui.utils.SimpleFrame;
 import com.github.signer4j.imp.Config;
+import com.github.utils4j.imp.SimpleFrame;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.Version;
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 
 public class PjeOfficeDesktop extends SimpleFrame {
   private static final long serialVersionUID = 1L;
@@ -26,7 +27,7 @@ public class PjeOfficeDesktop extends SimpleFrame {
   private JPanel contentPane;
 
   public PjeOfficeDesktop(IBootable finishingCode, PopupMenu popup) {
-    super("PjeOffice - " + Version.current());
+    super("PjeOffice - " + Version.current(), PjeConfig.getIcon());
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setBounds(100, 100, 336, 235);
     contentPane = new JPanel();

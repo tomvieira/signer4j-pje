@@ -1,15 +1,15 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Strings.trim;
+import static com.github.utils4j.imp.Strings.trim;
 
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.json.JSONObject;
 
-import com.github.signer4j.IContentType;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Objects;
-import com.github.signer4j.imp.Pair;
+import com.github.utils4j.IContentType;
+import com.github.utils4j.imp.Objects;
+import com.github.utils4j.imp.Pair;
 
 import br.jus.cnj.pje.office.core.IPjeHeaders;
 import br.jus.cnj.pje.office.core.ISocketCodec;

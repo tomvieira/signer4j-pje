@@ -9,9 +9,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.imp.Strings;
+import com.github.utils4j.imp.Strings;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeContext;
 
 class PjeClipServer extends PjeURIServer {

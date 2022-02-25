@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Streams.closeQuietly;
-import static com.github.signer4j.imp.Strings.trim;
+import static com.github.utils4j.imp.Streams.closeQuietly;
+import static com.github.utils4j.imp.Strings.trim;
 
 import java.io.InputStream;
 import java.net.ProxySelector;
@@ -23,8 +23,8 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.progress.imp.ICanceller;
+import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;

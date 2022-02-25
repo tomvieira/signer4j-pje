@@ -5,8 +5,8 @@ import static java.lang.String.format;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.Config;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.imp.PjeAccessTime;

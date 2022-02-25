@@ -7,13 +7,13 @@ import java.util.List;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.ISimpleSigner;
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.SignedData;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeResponse;

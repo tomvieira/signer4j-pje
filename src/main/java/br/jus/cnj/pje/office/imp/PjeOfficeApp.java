@@ -2,7 +2,7 @@
 package br.jus.cnj.pje.office.imp;  
 
 import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.signer4j.imp.Throwables.tryRuntime;
+import static com.github.utils4j.imp.Throwables.tryRuntime;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
 
@@ -11,11 +11,11 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.Containers;
-import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.Threads;
-import com.github.signer4j.imp.Threads.ShutdownHookThread;
-import com.github.signer4j.imp.Throwables;
+import com.github.utils4j.imp.Containers;
+import com.github.utils4j.imp.Strings;
+import com.github.utils4j.imp.Threads;
+import com.github.utils4j.imp.Threads.ShutdownHookThread;
+import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;

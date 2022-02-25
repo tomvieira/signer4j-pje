@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Args.requireNonNull;
+import static com.github.utils4j.imp.Args.requireNonNull;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

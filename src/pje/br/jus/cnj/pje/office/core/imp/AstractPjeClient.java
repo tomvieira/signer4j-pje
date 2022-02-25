@@ -1,15 +1,15 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Args.requireNonNull;
-import static com.github.signer4j.imp.Args.requireText;
+import static com.github.utils4j.imp.Args.requireNonNull;
+import static com.github.utils4j.imp.Args.requireText;
 
 import java.util.List;
 
-import com.github.signer4j.IContentType;
-import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.function.Supplier;
 import com.github.signer4j.progress.imp.ICanceller;
+import com.github.utils4j.IContentType;
+import com.github.utils4j.IDownloadStatus;
+import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IResultChecker;

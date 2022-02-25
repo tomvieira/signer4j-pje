@@ -2,9 +2,9 @@ package br.jus.cnj.pje.office.task.imp;
 
 import java.util.function.Supplier;
 
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.task.IRequestReader;
-import com.github.signer4j.task.NotImplementedReader;
+import com.github.taskresolver4j.IRequestReader;
+import com.github.taskresolver4j.NotImplementedReader;
+import com.github.utils4j.imp.Params;
 
 enum PjeTaskReaders implements Supplier<IRequestReader<Params>>{
   CNJ_ASSINADOR("cnj.assinador"){

@@ -2,9 +2,9 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.signer4j.imp.Dates.stringNow;
-import static com.github.signer4j.imp.SwingTools.invokeAndWait;
-import static com.github.signer4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.Dates.stringNow;
+import static com.github.utils4j.imp.SwingTools.invokeAndWait;
+import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,12 +15,12 @@ import java.util.Optional;
 import javax.swing.JFileChooser;
 
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.gui.utils.DefaultFileChooser;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgressView;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.DefaultFileChooser;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;

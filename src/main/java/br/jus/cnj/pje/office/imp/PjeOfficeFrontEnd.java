@@ -11,9 +11,9 @@ import java.awt.event.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.imp.Threads;
+import com.github.utils4j.imp.Threads;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.gui.PjeImages;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;

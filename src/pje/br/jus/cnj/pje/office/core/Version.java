@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core;
 
-import com.github.signer4j.imp.Constants;
+import com.github.utils4j.IConstants;
 
 public enum Version {
   _2_0_0("2.0.0"); //remember: last version must be first enum position
@@ -18,7 +18,7 @@ public enum Version {
   }
   
   public static byte[] jsonBytes() {
-    return current().toJson().getBytes(Constants.DEFAULT_CHARSET);
+    return current().toJson().getBytes(IConstants.DEFAULT_CHARSET);
   }
   
   public String toJson() {

@@ -1,9 +1,9 @@
 package br.jus.cnj.pje.office.signer4j.imp;
 
-import static com.github.signer4j.imp.Args.requireNonNull;
-import static com.github.signer4j.imp.Constants.DEFAULT_CHARSET;
-import static com.github.signer4j.imp.Strings.empty;
-import static com.github.signer4j.imp.Strings.trim;
+import static com.github.utils4j.IConstants.DEFAULT_CHARSET;
+import static com.github.utils4j.imp.Args.requireNonNull;
+import static com.github.utils4j.imp.Strings.empty;
+import static com.github.utils4j.imp.Strings.trim;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -41,16 +41,16 @@ import org.w3c.dom.Element;
 import com.github.signer4j.ICertificateChooser;
 import com.github.signer4j.IChoice;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.OpenByteArrayOutputStream;
-import com.github.signer4j.imp.ProviderInstaller;
 import com.github.signer4j.imp.SecurityObject;
 import com.github.signer4j.imp.SignException;
 import com.github.signer4j.imp.SignedData;
-import com.github.signer4j.imp.Strings;
-import com.github.signer4j.imp.Throwables;
 import com.github.signer4j.imp.exception.Signer4JException;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.OpenByteArrayOutputStream;
+import com.github.utils4j.imp.ProviderInstaller;
+import com.github.utils4j.imp.Strings;
+import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.signer4j.IPjeXmlSigner;
 import br.jus.cnj.pje.office.signer4j.IPjeXmlSignerBuilder;
@@ -130,7 +130,7 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
       if (content.isEmpty()) {
         throw new SignException("Arquivo final não pôde ser assinado (vazio)");
       }
-      return content.getBytes(Constants.DEFAULT_CHARSET);
+      return content.getBytes(IConstants.DEFAULT_CHARSET);
     }
   }
 

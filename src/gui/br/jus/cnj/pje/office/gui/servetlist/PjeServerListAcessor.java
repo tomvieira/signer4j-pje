@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.signer4j.imp.Args;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;

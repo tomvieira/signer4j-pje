@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Strings.trim;
+import static com.github.utils4j.imp.Strings.trim;
 
 import java.net.URI;
 import java.util.List;

@@ -2,11 +2,11 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.util.List;
 
-import com.github.signer4j.IContentType;
-import com.github.signer4j.IDownloadStatus;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Args;
 import com.github.signer4j.progress.imp.ICanceller;
+import com.github.utils4j.IContentType;
+import com.github.utils4j.IDownloadStatus;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;

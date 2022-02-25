@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core;
 
 
-import com.github.signer4j.imp.function.Supplier;
+import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 

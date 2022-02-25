@@ -2,8 +2,8 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.util.List;
 
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Strings;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 

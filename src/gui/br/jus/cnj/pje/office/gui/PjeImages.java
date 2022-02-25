@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 
-import com.github.signer4j.gui.utils.IPicture;
+import com.github.utils4j.imp.IPicture;
 
 public enum PjeImages implements IPicture {
   PJE_ICON("/pje-icon.png"), 

@@ -1,19 +1,19 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.signer4j.imp.SwingTools.invokeLater;
+import static com.github.utils4j.imp.SwingTools.invokeLater;
 
 import java.io.IOException;
 
 import com.github.signer4j.IByteProcessor;
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.imp.TemporaryException;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.TemporaryException;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;

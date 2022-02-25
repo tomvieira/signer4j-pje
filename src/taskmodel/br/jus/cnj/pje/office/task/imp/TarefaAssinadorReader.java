@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.imp.Strings.optional;
+import static com.github.utils4j.imp.Strings.optional;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
@@ -13,13 +13,13 @@ import java.util.Optional;
 
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignatureType;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.SignatureAlgorithm;
 import com.github.signer4j.imp.SignatureType;
-import com.github.signer4j.imp.Strings;
-import com.github.signer4j.task.ITask;
-import com.github.signer4j.task.imp.AbstractRequestReader;
+import com.github.taskresolver4j.ITask;
+import com.github.taskresolver4j.imp.AbstractRequestReader;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;

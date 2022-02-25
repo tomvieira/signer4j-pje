@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
 
-import static com.github.signer4j.imp.HttpTools.touchQuietly;
+import static com.github.utils4j.imp.HttpTools.touchQuietly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import javax.net.ssl.SSLEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.Threads;
+import com.github.utils4j.imp.Threads;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;

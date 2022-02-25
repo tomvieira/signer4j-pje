@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.security.cert.CertificateException;
 
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IDadosSSO;

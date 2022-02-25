@@ -10,7 +10,7 @@ import com.github.signer4j.IHashAlgorithm;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.imp.HashAlgorithm;
 import com.github.signer4j.imp.SignatureAlgorithm;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.exception.TaskException;
 
 final class PjeTaskChecker {
   

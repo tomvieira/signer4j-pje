@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.signer4j.imp;
 
-import static com.github.signer4j.imp.Args.requireNonNull;
+import static com.github.utils4j.imp.Args.requireNonNull;
 
 import com.github.signer4j.ICMSSignerBuilder;
 import com.github.signer4j.ICertificateChooser;
@@ -11,10 +11,10 @@ import com.github.signer4j.IPasswordCollector;
 import com.github.signer4j.ISignerBuilder;
 import com.github.signer4j.IToken;
 import com.github.signer4j.exception.NotAuthenticatedException;
-import com.github.signer4j.imp.Args;
 import com.github.signer4j.imp.TokenWrapper;
 import com.github.signer4j.imp.exception.LoginCanceledException;
 import com.github.signer4j.imp.exception.Signer4JException;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;

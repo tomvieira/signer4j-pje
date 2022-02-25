@@ -1,15 +1,15 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.core.imp.SimpleContext.of;
-import static com.github.signer4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.InterruptibleInputStream;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.imp.InterruptibleInputStream;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeContext;
 
 class PjeStdioServer extends PjeURIServer {
@@ -54,7 +54,7 @@ class PjeStdioServer extends PjeURIServer {
       if ((read = stdin.read(bodyUrl)) != size) {
         throw new IOException("Body de tamanho inválido: " + size + ". Esperado = " + read);
       }
-      return new String(bodyUrl, Constants.DEFAULT_CHARSET);
+      return new String(bodyUrl, IConstants.DEFAULT_CHARSET);
     }while(true);
   }
   

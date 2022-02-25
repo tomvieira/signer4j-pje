@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;

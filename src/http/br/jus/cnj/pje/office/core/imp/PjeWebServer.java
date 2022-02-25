@@ -1,9 +1,9 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.signer4j.imp.HttpTools.touchQuietly;
-import static com.github.signer4j.imp.SwingTools.invokeLater;
-import static com.github.signer4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.HttpTools.touchQuietly;
+import static com.github.utils4j.imp.SwingTools.invokeLater;
+import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,13 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
 
-import com.github.signer4j.IBootable;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.ICorsHeaders;
 import br.jus.cnj.pje.office.core.IPjeHeaders;
 import br.jus.cnj.pje.office.core.IPjeHttpExchangeRequest;

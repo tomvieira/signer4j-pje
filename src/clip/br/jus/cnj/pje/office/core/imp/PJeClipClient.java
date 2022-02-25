@@ -5,9 +5,9 @@ import java.nio.charset.Charset;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.json.JSONObject;
 
-import com.github.signer4j.IDownloadStatus;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.function.Supplier;
+import com.github.utils4j.IDownloadStatus;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.Version;

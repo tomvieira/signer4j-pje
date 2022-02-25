@@ -11,11 +11,11 @@ import org.bouncycastle.cms.CMSSignedData;
 
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.OpenByteArrayOutputStream;
-import com.github.signer4j.imp.Strings;
 import com.github.signer4j.imp.exception.OutOfMemoryException;
 import com.github.signer4j.imp.exception.Signer4JException;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.OpenByteArrayOutputStream;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.imp.UnsupportedCosignException;
 import br.jus.cnj.pje.office.task.IArquivo;

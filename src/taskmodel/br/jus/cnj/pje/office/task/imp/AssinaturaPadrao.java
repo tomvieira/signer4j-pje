@@ -6,17 +6,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ICMSSigner;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.Objects;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Objects;
 
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
 enum AssinaturaPadrao implements IAssinaturaPadrao {
-  ENVELOPED(".xml",  "application/xml", Constants.UTF_8) {
+  ENVELOPED(".xml",  "application/xml", IConstants.UTF_8) {
     @Override
     public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {
       Args.requireNonNull(token, "token is null");

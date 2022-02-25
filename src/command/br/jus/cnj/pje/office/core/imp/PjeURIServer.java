@@ -1,16 +1,16 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Strings.trim;
-import static com.github.signer4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.Strings.trim;
+import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 
-import com.github.signer4j.IBootable;
-import com.github.signer4j.IThreadContext;
-import com.github.signer4j.imp.Ids;
-import com.github.signer4j.imp.ThreadContext;
-import com.github.signer4j.imp.Threads;
+import com.github.utils4j.IThreadContext;
+import com.github.utils4j.imp.Ids;
+import com.github.utils4j.imp.ThreadContext;
+import com.github.utils4j.imp.Threads;
 
+import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeContext;
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;

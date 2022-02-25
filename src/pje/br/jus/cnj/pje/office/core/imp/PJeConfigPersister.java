@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import com.github.signer4j.imp.ConfigPersister;
 import com.github.signer4j.imp.SignerConfig;
-import com.github.signer4j.imp.Strings;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;

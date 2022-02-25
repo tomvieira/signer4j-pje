@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import org.apache.hc.core5.http.HttpHeaders;
 
-import com.github.signer4j.task.IRequestResolver;
-import com.github.signer4j.task.exception.TaskResolverException;
+import com.github.taskresolver4j.IRequestResolver;
+import com.github.taskresolver4j.exception.TaskResolverException;
 
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;

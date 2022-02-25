@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Pair;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Pair;
 
 import br.jus.cnj.pje.office.core.IPjeContext;
 import br.jus.cnj.pje.office.core.IPjeRequest;

@@ -4,7 +4,7 @@ import static br.jus.cnj.pje.office.core.imp.PjeAccessTime.fromOptions;
 
 import java.util.Scanner;
 
-import com.github.signer4j.imp.Strings;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;

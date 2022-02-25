@@ -3,14 +3,14 @@ package br.jus.cnj.pje.office.core.imp;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.github.signer4j.imp.Constants;
+import com.github.utils4j.IConstants;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
 class PjeStdioTaskResponse extends PjeStringTaskResponse {
 
   public PjeStdioTaskResponse(String output) {
-    this(output, Constants.DEFAULT_CHARSET, true);
+    this(output, IConstants.DEFAULT_CHARSET, true);
   }
   
   public PjeStdioTaskResponse(String output, Charset charset) {

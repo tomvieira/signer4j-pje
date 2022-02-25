@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.imp.Constants.DEFAULT_CHARSET;
-import static com.github.signer4j.imp.Strings.trim;
+import static com.github.utils4j.IConstants.DEFAULT_CHARSET;
+import static com.github.utils4j.imp.Strings.trim;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +11,10 @@ import java.security.cert.CertificateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Base64;
-import com.github.signer4j.imp.Certificates;
-import com.github.signer4j.imp.Ciphers;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Base64;
+import com.github.utils4j.imp.Certificates;
+import com.github.utils4j.imp.Ciphers;
 
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;

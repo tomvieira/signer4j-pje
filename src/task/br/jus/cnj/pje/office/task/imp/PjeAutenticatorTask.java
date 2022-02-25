@@ -2,14 +2,14 @@ package br.jus.cnj.pje.office.task.imp;
 
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.SignatureAlgorithm;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
@@ -72,7 +72,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
 
     progress.step("Recebida a mensagem '%s'", mensagem);
     
-    final byte[] content = mensagem.getBytes(Constants.DEFAULT_CHARSET); 
+    final byte[] content = mensagem.getBytes(IConstants.DEFAULT_CHARSET); 
     
     progress.step("Assinando o conteúdo. Algoritmo: '%s'", algorithm.getName());
     

@@ -6,14 +6,14 @@ import java.util.Optional;
 
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ISignatureAlgorithm;
-import com.github.signer4j.imp.Base64;
-import com.github.signer4j.imp.Params;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.signer4j.progress.IProgress;
 import com.github.signer4j.progress.IStage;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Base64;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;

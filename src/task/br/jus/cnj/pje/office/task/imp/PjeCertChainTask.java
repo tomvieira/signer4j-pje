@@ -1,8 +1,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import com.github.signer4j.imp.Params;
-import com.github.signer4j.task.ITaskResponse;
-import com.github.signer4j.task.exception.TaskException;
+import com.github.taskresolver4j.ITaskResponse;
+import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;

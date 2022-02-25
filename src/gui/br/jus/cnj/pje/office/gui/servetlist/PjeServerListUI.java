@@ -31,10 +31,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import com.github.signer4j.gui.utils.ButtonRenderer;
-import com.github.signer4j.gui.utils.SimpleDialog;
-import com.github.signer4j.imp.Args;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.ButtonRenderer;
+import com.github.utils4j.imp.SimpleDialog;
 
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.gui.PjeImages;
 
 public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
@@ -49,7 +50,7 @@ public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
   private List<IServerEntry> loadedList;
 
   public PjeServerListUI() {
-    super("Servidores autorizados", true);
+    super("Servidores autorizados", PjeConfig.getIcon(), true);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setBounds(100, 100, 602, 371);
     contentPane = new JPanel();

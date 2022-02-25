@@ -15,10 +15,10 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
-import com.github.signer4j.IDownloadStatus;
-import com.github.signer4j.imp.Args;
-import com.github.signer4j.imp.Constants;
-import com.github.signer4j.imp.function.Supplier;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.IDownloadStatus;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IResultChecker;
 
@@ -53,7 +53,7 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
         if (entity != null) {
           String responseText;
           try {
-            responseText = EntityUtils.toString(entity, Constants.DEFAULT_CHARSET);
+            responseText = EntityUtils.toString(entity, IConstants.DEFAULT_CHARSET);
           } catch (ParseException | IOException e) {
             throw new PJeClientException("Falha na leitura de entity - HTTP Code: " + code, e);
           } finally {
