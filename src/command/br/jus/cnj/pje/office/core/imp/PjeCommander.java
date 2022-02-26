@@ -113,33 +113,33 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   @Override
   public final void showOfflineSigner() {
-    final String request = 
-      "{\"aplicacao\":\"PjeOffice\"," + 
-      "\"servidor\":\"" + serverEndpoint + "\"," + 
-      "\"sessao\":\"\"," + 
-      "\"codigoSeguranca\":\"localhost\"," + 
-      "\"tarefaId\":\"cnj.assinador\"," + 
-      "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
-      + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-      + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-      + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
-      "}";
-    
 //    final String request = 
-//        "{\"aplicacao\":\"PjeOffice\"," + 
-//        "\"servidor\":\"" + serverEndpoint + "\"," + 
-//        "\"sessao\":\"\"," + 
-//        "\"codigoSeguranca\":\"localhost\"," + 
-//        "\"tarefaId\":\"cnj.assinador\"," + 
-//        "\"tarefa\":\"{\\\"modo\\\":\\\"definido\\\","
-//        + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-//        + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-//        + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\","
-//        + "\\\"arquivos\\\":["
-//        + "{\\\"nome\\\":\\\"primeiro\\\",\\\"url\\\":\\\"D:/generics.pdf\\\"}"
-//        + "],"
-//        + "\\\"enviarPara\\\":\\\"D:/\\\"}\"" + 
-//        "}";
+//      "{\"aplicacao\":\"PjeOffice\"," + 
+//      "\"servidor\":\"" + serverEndpoint + "\"," + 
+//      "\"sessao\":\"\"," + 
+//      "\"codigoSeguranca\":\"localhost\"," + 
+//      "\"tarefaId\":\"cnj.assinador\"," + 
+//      "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
+//      + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
+//      + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
+//      + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
+//      "}";
+//    
+    final String request = 
+        "{\"aplicacao\":\"PjeOffice\"," + 
+        "\"servidor\":\"" + serverEndpoint + "\"," + 
+        "\"sessao\":\"\"," + 
+        "\"codigoSeguranca\":\"localhost\"," + 
+        "\"tarefaId\":\"cnj.assinador\"," + 
+        "\"tarefa\":\"{\\\"modo\\\":\\\"definido\\\","
+        + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
+        + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
+        + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\","
+        + "\\\"arquivos\\\":["
+        + "{\\\"nome\\\":\\\"primeiro\\\",\\\"url\\\":\\\"D:/generics.pdf\\\"}"
+        + "],"
+        + "\\\"enviarPara\\\":\\\"D:/\\\"}\"" + 
+        "}";
     
     async(() ->  {
       String encodedRequest = get(() -> encode(request, UTF_8.toString()), "").get();

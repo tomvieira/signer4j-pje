@@ -166,13 +166,13 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     final IProgress progress = getProgress();
     Throwable fail;
     try {
-      progress.begin(Stage.PREPARING_PARAMETERS);
+      progress.begin(Stage.PREPARING_PARAMETERS, 2);
       progress.step("Preparando parâmetros de execução");
       checkParams();
       progress.step("Principais parâmetros validados");
       progress.end();
       
-      progress.begin(Stage.PERMISSION_CHECKING);
+      progress.begin(Stage.PERMISSION_CHECKING, 2);
       progress.step("Checando permissões de acesso ao servidor");
       checkServerPermission();
       progress.step("Acesso permitido");
@@ -180,7 +180,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       
       beforeGet();
       
-      progress.begin(Stage.TASK_EXECUTION);
+      progress.begin(Stage.TASK_EXECUTION, 2);
       progress.step("Executando a tarefa '%s'", getId());
       ITaskResponse<IPjeResponse> response = doGet(); 
       progress.step("Tarefa completa. Status de sucesso: %s", response.isSuccess());

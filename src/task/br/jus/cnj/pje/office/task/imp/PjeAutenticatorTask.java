@@ -68,7 +68,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
     
     final IProgress progress = getProgress();
 
-    progress.begin(Stage.AUTHENTICATING_USER);
+    progress.begin(Stage.AUTHENTICATING_USER, 3);
 
     progress.step("Recebida a mensagem '%s'", mensagem);
     

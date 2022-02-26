@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
 import static com.github.signer4j.IFilePath.toPaths;
 import static com.github.signer4j.imp.DeviceCertificateEntry.toEntries;
-import static com.github.signer4j.imp.Signer4JInvoker.INVOKER;
+import static com.github.signer4j.imp.Signer4JInvoker.SIGNER4J;
 import static com.github.signer4j.imp.exception.Signer4JRuntimeException.lambda;
 import static com.github.signer4j.imp.exception.Signer4JRuntimeException.of;
 import static com.github.utils4j.imp.SwingTools.invokeAndWait;
@@ -153,7 +153,7 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     do {
       IPjeToken pjeToken = getToken(force, autoSelect).orElseThrow(lambda(LoginCanceledException::new));
       try {
-        return INVOKER.invoke(pjeToken::login);
+        return SIGNER4J.invoke(pjeToken::login);
       } catch (LoginCanceledException e) {
         throw of(e);
       } catch (NoTokenPresentException e) {

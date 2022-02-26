@@ -20,12 +20,12 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   private boolean started = false;
 
   private final IThreadContext capturer;
-  
+
   public PjeURIServer(IBootable boot, String serverAddress) {
     super(boot, serverAddress);
     this.capturer = new URICapturer(serverAddress);
   }
-  
+
   @Override
   public synchronized void start() throws IOException {
     if (!isStarted()) {
@@ -40,7 +40,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   public synchronized boolean isStarted() {
     return started;
   }
-  
+
   @Override
   public synchronized void stop(boolean kill) {
     if (isStarted()) {
@@ -64,31 +64,31 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
       }
     }
   }
-  
+
   protected void clearBuffer() {}
-  
+
   @Override
   protected final void openSigner(String request) {
-   tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
+    tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
   }
 
   private class URICapturer extends ThreadContext {
 
     private String lastUri = Ids.next();
-    
+
     public URICapturer(String contextName) {
       super(contextName);
     }
-    
+
     @Override
     protected void beforeRun() {
       clearBuffer();
     }
-    
+
     protected boolean isLast(String uri) {
       return lastUri.equals(uri);
     }
-    
+
     protected boolean isValid(String uri) {
       return !isLast(uri) && uri.startsWith(getServerEndpoint());
     }
@@ -102,7 +102,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
       lastUri = uri;
       return PjeURIServer.this.createContext(uri);
     }
-    
+
     @Override
     protected void doRun() {
       int errorCount = 0;
@@ -135,8 +135,8 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
       }while(true);
     }
   }
-  
+
   protected abstract String getUri() throws InterruptedException, Exception;
-  
+
   protected abstract IPjeContext createContext(String uri) throws Exception ;
 }

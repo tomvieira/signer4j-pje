@@ -31,9 +31,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     
     SELECTING_FILES("Seleção de arquivos"),
     
-    PROCESSING_FILES("Processamento de arquivos"),
-    
-    SIGN_AND_SEND("Assinatura e envio");
+    PROCESSING_FILES("Processamento de arquivos");
     
     private final String message;
 
@@ -80,19 +78,18 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     
     final PjeTaskResponses responses = new PjeTaskResponses();
     
-    progress.begin(Stage.PROCESSING_FILES, size);
     IPjeToken token = loginToken();
     try {
       int index = 0;
     
       IByteProcessor processor = padraoAssinatura.getByteProcessor(token, params);
       
+      progress.begin(Stage.PROCESSING_FILES, 2 * size); //dois passos para cada arquivo (assinar e enviar)
+      
       for(final IArquivoAssinado file: files) {
         try {
           final String fileName = file.getNome().orElse(Integer.toString(++index));
 
-          progress.step("Processando arquivo '%s'", fileName);
-          progress.begin(Stage.SIGN_AND_SEND, 2);
           progress.step("Assinando arquivo '%s'", fileName);
           
           try {
@@ -100,20 +97,17 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           } catch (IOException e) {
             String message = "Arquivo ignorado. Não foi possível ler os bytes do arquivo temporário: ";
             LOGGER.warn(message + file.toString());
-            progress.step(message + e.getMessage());
-            progress.end();
+            progress.info(message + e.getMessage());
             throw new TemporaryException(e);
           } catch (UnsupportedCosignException e) {
             String message = "Arquivo ignorado. Co-assinatura não é suportada: ";
             LOGGER.warn(message + file.toString());
-            progress.step(message + e.getMessage());
-            progress.end();
+            progress.info(message + e.getMessage());
             throw new TemporaryException(e);
           } catch (Signer4JException e) {
             String message = "Arquivo ignorado:  " + file.toString();
             LOGGER.warn(message, e);
-            progress.step(message + " -> " +  e.getMessage());
-            progress.end();
+            progress.info(message + " -> " +  e.getMessage());
             throw new TemporaryException(e);
           }
           try {
@@ -123,11 +117,9 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           }catch(TaskException e) {
             String message = "Arquivo ignorado:  " + file.toString();
             LOGGER.warn(message, e);
-            progress.step(message + " -> " + e.getMessage());
-            progress.end();
+            progress.info(message + " -> " + e.getMessage());
             throw new TemporaryException(e);
           }
-          progress.end();
         }catch(TemporaryException e) {
           progress.abort(e);
           int remainder = size - index - 1;
@@ -142,7 +134,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
               }
               processor = padraoAssinatura.getByteProcessor(token, params);
             }
-            progress.begin(Stage.PROCESSING_FILES, remainder);
+            progress.begin(Stage.PROCESSING_FILES, 2 * remainder); //dois passos para cada arquivo (assinar e enviar)
           }
         }finally {
           file.dispose();

@@ -6,7 +6,7 @@ import static com.github.utils4j.imp.Args.requireText;
 import java.util.List;
 
 import com.github.signer4j.ISignedData;
-import com.github.signer4j.progress.imp.ICanceller;
+import com.github.signer4j.progress.ICanceller;
 import com.github.utils4j.IContentType;
 import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.function.Supplier;
