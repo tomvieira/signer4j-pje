@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.signer4j.progress.IProgress;
-import com.github.signer4j.progress.IStage;
+import com.github.progress4j.IProgress;
+import com.github.progress4j.IStage;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 

@@ -23,7 +23,7 @@ import org.apache.hc.core5.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.signer4j.progress.ICanceller;
+import com.github.progress4j.ICanceller;
 import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeClient;

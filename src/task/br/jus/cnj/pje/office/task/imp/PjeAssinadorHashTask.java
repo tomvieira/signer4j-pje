@@ -4,13 +4,13 @@ import static br.jus.cnj.pje.office.task.imp.PjeTaskChecker.checkIfPresent;
 
 import java.util.List;
 
+import com.github.progress4j.IProgress;
+import com.github.progress4j.IStage;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.ISignedData;
 import com.github.signer4j.ISimpleSigner;
 import com.github.signer4j.imp.SignedData;
 import com.github.signer4j.imp.exception.Signer4JException;
-import com.github.signer4j.progress.IProgress;
-import com.github.signer4j.progress.IStage;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;

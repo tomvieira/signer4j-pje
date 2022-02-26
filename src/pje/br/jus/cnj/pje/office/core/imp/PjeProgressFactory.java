@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import com.github.signer4j.progress.imp.ProgressFactory;
+import com.github.progress4j.imp.ProgressFactory;
 
 public class PjeProgressFactory extends ProgressFactory{
 

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.progress4j.IProgress;
+import com.github.progress4j.IStage;
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ISignatureAlgorithm;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.Signer4JRuntimeException;
-import com.github.signer4j.progress.IProgress;
-import com.github.signer4j.progress.IStage;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Base64;
