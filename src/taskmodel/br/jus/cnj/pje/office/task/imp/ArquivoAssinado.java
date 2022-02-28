@@ -58,7 +58,7 @@ class ArquivoAssinado extends ArquivoWrapper implements IArquivoAssinado {
           Files.copy(notSignedFile.toPath(), out);
           try(InputStream content = out.toInputStream()){ //Essa estratégia evita copias de byte[]'s
             new CMSSignedData(content).getSignedContent();
-            rethrow = new UnsupportedCosignException("Arquivo já se encontra assinado: " + notSignedFile.getAbsolutePath());
+            rethrow = new UnsupportedCosignException("Arquivo já se encontra assinado: " + notSignedFile.getCanonicalPath());
           } catch (CMSException e) {
             rethrow = null;
           } 
@@ -68,7 +68,7 @@ class ArquivoAssinado extends ArquivoWrapper implements IArquivoAssinado {
         }
         signedData = signer.config(isTerAtributosAssinados()).process(notSignedFile);
       }catch(OutOfMemoryError e) {
-        throw new OutOfMemoryException("Arquivo " + notSignedFile.getAbsolutePath() + " muito grande!", e);
+        throw new OutOfMemoryException("Arquivo " + notSignedFile.getCanonicalPath() + " muito grande!", e);
       }
     }
   }

@@ -26,3 +26,118 @@ https://www.codeproject.com/Articles/13530/Eject-USB-disks-using-C
 https://github.com/raulchandna/safely-remove-usb-drive
 https://superuser.com/questions/121957/how-to-un-eject-a-usb-flash-drive-eject-is-easy-safely-remove-hardware-b
 https://www.raymond.cc/blog/remount-ejected-or-safely-removed-usb-device-without-unplug-and-reinsert/
+https://digitalfortress.tech/tips/encode-videos-with-ffmpeg/
+
+
+
+
+   //ffmpeg -i input.mp4 -c copy -map 0 -segment_time 8 -f segment -reset_timestamps 1 output%03d.mp4
+    
+    /*
+    Em looping
+    $ ffmpeg -i source-file.foo -ss 0 -t 600 first-10-min.m4v
+    $ ffmpeg -i source-file.foo -ss 600 -t 600 second-10-min.m4v
+    $ ffmpeg -i source-file.foo -ss 1200 -t 600 third-10-min.m4v
+    */
+    
+    /*
+     * Sem encodar (mais rápido?)
+    $ ffmpeg -i source.m4v -ss 0 -t 593.3 -c copy part1.m4v
+    $ ffmpeg -i source.m4v -ss 593.3 -t 551.64 -c copy part2.m4v
+    $ ffmpeg -i source.m4v -ss 1144.94 -t 581.25 -c copy part3.m4v
+     */
+    
+    
+    /*
+     ffmpeg -i input.mp4 -ss 00:00:00 -to 00:10:00 -c copy output1.mp4
+     ffmpeg -i input.mp4 -ss 00:10:00 -to 00:20:00 -c copy output2.mp4
+    
+    * -i  input file
+    * -ss start time in seconds or in hh:mm:ss
+    * -to end time in seconds or in hh:mm:ss
+    * -c codec to use
+    */
+    
+    /*
+    ffmpeg -hide_banner  -err_detect ignore_err -i input.mp4 -r 24 -codec:v libx264  -vsync 1  -codec:a aac  -ac 2  -ar 48k  -f segment   -preset fast  -segment_format mpegts  -segment_time 0.5 -force_key_frames  "expr: gte(t, n_forced * 0.5)" out%d.mkv
+
+     */
+    
+    /*
+     * 
+    Basta usar o que está embutido no ffmpeg para fazer exatamente isso.
+
+    ffmpeg -i invid.mp4 -threads 3 \
+       -vcodec copy -f segment -segment_time 10:00 \
+       cam_out_h264_%02d.mp4
+    Isso o dividirá em pedaços de aproximadamente 10 minutos, divididos nos quadros-chave relevantes e produzirá os arquivos cam_out_h264_01.mp4, cam_out_h264_02.mp4, etc.
+
+     */
+    
+    
+    /*
+      MESCLAGEM DE VIDEOS
+ffmpeg -i "concat:file1.mpg|file2.mpg|file3.mpg" output.avi
+ffmpeg -i "concat:file1.mpg|file2.mpg|file3.mpg" -c copy output.mpg
+     */
+    
+    
+    /*
+    Observação: às vezes, isso pode não funcionar conforme o esperado com determinados formatos (como arquivos MP4 ) 
+    quando os arquivos a serem unidos tiverem sido codificados de maneira diferente ou tiverem uma resolução
+     diferente . Nesse caso, será necessário converter cada arquivo de entrada em um formato intermediário e, em 
+     seguida, unir esses arquivos intermediários.
+     
+     // convert each file
+    ffmpeg -i file1.mp4 -c copy -bsf:v h264_mp4toannexb temp1.ts
+    ffmpeg -i file2.mp4 -c copy -bsf:v h264_mp4toannexb temp2.ts
+    // Then join the intermediate files
+    ffmpeg -i "concat:temp1.ts|temp2.ts" -c copy -bsf:a aac_adtstoasc output.mp4
+     
+    /**
+     * -i => Input file
+     * -c => codecs (audio+video)
+     * -bsf:v => Bitstream filter for video
+     * -bsf:a => Bitstream filter for audio
+     */
+    
+    /*
+    Extraia o áudio de um vídeo
+    Você também pode extrair o áudio original sem perdas copiando apenas o fluxo de áudio original. Como nenhuma codificação real ocorre, esse processo será super rápido.
+    // Get the information about video
+    // (This reveals the audio codec used) 
+    ffmpeg -i input.avi
+    // If the audio codec is mp3,
+    ffmpeg -i input.avi -c:a copy output.mp3
+    // If the audio codec is aac,
+    ffmpeg -i input.flv -c:a copy output.aac
+      
+    /**
+     * -i => Input file
+     * -c:a => Audio codec to use
+     
+    
+    
+    
+    --------------------------------------------------------------------------------------
+    ffmpeg -i input.avi -vn output.mp3
+     
+    // Using custom audio sampling frequency/audio channels/audio-bitrate, 
+    ffmpeg -i input.avi -vn -ar 44100 -ac 2 -b:a 192k output.aac 
+     
+    // get audio with the highest possible quality
+    ffmpeg -i input.avi -vn -q:a 0 output.aac
+     
+    // extracting audio from the 5th second to the 10th second
+    ffmpeg -i input_input.avi -ss 5 -to 10 -vn output.mp3
+     
+    /**
+     * -i => Input file
+     * -vn => skip the video stream
+     * -ar => Audio Sampling Frequency
+     * -ac => Number of Audio Channels (2 => Stereo)
+     * -b:a => bit-rate for the audio stream (in kbps/mbps)
+     * -q:a => audio quality
+     * -ss => start time (in seconds or hh:mm:ss)
+     * -to => end time (in seconds or hh:mm:ss)
+     */

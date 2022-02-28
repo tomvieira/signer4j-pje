@@ -1,14 +1,12 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.utils4j.imp.Args.requireNonNull;
-import static com.github.utils4j.imp.Args.requireText;
-
 import java.util.List;
 
 import com.github.progress4j.ICanceller;
 import com.github.signer4j.ISignedData;
 import com.github.utils4j.IContentType;
 import com.github.utils4j.IDownloadStatus;
+import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
@@ -38,10 +36,10 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   }
 
   protected AstractPjeClient(Version version, ISocketCodec<T> socket, IResultChecker ifError, IResultChecker ifNotSuccess) {
-    this.version = requireNonNull(version, "version is null");
-    this.ifErrorThrow = requireNonNull(ifError, "ifError is null");
-    this.ifNotSuccessThrow = requireNonNull(ifNotSuccess, "ifNotSuccess is null");
-    this.socket = requireNonNull(socket, "socket is null");
+    this.version = Args.requireNonNull(version, "version is null");
+    this.ifErrorThrow = Args.requireNonNull(ifError, "ifError is null");
+    this.ifNotSuccessThrow = Args.requireNonNull(ifNotSuccess, "ifNotSuccess is null");
+    this.socket = Args.requireNonNull(socket, "socket is null");
   }
   
   @Override
@@ -54,8 +52,8 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, ISignedData signedData) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"),
-      requireNonNull(signedData, "signed data null")
+      Args.requireNonNull(target, "target is null"),
+      Args.requireNonNull(signedData, "signed data null")
     );
     return post(supplier, ifErrorThrow);
   }
@@ -63,9 +61,9 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"), 
-      requireNonNull(signedData, "signedData null"),
-      requireNonNull(file, "file is null")
+      Args.requireNonNull(target, "target is null"), 
+      Args.requireNonNull(signedData, "signedData null"),
+      Args.requireNonNull(file, "file is null")
     );
     return post(supplier, ifNotSuccessThrow);
   }
@@ -73,9 +71,9 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, IArquivoAssinado file, IContentType contentType) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"), 
-      requireNonNull(file, "file is null"),
-      requireNonNull(contentType, "contentType is null")
+      Args.requireNonNull(target, "target is null"), 
+      Args.requireNonNull(file, "file is null"),
+      Args.requireNonNull(contentType, "contentType is null")
     );
     return post(supplier, ifErrorThrow);
   }
@@ -83,8 +81,8 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, List<IAssinadorBase64ArquivoAssinado> files) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"),
-      requireNonNull(files, "files null")
+      Args.requireNonNull(target, "target is null"),
+      Args.requireNonNull(files, "files null")
     );
     return post(supplier, ifNotSuccessThrow);
   }
@@ -92,8 +90,8 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, String certificateChain64) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"),
-      requireText(certificateChain64, "certificateChain64 empty")
+      Args.requireNonNull(target, "target is null"),
+      Args.requireText(certificateChain64, "certificateChain64 empty")
     );
     return post(supplier, ifNotSuccessThrow);
   }
@@ -101,17 +99,17 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final PjeTaskResponse send(IPjeTarget target, IDadosSSO dadosSSO) throws PJeClientException {
     final Supplier<T> supplier = () -> createOutput(
-      requireNonNull(target, "target is null"), 
-      requireNonNull(dadosSSO , "dadosSSO is empty")
+      Args.requireNonNull(target, "target is null"), 
+      Args.requireNonNull(dadosSSO , "dadosSSO is empty")
     );
     return post(supplier, IResultChecker.NOTHING);
   }  
   
   @Override
   public final void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
-    requireNonNull(status, "status is null");
+    Args.requireNonNull(status, "status is null");
     final Supplier<T> supplier = () -> createInput(
-      requireNonNull(target, "target is null")
+      Args.requireNonNull(target, "target is null")
     );
     get(supplier, status);
   }

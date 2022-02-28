@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.utils4j.imp.Args.requireNonNull;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
@@ -33,6 +31,8 @@ import org.apache.hc.core5.http.config.Lookup;
 import org.apache.hc.core5.http.impl.io.HttpRequestExecutor;
 import org.apache.hc.core5.util.TimeValue;
 
+import com.github.utils4j.imp.Args;
+
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeClientBuilder;
 import br.jus.cnj.pje.office.core.Version;
@@ -44,7 +44,7 @@ class PjeClientWebBuilder implements IPjeClientBuilder  {
   private final Version version;
 
   public PjeClientWebBuilder(Version version) {
-    this.version = requireNonNull(version, "version is null");
+    this.version = Args.requireNonNull(version, "version is null");
   }
   
   @Override

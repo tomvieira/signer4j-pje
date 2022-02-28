@@ -141,6 +141,6 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   protected void showCanNotWriteMessage(File destination) {
-    invokeAndWait(() -> display("Não há permissão de escrita na pasta:\n" + destination.getAbsolutePath() + "\nEscolha uma nova!"));
+    invokeAndWait(() -> display("Não há permissão de escrita na pasta:\n" + destination.getCanonicalPath() + "\nEscolha uma nova!"));
   }
 }

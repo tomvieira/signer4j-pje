@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.utils4j.imp.Strings.get;
-import static com.github.utils4j.imp.Threads.async;
+import static com.github.utils4j.imp.Threads.startAsync;
 import static com.github.utils4j.imp.Throwables.tryRun;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -141,7 +141,7 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
 //        + "\\\"enviarPara\\\":\\\"D:/\\\"}\"" + 
 //        "}";
     
-    async(() ->  {
+    startAsync(() ->  {
       String encodedRequest = get(() -> encode(request, UTF_8.toString()), "").get();
       try {
         this.executor.setAllowLocalRequest(true);

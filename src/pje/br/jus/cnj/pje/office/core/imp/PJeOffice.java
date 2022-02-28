@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static com.github.utils4j.imp.Threads.async;
+import static com.github.utils4j.imp.Threads.startAsync;
 
 import java.io.IOException;
 
@@ -232,13 +232,13 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
       action.run();
       return;
     }
-    async(action);
+    startAsync(action);
   }
   
   @Override
   public void logout() {
     checkIsAlive();
-    async(PjeCertificateAcessor.INSTANCE::logout);    
+    startAsync(PjeCertificateAcessor.INSTANCE::logout);    
   }
   
   @Override

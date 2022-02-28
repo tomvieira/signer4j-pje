@@ -1,7 +1,6 @@
 package br.jus.cnj.pje.office.signer4j.imp;
 
 import static com.github.utils4j.IConstants.DEFAULT_CHARSET;
-import static com.github.utils4j.imp.Args.requireNonNull;
 import static com.github.utils4j.imp.Strings.empty;
 import static com.github.utils4j.imp.Strings.trim;
 import static java.util.Arrays.asList;
@@ -149,8 +148,8 @@ class PjeXmlSigner extends SecurityObject implements IPjeXmlSigner {
     private String envelopedTransformPath = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
 
     public Builder(ICertificateChooser chooser, Runnable dispose) {
-      this.chooser = requireNonNull(chooser, "chooser is null");
-      this.dispose = requireNonNull(dispose, "dispose is null");
+      this.chooser = Args.requireNonNull(chooser, "chooser is null");
+      this.dispose = Args.requireNonNull(dispose, "dispose is null");
     }
 
     @Override

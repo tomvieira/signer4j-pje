@@ -4,6 +4,7 @@ import static com.github.utils4j.imp.Strings.trim;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 
 import com.github.utils4j.IThreadContext;
 import com.github.utils4j.imp.Ids;
@@ -111,7 +112,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
         try {
           context = createContext();
           errorCount = 0;
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | InterruptedIOException e) {
           Thread.currentThread().interrupt();
           LOGGER.warn("Thread interrompida", e);
           break;
@@ -131,7 +132,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
           LOGGER.info("Contexto indisponível");
           continue;
         }
-        Threads.async("Tratando contexto: " + context.getId(), () -> submit(context));
+        Threads.startAsync("Tratando contexto: " + context.getId(), () -> submit(context));
       }while(true);
     }
   }

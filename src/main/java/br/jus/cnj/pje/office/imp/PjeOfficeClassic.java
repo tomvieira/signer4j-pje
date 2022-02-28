@@ -4,7 +4,6 @@ package br.jus.cnj.pje.office.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static com.github.utils4j.imp.Args.requireNonNull;
 
 import java.awt.CheckboxMenuItem;
 import java.awt.Menu;
@@ -15,6 +14,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
@@ -25,7 +25,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
 
   protected PjeOfficeClassic(IPjeFrontEnd frontEnd, PjeCommandFactory factory, String... args) {
     super(factory, args);
-    this.frontEnd = requireNonNull(frontEnd, "frontEnd is null");
+    this.frontEnd = Args.requireNonNull(frontEnd, "frontEnd is null");
   }
 
   @Override
