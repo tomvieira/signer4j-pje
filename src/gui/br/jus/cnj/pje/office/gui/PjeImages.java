@@ -1,11 +1,5 @@
 package br.jus.cnj.pje.office.gui;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.InputStream;
-
-import javax.swing.ImageIcon;
-
 import com.github.utils4j.imp.IPicture;
 
 public enum PjeImages implements IPicture {
@@ -20,17 +14,10 @@ public enum PjeImages implements IPicture {
   PjeImages(String path) {
     this.path = path;
   }
-  
-  public InputStream asStream() {
-    return getClass().getResourceAsStream(path);
-  }
-  
-  public Image asImage() {
-    return Toolkit.getDefaultToolkit().createImage(getClass().getResource(path));
-  }
 
-  public ImageIcon asIcon() {
-    return new ImageIcon(getClass().getResource(path));
+  @Override
+  public String path() {
+    return path;
   }
 }
 

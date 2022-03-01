@@ -30,7 +30,7 @@ public final class PjeServerPermissionOptions {
       format(MESSAGE_FORMAT, access.getApp(), access.getServer()),
       JOptionPane.QUESTION_MESSAGE, 
       JOptionPane.YES_NO_CANCEL_OPTION, 
-      PjeImages.PJE_SERVER.asIcon(), 
+      PjeImages.PJE_SERVER.asIcon().orElse(null), 
       OPTIONS, 
       OPTIONS[2]
     );

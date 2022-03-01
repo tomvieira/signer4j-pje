@@ -33,7 +33,7 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
       this.trayFrame.setResizable(false);
       this.trayFrame.setVisible(true);
       this.tray = SystemTray.getSystemTray();
-      this.trayIcon = new TrayIcon(PjeImages.PJE_ICON_TRAY.asImage());
+      this.trayIcon = new TrayIcon(PjeImages.PJE_ICON_TRAY.asImage().orElseThrow(IconNotFoundException::new));
       this.trayIcon.setPopupMenu(menu);
       this.trayIcon.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {

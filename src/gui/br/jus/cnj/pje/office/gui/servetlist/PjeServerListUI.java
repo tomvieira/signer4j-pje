@@ -63,7 +63,7 @@ public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
     pnlNorth.setLayout(new BorderLayout(0, 0));
 
     JLabel lblServerList = new JLabel("Servidores Disponíveis");
-    lblServerList.setIcon(PjeImages.PJE_SERVER.asIcon());
+    lblServerList.setIcon(PjeImages.PJE_SERVER.asIcon().orElse(null));
     lblServerList.setHorizontalAlignment(SwingConstants.LEFT);
     lblServerList.setFont(new Font("Tahoma", Font.BOLD, 15));
     pnlNorth.add(lblServerList, BorderLayout.NORTH);
