@@ -1,6 +1,7 @@
 
 package br.jus.cnj.pje.office.imp;  
 
+import static br.jus.cnj.pje.office.core.imp.PjeConfig.setup;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
@@ -21,12 +22,11 @@ import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.imp.PJeOffice;
 import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
-import br.jus.cnj.pje.office.core.imp.PjeConfig;
 
 public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
   
   static {
-    PjeConfig.setup();
+    setup();
     tryRuntime(() -> setLookAndFeel(getSystemLookAndFeelClassName()));
   }
 

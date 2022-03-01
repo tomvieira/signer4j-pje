@@ -27,9 +27,9 @@ https://github.com/raulchandna/safely-remove-usb-drive
 https://superuser.com/questions/121957/how-to-un-eject-a-usb-flash-drive-eject-is-easy-safely-remove-hardware-b
 https://www.raymond.cc/blog/remount-ejected-or-safely-removed-usb-device-without-unplug-and-reinsert/
 https://digitalfortress.tech/tips/encode-videos-with-ffmpeg/
+https://www.jensd.de/wordpress/?p=2264
 
-
-
+--module-path "C:\Program Files\Java\javafx-sdk-17.0.2\lib" --add-modules=javafx.media,javafx.fxml,javafx.controls,javafx.graphics,javafx.web,javafx.media,javafx.swing
 
    //ffmpeg -i input.mp4 -c copy -map 0 -segment_time 8 -f segment -reset_timestamps 1 output%03d.mp4
     
