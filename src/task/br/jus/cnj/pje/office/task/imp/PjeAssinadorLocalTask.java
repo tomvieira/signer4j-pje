@@ -18,8 +18,8 @@ import com.github.progress4j.IProgressView;
 import com.github.signer4j.ISignedData;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Args;
-import com.github.utils4j.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;

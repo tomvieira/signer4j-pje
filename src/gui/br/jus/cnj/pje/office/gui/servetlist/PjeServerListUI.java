@@ -31,9 +31,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import com.github.utils4j.gui.imp.ButtonRenderer;
+import com.github.utils4j.gui.imp.SimpleDialog;
 import com.github.utils4j.imp.Args;
-import com.github.utils4j.imp.ButtonRenderer;
-import com.github.utils4j.imp.SimpleDialog;
 
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.gui.PjeImages;

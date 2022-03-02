@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.gui;
 
-import com.github.utils4j.imp.IPicture;
+import com.github.utils4j.gui.IPicture;
 
 public enum PjeImages implements IPicture {
   PJE_ICON("/pje-icon.png"), 

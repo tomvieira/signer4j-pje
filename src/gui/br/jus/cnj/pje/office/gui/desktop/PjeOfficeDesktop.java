@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import com.github.signer4j.imp.Config;
-import com.github.utils4j.imp.SimpleFrame;
+import com.github.utils4j.gui.imp.SimpleFrame;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.Version;
