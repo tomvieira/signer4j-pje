@@ -1,6 +1,6 @@
 package br.jus.cnj.pje.office.signer4j.imp;
 
-import static com.github.cutplayer4j.gui.imp.SwingTools.isTrue;
+import static com.github.utils4j.gui.imp.SwingTools.isTrue;
 
 import com.github.signer4j.IToken;
 import com.github.signer4j.gui.alert.TokenUseAlert;

@@ -1,9 +1,9 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
-import static com.github.cutplayer4j.gui.imp.SwingTools.invokeLater;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
