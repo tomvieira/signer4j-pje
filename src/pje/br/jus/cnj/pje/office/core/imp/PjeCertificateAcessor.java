@@ -1,13 +1,13 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPORTED_CERTIFICATE;
+import static com.github.cutplayer4j.gui.imp.SwingTools.invokeAndWait;
+import static com.github.cutplayer4j.gui.imp.SwingTools.isTrue;
 import static com.github.signer4j.IFilePath.toPaths;
 import static com.github.signer4j.imp.DeviceCertificateEntry.toEntries;
 import static com.github.signer4j.imp.Signer4JInvoker.SIGNER4J;
 import static com.github.signer4j.imp.exception.Signer4JRuntimeException.lambda;
 import static com.github.signer4j.imp.exception.Signer4JRuntimeException.of;
-import static com.github.utils4j.imp.SwingTools.invokeAndWait;
-import static com.github.utils4j.imp.SwingTools.isTrue;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
+import static com.github.cutplayer4j.gui.imp.SwingTools.invokeAndWait;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.imp.Dates.stringNow;
-import static com.github.utils4j.imp.SwingTools.invokeAndWait;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.File;
