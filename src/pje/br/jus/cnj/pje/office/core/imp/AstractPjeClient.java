@@ -2,8 +2,8 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.util.List;
 
-import com.github.progress4j.ICanceller;
 import com.github.signer4j.ISignedData;
+import com.github.utils4j.ICanceller;
 import com.github.utils4j.IContentType;
 import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.Args;
