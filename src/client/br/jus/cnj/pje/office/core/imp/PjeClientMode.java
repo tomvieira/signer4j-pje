@@ -47,6 +47,12 @@ public enum PjeClientMode {
       return (t) -> new PjeStdioTaskResponse(Throwables.rootMessage(t));
     }
   },
+  FILEWATCH("filewatch") {
+    @Override
+    protected IPjeClientBuilder createBuilder() {
+      return new PjeFileWatchClientBuilder();
+    }
+  },
   CLIP("clip") {
     @Override
     protected IPjeClientBuilder createBuilder() {

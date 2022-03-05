@@ -5,6 +5,8 @@ import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 
 public interface IPjeOffice extends IBootable {
   
+  public static final String ENVIRONMENT_VARIABLE = "PJEOFFICE_HOME";
+  
   void showCertificates();
 
   void showOfflineSigner();

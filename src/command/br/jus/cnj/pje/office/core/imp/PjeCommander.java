@@ -6,6 +6,8 @@ import static com.github.utils4j.imp.Throwables.tryRun;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,8 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
   
+  private boolean started = false;
+  
   protected PjeCommander(IBootable boot, String serverEndpoint) {
     this(boot, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
@@ -62,16 +66,21 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     return serverEndpoint + Strings.trim(path);
   }
 
-  protected final void notifyShutdown() {
+  private final void notifyShutdown() {
     startup.onNext(LifeCycle.SHUTDOWN);
   }
   
-  protected final void notifyStartup() {
+  private final void notifyStartup() {
     startup.onNext(LifeCycle.STARTUP);
   }
   
-  protected final void notifyKill() {
+  private final void notifyKill() {
     startup.onNext(LifeCycle.KILL);
+  }
+  
+  @Override
+  public synchronized final boolean isStarted() {
+    return started;
   }
   
   @Override
@@ -97,19 +106,39 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
       handleException(request, response, e);
     }
   }
-  
+
   protected void handleException(I request, O response, Exception e) {
     LOGGER.error("Exceção no ciclo de vida da requisição", e);
   }
   
   @Override
-  public synchronized void stop(boolean kill) {
-    tryRun(executor::close);
-    tryRun(this::notifyShutdown);
-    if (kill) {
-      tryRun(this::notifyKill);
+  public synchronized final void start() throws IOException {
+    if (!isStarted()) {
+      LOGGER.info("Iniciando " + getClass().getSimpleName());
+      this.doStart();
+      this.started = true;
+      tryRun(this::notifyStartup);
     }
   }
+  
+  protected void doStart() throws IOException {}
+  
+  @Override
+  public synchronized final void stop(boolean kill) {
+    if (isStarted()) {
+      LOGGER.info("Parando " + getClass().getSimpleName());
+      this.doStop(kill);
+      this.started = false;
+      tryRun(executor::close);
+      tryRun(this::notifyShutdown);
+      if (kill) {
+        tryRun(this::notifyKill);
+      }
+    }
+  }
+  
+  protected void doStop(boolean kill) {}
+  
   
   @Override
   public final void showOfflineSigner() {

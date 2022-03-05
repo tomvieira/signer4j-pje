@@ -18,8 +18,6 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeResponse> {
 
-  private boolean started = false;
-
   private final IThreadContext capturer;
 
   public PjeURIServer(IBootable boot, String serverAddress) {
@@ -28,31 +26,15 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   }
 
   @Override
-  public synchronized void start() throws IOException {
-    if (!isStarted()) {
-      LOGGER.info("Iniciando " + getClass().getSimpleName());
-      this.started = true;
-      this.capturer.start();
-      notifyStartup();
-    }
+  protected void doStart() throws IOException {
+    this.capturer.start();
+    super.doStart();
   }
 
   @Override
-  public synchronized boolean isStarted() {
-    return started;
-  }
-
-  @Override
-  public synchronized void stop(boolean kill) {
-    if (isStarted()) {
-      LOGGER.info("Parando " + getClass().getSimpleName());
-      try {
-        this.capturer.stop(2000);
-      }finally {
-        super.stop(kill);
-        PjeURIServer.this.started = false;
-      }
-    }
+  protected void doStop(boolean kill) {
+    this.capturer.stop(2000);
+    super.doStop(kill);
   }
 
   protected void submit(IPjeContext context) {
