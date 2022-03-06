@@ -22,10 +22,12 @@ public interface IPjeCommander<I extends IPjeRequest, O extends IPjeResponse>  {
 
   void exit();
 
-  void showOfflineSigner();
+  void execute(String uri);
   
   void execute(I request, O response);
 
   void logout();
+
+  String getServerEndpoint();
 
 }

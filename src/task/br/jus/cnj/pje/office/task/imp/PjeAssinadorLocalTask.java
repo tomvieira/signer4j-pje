@@ -32,21 +32,9 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   private static final String PJE_DESTINATION_PARAM = "PjeAssinadorLocalTask.destinationDir";
 
   PjeAssinadorLocalTask(Params request, ITarefaAssinador pojo) {
-    super(request, pojo);
+    super(request, pojo, true);
   }
 
-  @Override
-  protected void checkMainParams() throws TaskException { 
-    ; //explicit empty statement overrided implementation
-  }
-    
-  @Override
-  protected void checkServerPermission() throws TaskException {
-    if (!getLocalRequest().getAndSet(false)) {
-      throw new TaskException("Permissão negada. Solicitação de execução de recursos locais vindo de origem desconhecida ou duplicada"); 
-    }
-  }
-  
   @Override
   protected void validateParams() throws TaskException {
     super.validateParams();

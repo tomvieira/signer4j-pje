@@ -247,49 +247,8 @@ class PjeWebServer extends PjeCommander<IPjeHttpExchangeRequest, IPjeHttpExchang
     super.doStop(kill);
   }
   
-  
-//  @Override
-//  public synchronized void start() throws IOException {
-//    if (!isStarted()) {
-//      LOGGER.info("Iniciando servidor PjeWebServer");
-//      try {
-//        this.setup = new PjeWebServerBuilder()
-//          .usingFilter(access)
-//          .usingFilter(cors)
-//          .usingHandler(ping)
-//          .usingHandler(vers)
-//          .usingHandler(task)
-//          .usingHandler(exit)
-//          .usingHandler(vaza).usingHandler(new PluginRequestHandler());
-//        startHttp();
-//        startHttps();
-//      } catch (IOException e) {
-//        LOGGER.warn("Não foi possível iniciar o servidor", e);
-//        stop(false);
-//        throw e;
-//      }
-//      notifyStartup();
-//    }
-//  }
-//  
-//  @Override
-//  public synchronized void stop(boolean kill) {
-//    if (isStarted()) {
-//      LOGGER.info("Parando servidor PjeWebServer");
-//      tryRun(setup::shutdown);
-//      try {
-//        stopHttp();
-//        stopHttps();
-//      }finally {
-//        super.stop(kill);
-//        setup = null;
-//        LOGGER.info("Servidor web parado");
-//      }
-//    }
-//  }
-
   @Override
-  protected void openSigner(String request) {
+  protected void openRequest(String request) {
     touchQuietly(getServerEndpoint(task.getEndPoint()) + request);
   }
 }

@@ -51,7 +51,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
   protected void clearBuffer() {}
 
   @Override
-  protected final void openSigner(String request) {
+  protected final void openRequest(String request) {
     tryRun(() -> submit(createContext(getServerEndpoint("/") + request)));
   }
 

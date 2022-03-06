@@ -99,4 +99,8 @@ class TarefaAssinadorHashReader extends AbstractRequestReader<Params, ITarefaAss
   protected ITask<?> createTask(Params output, ITarefaAssinadorHash pojo) throws IOException {
     return new PjeAssinadorHashTask(output, pojo);
   }
+
+  public String toJson(Params input) {
+    return null;
+  }
 }

@@ -1,10 +1,9 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.utils4j.imp.Strings.get;
+import static com.github.utils4j.imp.Strings.hasText;
+import static com.github.utils4j.imp.Strings.trim;
 import static com.github.utils4j.imp.Threads.startAsync;
 import static com.github.utils4j.imp.Throwables.tryRun;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 
@@ -58,7 +57,8 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     this.serverEndpoint = Args.requireText(serverEndpoint, "serverEndpoint is empty");
   }
   
-  protected final String getServerEndpoint() {
+  @Override
+  public final String getServerEndpoint() {
     return serverEndpoint;
   }
 
@@ -141,46 +141,20 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   
   @Override
-  public final void showOfflineSigner() {
-    final String request = 
-      "{\"aplicacao\":\"PjeOffice\"," + 
-      "\"servidor\":\"" + serverEndpoint + "\"," + 
-      "\"sessao\":\"\"," + 
-      "\"codigoSeguranca\":\"localhost\"," + 
-      "\"tarefaId\":\"cnj.assinador\"," + 
-      "\"tarefa\":\"{\\\"modo\\\":\\\"local\\\","
-      + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-      + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-      + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\"}\"" + 
-      "}";
-    
-//    final String request = 
-//        "{\"aplicacao\":\"PjeOffice\"," + 
-//        "\"servidor\":\"" + serverEndpoint + "\"," + 
-//        "\"sessao\":\"\"," + 
-//        "\"codigoSeguranca\":\"localhost\"," + 
-//        "\"tarefaId\":\"cnj.assinador\"," + 
-//        "\"tarefa\":\"{\\\"modo\\\":\\\"definido\\\","
-//        + "\\\"padraoAssinatura\\\":\\\"NOT_ENVELOPED\\\","
-//        + "\\\"tipoAssinatura\\\":\\\"ATTACHED\\\","
-//        + "\\\"algoritmoHash\\\":\\\"MD5withRSA\\\","
-//        + "\\\"arquivos\\\":["
-//        + "{\\\"nome\\\":\\\"primeiro\\\",\\\"url\\\":\\\"D:/generics.pdf\\\"}"
-//        + "],"
-//        + "\\\"enviarPara\\\":\\\"D:/\\\"}\"" + 
-//        "}";
-    
-    startAsync(() ->  {
-      String encodedRequest = get(() -> encode(request, UTF_8.toString()), "").get();
+  public final void execute(String uri) {
+    if (!hasText(uri = trim(uri)))
+      return;
+    final String request = uri;
+    startAsync(() -> {
       try {
         this.executor.setAllowLocalRequest(true);
-        openSigner("?r=" + encodedRequest + "&u=" + System.currentTimeMillis());
+        openRequest(request);
       }finally {
-        Threads.sleep(1000);   
+        Threads.sleep(1000);
         this.executor.setAllowLocalRequest(false);
       }
     });
   }    
   
-  protected abstract void openSigner(String encodedRequest);
+  protected abstract void openRequest(String request);
 }

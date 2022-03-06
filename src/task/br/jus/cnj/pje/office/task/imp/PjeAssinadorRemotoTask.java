@@ -37,7 +37,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   private String enviarPara;
   
   PjeAssinadorRemotoTask(Params request, ITarefaAssinador pojo) {
-    super(request, pojo);
+    super(request, pojo, false);
   }
   
   @Override

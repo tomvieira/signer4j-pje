@@ -49,8 +49,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
   protected IAssinaturaPadrao padraoAssinatura;
   
-  public PjeAssinadorTask(Params request, ITarefaAssinador pojo) {
-    super(request, pojo);
+  public PjeAssinadorTask(Params request, ITarefaAssinador pojo, boolean isInternalTask) {
+    super(request, pojo, isInternalTask);
   }
   
   @Override

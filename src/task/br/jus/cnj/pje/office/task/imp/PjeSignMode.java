@@ -11,7 +11,7 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.IPjeSignMode;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
-enum PjeSignMode implements IPjeSignMode {
+public enum PjeSignMode implements IPjeSignMode {
   LOCAL("LOCAL") {
     @Override
     public ITask<IPjeResponse> getTask(Params params, ITarefaAssinador pojo) {

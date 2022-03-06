@@ -15,7 +15,7 @@ import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IAssinaturaPadrao;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
-enum AssinaturaPadrao implements IAssinaturaPadrao {
+public enum AssinaturaPadrao implements IAssinaturaPadrao {
   ENVELOPED(".xml",  "application/xml", IConstants.UTF_8) {
     @Override
     public IByteProcessor getByteProcessor(IPjeToken token, ITarefaAssinador params) {

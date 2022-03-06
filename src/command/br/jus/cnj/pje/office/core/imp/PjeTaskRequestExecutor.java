@@ -23,7 +23,7 @@ class PjeTaskRequestExecutor extends TaskRequestExecutor<IPjeRequest, IPjeRespon
   
   @Override
   protected void onRequestResolved(PjeTaskRequest request) {
-    request.of(ITaskExecutorParams.PJE_REQUEST_LOCAL, localRequest);
+    request.of(ITaskExecutorParams.PJE_REQUEST_INTERNAL, internalRequest);
     request.of(ITaskExecutorParams.PJE_REQUEST_EXECUTOR, executor);
     request.of(IPjeTokenAccess.PARAM_NAME, tokenAccess);
     request.of(IPjeSecurityAgent.PARAM_NAME, securityAgent);

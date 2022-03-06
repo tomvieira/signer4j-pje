@@ -3,7 +3,9 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
+import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.CNJ_ASSINADOR;
 import static com.github.utils4j.imp.Threads.startAsync;
+import static com.github.utils4j.imp.Throwables.tryCall;
 
 import java.io.IOException;
 
@@ -14,8 +16,10 @@ import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
 import com.github.signer4j.imp.WindowLockDettector;
 import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;
+import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeCommander;
@@ -23,6 +27,8 @@ import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
+import br.jus.cnj.pje.office.task.imp.PjeSignMode;
+import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
@@ -244,6 +250,13 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showOfflineSigner() {
     checkIsAlive();
-    commander.showOfflineSigner();
+
+    final Params input = Params.create()
+        .of("servidor", commander.getServerEndpoint())
+        .of("modo", PjeSignMode.LOCAL);
+      
+    String request = tryCall(() -> CNJ_ASSINADOR.toUri(input), (String)null);
+
+    commander.execute(request);
   }
 }

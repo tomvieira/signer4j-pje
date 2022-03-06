@@ -58,9 +58,16 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   };
   
+  private boolean isInternalTask;
+  
   protected PjeAbstractTask(Params request, T pojo) {
+    this(request, pojo, false);
+  }
+  
+  protected PjeAbstractTask(Params request, T pojo, boolean isInternalTask) {
     super(request);
     request.of(POJO_REQUEST_PARAM_NAME, pojo);
+    this.isInternalTask = isInternalTask;
   }
   
   private final IMainParams getMainRequest() {
@@ -104,8 +111,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     throw getProgress().abort(new InterruptedException(message));
   }
   
-  protected final AtomicBoolean getLocalRequest() {
-    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_LOCAL);
+  protected final AtomicBoolean getInternalRequest() {
+    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_INTERNAL);
   }
   
   protected final void runAsync(Runnable runnable) {
@@ -145,10 +152,12 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected void checkMainParams() throws TaskException {
-    IMainParams main = getMainRequest();
-    PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
-    PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
-    PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
+    if (!isInternalTask) {
+      IMainParams main = getMainRequest();
+      PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
+      PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
+      PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
+    }
   }
 
   protected final void checkParams() throws TaskException {
@@ -200,6 +209,12 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected void beforeGet() {}
 
   protected void checkServerPermission() throws TaskException {
+    if (this.isInternalTask) {
+      if (!getInternalRequest().getAndSet(false)) {
+        throw new TaskException("Permissão negada."); 
+      }
+      return;
+    }
     final IMainParams params = getMainRequest();
     StringBuilder whyNot = new StringBuilder();
     if (!getSecurityAgent().isPermitted(params, whyNot)) {

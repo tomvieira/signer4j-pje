@@ -1,8 +1,10 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
+import static com.github.utils4j.imp.JsonTools.mapper;
 import static com.github.utils4j.imp.Strings.optional;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -12,10 +14,11 @@ import com.github.taskresolver4j.imp.AbstractRequestReader;
 import com.github.utils4j.IParam;
 import com.github.utils4j.imp.Params;
 
+import br.jus.cnj.pje.office.task.IJsonTranslator;
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public class MainRequestReader extends AbstractRequestReader<Params, IMainParams>{
-
+public class MainRequestReader extends AbstractRequestReader<Params, IMainParams> implements IJsonTranslator {
+  
   public static final MainRequestReader MAIN = new MainRequestReader();
 
   static final class MainRequest implements IMainParams {
@@ -57,6 +60,7 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
     }
 
     @Override
+    @Transient
     public Optional<String> getOrigin() {
       return Optional.empty();
     }
@@ -85,7 +89,7 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
       throw new IOException("Server did not send the 'tarefa' parameter!");
     }
     
-    IRequestReader<Params> reader = PjeTaskReaders.from(taskId.get());
+    IRequestReader<Params> reader = PjeTaskReader.from(taskId.get());
     
     reader.read(task.get(), output);
     
@@ -96,5 +100,21 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
     }
     
     return taskParam.get();
+  }
+
+  @Override
+  public String toJson(Params input) throws Exception {
+    MainRequest main = new MainRequest();
+    main.aplicacao = input.orElse("aplicacao", "PjeOffice");
+    main.servidor = input.orElse("servidor", "");
+    main.sessao = input.orElse("sessao", "");
+    main.codigoSeguranca = input.orElse("codigoSeguranca", "");
+    main.tarefaId = input.orElseThrow("tarefaId", 
+      () -> new IllegalArgumentException("'tarefaId' não informado."));
+    main.tarefa = mapper().writeValueAsString(
+      input.orElseThrow("tarefa", 
+      () -> new IllegalArgumentException("'tarefa' não informado.")
+    ));
+    return mapper().writeValueAsString(main);
   }
 }
