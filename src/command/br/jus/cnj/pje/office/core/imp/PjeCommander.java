@@ -14,7 +14,6 @@ import com.github.progress4j.IProgressFactory;
 import com.github.taskresolver4j.ITaskRequestExecutor;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.Strings;
-import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeCommander;
@@ -145,15 +144,7 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     if (!hasText(uri = trim(uri)))
       return;
     final String request = uri;
-    startAsync(() -> {
-      try {
-        this.executor.setAllowLocalRequest(true);
-        openRequest(request);
-      }finally {
-        Threads.sleep(1000);
-        this.executor.setAllowLocalRequest(false);
-      }
-    });
+    startAsync(() -> openRequest(request));
   }    
   
   protected abstract void openRequest(String request);

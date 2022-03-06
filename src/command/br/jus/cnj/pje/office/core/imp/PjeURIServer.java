@@ -39,12 +39,7 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
 
   protected void submit(IPjeContext context) {
     if (context != null) {
-      executor.setAllowLocalRequest(true);
-      try {
-        super.execute(context.getRequest(), context.getResponse());
-      } finally {
-        executor.setAllowLocalRequest(false);
-      }
+      super.execute(context.getRequest(), context.getResponse());
     }
   }
 
@@ -118,8 +113,15 @@ public abstract class PjeURIServer extends PjeCommander<IPjeRequest, IPjeRespons
       }while(true);
     }
   }
+  
+  private final IPjeContext createContext(String uri) throws Exception {
+    return SimpleContext.of(createRequest(uri, boot.getOrigin()), createResponse());
+  }
 
+  protected abstract IPjeResponse createResponse() throws Exception;
+
+  protected abstract IPjeRequest createRequest(String uri, String origin) throws Exception;
+  
   protected abstract String getUri() throws InterruptedException, Exception;
 
-  protected abstract IPjeContext createContext(String uri) throws Exception ;
 }

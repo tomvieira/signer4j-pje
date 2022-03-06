@@ -63,7 +63,41 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public String toJson(Params input) throws Exception {
       return TarefaPdfJuncaoReader.INSTANCE.toJson(input);
     }
+  },
+  PDF_SPLIT_BY_SIZE("pdf.split_by_size") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaPdfDivisaoTamanhoReader.INSTANCE;
+    }
+    
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaPdfDivisaoTamanhoReader.INSTANCE.toJson(input);
+    }
+  },
+  PDF_SPLIT_BY_PARITY("pdf.split_by_parity") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaPdfDivisaoParidadeReader.INSTANCE;
+    }
+    
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaPdfDivisaoParidadeReader.INSTANCE.toJson(input);
+    }
+  },
+  PDF_SPLIT_BY_COUNT("pdf.split_by_count") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaPdfDivisaoContagemReader.INSTANCE;
+    }
+    
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaPdfDivisaoContagemReader.INSTANCE.toJson(input);
+    }
   };
+
 
   //do not create new array's instances for each call
   private static final PjeTaskReader[] VALUES = PjeTaskReader.values(); 

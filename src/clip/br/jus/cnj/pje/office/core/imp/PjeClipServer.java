@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.SimpleContext.of;
-
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -12,7 +10,8 @@ import java.util.Optional;
 import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.IBootable;
-import br.jus.cnj.pje.office.core.IPjeContext;
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
 class PjeClipServer extends PjeURIServer {
   
@@ -26,12 +25,17 @@ class PjeClipServer extends PjeURIServer {
   protected void clearBuffer() {
     clipboard.setContents(new StringSelection(""), null);
   }
+  
+  @Override
+  protected IPjeResponse createResponse() throws Exception {
+    return new PjeClipResponse();
+  }
 
   @Override
-  protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeClipRequest(input, boot.getOrigin()), new PjeClipResponse());
+  protected IPjeRequest createRequest(String input, String origin) throws Exception{
+    return new PjeClipRequest(input, origin);
   }
-  
+
   @Override
   protected String getUri() throws InterruptedException, Exception {
     do {

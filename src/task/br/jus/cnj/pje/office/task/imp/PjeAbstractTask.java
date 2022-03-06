@@ -6,7 +6,6 @@ import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpHeaders;
 import org.slf4j.Logger;
@@ -111,10 +110,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     throw getProgress().abort(new InterruptedException(message));
   }
   
-  protected final AtomicBoolean getInternalRequest() {
-    return getParameterValue(ITaskExecutorParams.PJE_REQUEST_INTERNAL);
-  }
-  
   protected final void runAsync(Runnable runnable) {
     getRequestExecutor().execute(runnable);
   }
@@ -210,9 +205,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
 
   protected void checkServerPermission() throws TaskException {
     if (this.isInternalTask) {
-      if (!getInternalRequest().getAndSet(false)) {
-        throw new TaskException("Permissão negada."); 
-      }
       return;
     }
     final IMainParams params = getMainRequest();

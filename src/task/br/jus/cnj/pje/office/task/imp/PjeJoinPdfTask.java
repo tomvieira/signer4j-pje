@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.filehandler4j.imp.InputDescriptor;
@@ -18,9 +17,9 @@ import com.github.utils4j.imp.Dates;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
-import br.jus.cnj.pje.office.task.ITarefaPdfJuncao;
+import br.jus.cnj.pje.office.task.ITarefaPdf;
 
-class PjeJoinPdfTask extends PjeAbstractTask<ITarefaPdfJuncao> {
+class PjeJoinPdfTask extends PjeAbstractPdfTask<ITarefaPdf> {
   
   private static enum Stage implements IStage {
     MERGING("Unindo arquivos");
@@ -37,23 +36,16 @@ class PjeJoinPdfTask extends PjeAbstractTask<ITarefaPdfJuncao> {
     }
   }
   
-  private List<String> arquivos;
-  
-  protected PjeJoinPdfTask(Params request, ITarefaPdfJuncao pojo) {
-    super(request, pojo, true);
-  }
-
-  @Override
-  protected void validateParams() throws TaskException {
-    ITarefaPdfJuncao pojo = getPojoParams();
-    this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos");
+  protected PjeJoinPdfTask(Params request, ITarefaPdf pojo) {
+    super(request, pojo);
   }
 
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     IProgress progress = getProgress();
     int size = arquivos.size();
-    progress.begin(Stage.MERGING, 3 * size + 1); //são três passos por arquivo: 3*(inicio leitura, fim leitura e mesclagem) + 1 geração do arquivo!
+    //são três passos por arquivo: (1:inicio leitura + 1:fim leitura + 1:mesclagem) + 1:geração do arquivo final!
+    progress.begin(Stage.MERGING, 3 * size + 1);
 
     AtomicReference<Path> parent = new AtomicReference<>();
     Builder builder = new PdfInputDescriptor.Builder();
@@ -63,13 +55,14 @@ class PjeJoinPdfTask extends PjeAbstractTask<ITarefaPdfJuncao> {
       .peek(p -> parent.set(p.getParent()))
       .forEach(path -> builder.add(path.toFile()));
     Path output = parent.get();
+    
     InputDescriptor desc;
     try {
       desc = builder.output(output).build();
     } catch (IOException e) {
       throw progress.abort(new TaskException("Não foi possível gerar arquivo de saída. Permissão?", e));
     }
-    new JoinPdfHandler("resultado_uniao_em_" + Dates.stringNow())
+    new JoinPdfHandler("RESULTADO_UNIDOS_EM_" + Dates.stringNow())
       .apply(desc)
       .subscribe((e) -> progress.step(e.getMessage()));
     progress.end();

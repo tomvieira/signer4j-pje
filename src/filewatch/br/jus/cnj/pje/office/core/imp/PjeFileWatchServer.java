@@ -1,16 +1,15 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.SimpleContext.of;
-import static com.github.utils4j.IConstants.UTF_8;
-import static com.github.utils4j.imp.Strings.empty;
 import static com.github.utils4j.imp.Throwables.tryCall;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
-import static java.nio.file.Files.readAllBytes;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,19 +17,22 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.utils4j.IFilePacker;
+import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.FilePacker;
 import com.github.utils4j.imp.Pair;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.IBootable;
-import br.jus.cnj.pje.office.core.IPjeContext;
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 
 class PjeFileWatchServer extends PjeURIServer {
   
   private final IFilePacker packer;
   
-  private final Map<PjeTaskReader, List<String>> blockPerTask = new HashMap<>();
+  private final Map<PjeTaskReader, List<String[]>> blockPerTask = new HashMap<>();
 
   public PjeFileWatchServer(IBootable boot, Path folderWatching) {
     super(boot, "filewatch://watch-service");
@@ -56,8 +58,13 @@ class PjeFileWatchServer extends PjeURIServer {
   }
 
   @Override
-  protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeFileWatchRequest(input, boot.getOrigin()), new PjeFileWatchResponse());
+  protected IPjeResponse createResponse() throws Exception {
+    return  new PjeFileWatchResponse();
+  }
+
+  @Override
+  protected IPjeRequest createRequest(String uri, String origin) throws Exception {
+    return new PjeFileWatchRequest(uri, origin);
   }
   
   private Optional<String> nextUri() throws Exception {
@@ -66,15 +73,15 @@ class PjeFileWatchServer extends PjeURIServer {
       return Optional.empty();
     }
     PjeTaskReader r = tr.get();
-    List<String> list = blockPerTask.get(r);
+    List<String[]> arguments = blockPerTask.get(r);
     try {
       Params params = Params.create()
           .of("servidor", getServerEndpoint())
-          .of("arquivos", list);
+          .of("arguments", arguments);
       return Optional.of(getServerEndpoint(r.toUri(params)));
     }finally {
       blockPerTask.remove(r);
-      list.clear();
+      arguments.clear();
     }
   }
   
@@ -86,16 +93,23 @@ class PjeFileWatchServer extends PjeURIServer {
         do {
           List<File> block =  tryRuntime(() -> packer.filePackage());
     
-          final PjeTaskReader[] readers = PjeTaskReader.values();
+          PjeTaskReader[] readers = PjeTaskReader.values();
           
           block.stream()
-            .map(f -> Pair.of(f, new File(tryCall(() -> new String(readAllBytes(f.toPath()), UTF_8), empty()))))
+            .map(f -> Pair.of(f, tryCall(() -> Files.readAllLines(f.toPath()), Collections.<String>emptyList())))
             .forEach(p -> {
               File key = p.getKey();
               final String keyName = key.getName();
-              key.delete();
-              File value = p.getValue();
-              if (!value.exists()) {
+              key.delete(); //this is very important!
+              List<String> value = p.getValue().stream()
+                .map(Strings::trim)
+                .filter(Strings::hasText)
+                .collect(toList());
+              if (Containers.isEmpty(value)) {
+                return;
+              }
+              File input = new File(value.get(0));
+              if (!input.exists()) {
                 return;
               }
               Optional<PjeTaskReader> tr = Stream.of(readers).filter(r -> keyName.startsWith(r.getId())).findFirst();
@@ -103,10 +117,10 @@ class PjeFileWatchServer extends PjeURIServer {
                 return;
               }
               PjeTaskReader r = tr.get();
-              List<String> list = blockPerTask.get(r);
+              List<String[]> list = blockPerTask.get(r);
               if (list == null)
                 blockPerTask.put(r, list = new ArrayList<>());
-              list.add(value.getAbsolutePath());
+              list.add(value.toArray(new String[value.size()]));
             });
           
           uri = tryRuntime(PjeFileWatchServer.this::nextUri);

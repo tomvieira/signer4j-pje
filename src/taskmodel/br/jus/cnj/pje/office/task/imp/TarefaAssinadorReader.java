@@ -159,12 +159,14 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
     ta.tipoAssinatura = input.orElse("tipoAssinatura", SignatureType.ATTACHED);
     ta.algoritmoHash = input.orElse("algoritmoHash", SignatureAlgorithm.SHA1withRSA);
     ta.enviarPara = input.orElse("enviarPara", "");
-    ta.arquivos = input.orElse("arquivos", Collections.<String>emptyList())
+    ta.arquivos = input.orElse("arquivos", Collections.<String[]>emptyList())
         .stream()
+        .map(a -> a[0])
         .map(s -> new AssinadorArquivo(s))
         .collect(toList());
     input.of("tarefaId", CNJ_ASSINADOR.getId())
          .of("tarefa", ta);
+    
     return MAIN.toJson(input);
   }
 }

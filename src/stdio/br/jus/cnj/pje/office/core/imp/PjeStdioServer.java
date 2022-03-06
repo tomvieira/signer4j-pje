@@ -1,6 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.SimpleContext.of;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
@@ -10,7 +9,8 @@ import com.github.utils4j.IConstants;
 import com.github.utils4j.imp.InterruptibleInputStream;
 
 import br.jus.cnj.pje.office.IBootable;
-import br.jus.cnj.pje.office.core.IPjeContext;
+import br.jus.cnj.pje.office.core.IPjeRequest;
+import br.jus.cnj.pje.office.core.IPjeResponse;
 
 class PjeStdioServer extends PjeURIServer {
   
@@ -32,12 +32,17 @@ class PjeStdioServer extends PjeURIServer {
   protected void clearBuffer() {
     tryRun(this::skip);
   }
+  
+  @Override
+  protected IPjeResponse createResponse() throws Exception {
+    return new PjeStdioResponse();
+  }
 
   @Override
-  protected IPjeContext createContext(String input) throws Exception {
-    return of(new PjeStdioRequest(input, boot.getOrigin()), new PjeStdioResponse());
+  protected IPjeRequest createRequest(String uri, String origin) throws Exception {
+    return new PjeStdioRequest(uri, origin);
   }
-  
+
   @Override
   protected String getUri() throws InterruptedException, Exception {
     byte[] header = new byte[4];

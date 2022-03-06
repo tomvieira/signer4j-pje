@@ -19,7 +19,6 @@ import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;
-import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeCommander;
@@ -28,7 +27,6 @@ import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.task.imp.PjeSignMode;
-import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
