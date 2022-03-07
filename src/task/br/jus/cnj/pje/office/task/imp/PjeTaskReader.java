@@ -91,10 +91,32 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public IRequestReader<Params> get() {
       return TarefaPdfDivisaoContagemReader.INSTANCE;
     }
-    
+
     @Override
     public String toJson(Params input) throws Exception {
       return TarefaPdfDivisaoContagemReader.INSTANCE.toJson(input);
+    }
+  },
+  VIDEO_SPLIT_BY_DURATION("video.split_by_duration") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaVideoDivisaoDuracaoReader.INSTANCE;
+    }
+
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaVideoDivisaoDuracaoReader.INSTANCE.toJson(input);
+    }
+  }, 
+  VIDEO_SPLIT_BY_SIZE("video.split_by_size") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaVideoDivisaoTamanhoReader.INSTANCE;
+    }
+
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaVideoDivisaoTamanhoReader.INSTANCE.toJson(input);
     }
   };
 
