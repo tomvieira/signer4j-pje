@@ -89,11 +89,7 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
       throw new IOException("Server did not send the 'tarefa' parameter!");
     }
     
-    IRequestReader<Params> reader = PjeTaskReader.from(taskId.get());
-    
-    reader.read(task.get(), output);
-    
-    IParam taskParam = output.get(ITask.PARAM_NAME);
+    IParam taskParam = PjeTaskReader.from(taskId.get()).read(task.get(), output).get(ITask.PARAM_NAME);
     
     if (!taskParam.isPresent()) {
       throw new IOException("Unabled to create instance of 'idTarefa': " + taskId.get());

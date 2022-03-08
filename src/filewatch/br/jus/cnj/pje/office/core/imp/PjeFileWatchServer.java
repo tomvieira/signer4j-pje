@@ -67,22 +67,26 @@ class PjeFileWatchServer extends PjeURIServer {
     return new PjeFileWatchRequest(uri, origin);
   }
   
-  private Optional<String> nextUri() throws Exception {
-    Optional<PjeTaskReader> tr = blockPerTask.keySet().stream().findFirst();
-    if (!tr.isPresent()) {
-      return Optional.empty();
-    }
-    PjeTaskReader r = tr.get();
-    List<String[]> arguments = blockPerTask.get(r);
-    try {
-      Params params = Params.create()
-          .of("servidor", getServerEndpoint())
-          .of("arguments", arguments);
-      return Optional.of(getServerEndpoint(r.toUri(params)));
-    }finally {
-      blockPerTask.remove(r);
-      arguments.clear();
-    }
+  private Optional<String> nextUri()  {
+    do {
+      Optional<PjeTaskReader> tr = blockPerTask.keySet().stream().findFirst();
+      if (!tr.isPresent()) {
+        return Optional.empty();
+      }
+      PjeTaskReader r = tr.get();
+      List<String[]> arguments = blockPerTask.get(r);
+      try {
+        Params params = Params.create()
+            .of("servidor", getServerEndpoint())
+            .of(Params.DEFAULT_KEY, arguments);
+        return Optional.of(getServerEndpoint(r.toUri(params)));
+      } catch(Exception e) {
+        LOGGER.warn("URI mal formada em fileWatchServer.nextUri() - reader: " + r.getId() + ". Tarefa ignorada/escapada", e);
+      } finally {
+        blockPerTask.remove(r);
+        arguments.clear();
+      }
+    }while(true);
   }
   
   @Override
@@ -99,24 +103,32 @@ class PjeFileWatchServer extends PjeURIServer {
             .map(f -> Pair.of(f, tryCall(() -> Files.readAllLines(f.toPath()), Collections.<String>emptyList())))
             .forEach(p -> {
               File key = p.getKey();
-              final String keyName = key.getName();
+              final String keyName = key.getName().toLowerCase();
+              
+              Optional<PjeTaskReader> tr = Stream.of(readers).filter(r -> keyName.startsWith(r.getId())).findFirst();
+              if (!tr.isPresent()) {
+                return;
+              }
+
               key.delete(); //this is very important!
               List<String> value = p.getValue().stream()
                 .map(Strings::trim)
                 .filter(Strings::hasText)
                 .collect(toList());
+              
               if (Containers.isEmpty(value)) {
                 return;
               }
+              
               File input = new File(value.get(0));
               if (!input.exists()) {
                 return;
               }
-              Optional<PjeTaskReader> tr = Stream.of(readers).filter(r -> keyName.startsWith(r.getId())).findFirst();
-              if (!tr.isPresent()) {
+              
+              PjeTaskReader r = tr.get();
+              if (!r.accept(input)) {
                 return;
               }
-              PjeTaskReader r = tr.get();
               List<String[]> list = blockPerTask.get(r);
               if (list == null)
                 blockPerTask.put(r, list = new ArrayList<>());

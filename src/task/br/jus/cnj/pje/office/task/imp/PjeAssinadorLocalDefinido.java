@@ -35,16 +35,14 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
   @Override
   protected void validateParams() throws TaskException {
     super.validateParams();
-    final ITarefaAssinador params = getPojoParams();
-    this.arquivos = PjeTaskChecker.checkIfNull(params.getArquivos(), "arquivos");
-    this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara");
+    final ITarefaAssinador pojo = getPojoParams();
+    this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos");
+    this.enviarPara = pojo.getEnviarPara().orElse(new File(this.arquivos.get(0).getUrl().get()).getParentFile().getAbsolutePath());
   }
 
   @Override
   protected IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException {
-    if (arquivos.isEmpty()) {
-      throw new TaskException("A requisição não informou arquivo(s) para assinatura");
-    }
+
     final int size = arquivos.size();
     
     final File[] inputFiles = new File[size];

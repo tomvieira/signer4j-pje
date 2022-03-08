@@ -3,12 +3,10 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.PDF_SPLIT_BY_PARITY;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
-import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoParidade;
 
@@ -21,11 +19,11 @@ class TarefaPdfDivisaoParidadeReader extends TarefaMediaReader<ITarefaPdfDivisao
   public static final TarefaPdfDivisaoParidadeReader INSTANCE = new TarefaPdfDivisaoParidadeReader();
   
   final static class TarefaPdfDivisaoParidade extends TarefaMedia implements ITarefaPdfDivisaoParidade {
-    private boolean par;
+    private boolean paridade;
 
     @Override
-    public boolean isPar() {
-      return par;
+    public boolean isParidade() {
+      return paridade;
     }
   }
   
@@ -45,15 +43,12 @@ class TarefaPdfDivisaoParidadeReader extends TarefaMediaReader<ITarefaPdfDivisao
 
   @Override
   protected Object getTarefa(Params param) {
-    List<String[]> argumetns = param.orElse("arguments", Collections.<String[]>emptyList());
-    String par = second(argumetns).orElse("");
-    if (!Strings.isBoolean(par)) {
-      throw new IllegalArgumentException("'paridade' não informado");
-    }
-    boolean isPar = Boolean.valueOf(par);
+    List<String> arquivos= getFiles(param, "Arquivos não informados");
+    boolean paridade = getBoolean(param,"'paridade' com valor inválido");
+    
     TarefaPdfDivisaoParidade tarefaTamanho = new TarefaPdfDivisaoParidade();
-    tarefaTamanho.par = isPar;
-    tarefaTamanho.arquivos = flatFirst(argumetns);
+    tarefaTamanho.paridade = paridade;
+    tarefaTamanho.arquivos = arquivos;
     return tarefaTamanho;
   }
 }

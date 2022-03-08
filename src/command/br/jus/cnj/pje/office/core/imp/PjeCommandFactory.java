@@ -30,7 +30,7 @@ public enum PjeCommandFactory implements IPjeCommandFactory {
   FILEWATCH() {
     @Override
     public IPjeCommander<?, ?> create(IBootable boot) {
-      return new PjeFileWatchServer(boot, resolveTo(ENVIRONMENT_VARIABLE, "shell").get());
+      return new PjeFileWatchServer(boot, resolveTo(ENVIRONMENT_VARIABLE, "watch").get());
     }
   }
 }

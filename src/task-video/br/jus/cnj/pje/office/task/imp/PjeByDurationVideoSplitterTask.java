@@ -7,6 +7,7 @@ import java.time.Duration;
 
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
+import com.github.progress4j.imp.ThreadOwnerProgress;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
@@ -50,7 +51,7 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
   
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
-    IProgress progress = getProgress();
+    final IProgress progress = ThreadOwnerProgress.wrap(getProgress());
     
     final int size = arquivos.size();
 
@@ -65,7 +66,7 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
       try {
         desc = new VideoDescriptor.Builder(".mp4")
           .add(video)
-          .output(output.resolve(video.getShortName() + "_(CORTES DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")")))
+          .output(output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")")))
           .build();
       } catch (IOException e1) {
         throw progress.abort(new TaskException("Não foi possível criar pasta " + output.toString()));

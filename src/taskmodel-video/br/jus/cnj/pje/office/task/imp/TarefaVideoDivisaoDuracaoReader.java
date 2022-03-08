@@ -1,12 +1,10 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
-import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.task.ITarefaVideoDivisaoDuracao;
 
@@ -40,15 +38,12 @@ class TarefaVideoDivisaoDuracaoReader extends TarefaMediaReader<ITarefaVideoDivi
 
   @Override
   protected Object getTarefa(Params param) {
-    List<String[]> argumetns = param.orElse("arguments", Collections.<String[]>emptyList());
-    String d = second(argumetns).orElse("");
-    if (!Strings.isLong(d)) {
-      throw new IllegalArgumentException("'duracao' não informado");
-    }
-    long duracao = Long.valueOf(d);
+    List<String> arquivos = getFiles(param, "Arquivos não informados");
+    long duracao = getLong(param, "'duracao' com valor iválido ");
+    
     TarefaVideoDivisaoDuracao tarefaDuracao = new TarefaVideoDivisaoDuracao();
     tarefaDuracao.duracao = duracao;
-    tarefaDuracao.arquivos = flatFirst(argumetns);
+    tarefaDuracao.arquivos = arquivos;
     return tarefaDuracao;
   }
 }

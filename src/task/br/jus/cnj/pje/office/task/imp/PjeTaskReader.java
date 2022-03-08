@@ -3,6 +3,7 @@ package br.jus.cnj.pje.office.task.imp;
 import static com.github.utils4j.IConstants.UTF_8;
 import static java.net.URLEncoder.encode;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import com.github.taskresolver4j.IRequestReader;
@@ -63,6 +64,11 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public String toJson(Params input) throws Exception {
       return TarefaPdfJuncaoReader.INSTANCE.toJson(input);
     }
+    
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
+    }
   },
   PDF_SPLIT_BY_SIZE("pdf.split_by_size") {
     @Override
@@ -73,6 +79,11 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     @Override
     public String toJson(Params input) throws Exception {
       return TarefaPdfDivisaoTamanhoReader.INSTANCE.toJson(input);
+    }
+
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
     }
   },
   PDF_SPLIT_BY_PARITY("pdf.split_by_parity") {
@@ -85,6 +96,11 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public String toJson(Params input) throws Exception {
       return TarefaPdfDivisaoParidadeReader.INSTANCE.toJson(input);
     }
+
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
+    }
   },
   PDF_SPLIT_BY_COUNT("pdf.split_by_count") {
     @Override
@@ -95,6 +111,11 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     @Override
     public String toJson(Params input) throws Exception {
       return TarefaPdfDivisaoContagemReader.INSTANCE.toJson(input);
+    }
+    
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
     }
   },
   VIDEO_SPLIT_BY_DURATION("video.split_by_duration") {
@@ -107,6 +128,11 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public String toJson(Params input) throws Exception {
       return TarefaVideoDivisaoDuracaoReader.INSTANCE.toJson(input);
     }
+    
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".mp4");
+    }
   }, 
   VIDEO_SPLIT_BY_SIZE("video.split_by_size") {
     @Override
@@ -118,8 +144,12 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public String toJson(Params input) throws Exception {
       return TarefaVideoDivisaoTamanhoReader.INSTANCE.toJson(input);
     }
-  };
 
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".mp4");
+    }
+  };
 
   //do not create new array's instances for each call
   private static final PjeTaskReader[] VALUES = PjeTaskReader.values(); 
@@ -127,7 +157,7 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
   private String id;
   
   PjeTaskReader(String id) {
-    this.id = id;
+    this.id = id.toLowerCase();
   }
   
   public String getId() {
@@ -145,10 +175,14 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
   
   static IRequestReader<Params> from(String taskId) {
     for(PjeTaskReader reader: VALUES) {
-      if (reader.getId().equals(taskId))
+      if (reader.getId().equalsIgnoreCase(taskId))
         return reader.get();
     }
     return NotImplementedReader.INSTANCE;
+  }
+
+  public boolean accept(File input) {
+    return input != null;
   }
   
 }

@@ -62,7 +62,7 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
     } catch (IOException e) {
       throw progress.abort(new TaskException("Não foi possível gerar arquivo de saída. Permissão?", e));
     }
-    new JoinPdfHandler("RESULTADO_UNIDOS_EM_" + Dates.stringNow())
+    new JoinPdfHandler("ARQUIVOS_UNIDOS_EM_" + Dates.stringNow())
       .apply(desc)
       .subscribe((e) -> progress.step(e.getMessage()));
     progress.end();

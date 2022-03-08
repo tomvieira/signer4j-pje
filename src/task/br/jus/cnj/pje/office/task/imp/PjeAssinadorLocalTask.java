@@ -74,7 +74,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     IArquivoAssinado[] filesToSign = new IArquivoAssinado[size];
     int i = 0;
     for(File file: files) {
-      filesToSign[i++]= new ArquivoAssinado(newInstance(file, "assinado." + stringNow()), file);
+      filesToSign[i++]= new ArquivoAssinado(newInstance(file, "ASSINADO_EM_" + stringNow()), file);
     }
     return filesToSign;
   }

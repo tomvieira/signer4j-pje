@@ -102,10 +102,6 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
     private AssinadorArquivo(){
     }
     
-    private AssinadorArquivo(String file) {
-      this(new File(file));
-    }
-
     private AssinadorArquivo(File file) { 
       this(file, file::getName);
     }
@@ -154,19 +150,22 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
   @Override
   public String toJson(Params input) throws Exception {
     TarefaAssinador ta = new TarefaAssinador();
-    ta.modo = input.orElseThrow("modo", () -> new IllegalArgumentException("'modo' não informado."));
+    ta.modo = input.orElse("modo", PjeSignMode.DEFINIDO);
     ta.padraoAssinatura = input.orElse("padraoAssinatura", AssinaturaPadrao.NOT_ENVELOPED);
     ta.tipoAssinatura = input.orElse("tipoAssinatura", SignatureType.ATTACHED);
     ta.algoritmoHash = input.orElse("algoritmoHash", SignatureAlgorithm.SHA1withRSA);
+    ta.arquivos = input.orElse(Params.DEFAULT_KEY, Collections.<String[]>emptyList())
+      .stream()
+      .filter(a -> a != null && a.length > 0)
+      .map(a -> a[0])
+      .filter(Strings::hasText)
+      .map(a -> new File(a))
+      .filter(File::exists)
+      .map(f -> new AssinadorArquivo(f))
+      .collect(toList());
     ta.enviarPara = input.orElse("enviarPara", "");
-    ta.arquivos = input.orElse("arquivos", Collections.<String[]>emptyList())
-        .stream()
-        .map(a -> a[0])
-        .map(s -> new AssinadorArquivo(s))
-        .collect(toList());
     input.of("tarefaId", CNJ_ASSINADOR.getId())
          .of("tarefa", ta);
-    
     return MAIN.toJson(input);
   }
 }
