@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import com.github.signer4j.ISignatureAlgorithm;
@@ -91,7 +92,7 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
   final static class AssinadorArquivo implements IArquivo {
 
     public static IArquivo newInstance(File file, String prefix) {
-      return new AssinadorArquivo(file, () -> file.getName() + "." + Strings.trim(prefix) + ".p7s");
+      return new AssinadorArquivo(file, () -> file.getName() + Strings.trim(prefix) + ".p7s");
     }
     
     private String nome;
@@ -154,16 +155,22 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
     ta.padraoAssinatura = input.orElse("padraoAssinatura", AssinaturaPadrao.NOT_ENVELOPED);
     ta.tipoAssinatura = input.orElse("tipoAssinatura", SignatureType.ATTACHED);
     ta.algoritmoHash = input.orElse("algoritmoHash", SignatureAlgorithm.SHA1withRSA);
+    AtomicReference<String> enviarPara = new AtomicReference<String>("samefolder");
     ta.arquivos = input.orElse(Params.DEFAULT_KEY, Collections.<String[]>emptyList())
       .stream()
       .filter(a -> a != null && a.length > 0)
+      .peek(a -> { 
+        if (a.length > 1)
+          enviarPara.set(Strings.trim(a[1]));
+        }
+      )
       .map(a -> a[0])
       .filter(Strings::hasText)
       .map(a -> new File(a))
       .filter(File::exists)
       .map(f -> new AssinadorArquivo(f))
       .collect(toList());
-    ta.enviarPara = input.orElse("enviarPara", "");
+    ta.enviarPara = input.orElse("enviarPara", enviarPara.get());
     input.of("tarefaId", CNJ_ASSINADOR.getId())
          .of("tarefa", ta);
     return MAIN.toJson(input);

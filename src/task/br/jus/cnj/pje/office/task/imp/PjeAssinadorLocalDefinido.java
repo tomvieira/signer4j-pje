@@ -1,12 +1,18 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.utils4j.imp.Throwables.tryCall;
+import static java.net.URLDecoder.decode;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.IConstants;
+import com.github.utils4j.imp.Dates;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.IArquivo;
@@ -37,7 +43,7 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
     super.validateParams();
     final ITarefaAssinador pojo = getPojoParams();
     this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos");
-    this.enviarPara = pojo.getEnviarPara().orElse(new File(this.arquivos.get(0).getUrl().get()).getParentFile().getAbsolutePath());
+    this.enviarPara = PjeTaskChecker.checkIfPresent(pojo.getEnviarPara(), "enviarPara");
   }
 
   @Override
@@ -45,7 +51,7 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
 
     final int size = arquivos.size();
     
-    final File[] inputFiles = new File[size];
+    final List<File> inputFiles = new ArrayList<>();
     
     final IProgress progress  = getProgress();
     
@@ -60,7 +66,7 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
         progress.step("Decartado arquivo com url vazia");
         continue;
       }
-      final File file = new File(oUrl.get());
+      final File file = new File(tryCall(() -> decode(oUrl.get(), IConstants.UTF_8.name()), oUrl.get()));
       if (!file.exists()) {
         String fullPath = file.getAbsolutePath();
         LOGGER.warn("Detectado arquivo com caminho inexistente {}", fullPath);
@@ -68,21 +74,38 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
         continue;
       }
       progress.step("Selecionando arquivo: %s", file);
-      inputFiles[i] = file;
+      inputFiles.add(file);
     }while(++i < size);
     
     progress.end();
-    return super.collectFiles(inputFiles);
+    return super.collectFiles(inputFiles.toArray(new File[inputFiles.size()]));
   }
+  
 
   @Override
   protected File chooseDestination() throws InterruptedException {
-    File file = new File(enviarPara);
+    if ("selectfolder".equals(enviarPara)) {
+      return super.chooseDestination();
+    }
+    
+    File folderReference;
+    Optional<IArquivoAssinado> primeiro = super.getFirst();
+    if (primeiro.isPresent()) {
+      folderReference = new File(primeiro.get().getUrl().get()).getParentFile(); 
+    } else {
+      return super.chooseDestination();
+    }
+    
+    if ("newfolder".equals(enviarPara)) {
+      folderReference = new File(folderReference, "ASSINADOS_EM_" + Dates.stringNow());
+      folderReference.mkdirs();
+    } 
+    
     do {
-      if (file.canWrite())
-        return file;
-      showCanNotWriteMessage(file);
-      file = super.chooseDestination();
+      if (folderReference.exists() && folderReference.canWrite())
+        return folderReference;
+      showCanNotWriteMessage(folderReference);
+      folderReference = super.chooseDestination();
     }while(true);
   }
 }

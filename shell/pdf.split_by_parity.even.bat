@@ -1,6 +1,7 @@
 @echo off
-setlocal EnableDelayedExpansion
-(set \n=^
-%=Do not remove this line=%
-)
-echo %~1!\n!true > %PJEOFFICE_HOME%\watch\pdf.split_by_parity.even.%~n1
+set input=%~1
+set filename=%~n1
+set filename=%filename: =_%
+set output=%PJEOFFICE_HOME%\watch\pdf.split_by_parity.even.%filename%
+set command="echo %input% > "%output%" && echo true >> "%output%""
+cmd /U /C %command%

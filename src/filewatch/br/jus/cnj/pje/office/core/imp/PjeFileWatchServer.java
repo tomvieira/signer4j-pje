@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.github.utils4j.IConstants;
 import com.github.utils4j.IFilePacker;
 import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.FilePacker;
@@ -59,7 +60,7 @@ class PjeFileWatchServer extends PjeURIServer {
 
   @Override
   protected IPjeResponse createResponse() throws Exception {
-    return  new PjeFileWatchResponse();
+    return new PjeFileWatchResponse();
   }
 
   @Override
@@ -96,11 +97,11 @@ class PjeFileWatchServer extends PjeURIServer {
         Optional<String> uri = Optional.empty();
         do {
           List<File> block =  tryRuntime(() -> packer.filePackage());
-    
+          
           PjeTaskReader[] readers = PjeTaskReader.values();
           
           block.stream()
-            .map(f -> Pair.of(f, tryCall(() -> Files.readAllLines(f.toPath()), Collections.<String>emptyList())))
+            .map(f -> Pair.of(f, tryCall(() -> Files.readAllLines(f.toPath(), IConstants.UTF_16LE), Collections.<String>emptyList())))
             .forEach(p -> {
               File key = p.getKey();
               final String keyName = key.getName().toLowerCase();

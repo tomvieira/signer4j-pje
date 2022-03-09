@@ -1,2 +1,7 @@
 @echo off
-echo %~1 > %PJEOFFICE_HOME%\watch\pdf.join.%~n1
+set input=%~1
+set filename=%~n1
+set filename=%filename: =_%
+set output=%PJEOFFICE_HOME%\watch\pdf.join.%filename%
+set command="echo %input% > "%output%""
+cmd /U /C "%command%"

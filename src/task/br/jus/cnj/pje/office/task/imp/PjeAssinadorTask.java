@@ -4,6 +4,7 @@ import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
@@ -49,6 +50,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
   protected IAssinaturaPadrao padraoAssinatura;
   
+  protected IArquivoAssinado first;
+  
   public PjeAssinadorTask(Params request, ITarefaAssinador pojo, boolean isInternalTask) {
     super(request, pojo, isInternalTask);
   }
@@ -58,6 +61,10 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     ITarefaAssinador params = getPojoParams();
     this.modo = PjeTaskChecker.checkIfPresent(params.getModo(), "modo");
     this.padraoAssinatura = PjeTaskChecker.checkIfPresent(params.getPadraoAssinatura(), "padraoAssinatura").checkIfDependentParamsIsPresent(params);
+  }
+  
+  protected final Optional<IArquivoAssinado> getFirst() {
+    return Optional.ofNullable(first);
   }
   
   @Override
@@ -72,7 +79,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     
     final IArquivoAssinado[] files = selectFiles();
     size = files.length;
-    
+    this.first = files[0];
     progress.step("Selecionados '%s' arquivo(s)", size);
     progress.end();
     

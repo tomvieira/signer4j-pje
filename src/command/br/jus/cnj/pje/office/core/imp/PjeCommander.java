@@ -60,7 +60,7 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   public final String getServerEndpoint() {
     return serverEndpoint;
   }
-
+  
   protected final String getServerEndpoint(String path) {
     return serverEndpoint + Strings.trim(path);
   }

@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
 import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
-import static com.github.utils4j.imp.Dates.stringNow;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.File;
@@ -21,6 +20,7 @@ import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
@@ -74,9 +74,13 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
     IArquivoAssinado[] filesToSign = new IArquivoAssinado[size];
     int i = 0;
     for(File file: files) {
-      filesToSign[i++]= new ArquivoAssinado(newInstance(file, "ASSINADO_EM_" + stringNow()), file);
+      filesToSign[i++]= new ArquivoAssinado(newInstance(file, getFileNamePrefix()), file);
     }
     return filesToSign;
+  }
+  
+  protected String getFileNamePrefix() {
+    return Strings.empty(); //".ASSINADO_EM_" + stringNow();
   }
   
   protected File chooseDestination() throws InterruptedException {

@@ -1,6 +1,7 @@
 @echo off
-setlocal EnableDelayedExpansion
-(set \n=^
-%=Do not remove this line=%
-)
-echo %~1!\n!20 > %PJEOFFICE_HOME%\watch\video.split_by_duration.20.%~n1
+set input=%~1
+set filename=%~n1
+set filename=%filename: =_%
+set output=%PJEOFFICE_HOME%\watch\video.split_by_duration.20.%filename%
+set command="echo %input% > "%output%" && echo 20 >> "%output%""
+cmd /U /C %command%
