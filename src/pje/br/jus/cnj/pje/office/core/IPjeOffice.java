@@ -9,8 +9,6 @@ public interface IPjeOffice extends IBootable {
   
   void showCertificates();
 
-  void showOfflineSigner();
-
   void showAuthorizedServers();
 
   void showActivities();

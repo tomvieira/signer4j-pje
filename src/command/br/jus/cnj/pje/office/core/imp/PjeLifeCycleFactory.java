@@ -5,32 +5,40 @@ import static br.jus.cnj.pje.office.core.IPjeOffice.ENVIRONMENT_VARIABLE;
 import static com.github.utils4j.imp.Environment.resolveTo;
 
 import br.jus.cnj.pje.office.IBootable;
+import br.jus.cnj.pje.office.core.IPJeLifeCycle;
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
-import br.jus.cnj.pje.office.core.IPjeCommander;
 
-public enum PjeCommandFactory implements IPjeCommandFactory {
+public enum PjeLifeCycleFactory implements IPjeCommandFactory {
   STDIO() {
     @Override
-    public IPjeCommander<?, ?> create(IBootable boot) {
+    public IPJeLifeCycle create(IBootable boot) {
       return new PjeStdioServer(boot);
     }
   },
   CLIP() {
     @Override
-    public IPjeCommander<?, ?> create(IBootable boot) {
+    public IPJeLifeCycle create(IBootable boot) {
       return new PjeClipServer(boot);
     }
   },
   WEB() {
     @Override
-    public IPjeCommander<?, ?> create(IBootable boot) {
+    public IPJeLifeCycle create(IBootable boot) {
       return new PjeWebServer(boot);
     }
   },
   FILEWATCH() {
     @Override
-    public IPjeCommander<?, ?> create(IBootable boot) {
-      return new PjeFileWatchServer(boot, resolveTo(ENVIRONMENT_VARIABLE, "watch").get());
+    public IPJeLifeCycle create(IBootable boot) {
+      return new PjeFileWatchServer(boot, resolveTo(ENVIRONMENT_VARIABLE, "watch").orElseThrow(
+        () -> new IllegalArgumentException("Não encontrada variável de ambiente PJEOFFICE_HOME"))
+      );
+    }
+  }, 
+  PRO{
+    @Override
+    public IPJeLifeCycle create(IBootable boot) {
+      return new PJeCompositeLifeCycle(WEB.create(boot), FILEWATCH.create(boot));//, CLIP.create(boot), STDIO.create(boot));
     }
   }
 }

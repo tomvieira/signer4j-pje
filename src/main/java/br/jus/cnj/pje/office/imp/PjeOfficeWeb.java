@@ -5,7 +5,7 @@ import static br.jus.cnj.pje.office.imp.PjeOfficeFrontEnd.getBest;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public class PjeOfficeWeb extends PjeOfficeClassic {
 
@@ -18,7 +18,7 @@ public class PjeOfficeWeb extends PjeOfficeClassic {
   }
 
   private PjeOfficeWeb(IPjeFrontEnd frontEnd) {
-    super(frontEnd, PjeCommandFactory.WEB);
+    super(frontEnd, PjeLifeCycleFactory.WEB);
   }
 
   @Override

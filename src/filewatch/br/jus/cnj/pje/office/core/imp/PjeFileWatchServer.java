@@ -31,13 +31,13 @@ import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 
 class PjeFileWatchServer extends PjeURIServer {
   
-  private final IFilePacker packer;
+  private final IFilePacker<IOException> packer;
   
   private final Map<PjeTaskReader, List<String[]>> blockPerTask = new HashMap<>();
 
   public PjeFileWatchServer(IBootable boot, Path folderWatching) {
     super(boot, "filewatch://watch-service");
-    this.packer = new FilePacker(folderWatching);
+    this.packer = new FilePacker<IOException>(folderWatching);
   }
 
   @Override
@@ -47,7 +47,7 @@ class PjeFileWatchServer extends PjeURIServer {
   }
   
   @Override
-  protected void doStop(boolean kill) {
+  protected void doStop(boolean kill) throws IOException {
     packer.stop();
     super.doStop(kill);
   }

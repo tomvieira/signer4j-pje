@@ -3,7 +3,7 @@ package br.jus.cnj.pje.office.imp;
 
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
-import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public class PjeOfficeFileWatch extends PjeOfficeApp {
   
@@ -12,7 +12,7 @@ public class PjeOfficeFileWatch extends PjeOfficeApp {
   }
 
   private PjeOfficeFileWatch() {
-    super(PjeCommandFactory.FILEWATCH);
+    super(PjeLifeCycleFactory.FILEWATCH);
     super.office.setDevMode();
   }
 }

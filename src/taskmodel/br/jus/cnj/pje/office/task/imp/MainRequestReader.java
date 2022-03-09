@@ -8,7 +8,6 @@ import java.beans.Transient;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.github.taskresolver4j.IRequestReader;
 import com.github.taskresolver4j.ITask;
 import com.github.taskresolver4j.imp.AbstractRequestReader;
 import com.github.utils4j.IParam;

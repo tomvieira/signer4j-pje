@@ -17,13 +17,13 @@ import com.github.signer4j.gui.alert.MessageAlert;
 import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public abstract class PjeOfficeClassic extends PjeOfficeApp {
   
   private IPjeFrontEnd frontEnd;
 
-  protected PjeOfficeClassic(IPjeFrontEnd frontEnd, PjeCommandFactory factory, String... args) {
+  protected PjeOfficeClassic(IPjeFrontEnd frontEnd, PjeLifeCycleFactory factory, String... args) {
     super(factory, args);
     this.frontEnd = Args.requireNonNull(frontEnd, "frontEnd is null");
   }
@@ -45,8 +45,8 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     MenuItem mnuConfig = new MenuItem("Configuração de certificado");
     mnuConfig.addActionListener(e -> office.showCertificates());
 
-    MenuItem mnuSigner = new MenuItem("Assinador offline");
-    mnuSigner.addActionListener(e -> office.showOfflineSigner());
+//    MenuItem mnuSigner = new MenuItem("Assinador offline");
+//    mnuSigner.addActionListener(e -> office.showOfflineSigner());
 
     MenuItem mnuServer = new MenuItem("Servidores autorizados");
     mnuServer.addActionListener(e -> office.showAuthorizedServers());
@@ -113,7 +113,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     mnuOption.add(mnuDev);
 
     popup.add(mnuConfig);
-    popup.add(mnuSigner);
+//    popup.add(mnuSigner);
     popup.add(mnuServer);
     popup.addSeparator();
     popup.add(mnuSecurity);

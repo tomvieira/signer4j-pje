@@ -5,7 +5,7 @@ import static br.jus.cnj.pje.office.imp.PjeOfficeFrontEnd.getBest;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
-import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public class PjeOfficeClipClassic extends PjeOfficeClassic {
 
@@ -18,7 +18,7 @@ public class PjeOfficeClipClassic extends PjeOfficeClassic {
   }
 
   private PjeOfficeClipClassic(IPjeFrontEnd frontEnd, String... args) {
-    super(frontEnd, PjeCommandFactory.CLIP, args);
+    super(frontEnd, PjeLifeCycleFactory.CLIP, args);
   }
 
   @Override

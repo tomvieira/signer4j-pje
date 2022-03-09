@@ -21,7 +21,7 @@ import com.github.utils4j.imp.Throwables;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.core.imp.PJeOffice;
-import br.jus.cnj.pje.office.core.imp.PjeCommandFactory;
+import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
   
@@ -36,7 +36,7 @@ public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
   
   private ShutdownHookThread jvmHook;
   
-  protected PjeOfficeApp(PjeCommandFactory factory, String... args) {
+  protected PjeOfficeApp(PjeLifeCycleFactory factory, String... args) {
     this.office = new PJeOffice(this, factory, originFrom(args));
     this.jvmHook = Threads.shutdownHookAdd(office::exit, "JVMShutDownHook");
   }

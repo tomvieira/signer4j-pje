@@ -3,9 +3,8 @@ package br.jus.cnj.pje.office.core.imp;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
-import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.CNJ_ASSINADOR;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.Threads.startAsync;
-import static com.github.utils4j.imp.Throwables.tryCall;
 
 import java.io.IOException;
 
@@ -15,25 +14,24 @@ import org.slf4j.LoggerFactory;
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
 import com.github.signer4j.imp.WindowLockDettector;
+import com.github.utils4j.gui.imp.SwingTools;
 import com.github.utils4j.imp.Args;
-import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;
 
+import br.jus.cnj.pje.office.core.IPJeLifeCycle;
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
-import br.jus.cnj.pje.office.core.IPjeCommander;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
-import br.jus.cnj.pje.office.task.imp.PjeSignMode;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PJeOffice.class);
 
-  private IPjeCommander<?,?> commander;
+  private IPJeLifeCycle commander;
 
   private IPjeLifeCycleHook lifeCycle;
 
@@ -200,7 +198,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
       try {
         this.commander.stop(kill);
       } catch (IOException e) {
-        LOGGER.warn("Não foi possível parar o servidor web em close", e);
+        LOGGER.warn("Não foi possível parar o servidor em close", e);
         this.lifeCycle.onFailShutdown(e);
       } finally {
         this.commander = null;
@@ -236,7 +234,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
       action.run();
       return;
     }
-    startAsync(action);
+    invokeLater(action);
   }
   
   @Override
@@ -245,16 +243,16 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     startAsync(PjeCertificateAcessor.INSTANCE::logout);    
   }
   
-  @Override
-  public void showOfflineSigner() {
-    checkIsAlive();
+//  @Override
+//  public void showOfflineSigner() {
+//    checkIsAlive();
 
-    final Params input = Params.create()
-        .of("servidor", commander.getServerEndpoint())
-        .of("modo", PjeSignMode.LOCAL);
-      
-    String request = tryCall(() -> CNJ_ASSINADOR.toUri(input), (String)null);
-
-    commander.execute(request);
-  }
+//    final Params input = Params.create()
+//        .of("servidor", commander.getServerEndpoint())
+//        .of("modo", PjeSignMode.LOCAL);
+//      
+//    String request = tryCall(() -> CNJ_ASSINADOR.toUri(input), (String)null);
+//
+//    commander.execute(request);
+//  }
 }

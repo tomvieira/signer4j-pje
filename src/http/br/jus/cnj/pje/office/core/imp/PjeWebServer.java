@@ -29,7 +29,7 @@ import br.jus.cnj.pje.office.core.IPjeWebServer;
 import br.jus.cnj.pje.office.core.Version;
 
 @SuppressWarnings("restriction") 
-class PjeWebServer extends PjeCommander<IPjeHttpExchangeRequest, IPjeHttpExchangeResponse> implements IPjeWebServer {
+class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHttpExchangeResponse> implements IPjeWebServer {
 
   private static class AccessFilter extends Filter {
     @Override
@@ -239,7 +239,7 @@ class PjeWebServer extends PjeCommander<IPjeHttpExchangeRequest, IPjeHttpExchang
   }
   
   @Override
-  protected void doStop(boolean kill) {
+  protected void doStop(boolean kill) throws IOException {
     tryRun(setup::shutdown);
     setup = null;
     tryRun(this::stopHttp);

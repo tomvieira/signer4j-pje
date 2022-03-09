@@ -24,7 +24,7 @@ import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
-abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  implements IPjeCommander<I, O> {
+abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeResponse> implements IPjeCommander<I, O> {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(IPjeCommander.class);
 
@@ -38,19 +38,19 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
   
   private boolean started = false;
   
-  protected PjeCommander(IBootable boot, String serverEndpoint) {
+  protected AbstractPjeCommander(IBootable boot, String serverEndpoint) {
     this(boot, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityAgent.INSTANCE);
   }
   
-  protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
+  protected AbstractPjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {
     this(boot, serverEndpoint, tokenAccess, securityAgent, PjeProgressFactory.DEFAULT);
   }
 
-  protected PjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
+  protected AbstractPjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent, IProgressFactory factory) {
     this(new PjeTaskRequestExecutor(factory,  tokenAccess, securityAgent), boot, serverEndpoint);
   }
   
-  private PjeCommander(PjeTaskRequestExecutor executor, IBootable boot, String serverEndpoint) {
+  private AbstractPjeCommander(PjeTaskRequestExecutor executor, IBootable boot, String serverEndpoint) {
     this.executor = Args.requireNonNull(executor, "executor is null");
     this.boot = Args.requireNonNull(boot, "boot is null");
     this.serverEndpoint = Args.requireText(serverEndpoint, "serverEndpoint is empty");
@@ -87,12 +87,10 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     return startup;
   }
   
-  @Override
   public final void exit() {
     boot.exit(1500);
   }
   
-  @Override
   public final void logout() {
     boot.logout();
   }
@@ -120,10 +118,14 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     }
   }
   
+  @Override
+  public final void stop() throws IOException {
+    stop(false);
+  }
+  
   protected void doStart() throws IOException {}
   
-  @Override
-  public synchronized final void stop(boolean kill) {
+  public synchronized final void stop(boolean kill) throws IOException {
     if (isStarted()) {
       LOGGER.info("Parando " + getClass().getSimpleName());
       this.doStop(kill);
@@ -136,8 +138,7 @@ abstract class PjeCommander<I extends IPjeRequest, O extends IPjeResponse>  impl
     }
   }
   
-  protected void doStop(boolean kill) {}
-  
+  protected void doStop(boolean kill) throws IOException {}
   
   @Override
   public final void execute(String uri) {

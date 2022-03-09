@@ -7,18 +7,18 @@ import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import br.jus.cnj.pje.office.IPjeFrontEnd;
 import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
-public class PjeOfficeStdioClassic extends PjeOfficeClassic {
+public class PjeOfficePRO extends PjeOfficeClassic {
 
   private static PjeOfficeClassic createInstance(IPjeFrontEnd front) {
-    return new PjeOfficeStdioClassic(front);
+    return new PjeOfficePRO(front);
   }
 
   public static void main(String[] args) {
     invokeLater(() ->  createInstance(getBest()).start());
   }
 
-  private PjeOfficeStdioClassic(IPjeFrontEnd frontEnd) {
-    super(frontEnd, PjeLifeCycleFactory.STDIO);
+  private PjeOfficePRO(IPjeFrontEnd frontEnd) {
+    super(frontEnd, PjeLifeCycleFactory.PRO);
   }
 
   @Override

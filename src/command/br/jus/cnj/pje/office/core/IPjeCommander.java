@@ -1,32 +1,10 @@
 package br.jus.cnj.pje.office.core;
 
-import java.io.IOException;
-
-import io.reactivex.Observable;
-
-public interface IPjeCommander<I extends IPjeRequest, O extends IPjeResponse>  {
+public interface IPjeCommander<I extends IPjeRequest, O extends IPjeResponse> extends IPJeLifeCycle {
   
-  enum LifeCycle {
-    STARTUP,
-    SHUTDOWN,
-    KILL
-  }
-  
-  void start() throws IOException;
-
-  void stop(boolean force) throws IOException;
-
-  boolean isStarted();
-
-  Observable<LifeCycle> lifeCycle();
-
-  void exit();
-
   void execute(String uri);
   
   void execute(I request, O response);
-
-  void logout();
 
   String getServerEndpoint();
 

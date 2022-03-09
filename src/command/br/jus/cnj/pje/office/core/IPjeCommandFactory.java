@@ -4,5 +4,5 @@ import br.jus.cnj.pje.office.IBootable;
 
 public interface IPjeCommandFactory {
   
-  public IPjeCommander<?, ?> create(IBootable bootable);
+  public IPJeLifeCycle create(IBootable bootable);
 }
