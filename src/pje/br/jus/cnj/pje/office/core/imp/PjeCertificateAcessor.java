@@ -109,7 +109,8 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
   public void setAuthStrategy(IPjeAuthStrategy strategy) {
     if (strategy != null) {
       PjeConfig.save(this.strategy = strategy);
-      this.close();
+      this.logout();
+      this.close();      
     }
   }
   

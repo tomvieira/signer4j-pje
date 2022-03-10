@@ -1,5 +1,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +14,9 @@ import com.github.pdfhandler4j.imp.ByEvenPagesPdfSplitter;
 import com.github.pdfhandler4j.imp.ByOddPagesPdfSplitter;
 import com.github.pdfhandler4j.imp.ByParityPdfSplitter;
 import com.github.pdfhandler4j.imp.PdfInputDescriptor;
+import com.github.pdfhandler4j.imp.event.PdfEndEvent;
+import com.github.pdfhandler4j.imp.event.PdfPageEvent;
+import com.github.pdfhandler4j.imp.event.PdfStartEvent;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.taskresolver4j.ITaskResponse;
@@ -24,7 +30,8 @@ class PjeByParityPdfSplitterTask extends PjeAbstractMediaTask<ITarefaPdfDivisaoP
   
   private static enum Stage implements IStage {
     SPLITING_EVEN("Excluindo páginas ímpares"),
-    SPLITING_ODD("Excluindo páginas pares");
+    SPLITING_ODD("Excluindo páginas pares"),
+    PAGE_READING("Lendo as páginas");
 
     private final String message;
 
@@ -61,7 +68,7 @@ class PjeByParityPdfSplitterTask extends PjeAbstractMediaTask<ITarefaPdfDivisaoP
     
     int size = arquivos.size();
 
-    progress.begin(Stage.of(this.paridade));
+    progress.begin(Stage.of(this.paridade), size);
     
     for(int i = 0; i < size; i++) {
       Path file = Paths.get(arquivos.get(i));
@@ -81,12 +88,28 @@ class PjeByParityPdfSplitterTask extends PjeAbstractMediaTask<ITarefaPdfDivisaoP
         new ByEvenPagesPdfSplitter() : 
         new ByOddPagesPdfSplitter();
 
-      splitter.apply(desc).subscribe((e) -> progress.info(e.getMessage()));
+      splitter.apply(desc).subscribe(
+        (e) -> {
+          if (e instanceof PdfStartEvent) {
+            progress.begin(Stage.PAGE_READING, ((PdfStartEvent)e).getTotalPages() / 2);            
+          } else if (e instanceof PdfEndEvent) {
+            progress.end();
+          } else if (e instanceof PdfPageEvent) {
+            progress.step(e.getMessage());
+          } else {
+            progress.info(e.getMessage());  
+          }
+        },
+        (e) -> progress.abort(e)
+      );
     
-      progress.info("Dividido arquivo %s", file);
+      progress.step("Dividido arquivo %s", file);
     }
+    
     progress.end();
 
+    invokeLater(() -> display("Arquivo gerado com sucesso.", "Ótimo!"));
+    
     return success();
   }
 }

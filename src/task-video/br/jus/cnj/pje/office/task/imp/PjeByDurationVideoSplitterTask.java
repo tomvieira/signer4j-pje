@@ -64,12 +64,12 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
       Path file = Paths.get(arquivos.get(i));
       Path output = file.getParent();
       IVideoFile video = VideoTool.FFMPEG.call(file.toFile());
-      
+      Path folder = output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")"));
       VideoDescriptor desc;
       try {
         desc = new VideoDescriptor.Builder(".mp4")
           .add(video)
-          .output(output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")")))
+          .output(folder)
           .build();
       } catch (IOException e1) {
         throw progress.abort(new TaskException("Não foi possível criar pasta " + output.toString()));
@@ -79,14 +79,12 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
         .apply(desc)
         .subscribe(
           (e) -> progress.info(e.getMessage()),
-          (e) -> progress.abort(e)
-        );    
-    }
-    
-    Throwable fail = progress.getAbortCause();
-    if (fail != null) {
-      invokeLater(() -> display("Não foi possível dividir os arquivos.\n" + fail.getMessage()));
-      return fail(fail);
+          (e) -> {
+            folder.toFile().delete();
+            progress.abort(e);
+          }
+        );
+      progress.info("Dividido vídeo " + file);
     }
     
     progress.end();
