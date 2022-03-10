@@ -1,5 +1,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,13 +77,20 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
       
       new ByDurationVideoSplitter(video, Duration.ofMinutes(duracao))
         .apply(desc)
-        .subscribe((e) -> progress.info(e.getMessage()));
+        .subscribe(
+          (e) -> progress.info(e.getMessage()),
+          (e) -> progress.abort(e)
+        );    
+    }
     
-      progress.info("Dividido arquivo %s", file);
+    Throwable fail = progress.getAbortCause();
+    if (fail != null) {
+      invokeLater(() -> display("Não foi possível dividir os arquivos.\n" + fail.getMessage()));
+      return fail(fail);
     }
     
     progress.end();
-
+    invokeLater(() -> display("Arquivos divididos com sucesso.", "Ótimo!"));
     return success();
   }
 }

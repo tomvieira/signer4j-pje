@@ -1,5 +1,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,10 +65,22 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
     } catch (IOException e) {
       throw progress.abort(new TaskException("Não foi possível gerar arquivo de saída. Permissão?", e));
     }
+    
     new JoinPdfHandler("ARQUIVOS_UNIDOS_EM_" + Dates.stringNow())
       .apply(desc)
-      .subscribe((e) -> progress.step(e.getMessage()));
+      .subscribe(
+        (e) -> progress.step(e.getMessage()),
+        (e) -> progress.abort(e)
+      );
+    
+    Throwable fail = progress.getAbortCause();
+    if (fail != null) {
+      invokeLater(() -> display("Não foi possível unir os arquivos.\n" + fail.getMessage()));
+      return fail(fail);
+    }
+    
     progress.end();
-    return success();
+    invokeLater(() -> display("Arquivos unidos com sucesso.", "Ótimo!"));
+    return success();    
   }
 }

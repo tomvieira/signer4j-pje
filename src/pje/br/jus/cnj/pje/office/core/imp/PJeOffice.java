@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
 import com.github.signer4j.imp.WindowLockDettector;
-import com.github.utils4j.gui.imp.SwingTools;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;

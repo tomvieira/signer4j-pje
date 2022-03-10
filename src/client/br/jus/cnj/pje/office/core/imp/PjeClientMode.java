@@ -183,11 +183,11 @@ public enum PjeClientMode {
   }
 
   protected Function<String, PjeTaskResponse> success() {
-    return (o) -> PjeTaskResponse.NOTHING;
+    return (o) -> PjeTaskResponse.NOTHING_SUCCESS;
   }
   
   protected Function<Throwable, PjeTaskResponse> fail() {
-    return (t) -> PjeTaskResponse.NOTHING;
+    return (t) -> PjeTaskResponse.NOTHING_FAIL;
   }
     
   protected final IPjeClient getClient(ICanceller canceller) {

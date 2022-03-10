@@ -8,9 +8,6 @@ import java.util.List;
 import com.github.utils4j.imp.Containers;
 
 import br.jus.cnj.pje.office.core.IPJeLifeCycle;
-import br.jus.cnj.pje.office.core.IPjeCommander;
-import br.jus.cnj.pje.office.core.IPjeRequest;
-import br.jus.cnj.pje.office.core.IPjeResponse;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
