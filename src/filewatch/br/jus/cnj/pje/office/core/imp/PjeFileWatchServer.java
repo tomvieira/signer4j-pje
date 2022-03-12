@@ -105,13 +105,13 @@ class PjeFileWatchServer extends PjeURIServer {
             .forEach(p -> {
               File key = p.getKey();
               final String keyName = key.getName().toLowerCase();
-              
+              key.delete(); //this is very important!
               Optional<PjeTaskReader> tr = Stream.of(readers).filter(r -> keyName.startsWith(r.getId())).findFirst();
               if (!tr.isPresent()) {
                 return;
               }
 
-              key.delete(); //this is very important!
+             
               List<String> value = p.getValue().stream()
                 .map(Strings::trim)
                 .filter(Strings::hasText)

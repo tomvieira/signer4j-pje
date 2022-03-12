@@ -34,9 +34,9 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
     this.tamanho = pojo.getTamanho();
     if (this.tamanho == 0) {
       Optional<Integer> total = ofNullable(getInteger(
-        "Número máximo de páginas:", 
+        "Tamanho máximo do arquivo (MB):", 
+        90, 
         10, 
-        1, 
         Integer.MAX_VALUE - 1
       ));
       this.tamanho = total.orElseThrow(() -> new TaskException(IProgress.CANCELED_OPERATION_MESSAGE));

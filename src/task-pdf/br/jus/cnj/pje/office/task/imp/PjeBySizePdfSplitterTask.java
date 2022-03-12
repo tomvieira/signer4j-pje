@@ -40,7 +40,7 @@ class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTam
       Optional<Integer> total = ofNullable(getInteger(
         "Tamanho máximo do arquivo (MB):", 
         10, 
-        1, 
+        2, 
         1024
       ));
       this.tamanho = total.orElseThrow(() -> new TaskException(IProgress.CANCELED_OPERATION_MESSAGE));
