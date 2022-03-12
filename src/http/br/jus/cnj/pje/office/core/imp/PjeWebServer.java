@@ -232,7 +232,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
       startHttps();
     } catch (IOException e) {
       LOGGER.warn("Não foi possível iniciar o servidor", e);
-      stop(false);
+      doStop(false);
       throw e;
     }
     super.doStart();

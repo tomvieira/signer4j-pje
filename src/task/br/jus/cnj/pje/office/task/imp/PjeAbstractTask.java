@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
-import static com.github.signer4j.gui.alert.MessageAlert.display;
+import static com.github.signer4j.gui.alert.MessageAlert.displayFail;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.util.concurrent.ExecutorService;
@@ -193,10 +193,12 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       return response;
     } catch(InterruptedException e) {
       fail = progress.abort(e);
-      invokeLater(() -> display(CANCELED_OPERATION_MESSAGE));
+      invokeLater(() -> displayFail(CANCELED_OPERATION_MESSAGE));
     } catch(Exception e) {
       fail = progress.abort(e);
+      invokeLater(() -> displayFail("Não foi possível realizar a operação:\n" + Strings.trim(e.getMessage())));
     }
+    
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
     return fail(fail);
   }

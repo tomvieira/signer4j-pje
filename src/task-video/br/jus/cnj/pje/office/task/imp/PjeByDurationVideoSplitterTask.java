@@ -1,17 +1,13 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.progress4j.IProgress;
-import com.github.progress4j.IStage;
-import com.github.progress4j.imp.SingleThreadProgress;
-import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoFile;
@@ -19,25 +15,9 @@ import com.github.videohandler4j.imp.ByDurationVideoSplitter;
 import com.github.videohandler4j.imp.VideoDescriptor;
 import com.github.videohandler4j.imp.VideoTool;
 
-import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaVideoDivisaoDuracao;
 
-class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDivisaoDuracao> {
-  
-  private static enum Stage implements IStage {
-    SPLITING("Dividindo o vídeo");
-
-    private final String message;
-
-    Stage(String message) {
-      this.message = message;
-    }
-
-    @Override
-    public final String toString() {
-      return message;
-    }
-  }
+class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDivisaoDuracao> {
   
   private long duracao;
   
@@ -53,42 +33,37 @@ class PjeByDurationVideoSplitterTask extends PjeAbstractMediaTask<ITarefaVideoDi
   }
   
   @Override
-  protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
-    final IProgress progress = SingleThreadProgress.wrap(getProgress());
+  protected boolean process(Path file, IProgress progress) {
+ 
+    tryRun(() -> progress.begin(SplitterStage.SPLITTING_PATIENT));
     
-    final int size = arquivos.size();
-
-    progress.begin(Stage.SPLITING);
-    
-    for(int i = 0; i < size; i++) {
-      Path file = Paths.get(arquivos.get(i));
-      Path output = file.getParent();
-      IVideoFile video = VideoTool.FFMPEG.call(file.toFile());
-      Path folder = output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")"));
-      VideoDescriptor desc;
-      try {
-        desc = new VideoDescriptor.Builder(".mp4")
-          .add(video)
-          .output(folder)
-          .build();
-      } catch (IOException e1) {
-        throw progress.abort(new TaskException("Não foi possível criar pasta " + output.toString()));
-      }
-      
-      new ByDurationVideoSplitter(video, Duration.ofMinutes(duracao))
-        .apply(desc)
-        .subscribe(
-          (e) -> progress.info(e.getMessage()),
-          (e) -> {
-            folder.toFile().delete();
-            progress.abort(e);
-          }
-        );
-      progress.info("Dividido vídeo " + file);
+    Path output = file.getParent();
+    IVideoFile video = VideoTool.FFMPEG.call(file.toFile());
+    Path folder = output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")"));
+    VideoDescriptor desc;
+    try {
+      desc = new VideoDescriptor.Builder(".mp4")
+        .add(video)
+        .output(folder)
+        .build();
+    } catch (IOException e1) {
+      LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
+      return false;
     }
     
-    progress.end();
-    invokeLater(() -> display("Arquivos divididos com sucesso.", "Ótimo!"));
-    return success();
+    AtomicBoolean success = new AtomicBoolean(true);
+    new ByDurationVideoSplitter(video, Duration.ofMinutes(duracao))
+      .apply(desc)
+      .subscribe(
+        (e) -> progress.info(e.getMessage()),
+        (e) -> {
+          success.set(false);
+          folder.toFile().delete();
+        }
+      );
+    
+    tryRun(progress::end);
+
+    return success.get();
   }
 }

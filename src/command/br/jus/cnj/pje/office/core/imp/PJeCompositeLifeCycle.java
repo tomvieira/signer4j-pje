@@ -79,7 +79,7 @@ class PJeCompositeLifeCycle implements IPJeLifeCycle {
           if (error == null) {
             error = e;
           }else {
-            error = new IOException(error);
+            error.addSuppressed(e);
           }
         }
       }

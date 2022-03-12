@@ -1,11 +1,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
-
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.filehandler4j.IInputFile;
 import com.github.filehandler4j.imp.FileWrapper;
@@ -16,22 +13,21 @@ import com.github.pdfhandler4j.imp.ByParityPdfSplitter;
 import com.github.pdfhandler4j.imp.PdfInputDescriptor;
 import com.github.pdfhandler4j.imp.event.PdfEndEvent;
 import com.github.pdfhandler4j.imp.event.PdfPageEvent;
+import com.github.pdfhandler4j.imp.event.PdfReadingEnd;
+import com.github.pdfhandler4j.imp.event.PdfReadingStart;
 import com.github.pdfhandler4j.imp.event.PdfStartEvent;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
-import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 
-import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoParidade;
 
-class PjeByParityPdfSplitterTask extends PjeAbstractMediaTask<ITarefaPdfDivisaoParidade> {
+class PjeByParityPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoParidade> {
   
   private static enum Stage implements IStage {
     SPLITING_EVEN("Excluindo páginas ímpares"),
-    SPLITING_ODD("Excluindo páginas pares"),
-    PAGE_READING("Lendo as páginas");
+    SPLITING_ODD("Excluindo páginas pares");
 
     private final String message;
 
@@ -58,58 +54,47 @@ class PjeByParityPdfSplitterTask extends PjeAbstractMediaTask<ITarefaPdfDivisaoP
   @Override
   protected void validateParams() throws TaskException {
     super.validateParams();
-    ITarefaPdfDivisaoParidade pojo = getPojoParams();
-    this.paridade = pojo.isParidade();
+    this.paridade = getPojoParams().isParidade();
   }
   
   @Override
-  protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
-    IProgress progress = getProgress();
-    
-    int size = arquivos.size();
-
-    progress.begin(Stage.of(this.paridade), size);
-    
-    for(int i = 0; i < size; i++) {
-      Path file = Paths.get(arquivos.get(i));
-      Path output = file.getParent();
-      IInputFile input = new FileWrapper(file.toFile());
-      InputDescriptor desc;
-      try {
-        desc = new PdfInputDescriptor.Builder()
-          .add(input)
-          .output(output)
-          .build();
-      } catch (IOException e1) {
-        throw progress.abort(new TaskException("Não foi possível criar pasta " + output.toString()));
-      }
-
-      ByParityPdfSplitter splitter = this.paridade ? 
-        new ByEvenPagesPdfSplitter() : 
-        new ByOddPagesPdfSplitter();
-
-      splitter.apply(desc).subscribe(
-        (e) -> {
-          if (e instanceof PdfStartEvent) {
-            progress.begin(Stage.PAGE_READING, ((PdfStartEvent)e).getTotalPages() / 2);            
-          } else if (e instanceof PdfEndEvent) {
-            progress.end();
-          } else if (e instanceof PdfPageEvent) {
-            progress.step(e.getMessage());
-          } else {
-            progress.info(e.getMessage());  
-          }
-        },
-        (e) -> progress.abort(e)
-      );
-    
-      progress.step("Dividido arquivo %s", file);
+  protected boolean process(Path file, IProgress progress) {
+    Path output = file.getParent();
+    IInputFile input = new FileWrapper(file.toFile());
+    InputDescriptor desc;
+    try {
+      desc = new PdfInputDescriptor.Builder()
+        .add(input)
+        .output(output)
+        .build();
+    } catch (IOException e1) {
+      LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
+      return false;
     }
-    
-    progress.end();
 
-    invokeLater(() -> display("Arquivo gerado com sucesso.", "Ótimo!"));
+    ByParityPdfSplitter splitter = this.paridade ? 
+      new ByEvenPagesPdfSplitter() : 
+      new ByOddPagesPdfSplitter();
     
-    return success();
+    AtomicBoolean success = new AtomicBoolean(true);
+    
+    splitter.apply(desc).subscribe(
+      e -> {
+        if (e instanceof PdfReadingStart) {
+          progress.begin(SplitterStage.READING);
+        } else if (e instanceof PdfStartEvent) {
+          progress.begin(Stage.of(this.paridade), ((PdfStartEvent)e).getTotalPages() / 2);            
+        } else if (e instanceof PdfReadingEnd || e instanceof PdfEndEvent) {
+          progress.end();
+        } else if (e instanceof PdfPageEvent) {
+          progress.step(e.getMessage());
+        } else {
+          progress.info(e.getMessage());  
+        }
+      },
+      e -> success.set(false)
+    );
+    
+    return success.get();
   }
 }

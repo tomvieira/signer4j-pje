@@ -6,6 +6,7 @@ import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.filehandler4j.imp.InputDescriptor;
@@ -14,6 +15,7 @@ import com.github.pdfhandler4j.imp.PdfInputDescriptor;
 import com.github.pdfhandler4j.imp.PdfInputDescriptor.Builder;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
+import com.github.progress4j.imp.QuietlyProgress;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Dates;
@@ -46,8 +48,9 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     IProgress progress = getProgress();
+    
     int size = arquivos.size();
-    //são três passos por arquivo: (1:inicio leitura + 1:fim leitura + 1:mesclagem) + 1:geração do arquivo final!
+
     progress.begin(Stage.MERGING, 3 * size + 1);
 
     AtomicReference<Path> parent = new AtomicReference<>();
@@ -66,20 +69,27 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
       throw progress.abort(new TaskException("Não foi possível gerar arquivo de saída. Permissão?", e));
     }
     
+    AtomicBoolean success = new AtomicBoolean(true);
+    
+    IProgress quietly = QuietlyProgress.wrap(progress);
     new JoinPdfHandler("ARQUIVOS_UNIDOS_EM_" + Dates.stringNow())
       .apply(desc)
       .subscribe(
-        (e) -> progress.step(e.getMessage()),
-        (e) -> progress.abort(e)
+        (e) -> quietly.step(e.getMessage()),
+        (e) -> {
+          quietly.abort(e);
+          success.set(false);
+        }
       );
     
-    Throwable fail = progress.getAbortCause();
-    if (fail != null) {
-      invokeLater(() -> display("Não foi possível unir os arquivos.\n" + fail.getMessage()));
-      return fail(fail);
+    progress.info("Unidos " + size + " arquivos"); 
+    
+    if (!success.get()) {
+      throw new TaskException("Não foi possível unir os arquivos.\n", progress.getAbortCause());
     }
     
     progress.end();
+   
     invokeLater(() -> display("Arquivos unidos com sucesso.", "Ótimo!"));
     return success();    
   }
