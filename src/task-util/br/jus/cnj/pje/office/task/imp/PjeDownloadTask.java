@@ -10,10 +10,8 @@ import java.io.File;
 import java.util.Optional;
 
 import com.github.progress4j.IProgress;
-import com.github.progress4j.IStage;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
-import com.github.utils4j.imp.DownloadStatus;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
@@ -21,21 +19,6 @@ import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.task.ITarefaDownload;
 
 class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
-  
-  private static enum Stage implements IStage {
-    DOWNLOADING("Baixando");
-
-    private final String message;
-
-    Stage(String message) {
-      this.message = message;
-    }
-
-    @Override
-    public final String toString() {
-      return message;
-    }
-  }
   
   private String url;
   
@@ -61,12 +44,10 @@ class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
       
     progress.info("URL: %s", target.getEndPoint());
     
-    final DownloadStatus status = download(target, new File(enviarPara));
+    final Optional<File> downloaded = download(target, new File(enviarPara));
 
-    Optional<File> downloaded = status.getDownloadedFile();
-    
-    if (!downloaded.isPresent()) {
-      throw new TaskException("Não foi possível realizar o download");
+    if (downloaded.isPresent()) {
+      throw new TaskException("Não foi possível download de:\n" + url);
     }
     
     invokeLater(() -> display("Download concluído!"));

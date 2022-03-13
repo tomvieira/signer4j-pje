@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Args;
-import com.github.utils4j.imp.DownloadStatus;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
@@ -62,27 +62,35 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
     int i = 0;
     do {
       final IArquivo arquivo = arquivos.get(i);
+      
       final Optional<String> oUrl = arquivo.getUrl();
+      
       if (!oUrl.isPresent()) {
         LOGGER.warn("Detectado arquivo com URL para download VAZIA");
         progress.step("Decartado arquivo com url vazia");
         continue;
       }
+      
       final String url = oUrl.get();
       
       final IPjeTarget target = getTarget(url);
       
       progress.step("URL: %s", target.getEndPoint());
 
-      final DownloadStatus status = download(target);
+      final Optional<File> downloaded = download(target);
       
-      tempFiles.add(new ArquivoAssinado(arquivo, status.getDownloadedFile().get()) {
+      if (downloaded.isPresent()) {
+        throw new TaskException("Não foi possível download de:\n" + url);
+      }
+      
+      tempFiles.add(new ArquivoAssinado(arquivo, downloaded.get()) {
         @Override
         public void dispose() {
           super.dispose();
           super.notSignedFile.delete(); //this is temporary downloaded files!
         }
       });
+      
     }while(++i < size);
     
     progress.end();

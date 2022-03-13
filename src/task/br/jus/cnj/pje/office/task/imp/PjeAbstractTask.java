@@ -6,6 +6,7 @@ import static com.github.signer4j.gui.alert.MessageAlert.displayFail;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.hc.core5.http.HttpHeaders;
@@ -157,11 +158,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return PjeClientMode.successFrom(getServerAddress()).apply("success: " + output);
   }
   
-  protected final DownloadStatus download(final IPjeTarget target) throws TaskException {
+  protected final Optional<File> download(final IPjeTarget target) throws TaskException {
     return download(target, null);
   }    
   
-  protected final DownloadStatus download(final IPjeTarget target, File saveAs) throws TaskException {
+  protected final Optional<File> download(final IPjeTarget target, File saveAs) throws TaskException {
     Args.requireNonNull(target, "target is null");
     final IProgress progress = getProgress();
     
@@ -194,7 +195,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     } catch (PJeClientException e) {
       throw progress.abort(new TaskException("Não foi possível realizar o download de " + target.getEndPoint(), e));
     }
-    return status;
+    
+    return status.getDownloadedFile();
   }
 
   
