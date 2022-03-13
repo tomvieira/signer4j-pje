@@ -10,17 +10,14 @@ import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.function.Supplier;
 
+import br.jus.cnj.pje.office.core.IGetCodec;
 import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.Version;
 
 class PJeStdioClient extends PjeClientWrapper {
 
-  PJeStdioClient(Version version, Charset charset) {
-    super(new PJeJsonClient(version, new PjeStdioJsonCodec(charset))); 
-  }
-  
-  PJeStdioClient(CloseableHttpClient client, Version version) {
-    super(new PjeWebClient(new PjeStdioWebCodec(client), version));
+  PJeStdioClient(Version version, Charset charset, IGetCodec codec) {
+    super(new PJeJsonClient(version, new PjeStdioJsonCodec(charset, codec))); 
   }
   
   /**
@@ -29,10 +26,12 @@ class PJeStdioClient extends PjeClientWrapper {
    * @author Leonardo
    */
   private static class PjeStdioJsonCodec extends SocketCodec<JSONObject> {
-    private Charset charset;
+    private final Charset charset;
+    private final IGetCodec codec;
 
-    PjeStdioJsonCodec(Charset charset) {
+    PjeStdioJsonCodec(Charset charset, IGetCodec codec) {
       this.charset = Args.requireNonNull(charset, "charset is null");
+      this.codec = Args.requireNonNull(codec, "codec is null");
     }
     
     @Override
@@ -41,8 +40,8 @@ class PJeStdioClient extends PjeClientWrapper {
     }
 
     @Override
-    public void get(Supplier<JSONObject> supplier, IDownloadStatus status) throws Exception {
-      throw new UnsupportedOperationException();
+    public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+      codec.get(supplier, status);
     }
 
     @Override

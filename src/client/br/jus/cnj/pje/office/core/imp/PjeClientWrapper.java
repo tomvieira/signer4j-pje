@@ -8,6 +8,7 @@ import com.github.utils4j.IContentType;
 import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.Args;
 
+import br.jus.cnj.pje.office.core.IGetCodec;
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorBase64ArquivoAssinado;
@@ -66,5 +67,10 @@ class PjeClientWrapper implements IPjeClient {
   @Override
   public void setCanceller(ICanceller canceller) {
     client.setCanceller(canceller);
+  }
+
+  @Override
+  public IGetCodec getCodec() {
+    return client.getCodec();
   }
 }

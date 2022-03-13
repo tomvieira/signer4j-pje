@@ -7,7 +7,6 @@ import static com.github.utils4j.imp.Strings.trim;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
@@ -25,7 +24,6 @@ import com.github.signer4j.ISignedData;
 import com.github.utils4j.IContentType;
 import com.github.utils4j.imp.Objects;
 
-import br.jus.cnj.pje.office.core.IPjeHeaders;
 import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
@@ -38,30 +36,8 @@ class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
     super(version, new PjeWebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
   }
   
-  PjeWebClient(PjeWebCodec codec, Version version) {
-    super(version, codec, IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
-  }
-  
-  @Override
-  protected <T extends HttpUriRequestBase> T createOutput(T request, IPjeTarget target) {
-    request.setHeader(HttpHeaders.COOKIE, target.getSession());
-    request.setHeader(IPjeHeaders.VERSION, version.toString());
-    request.setHeader(HttpHeaders.USER_AGENT, target.getUserAgent());
-    canceller.cancelCode(request::abort);
-    return request;
-  }
-
   private HttpPost createPost(IPjeTarget target) {
     return createOutput(new HttpPost(target.getEndPoint()), target);
-  }
-  
-  private HttpGet createGet(IPjeTarget target) {
-    return createOutput(new HttpGet(target.getEndPoint()), target);
-  }
-  
-  @Override
-  protected HttpUriRequestBase createInput(IPjeTarget target) {
-    return createGet(target);
   }
   
   @Override

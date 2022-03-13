@@ -2,31 +2,30 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.nio.charset.Charset;
 
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.json.JSONObject;
 
 import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.function.Supplier;
 
+import br.jus.cnj.pje.office.core.IGetCodec;
 import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.Version;
 
 class PJeClipClient extends PjeClientWrapper {
 
-  PJeClipClient(Version version, Charset charset) {
-    super(new PJeJsonClient(version, new PjeClipJsonCodec(charset))); 
-  }
-  
-  PJeClipClient(Version version, Charset charset, CloseableHttpClient client) {
-    super(new PjeWebClient(client, version));
+  PJeClipClient(Version version, Charset charset, IGetCodec downloader) {
+    super(new PJeJsonClient(version, new PjeClipJsonCodec(charset, downloader)));
   }
   
   private static class PjeClipJsonCodec extends SocketCodec<JSONObject> {
+    private IGetCodec codec;
     private final Charset charset;
     
-    PjeClipJsonCodec(Charset charset) {
+    PjeClipJsonCodec(Charset charset, IGetCodec downloader) {
       this.charset = Args.requireNonNull(charset,  "charset is null");
+      this.codec = Args.requireNonNull(downloader, "downloader is null");
     }
     
     @Override
@@ -35,8 +34,8 @@ class PJeClipClient extends PjeClientWrapper {
     }
 
     @Override
-    public void get(Supplier<JSONObject> supplier, IDownloadStatus status) throws Exception {
-      throw new UnsupportedOperationException();
+    public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+      codec.get(supplier, status);
     }
 
     @Override

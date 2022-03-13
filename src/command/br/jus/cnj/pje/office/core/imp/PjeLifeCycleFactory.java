@@ -40,8 +40,9 @@ public enum PjeLifeCycleFactory implements IPjeCommandFactory {
     public IPJeLifeCycle create(IBootable boot) {
       return new PJeCompositeLifeCycle(
         WEB.create(boot), 
-        FILEWATCH.create(boot)
-      );//, CLIP.create(boot), STDIO.create(boot));
+        FILEWATCH.create(boot),
+        CLIP.create(boot)
+      );//, , STDIO.create(boot));
     }
   }
 }

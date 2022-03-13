@@ -11,7 +11,6 @@ import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.DownloadStatus;
 import com.github.utils4j.imp.Params;
 
-import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.task.IArquivo;
@@ -22,11 +21,11 @@ import br.jus.cnj.pje.office.task.ITarefaAssinador;
 class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   
   private static enum Stage implements IStage {
-    DOWNLOADING_FILE; 
+    DOWNLOADING_FILES; 
     
     @Override
     public String toString() {
-      return "Download de arquivos";
+      return "Download dos arquivos";
     }
   }
   
@@ -56,10 +55,9 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
     
     final int size = arquivos.size();
     
-    final IPjeClient client   = getPjeClient();
     final IProgress progress  = getProgress();
     
-    progress.begin(Stage.DOWNLOADING_FILE, size);
+    progress.begin(Stage.DOWNLOADING_FILES, size);
     
     int i = 0;
     do {
@@ -74,13 +72,9 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       
       final IPjeTarget target = getTarget(url);
       
-      progress.step("Baixando url: %s", target.getEndPoint());
-      final DownloadStatus status = new DownloadStatus();
-      try {
-        client.down(target, status);
-      } catch (PJeClientException e) {
-        throw progress.abort(new TaskException("Não foi possível realizar o download de " + url));
-      }
+      progress.step("URL: %s", target.getEndPoint());
+
+      final DownloadStatus status = download(target);
       
       tempFiles.add(new ArquivoAssinado(arquivo, status.getDownloadedFile().get()) {
         @Override

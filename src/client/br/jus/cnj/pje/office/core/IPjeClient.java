@@ -19,6 +19,8 @@ public interface IPjeClient extends AutoCloseable {
   
   String PJE_DEFAULT_USER_AGENT = "PjeOffice " + Version.current();
   
+  IGetCodec getCodec();
+  
   void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException;
   
   PjeTaskResponse send(IPjeTarget target, ISignedData signedData) throws PJeClientException;

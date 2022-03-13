@@ -10,9 +10,13 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 class PjeStdioTaskResponse extends PjeStringTaskResponse {
 
   public PjeStdioTaskResponse(String output) {
-    this(output, IConstants.DEFAULT_CHARSET, true);
+    this(output, true);
   }
   
+  public PjeStdioTaskResponse(String output, boolean success) {
+    this(output, IConstants.DEFAULT_CHARSET, success);
+  }
+
   public PjeStdioTaskResponse(String output, Charset charset) {
     this(output, charset, true);
   }

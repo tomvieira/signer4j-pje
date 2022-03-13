@@ -7,9 +7,13 @@ import com.github.utils4j.IConstants;
 class PjeClipTaskResponse extends PjeStringTaskResponse {
 
   public PjeClipTaskResponse(String output) {
-    this(output, IConstants.DEFAULT_CHARSET);
+    this(output, true);
   }
   
+  public PjeClipTaskResponse(String output, boolean success) {
+    this(output, IConstants.DEFAULT_CHARSET, success);
+  }
+
   public PjeClipTaskResponse(String output, Charset charset) {
     this(output, charset, true);
   }

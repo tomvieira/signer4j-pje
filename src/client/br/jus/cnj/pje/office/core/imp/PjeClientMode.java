@@ -34,7 +34,7 @@ public enum PjeClientMode {
   STDIO("stdio") {
     @Override
     protected IPjeClientBuilder createBuilder() {
-      return new PjeStdioClientBuilder();
+      return new PjeStdioClientBuilder(HTTP.getClient().getCodec());
     }
 
     @Override
@@ -44,19 +44,19 @@ public enum PjeClientMode {
 
     @Override
     protected Function<Throwable, PjeTaskResponse> fail() {
-      return (t) -> new PjeStdioTaskResponse(Throwables.rootMessage(t));
+      return (t) -> new PjeStdioTaskResponse(Throwables.rootMessage(t), false);
     }
   },
   FILEWATCH("filewatch") {
     @Override
     protected IPjeClientBuilder createBuilder() {
-      return new PjeFileWatchClientBuilder();
+      return new PjeFileWatchClientBuilder(HTTP.getClient().getCodec());
     }
   },
   CLIP("clip") {
     @Override
     protected IPjeClientBuilder createBuilder() {
-      return new PjeClipClientBuilder();
+      return new PjeClipClientBuilder(HTTP.getClient().getCodec());
     }
 
     @Override
@@ -66,7 +66,7 @@ public enum PjeClientMode {
 
     @Override
     protected Function<Throwable, PjeTaskResponse> fail() {
-      return (t) -> new PjeClipTaskResponse(Throwables.rootMessage(t));
+      return (t) -> new PjeClipTaskResponse(Throwables.rootMessage(t), false);
     }
   },
   HTTP("http") {
@@ -189,7 +189,11 @@ public enum PjeClientMode {
   protected Function<Throwable, PjeTaskResponse> fail() {
     return (t) -> PjeTaskResponse.NOTHING_FAIL;
   }
-    
+  
+  protected final IPjeClient getClient() {
+    return getClient(null);
+  }
+  
   protected final IPjeClient getClient(ICanceller canceller) {
     if (client == null) {
       client = createBuilder().build();

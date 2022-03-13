@@ -76,6 +76,10 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
       try(CloseableHttpResponse response = client.execute(get)) {
         int code = response.getCode();
 
+        if (!isSuccess(code)) { 
+          throw new PJeClientException("Servidor retornando - HTTP Code: " + code);
+        }
+        
         HttpEntity entity = response.getEntity();
         if (entity == null) {
           throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + code);
@@ -93,7 +97,10 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
           for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
             output.write(buffer, 0, length);
           status.onEndDownload();
-        
+          
+        } catch(InterruptedException e) {
+          status.onDownloadFail(e);
+          throw new PJeClientException("Download interrompido - HTTP Code: " + code, e);
         } catch(Exception e) {
           status.onDownloadFail(e);
           throw new PJeClientException("Falha durante o download do arquivo - HTTP Code: " + code, e);

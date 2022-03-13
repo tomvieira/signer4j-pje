@@ -24,7 +24,6 @@ class PJeJsonClient extends AstractPjeClient<JSONObject> {
     super(version, postCodec);
   }
   
-  @Override
   protected <R extends JSONObject> R createOutput(R request, IPjeTarget target) {
     request.put(HttpHeaders.COOKIE, target.getSession());
     request.put(IPjeHeaders.VERSION, version.toString());
@@ -91,10 +90,5 @@ class PJeJsonClient extends AstractPjeClient<JSONObject> {
     out.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     out.put("pojo", Objects.toJson(pojo));
     return out;
-  }
-  
-  @Override
-  protected JSONObject createInput(IPjeTarget target) {
-    return new JSONObject(); //TODO we have to go back here! 
   }
 }

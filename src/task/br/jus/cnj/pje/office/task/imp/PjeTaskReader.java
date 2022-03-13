@@ -55,6 +55,17 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
       return TarefaImpressaoReader.INSTANCE;
     }
   },
+  UTIL_DOWNLOADER("util.downloader") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaDownloadReader.INSTANCE;
+    }
+    
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaDownloadReader.INSTANCE.toJson(input);
+    }
+  },
   PDF_JOIN("pdf.join") {
     @Override
     public IRequestReader<Params> get() {

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 
 import com.github.utils4j.ILifeCycle;
-import com.github.utils4j.imp.Ids;
 import com.github.utils4j.imp.ThreadContext;
 import com.github.utils4j.imp.Threads;
 
@@ -52,8 +51,6 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
 
   private class URICapturer extends ThreadContext<IOException> {
 
-    private String lastUri = Ids.next();
-
     public URICapturer(String contextName) {
       super(contextName);
     }
@@ -63,26 +60,20 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
       clearBuffer();
     }
 
-    protected boolean isLast(String uri) {
-      return lastUri.equals(uri);
-    }
-
     protected boolean isValid(String uri) {
-      return !isLast(uri) && uri.startsWith(getServerEndpoint());
+      return uri.startsWith(getServerEndpoint());
     }
 
     private final IPjeContext createContext() throws Exception {
       String uri = trim(getUri());
       if (!isValid(uri)) {
-        lastUri = uri;
         return null;
       }
-      lastUri = uri;
       return PjeURIServer.this.createContext(uri);
     }
 
     @Override
-    protected void doRun() {
+    protected void doRun() throws Exception {
       int errorCount = 0;
       do {
         final IPjeContext context;
@@ -91,7 +82,7 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
           errorCount = 0;
         } catch (InterruptedException | InterruptedIOException e) {
           Thread.currentThread().interrupt();
-          LOGGER.warn("Thread interrompida");
+          LOGGER.warn("Thread interrompida", e);
           break;
         } catch (Exception e) {
           LOGGER.warn("Requisição mal formada", e);
@@ -103,6 +94,7 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
             clearBuffer();
             continue;
           }
+          LOGGER.warn("Thread interrompida", e);
           break;
         }
         if (context == null) {

@@ -5,6 +5,7 @@ import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
 import static com.github.signer4j.gui.alert.MessageAlert.displayFail;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.hc.core5.http.HttpHeaders;
@@ -17,13 +18,17 @@ import com.github.signer4j.gui.alert.PermissionDeniedAlert;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.taskresolver4j.imp.AbstractTask;
+import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.DownloadStatus;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
+import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
+import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
@@ -42,6 +47,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     PREPARING_PARAMETERS("Validação de parâmetros"),
 
     PERMISSION_CHECKING("Checagem de permissões"),
+    
+    DOWNLOADING("Baixando"),
     
     TASK_EXECUTION("Execução da tarefa");
     
@@ -97,8 +104,12 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getMainRequest().getSessao().orElse(Strings.empty()); 
   }
   
-  protected final IPjeTarget getTarget(String sendTo) {
-    return new PjeTarget(getEndpointFor(sendTo), getUserAgent(), getSession());
+  protected final IPjeTarget getTarget(String url) {
+    return new PjeTarget(getEndpointFor(url), getUserAgent(), getSession());
+  }
+  
+  protected final IPjeTarget getExternalTarget(String url) {
+    return new PjeTarget(url, getUserAgent(), "");
   }
   
   protected void throwCancel() throws InterruptedException {
@@ -145,6 +156,47 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected final PjeTaskResponse success(String output) {
     return PjeClientMode.successFrom(getServerAddress()).apply("success: " + output);
   }
+  
+  protected final DownloadStatus download(final IPjeTarget target) throws TaskException {
+    return download(target, null);
+  }    
+  
+  protected final DownloadStatus download(final IPjeTarget target, File saveAs) throws TaskException {
+    Args.requireNonNull(target, "target is null");
+    final IProgress progress = getProgress();
+    
+    final DownloadStatus status = new DownloadStatus(saveAs) {
+      private long total;
+      private int increment = 1;
+      
+      @Override
+      protected void onStepStart(long total) throws InterruptedException {
+        this.total = total;
+        progress.begin(Stage.DOWNLOADING, 100);
+      }
+      
+      @Override
+      protected void onStepEnd() throws InterruptedException {
+        progress.end();
+      }
+      
+      @Override
+      protected void onStepStatus(long written) throws InterruptedException { 
+        float percent = 100f * written / total;
+        if (percent >= increment) {
+          progress.step("Baixados %d%%", increment++);
+        }
+      }
+    };
+    
+    try {
+      getPjeClient().down(target, status);
+    } catch (PJeClientException e) {
+      throw progress.abort(new TaskException("Não foi possível realizar o download de " + target.getEndPoint(), e));
+    }
+    return status;
+  }
+
   
   protected void checkMainParams() throws TaskException {
     if (!isInternalTask) {
@@ -196,7 +248,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       invokeLater(() -> displayFail(CANCELED_OPERATION_MESSAGE));
     } catch(Exception e) {
       fail = progress.abort(e);
-      invokeLater(() -> displayFail("Não foi possível realizar a operação:\n" + Strings.trim(e.getMessage())));
+      String friendlyMessage = Thread.currentThread().isInterrupted() ? 
+          CANCELED_OPERATION_MESSAGE : 
+          "Não foi possível realizar a operação!\n" + Throwables.rootMessage(fail);
+      invokeLater(() -> displayFail(friendlyMessage));
     }
     
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);

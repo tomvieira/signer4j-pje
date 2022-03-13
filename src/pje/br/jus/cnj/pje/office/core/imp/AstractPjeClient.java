@@ -2,6 +2,10 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.util.List;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpHeaders;
+
 import com.github.signer4j.ISignedData;
 import com.github.utils4j.ICanceller;
 import com.github.utils4j.IContentType;
@@ -9,7 +13,9 @@ import com.github.utils4j.IDownloadStatus;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.function.Supplier;
 
+import br.jus.cnj.pje.office.core.IGetCodec;
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeHeaders;
 import br.jus.cnj.pje.office.core.IResultChecker;
 import br.jus.cnj.pje.office.core.ISocketCodec;
 import br.jus.cnj.pje.office.core.Version;
@@ -29,7 +35,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
 
   private final IResultChecker ifNotSuccessThrow;
   
-  protected ISocketCodec<T> socket;
+  private ISocketCodec<T> socket;
   
   protected AstractPjeClient(Version version, ISocketCodec<T> socket) {
     this(version, socket, IResultChecker.NOTHING, IResultChecker.NOTHING);
@@ -40,6 +46,11 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     this.ifErrorThrow = Args.requireNonNull(ifError, "ifError is null");
     this.ifNotSuccessThrow = Args.requireNonNull(ifNotSuccess, "ifNotSuccess is null");
     this.socket = Args.requireNonNull(socket, "socket is null");
+  }
+  
+  @Override
+  public final IGetCodec getCodec() {
+    return socket;
   }
   
   @Override
@@ -108,7 +119,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
     Args.requireNonNull(status, "status is null");
-    final Supplier<T> supplier = () -> createInput(
+    final Supplier<HttpUriRequestBase> supplier = () -> createInput(
       Args.requireNonNull(target, "target is null")
     );
     get(supplier, status);
@@ -124,24 +135,40 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       return this.socket.post(supplier, checkResults);
     } catch (PJeClientException e) {
       throw e;
+    } catch (InterruptedException e) {
+      throw new PJeClientException("Envio cancelado!", e);
     } catch(Exception e) {
-      throw new PJeClientException("post codec fail", e);
+      throw new PJeClientException("Falha no envio!", e);
     }
   }
   
-  private void get(final Supplier<T> supplier, IDownloadStatus status) throws PJeClientException {
+  private void get(final Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws PJeClientException {
     try {
       this.socket.get(supplier, status);
     } catch (PJeClientException e) {
       throw e;
+    } catch (InterruptedException e) {
+      throw new PJeClientException("Download cancelado!", e);
     } catch(Exception e) {
-      throw new PJeClientException("get codec fail", e);
+      throw new PJeClientException("Falha no download!", e);
     }
   }
   
-  protected abstract T createInput(IPjeTarget target);
+  protected <H extends HttpUriRequestBase> H createOutput(H request, IPjeTarget target) {
+    request.setHeader(HttpHeaders.COOKIE, target.getSession());
+    request.setHeader(IPjeHeaders.VERSION, version.toString());
+    request.setHeader(HttpHeaders.USER_AGENT, target.getUserAgent());
+    canceller.cancelCode(request::abort);
+    return request;
+  }
   
-  protected abstract <R extends T> R createOutput(R request, IPjeTarget target);
+  private HttpGet createGet(IPjeTarget target) {
+    return createOutput(new HttpGet(target.getEndPoint()), target);
+  }
+  
+  protected HttpUriRequestBase createInput(IPjeTarget target) {
+    return createGet(target);
+  }
 
   protected abstract T createOutput(IPjeTarget target, Object pojo) throws Exception;
 

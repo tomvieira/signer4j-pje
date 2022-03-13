@@ -42,7 +42,7 @@ class PjeClientWebBuilder implements IPjeClientBuilder  {
   private HttpClientBuilder clientBuilder = HttpClients.custom();
   
   private final Version version;
-
+  
   public PjeClientWebBuilder(Version version) {
     this.version = Args.requireNonNull(version, "version is null");
   }

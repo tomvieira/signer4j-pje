@@ -101,39 +101,47 @@ class PjeFileWatchServer extends PjeURIServer {
         Optional<String> uri = Optional.empty();
         do {
           List<File> block =  tryRuntime(() -> packer.filePackage());
-          
-          block.stream()
-            .forEach(f -> {
-              final Properties p = new Properties();
-              final Executable<IOException> loadProperties = () -> {
-                try(FileInputStream stream = new FileInputStream(f)) {
-                  p.load(stream);
-                } finally {
-                  f.delete(); //this is very important!
-                }
-              };
-              if (!tryRun(loadProperties)) {
-                return;
+
+          block.forEach(f -> {
+            final String fileName = f.getName();
+            final Properties p = new Properties();
+            final Executable<?> loadProperties = () -> {
+              try(FileInputStream stream = new FileInputStream(f)) {
+                p.load(stream);
+              } catch (Exception e) {
+                LOGGER.error("Não foi possível ler o arquivo '" + fileName + "'. Tarefa ignorada! (acesso simultâneo?)", e);
+                throw e;
+              } finally {
+                f.delete(); //this is very important!
               }
-              Optional<PjeTaskReader> tr = PjeTaskReader.task(p.getProperty("task", ""));
-              if (!tr.isPresent()) {
-                return;
-              }
-              
-              File input = new File(p.getProperty("arquivo", ""));
-              if (!input.exists()) {
-                return;
-              }
-              
-              PjeTaskReader r = tr.get();
-              if (!r.accept(input)) {
-                return;
-              }
-              List<Properties> list = blockPerTask.get(r);
-              if (list == null)
-                blockPerTask.put(r, list = new ArrayList<>());
-              list.add(p);
-            });
+            };
+            if (!tryRun(loadProperties, false, true)) {
+              return;
+            }
+            
+            Optional<PjeTaskReader> tr = PjeTaskReader.task(p.getProperty("task", ""));
+            if (!tr.isPresent()) {
+              LOGGER.warn("Aquivo '" + fileName + "' com campo 'task' vazio. Tarefa ignorada!");
+              return;
+            }
+            
+            File input = new File(p.getProperty("arquivo", ""));
+            if (!input.exists()) {
+              LOGGER.warn("Aquivo '" + fileName + "' com campo 'arquivo' vazio. Tarefa ignorada!");
+              return;
+            }
+            
+            PjeTaskReader r = tr.get();
+            if (!r.accept(input)) {
+              LOGGER.warn("Tarefa '" + r.getId() + "' não aceita arquivo '" + input.getName() + "'. Tarefa ignorada!");
+              return;
+            }
+            
+            List<Properties> list = blockPerTask.get(r);
+            if (list == null)
+              blockPerTask.put(r, list = new ArrayList<>());
+            list.add(p);
+          });
           
           uri = tryRuntime(PjeFileWatchServer.this::nextUri);
           

@@ -17,7 +17,7 @@ import br.jus.cnj.pje.office.task.ITarefaMedia;
  * Classe base para todos os manipuladores de medias (PDF's, VÍDEOS, etc)
 /*************************************************************************************/
 
-abstract class TarefaMediaReader<T extends ITarefaMedia> extends AbstractRequestReader<Params, T> implements IJsonTranslator {
+abstract class TarefaMediaReader<T> extends AbstractRequestReader<Params, T> implements IJsonTranslator {
 
   static class TarefaMedia implements ITarefaMedia {
     protected List<String> arquivos = new ArrayList<>();
