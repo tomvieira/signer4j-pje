@@ -65,7 +65,7 @@ class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTam
 
     AtomicBoolean success = new AtomicBoolean(true);
     
-    new BySizePdfSplitter(tamanho * 1024 * 1024).apply(desc).subscribe(
+    new BySizePdfSplitter(tamanho * 1000 * 1000).apply(desc).subscribe(
       e -> {
         if (e instanceof PdfReadingStart) {
           progress.begin(SplitterStage.READING);

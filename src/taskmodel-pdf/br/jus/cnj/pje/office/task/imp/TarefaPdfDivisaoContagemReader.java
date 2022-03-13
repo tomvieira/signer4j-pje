@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.PDF_SPLIT_BY_COUNT;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
@@ -43,12 +42,9 @@ class TarefaPdfDivisaoContagemReader extends TarefaMediaReader<ITarefaPdfDivisao
   
   @Override
   protected Object getTarefa(Params param) {
-    List<String> arquivos = getFiles(param, "Arquivos não informados");
-    long totalPaginas = getLong(param, "'totalPaginas' com valor inválido");
-
     TarefaPdfDivisaoContagem tarefaTamanho = new TarefaPdfDivisaoContagem();
-    tarefaTamanho.totalPaginas = totalPaginas;
-    tarefaTamanho.arquivos = arquivos;
+    tarefaTamanho.totalPaginas = Long.parseLong(param.getValue("totalPaginas"));
+    tarefaTamanho.arquivos = param.getValue("arquivos");
     return tarefaTamanho;
   }
 }

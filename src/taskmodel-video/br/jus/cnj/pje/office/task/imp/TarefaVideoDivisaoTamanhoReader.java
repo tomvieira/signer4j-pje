@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.VIDEO_SPLIT_BY_SIZE;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
@@ -43,12 +42,9 @@ class TarefaVideoDivisaoTamanhoReader extends TarefaMediaReader<ITarefaVideoDivi
 
   @Override
   protected Object getTarefa(Params param) {
-    List<String> arquivos = getFiles(param, "Arquivos não informados");
-    long tamanho = getLong(param, "'tamanho' informado é inválido");
-    
     TarefaVideoDivisaoTamanho tarefaTamanho = new TarefaVideoDivisaoTamanho();
-    tarefaTamanho.tamanho = tamanho;
-    tarefaTamanho.arquivos = arquivos;
+    tarefaTamanho.tamanho = Long.parseLong(param.getValue("tamanho"));
+    tarefaTamanho.arquivos = param.getValue("arquivos");
     return tarefaTamanho;
   }
 }

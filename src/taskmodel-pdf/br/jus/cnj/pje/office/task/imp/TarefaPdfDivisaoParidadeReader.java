@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.PDF_SPLIT_BY_PARITY;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
@@ -43,12 +42,9 @@ class TarefaPdfDivisaoParidadeReader extends TarefaMediaReader<ITarefaPdfDivisao
 
   @Override
   protected Object getTarefa(Params param) {
-    List<String> arquivos= getFiles(param, "Arquivos não informados");
-    boolean paridade = getBoolean(param,"'paridade' com valor inválido");
-    
     TarefaPdfDivisaoParidade tarefaTamanho = new TarefaPdfDivisaoParidade();
-    tarefaTamanho.paridade = paridade;
-    tarefaTamanho.arquivos = arquivos;
+    tarefaTamanho.paridade = Boolean.parseBoolean(param.getValue("paridade"));
+    tarefaTamanho.arquivos = param.getValue("arquivos");
     return tarefaTamanho;
   }
 }

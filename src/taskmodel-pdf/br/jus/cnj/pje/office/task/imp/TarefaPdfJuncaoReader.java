@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.PDF_JOIN;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
@@ -34,9 +33,8 @@ class TarefaPdfJuncaoReader extends TarefaMediaReader<ITarefaMedia> {
   
   @Override
   protected Object getTarefa(Params param) {
-    List<String> arquivos = getFiles(param, "Arquivos não informados");
     TarefaMedia juncao = new TarefaMedia();
-    juncao.arquivos = arquivos;
+    juncao.arquivos = param.getValue("arquivos");
     return juncao;
   }
 }

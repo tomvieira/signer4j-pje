@@ -4,6 +4,7 @@ import static com.github.utils4j.IConstants.UTF_8;
 import static java.net.URLEncoder.encode;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.github.taskresolver4j.IRequestReader;
@@ -173,10 +174,18 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     return "?r=" + encode(toJson(input), UTF_8.toString()) + "&u=" + System.currentTimeMillis();  
   }
   
-  static IRequestReader<Params> from(String taskId) {
+  public static Optional<PjeTaskReader> task(String id) {
     for(PjeTaskReader reader: VALUES) {
-      if (reader.getId().equalsIgnoreCase(taskId))
-        return reader.get();
+      if (reader.getId().equalsIgnoreCase(id))
+        return Optional.of(reader);
+    }
+    return Optional.empty();
+  }
+  
+  static IRequestReader<Params> from(String taskId) {
+    Optional<PjeTaskReader> tr = task(taskId);
+    if (tr.isPresent()) {
+      return tr.get().get();
     }
     return NotImplementedReader.INSTANCE;
   }
@@ -184,5 +193,4 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
   public boolean accept(File input) {
     return input != null;
   }
-  
 }

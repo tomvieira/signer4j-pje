@@ -3,7 +3,6 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.PDF_SPLIT_BY_SIZE;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
@@ -42,12 +41,9 @@ class TarefaPdfDivisaoTamanhoReader extends TarefaMediaReader<ITarefaPdfDivisaoT
 
   @Override
   protected Object getTarefa(Params param) {
-    List<String> arquivos = getFiles(param, "Arquivos não informados");
-    long tamanho = getLong(param, "'tamanho' com valor inválido ");
-    
     TarefaPdfDivisaoTamanho tarefaTamanho = new TarefaPdfDivisaoTamanho();
-    tarefaTamanho.tamanho = tamanho;
-    tarefaTamanho.arquivos = arquivos;
+    tarefaTamanho.tamanho = Long.parseLong(param.getValue("tamanho"));
+    tarefaTamanho.arquivos = param.getValue("arquivos");
     return tarefaTamanho;
   }
 }
