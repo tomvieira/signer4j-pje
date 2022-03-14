@@ -20,12 +20,12 @@ import com.github.progress4j.imp.QuietlyProgress;
 import com.github.signer4j.imp.Config;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.gui.imp.FileListWindow;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
-import test.FileListWindow;
 
 class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
   
