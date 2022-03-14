@@ -44,7 +44,7 @@ class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
     
     final Optional<File> downloaded = download(target, new File(enviarPara));
 
-    if (downloaded.isPresent()) {
+    if (!downloaded.isPresent()) {
       throw new TaskException("Não foi possível download de:\n" + url);
     }
     
