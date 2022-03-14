@@ -27,7 +27,7 @@ import com.github.utils4j.imp.Strings;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
+class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
   
   private static enum Stage implements IStage {
     MERGING("Unindo arquivos");
@@ -44,7 +44,7 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
     }
   }
   
-  protected PjeJoinPdfTaskTask(Params request, ITarefaMedia pojo) {
+  protected PjeJoinPdfTask(Params request, ITarefaMedia pojo) {
     super(request, pojo);
   }
 

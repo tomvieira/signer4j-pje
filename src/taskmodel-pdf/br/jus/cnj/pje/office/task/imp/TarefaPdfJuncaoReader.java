@@ -23,7 +23,7 @@ class TarefaPdfJuncaoReader extends TarefaMediaReader<ITarefaMedia> {
 
   @Override
   protected ITask<?> createTask(Params output, ITarefaMedia pojo) throws IOException {
-    return new PjeJoinPdfTaskTask(output, pojo);
+    return new PjeJoinPdfTask(output, pojo);
   }
 
   @Override

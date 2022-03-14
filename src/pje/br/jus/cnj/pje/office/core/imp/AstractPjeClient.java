@@ -154,7 +154,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     }
   }
   
-  protected <H extends HttpUriRequestBase> H createOutput(H request, IPjeTarget target) {
+  protected final <H extends HttpUriRequestBase> H createOutput(H request, IPjeTarget target) {
     request.setHeader(HttpHeaders.COOKIE, target.getSession());
     request.setHeader(IPjeHeaders.VERSION, version.toString());
     request.setHeader(HttpHeaders.USER_AGENT, target.getUserAgent());
@@ -166,7 +166,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     return createOutput(new HttpGet(target.getEndPoint()), target);
   }
   
-  protected HttpUriRequestBase createInput(IPjeTarget target) {
+  private final HttpUriRequestBase createInput(IPjeTarget target) {
     return createGet(target);
   }
 
