@@ -132,7 +132,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
       } catch (Exception ed) {
         String message = "Incapaz de instanciar frontEnd da aplicação.\n" + ed.getMessage();
         LOGGER.error(message, ed);
-        MessageAlert.display(message);
+        MessageAlert.showInfo(message);
         System.exit(1);
       }
     }

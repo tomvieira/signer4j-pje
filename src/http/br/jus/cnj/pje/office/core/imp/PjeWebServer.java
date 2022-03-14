@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.HttpTools.touchQuietly;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
@@ -13,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
 
+import com.github.signer4j.gui.alert.MessageAlert;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -179,7 +178,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
         running.set(false);
       }
     } else {
-      invokeLater(() -> display("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!"));
+      MessageAlert.showInfo("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!");
       handleException(request, response, null);
     }
   }

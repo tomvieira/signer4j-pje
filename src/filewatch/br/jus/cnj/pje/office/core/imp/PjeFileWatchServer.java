@@ -109,7 +109,7 @@ class PjeFileWatchServer extends PjeURIServer {
               try(FileInputStream stream = new FileInputStream(f)) {
                 p.load(stream);
               } catch (Exception e) {
-                LOGGER.error("Não foi possível ler o arquivo '" + fileName + "'. Tarefa ignorada! (acesso simultâneo?)", e);
+                LOGGER.error("Não foi possível ler o arquivo '" + fileName + "'. Arquivo ignorado! (acesso simultâneo?)", e);
                 throw e;
               } finally {
                 f.delete(); //this is very important!
@@ -121,13 +121,13 @@ class PjeFileWatchServer extends PjeURIServer {
             
             Optional<PjeTaskReader> tr = PjeTaskReader.task(p.getProperty("task", ""));
             if (!tr.isPresent()) {
-              LOGGER.warn("Aquivo '" + fileName + "' com campo 'task' vazio. Tarefa ignorada!");
+              LOGGER.warn("Aquivo '" + fileName + "' com campo 'task' vazio. Arquivo ignorado!");
               return;
             }
             
             File input = new File(p.getProperty("arquivo", ""));
-            if (!input.exists()) {
-              LOGGER.warn("Aquivo '" + fileName + "' com campo 'arquivo' vazio. Tarefa ignorada!");
+            if (!input.exists() || input.length() == 0) {
+              LOGGER.warn("Aquivo '" + fileName + "' com campo 'arquivo' vazio ou de tamanho zero. Arquivo ignorado!");
               return;
             }
             

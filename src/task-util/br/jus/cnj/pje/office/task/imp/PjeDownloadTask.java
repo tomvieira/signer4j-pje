@@ -1,8 +1,6 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.IConstants.UTF_8;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.Throwables.tryCall;
 import static java.net.URLDecoder.decode;
 
@@ -50,7 +48,7 @@ class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
       throw new TaskException("Não foi possível download de:\n" + url);
     }
     
-    invokeLater(() -> display("Download concluído!"));
+    showInfo("Download concluído!");
     
     progress.end();
     

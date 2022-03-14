@@ -1,11 +1,12 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+import static java.util.stream.Collectors.toList;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,13 +17,15 @@ import com.github.pdfhandler4j.imp.PdfInputDescriptor.Builder;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.progress4j.imp.QuietlyProgress;
+import com.github.signer4j.imp.Config;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
-import com.github.utils4j.imp.Dates;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
+import test.FileListWindow;
 
 class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
   
@@ -47,21 +50,38 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
 
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
+
     IProgress progress = getProgress();
     
-    int size = arquivos.size();
-
-    progress.begin(Stage.MERGING, 3 * size + 1);
-
+    progress.info("Aguardando ordenação dos arquivos");
+    
     AtomicReference<Path> parent = new AtomicReference<>();
+
+    List<File> files = arquivos.stream()
+        .filter(Strings::hasText)
+        .map(s -> new File(s))
+        .filter(File::exists)
+        .peek(f -> parent.set(f.toPath().getParent()))
+        .collect(toList());
+      
+    Optional<String> fileName = new FileListWindow(Config.getIcon(), files).getFileName();
+    
+    if (!fileName.isPresent()) {
+      throw new InterruptedException();
+    }
+    
+    progress.info("Arquivos ordenados");
+
+    int size = files.size();
+
     Builder builder = new PdfInputDescriptor.Builder();
-    arquivos.stream()
-      .sorted()
-      .map(s -> Paths.get(s))
-      .peek(p -> parent.set(p.getParent()))
-      .forEach(path -> builder.add(path.toFile()));
+    
+    files.forEach(f -> builder.add(f));
+    
     Path output = parent.get();
     
+    progress.begin(Stage.MERGING, 3 * size + 1);
+
     InputDescriptor desc;
     try {
       desc = builder.output(output).build();
@@ -72,7 +92,7 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
     AtomicBoolean success = new AtomicBoolean(true);
     
     IProgress quietly = QuietlyProgress.wrap(progress);
-    new JoinPdfHandler("ARQUIVOS_UNIDOS_EM_" + Dates.stringNow())
+    new JoinPdfHandler(fileName.get())
       .apply(desc)
       .subscribe(
         (e) -> quietly.step(e.getMessage()),
@@ -90,7 +110,7 @@ class PjeJoinPdfTaskTask extends PjeAbstractMediaTask<ITarefaMedia> {
     
     progress.end();
    
-    invokeLater(() -> display("Arquivos unidos com sucesso.", "Ótimo!"));
+    showInfo("Arquivos unidos com sucesso.", "Ótimo!");
     return success();    
   }
 }

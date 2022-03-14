@@ -19,6 +19,7 @@ import com.github.pdfhandler4j.imp.event.PdfReadingEnd;
 import com.github.pdfhandler4j.imp.event.PdfReadingStart;
 import com.github.pdfhandler4j.imp.event.PdfStartEvent;
 import com.github.progress4j.IProgress;
+import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 
@@ -48,7 +49,7 @@ class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTam
   }
 
   @Override
-  protected boolean process(Path file, IProgress progress) {
+  protected boolean process(Path file, IQuietlyProgress progress) {
     Path parent = file.getParent();
     IInputFile input = new FileWrapper(file.toFile());
     Path output = parent.resolve(input.getShortName() + "_(VOLUMES DE ATÉ " + tamanho + "MB)");

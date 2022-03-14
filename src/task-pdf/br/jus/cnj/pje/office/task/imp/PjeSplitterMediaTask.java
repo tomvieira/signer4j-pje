@@ -1,12 +1,10 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.github.progress4j.IProgress;
+import com.github.progress4j.IQuietlyProgress;
 import com.github.progress4j.IStage;
 import com.github.progress4j.imp.QuietlyProgress;
 import com.github.progress4j.imp.SingleThreadProgress;
@@ -44,7 +42,7 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     IProgress progress = getProgress();
-    IProgress quietly =  SingleThreadProgress.wrap(QuietlyProgress.wrap(progress));
+    IQuietlyProgress quietly =  QuietlyProgress.wrap(SingleThreadProgress.wrap(progress));
     final int size = arquivos.size();
     
     boolean success = true;
@@ -64,9 +62,9 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
     
     progress.end();
     
-    invokeLater(() -> display("Arquivos divididos com sucesso.", "Ótimo!"));
+    showInfo("Arquivos divididos com sucesso.", "Ótimo!");
     return success();
   }
 
-  protected abstract boolean process(Path file, IProgress progress);
+  protected abstract boolean process(Path file, IQuietlyProgress progress);
 }

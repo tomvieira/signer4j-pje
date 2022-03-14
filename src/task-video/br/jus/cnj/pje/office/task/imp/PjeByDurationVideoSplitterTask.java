@@ -1,13 +1,11 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.utils4j.imp.Throwables.tryRun;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.github.progress4j.IProgress;
+import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoFile;
@@ -33,9 +31,9 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
   }
   
   @Override
-  protected boolean process(Path file, IProgress progress) {
+  protected boolean process(Path file, IQuietlyProgress progress) {
  
-    tryRun(() -> progress.begin(SplitterStage.SPLITTING_PATIENT));
+    progress.begin(SplitterStage.SPLITTING_PATIENT);
     
     Path output = file.getParent();
     IVideoFile video = VideoTool.FFMPEG.call(file.toFile());
@@ -62,7 +60,7 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
         }
       );
     
-    tryRun(progress::end);
+    progress.end();
 
     return success.get();
   }

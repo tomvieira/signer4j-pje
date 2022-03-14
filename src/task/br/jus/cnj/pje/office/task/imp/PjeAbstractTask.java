@@ -2,8 +2,6 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
-import static com.github.signer4j.gui.alert.MessageAlert.displayFail;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.io.File;
 import java.util.Optional;
@@ -15,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
+import com.github.signer4j.gui.alert.MessageAlert;
 import com.github.signer4j.gui.alert.PermissionDeniedAlert;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
@@ -161,7 +160,19 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected final Optional<File> download(final IPjeTarget target) throws TaskException {
     return download(target, null);
   }    
+
+  protected final void showInfo(String message) {
+    MessageAlert.showInfo(message);
+  }
   
+  protected final void showInfo(String message, String textButton) {
+    MessageAlert.showInfo(message, textButton);
+  }
+  
+  protected final void showFail(String message) {
+    MessageAlert.showFail(message);
+  }
+
   protected final Optional<File> download(final IPjeTarget target, File saveAs) throws TaskException {
     Args.requireNonNull(target, "target is null");
     final IProgress progress = getProgress();
@@ -198,7 +209,6 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     
     return status.getDownloadedFile();
   }
-
   
   protected void checkMainParams() throws TaskException {
     if (!isInternalTask) {
@@ -247,13 +257,13 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       return response;
     } catch(InterruptedException e) {
       fail = progress.abort(e);
-      invokeLater(() -> displayFail(CANCELED_OPERATION_MESSAGE));
+      showFail(CANCELED_OPERATION_MESSAGE);
     } catch(Exception e) {
       fail = progress.abort(e);
       String friendlyMessage = Thread.currentThread().isInterrupted() ? 
           CANCELED_OPERATION_MESSAGE : 
           "Não foi possível realizar a operação!\n" + Throwables.rootMessage(fail);
-      invokeLater(() -> displayFail(friendlyMessage));
+      showFail(friendlyMessage);
     }
     
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
@@ -271,7 +281,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     if (!getSecurityAgent().isPermitted(params, whyNot)) {
       String cause = whyNot.toString();
       if (!cause.isEmpty()) {
-        invokeLater(() -> PermissionDeniedAlert.display(cause));
+        PermissionDeniedAlert.showInfo(cause);
       }
       throw new TaskException("Permissão negada. " + cause);
     }

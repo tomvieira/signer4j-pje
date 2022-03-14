@@ -2,7 +2,6 @@
 package br.jus.cnj.pje.office.imp;  
 
 import static br.jus.cnj.pje.office.core.imp.PjeConfig.setup;
-import static com.github.signer4j.gui.alert.MessageAlert.display;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
@@ -12,6 +11,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.signer4j.gui.alert.MessageAlert;
 import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.Strings;
 import com.github.utils4j.imp.Threads;
@@ -52,7 +52,7 @@ public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
 
   @Override
   public final void onFailStart(Exception e) {
-    display("Uma versão antiga do PjeOffice precisa ser fechada e/ou desinstalada do seu computador.\n" + e.getMessage());
+    MessageAlert.showInfo("Uma versão antiga do PjeOffice precisa ser fechada e/ou desinstalada do seu computador.\n" + e.getMessage());
     System.exit(1);
   }
 

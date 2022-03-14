@@ -1,8 +1,6 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.File;
@@ -133,6 +131,6 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   protected void showCanNotWriteMessage(File destination) {
-    invokeAndWait(() -> display("Não há permissão de escrita na pasta:\n" + destination.getCanonicalPath() + "\nEscolha uma nova!"));
+    showInfo("Não há permissão de escrita na pasta:\n" + destination.getAbsolutePath() + "\nEscolha uma nova!");
   }
 }

@@ -1,8 +1,5 @@
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.signer4j.gui.alert.MessageAlert.display;
-import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -153,11 +150,11 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     }
     
     if (success != size) {
-      invokeLater(() -> display("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades."));
+      showFail("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades.");
       return fail(progress.getAbortCause());
     }
     
-    invokeLater(() -> display("Arquivos assinados com sucesso!", "Ótimo!"));
+    showInfo("Arquivos assinados com sucesso!", "Ótimo!");
     return responses;
   }
   
