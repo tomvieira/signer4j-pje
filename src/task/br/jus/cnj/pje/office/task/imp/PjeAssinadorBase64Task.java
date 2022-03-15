@@ -135,7 +135,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
           saida
         );
       }catch(Exception e) {
-        throw progress.abort(new TaskException("Não foi possível enviar os dados ao servidor", e));
+        throw progress.abort(showFail("Não foi possível enviar os dados ao servidor.", e));
       }finally {
         saida.forEach(IAssinadorBase64ArquivoAssinado::dispose);
         saida.clear();

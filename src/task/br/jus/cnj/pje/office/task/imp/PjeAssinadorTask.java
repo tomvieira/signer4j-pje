@@ -150,8 +150,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
     }
     
     if (success != size) {
-      showFail("Alguns arquivos NÃO puderam ser assinados.\nVeja detalhes no registro de atividades.");
-      return fail(progress.getAbortCause());
+      throw showFail("Alguns arquivos NÃO puderam ser assinados.", progress.getAbortCause());
     }
     
     showInfo("Arquivos assinados com sucesso!", "Ótimo!");

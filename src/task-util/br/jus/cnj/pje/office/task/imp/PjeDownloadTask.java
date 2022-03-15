@@ -13,7 +13,6 @@ import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
-import br.jus.cnj.pje.office.task.IPjeTarget;
 import br.jus.cnj.pje.office.task.ITarefaDownload;
 
 class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
@@ -38,14 +37,12 @@ class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     final IProgress progress = getProgress();
     
-    final IPjeTarget target = getExternalTarget(url);
-      
-    progress.info("URL: %s", target.getEndPoint());
+    progress.info("URL: %s", url);
     
-    final Optional<File> downloaded = download(target, new File(enviarPara));
-
+    final Optional<File> downloaded = download(getExternalTarget(url), new File(enviarPara));
+    
     if (!downloaded.isPresent()) {
-      throw new TaskException("Não foi possível download de:\n" + url);
+      throw showFail("Não foi possível download do arquivo.", "URL: " + url, progress.getAbortCause());
     }
     
     showInfo("Download concluído!");

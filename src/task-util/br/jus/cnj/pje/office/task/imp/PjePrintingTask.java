@@ -62,7 +62,7 @@ class PjePrintingTask extends PjeAbstractTask<ITarefaImpressao> {
         printer.flush();
       }while(++i < size);
     }catch(IOException e) {
-      throw progress.abort(new TaskException("A impressora '" + impressora + "' está operacional?", e));
+      throw progress.abort(showFail("A impressora '" + impressora + "' não está operacional.", e));
     }
     progress.end();
     return success();

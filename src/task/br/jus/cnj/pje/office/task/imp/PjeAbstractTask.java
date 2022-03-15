@@ -2,6 +2,7 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
+import static com.github.utils4j.imp.Strings.empty;
 
 import java.io.File;
 import java.util.Optional;
@@ -18,11 +19,11 @@ import com.github.signer4j.gui.alert.PermissionDeniedAlert;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.taskresolver4j.imp.AbstractTask;
+import com.github.utils4j.gui.imp.ExceptionAlert;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.DownloadStatus;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
-import com.github.utils4j.imp.Throwables;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
 import br.jus.cnj.pje.office.core.IPjeResponse;
@@ -30,6 +31,7 @@ import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
@@ -168,16 +170,25 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected final void showInfo(String message, String textButton) {
     MessageAlert.showInfo(message, textButton);
   }
+
+  protected final TaskException showFail(String message) {
+    return showFail(message, null);
+  }
   
-  protected final void showFail(String message) {
-    MessageAlert.showFail(message);
+  protected final TaskException showFail(String message, Throwable cause) {
+    return showFail(message, empty(), cause);
+  }
+  
+  protected final TaskException showFail(String message, String detail, Throwable cause) {
+    ExceptionAlert.show(PjeConfig.getIcon(), message, detail, cause);
+    return new TaskException(message + "\n" + detail, cause);
   }
 
-  protected final Optional<File> download(final IPjeTarget target, File saveAs) throws TaskException {
+  protected final Optional<File> download(final IPjeTarget target, File saveAt) {
     Args.requireNonNull(target, "target is null");
     final IProgress progress = getProgress();
     
-    final DownloadStatus status = new DownloadStatus(saveAs) {
+    final DownloadStatus status = new DownloadStatus(saveAt) {
       private long total;
       private int increment = 1;
       
@@ -204,7 +215,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     try {
       getPjeClient().down(target, status);
     } catch (PJeClientException e) {
-      throw progress.abort(new TaskException("Não foi possível realizar o download de " + target.getEndPoint(), e));
+      progress.abort(e);
     }
     
     return status.getDownloadedFile();
@@ -257,15 +268,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       return response;
     } catch(InterruptedException e) {
       fail = progress.abort(e);
-      showFail(CANCELED_OPERATION_MESSAGE);
+      MessageAlert.showFail(CANCELED_OPERATION_MESSAGE);
     } catch(Exception e) {
       fail = progress.abort(e);
-      String friendlyMessage = Thread.currentThread().isInterrupted() ? 
-          CANCELED_OPERATION_MESSAGE : 
-          "Não foi possível realizar a operação!\n" + Throwables.rootMessage(fail);
-      showFail(friendlyMessage);
     }
-    
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
     return fail(fail);
   }

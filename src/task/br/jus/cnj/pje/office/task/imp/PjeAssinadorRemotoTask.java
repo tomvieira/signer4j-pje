@@ -80,7 +80,7 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
       final Optional<File> downloaded = download(target);
       
       if (!downloaded.isPresent()) {
-        throw new TaskException("Não foi possível download de:\n" + url);
+        throw showFail("Não foi possível download do arquivo.", "URL: " + url, progress.getAbortCause());
       }
       
       tempFiles.add(new ArquivoAssinado(arquivo, downloaded.get()) {

@@ -81,7 +81,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
     try {
       signedData = token.signerBuilder().usingAlgorigthm(algorithm).build().process(content);
     } catch (Signer4JException e) {
-      throw progress.abort(new TaskException("Não foi possível assinar a mensagem", e));
+      throw progress.abort(showFail("Não foi possível assinar a mensagem.", e));
     } finally {
       token.logout();
     }
@@ -91,7 +91,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
     try {
       response = send(signedData);
     }catch(Exception e) {
-      throw progress.abort(new TaskException("Não foi possível enviar os dados ao servidor", e));
+      throw progress.abort(showFail("Não foi possível enviar os dados ao servidor.", e));
     }  
     progress.end();
     return response;

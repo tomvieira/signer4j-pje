@@ -86,7 +86,10 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     try {
       desc = builder.output(output).build();
     } catch (IOException e) {
-      throw progress.abort(new TaskException("Não foi possível gerar arquivo de saída. Permissão?", e));
+      throw progress.abort(showFail(
+        "Não foi possível gerar arquivo de saída.", 
+        output.toString() + " é pasta válida com permissão de escrita?", e)
+      );
     }
     
     AtomicBoolean success = new AtomicBoolean(true);
@@ -102,11 +105,11 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
         }
       );
     
-    progress.info("Unidos " + size + " arquivos"); 
-    
     if (!success.get()) {
-      throw new TaskException("Não foi possível unir os arquivos.\n", progress.getAbortCause());
+      throw showFail("Não foi possível unir os arquivos.", progress.getAbortCause());
     }
+
+    progress.info("Unidos " + size + " arquivos"); 
     
     progress.end();
    

@@ -26,8 +26,8 @@ import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoParidade;
 class PjeByParityPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoParidade> {
   
   private static enum Stage implements IStage {
-    SPLITING_EVEN("Excluindo páginas ímpares"),
-    SPLITING_ODD("Excluindo páginas pares");
+    SPLITING_EVEN("Descartando páginas ímpares"),
+    SPLITING_ODD("Descartando páginas pares");
 
     private final String message;
 
