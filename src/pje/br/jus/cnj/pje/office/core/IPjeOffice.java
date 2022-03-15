@@ -26,4 +26,6 @@ public interface IPjeOffice extends IBootable {
   boolean isConfirmStrategy();
 
   void kill();
+
+  void showOfflineSigner();
 }

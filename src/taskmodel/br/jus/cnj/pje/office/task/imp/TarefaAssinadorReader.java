@@ -1,7 +1,11 @@
 package br.jus.cnj.pje.office.task.imp;
 
+import static br.jus.cnj.pje.office.task.imp.AssinaturaPadrao.NOT_ENVELOPED;
 import static br.jus.cnj.pje.office.task.imp.MainRequestReader.MAIN;
+import static br.jus.cnj.pje.office.task.imp.PjeSignMode.DEFINIDO;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.CNJ_ASSINADOR;
+import static com.github.signer4j.imp.SignatureAlgorithm.SHA1withRSA;
+import static com.github.signer4j.imp.SignatureType.ATTACHED;
 import static com.github.utils4j.imp.Strings.optional;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -150,10 +154,10 @@ class TarefaAssinadorReader extends AbstractRequestReader<Params, ITarefaAssinad
   @Override
   public String toJson(Params input) throws Exception {
     TarefaAssinador ta = new TarefaAssinador();
-    ta.modo = input.orElse("modo", PjeSignMode.DEFINIDO);
-    ta.padraoAssinatura = input.orElse("padraoAssinatura", AssinaturaPadrao.NOT_ENVELOPED);
-    ta.tipoAssinatura = input.orElse("tipoAssinatura", SignatureType.ATTACHED);
-    ta.algoritmoHash = input.orElse("algoritmoHash", SignatureAlgorithm.SHA1withRSA);
+    ta.modo = PjeSignMode.fromString(input.orElse("modo", DEFINIDO.getKey()));
+    ta.padraoAssinatura = AssinaturaPadrao.fromString(input.orElse("padraoAssinatura", NOT_ENVELOPED.getKey()));
+    ta.tipoAssinatura = SignatureType.fromString(input.orElse("tipoAssinatura", ATTACHED.getKey()));
+    ta.algoritmoHash = SignatureAlgorithm.fromString(input.orElse("algoritmoHash", SHA1withRSA.getKey()));
     ta.enviarPara = input.getValue("enviarPara");
     ta.arquivos = input.orElse("arquivos", Collections.<String>emptyList()).stream()
     .map(a -> new File(a))

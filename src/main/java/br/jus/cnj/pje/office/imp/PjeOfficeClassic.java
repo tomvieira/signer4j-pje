@@ -45,8 +45,8 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     MenuItem mnuConfig = new MenuItem("Configuração de certificado");
     mnuConfig.addActionListener(e -> office.showCertificates());
 
-//    MenuItem mnuSigner = new MenuItem("Assinador offline");
-//    mnuSigner.addActionListener(e -> office.showOfflineSigner());
+    MenuItem mnuSigner = new MenuItem("Assinador offline");
+    mnuSigner.addActionListener(e -> office.showOfflineSigner());
 
     MenuItem mnuServer = new MenuItem("Servidores autorizados");
     mnuServer.addActionListener(e -> office.showAuthorizedServers());
@@ -113,7 +113,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     mnuOption.add(mnuDev);
 
     popup.add(mnuConfig);
-//    popup.add(mnuSigner);
+    popup.add(mnuSigner);
     popup.add(mnuServer);
     popup.addSeparator();
     popup.add(mnuSecurity);

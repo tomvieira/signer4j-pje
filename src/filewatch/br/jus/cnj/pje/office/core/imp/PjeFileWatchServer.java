@@ -1,5 +1,6 @@
 package br.jus.cnj.pje.office.core.imp;
 
+import static com.github.utils4j.imp.Strings.textOrNull;
 import static com.github.utils4j.imp.Strings.trim;
 import static com.github.utils4j.imp.Throwables.tryRun;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
@@ -78,7 +79,7 @@ class PjeFileWatchServer extends PjeURIServer {
         final Params params = Params.create();
 
         List<String> arquivos = block.stream()
-          .peek(p -> p.forEach((k, v) -> params.of(trim(k), trim(v))))
+          .peek(p -> p.forEach((k, v) -> params.of(trim(k), textOrNull(trim(v)))))
           .map (p -> p.getProperty("arquivo"))
           .collect(toList());
       

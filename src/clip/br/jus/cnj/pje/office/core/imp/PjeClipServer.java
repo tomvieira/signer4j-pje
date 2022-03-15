@@ -84,7 +84,7 @@ class PjeClipServer extends PjeURIServer {
     final Params params = Params.create()
         .of("servidor", getServerEndpoint())
         .of("url", content)
-        .of("enviarPara", "D:\\temp\\baixado.mp4");
+        .of("enviarPara", "C:\\Users\\Leonardo\\Documents\\TEMP\\baixado.mp4");
 
     Optional<String> uri;
     try {

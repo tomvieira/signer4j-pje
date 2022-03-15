@@ -14,7 +14,7 @@ public class ShellExtension {
   
   private ShellExtension() {}
 
-	public static void main(String[] args) {
+	public static void main(String... args) {
     Optional<Path> watchPath = Environment.resolveTo(ENVIRONMENT_VARIABLE, "watch");
     if (!watchPath.isPresent()) {
       return;

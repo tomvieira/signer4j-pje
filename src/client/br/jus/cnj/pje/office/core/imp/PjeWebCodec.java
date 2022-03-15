@@ -70,23 +70,21 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
   
   @Override
   public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
-    try {
+    
+    try(OutputStream output = status.onNewTry(1)) {
       final HttpGet get = (HttpGet)supplier.get();
-
+      
       try(CloseableHttpResponse response = client.execute(get)) {
         int code = response.getCode();
 
         if (!isSuccess(code)) { 
           throw new PJeClientException("Servidor retornando - HTTP Code: " + code);
         }
-        
         HttpEntity entity = response.getEntity();
         if (entity == null) {
           throw new PJeClientException("Servidor não foi capaz de retornar dados. (entity is null) - HTTP Code: " + code);
         }
-        
-        try(OutputStream output = status.onNewTry(1)) {
-          
+        try {
           final long total = entity.getContentLength();
           final InputStream input = entity.getContent();
           
@@ -97,12 +95,10 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
           for(int length, written = 0; (length = input.read(buffer)) > 0; status.onStatus(total, written += length))
             output.write(buffer, 0, length);
           status.onEndDownload();
-          
+            
         } catch(InterruptedException e) {
-          status.onDownloadFail(e);
           throw new PJeClientException("Download interrompido - HTTP Code: " + code, e);
         } catch(Exception e) {
-          status.onDownloadFail(e);
           throw new PJeClientException("Falha durante o download do arquivo - HTTP Code: " + code, e);
         } finally {
           EntityUtils.consumeQuietly(entity);
@@ -110,8 +106,9 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
       } finally {
         get.clear();
       }
-    } catch(CancellationException e) {
-      throw new PJeClientException("Download cancelado!", e);
+    } catch (Exception e) {
+      status.onDownloadFail(e);
+      throw e;
     }
   }
 }

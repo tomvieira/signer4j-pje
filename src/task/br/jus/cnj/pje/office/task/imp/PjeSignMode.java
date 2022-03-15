@@ -34,7 +34,7 @@ public enum PjeSignMode implements IPjeSignMode {
   private static final PjeSignMode[] VALUES = PjeSignMode.values(); 
   
   @JsonCreator
-  public static IPjeSignMode fromString(final String key) {
+  public static PjeSignMode fromString(final String key) {
     return get(key).orElse(null);
   }
 
@@ -49,7 +49,7 @@ public enum PjeSignMode implements IPjeSignMode {
     return name.toLowerCase();
   }
 
-  public static Optional<IPjeSignMode> get(String name) {
+  public static Optional<PjeSignMode> get(String name) {
     for(PjeSignMode a: VALUES) {
       if (a.name.equalsIgnoreCase(name))
         return Optional.of(a);

@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
+import com.github.signer4j.imp.SignatureAlgorithm;
+import com.github.signer4j.imp.SignatureType;
 import com.github.signer4j.imp.WindowLockDettector;
+import com.github.signer4j.pjeoffice.shell.ShellExtension;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;
@@ -24,6 +27,9 @@ import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
+import br.jus.cnj.pje.office.task.imp.AssinaturaPadrao;
+import br.jus.cnj.pje.office.task.imp.PjeSignMode;
+import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
@@ -242,16 +248,16 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     startAsync(PjeCertificateAcessor.INSTANCE::logout);    
   }
   
-//  @Override
-//  public void showOfflineSigner() {
-//    checkIsAlive();
-
-//    final Params input = Params.create()
-//        .of("servidor", commander.getServerEndpoint())
-//        .of("modo", PjeSignMode.LOCAL);
-//      
-//    String request = tryCall(() -> CNJ_ASSINADOR.toUri(input), (String)null);
-//
-//    commander.execute(request);
-//  }
+  @Override
+  public void showOfflineSigner() {
+    checkIsAlive();
+    ShellExtension.main(
+      PjeTaskReader.CNJ_ASSINADOR.getId(), 
+      ".", 
+      "selectfolder",  //enviarPara
+      PjeSignMode.LOCAL.getKey(), //modo
+      AssinaturaPadrao.NOT_ENVELOPED.getKey(),//padraoAssinatura
+      SignatureType.ATTACHED.getKey(), // tipoAssinatura
+      SignatureAlgorithm.SHA1withRSA.getName()); //algoritmoHash
+  }
 }

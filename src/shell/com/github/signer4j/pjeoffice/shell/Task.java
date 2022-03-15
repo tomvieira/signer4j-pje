@@ -10,6 +10,10 @@ enum Task {
     @Override
     public void echo(String[] args, Properties output) {
       output.put("enviarPara", at(args, 2));
+      output.put("modo", at(args, 3));
+      output.put("padraoAssinatura", at(args, 4));
+      output.put("tipoAssinatura", at(args, 5));
+      output.put("algoritmoHash", at(args, 6));
     }
   },
   PDF_JOIN("pdf.join"),
