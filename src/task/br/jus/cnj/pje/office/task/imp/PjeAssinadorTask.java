@@ -25,6 +25,8 @@ import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
 abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
 
+  private static final int MAX_SEQUENTIAL_FAILURE_COUNT = 5;
+  
   private static enum Stage implements IStage {
     
     SELECTING_FILES("Seleção de arquivos"),
@@ -89,7 +91,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
       IByteProcessor processor = padraoAssinatura.getByteProcessor(token, params);
       
       progress.begin(Stage.PROCESSING_FILES, 2 * size); //dois passos para cada arquivo (assinar e enviar)
-      
+
+      int failsCount = 0;
       for(final IArquivoAssinado file: files) {
         try {
           final String fileName = file.getNome().orElse(Integer.toString(++index));
@@ -98,6 +101,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           
           try {
             file.sign(processor);
+            failsCount = 0;
           } catch (IOException e) {
             String message = "Arquivo ignorado. Não foi possível ler os bytes do arquivo temporário: ";
             LOGGER.warn(message + file.toString());
@@ -125,7 +129,14 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
             throw new TemporaryException(e);
           }
         }catch(TemporaryException e) {
-          progress.abort(e);
+          if (++failsCount == MAX_SEQUENTIAL_FAILURE_COUNT) {
+            throw showFail("O processo de assinatura foi interrompido!", 
+              "Foi alcançado o número máximo de falhas de assinatura consecutivas (" + failsCount + "). " +
+              "O token/certificado não está conectado/disponível, ou arquivos muito "+ 
+              "grandes ou já foram assinados.", e);
+          }            
+          
+          progress.abort(e);          
           int remainder = size - index - 1;
           if (remainder >= 0) {
             if (!token.isAuthenticated()) {
@@ -134,7 +145,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
               }catch(Signer4JRuntimeException ex) {
                 progress.abort(e);
                 ex.addSuppressed(e);
-                throw new TaskException("Não foi possível recuperar autenticação do token.", ex);
+                throw showFail("Não foi possível recuperar autenticação do token.", ex);
               }
               processor = padraoAssinatura.getByteProcessor(token, params);
             }
