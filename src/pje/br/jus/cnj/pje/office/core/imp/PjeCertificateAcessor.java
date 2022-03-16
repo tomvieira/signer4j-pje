@@ -72,8 +72,8 @@ public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAc
     PjeConfig.loadA1Paths(a1Files::add);
     PjeConfig.loadA3Paths(a3Libraries::add);
     this.strategy = PjeAuthStrategy.getDefault();
-    //this.devManager = new DeviceManager(new NotDuplicatedStrategy(new FilePathStrategy())).install(toPaths(a1Files));
-    this.devManager = new MSCAPIDevManager();
+    this.devManager = new DeviceManager(new NotDuplicatedStrategy(new FilePathStrategy())).install(toPaths(a1Files));
+    //this.devManager = new MSCAPIDevManager();
   }
   
   private IPjeToken toToken(IDevice device) {
