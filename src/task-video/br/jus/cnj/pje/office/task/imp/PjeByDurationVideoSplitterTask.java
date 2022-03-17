@@ -24,7 +24,7 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateParams() throws TaskException, InterruptedException {
     super.validateParams();
     ITarefaVideoDivisaoDuracao pojo = getPojoParams();
     this.duracao = pojo.getDuracao();

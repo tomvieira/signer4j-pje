@@ -130,6 +130,22 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
       return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
     }
   },
+  PDF_SPLIT_BY_PAGES("pdf.split_by_pages") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaPdfDivisaoPaginasReader.INSTANCE;
+    }
+
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaPdfDivisaoPaginasReader.INSTANCE.toJson(input);
+    }
+    
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".pdf");
+    }
+  },
   VIDEO_SPLIT_BY_DURATION("video.split_by_duration") {
     @Override
     public IRequestReader<Params> get() {

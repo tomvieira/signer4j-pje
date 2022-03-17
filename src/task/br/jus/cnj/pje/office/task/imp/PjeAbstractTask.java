@@ -230,7 +230,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   }
 
-  protected final void checkParams() throws TaskException {
+  protected final void checkParams() throws TaskException, InterruptedException {
     checkMainParams();
     validateParams();
   }
@@ -293,7 +293,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   }
 
-  protected abstract void validateParams() throws TaskException;
+  protected abstract void validateParams() throws TaskException, InterruptedException;
   
   protected abstract ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException;
 }

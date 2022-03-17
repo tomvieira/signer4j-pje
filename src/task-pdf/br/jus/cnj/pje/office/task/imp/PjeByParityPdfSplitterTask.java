@@ -52,7 +52,7 @@ class PjeByParityPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoP
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateParams() throws TaskException, InterruptedException {
     super.validateParams();
     this.paridade = getPojoParams().isParidade();
   }

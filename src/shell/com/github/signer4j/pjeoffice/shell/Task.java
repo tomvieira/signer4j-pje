@@ -35,6 +35,7 @@ enum Task {
       output.put("totalPaginas", at(args, 2));
     }
   },
+  PDF_SPLIT_BY_PATES("pdf.split_by_pages"),
   VIDEO_SPLIT_BY_DURATION("video.split_by_duration") {
     @Override
     public void echo(String[] args, Properties output) {

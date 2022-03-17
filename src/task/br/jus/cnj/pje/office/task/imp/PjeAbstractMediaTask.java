@@ -21,7 +21,7 @@ abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractT
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateParams() throws TaskException, InterruptedException {
     ITarefaMedia pojo = getPojoParams();
     this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos")
         .stream()

@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.github.progress4j.IProgress;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
@@ -28,7 +27,7 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateParams() throws TaskException, InterruptedException {
     super.validateParams();
     ITarefaVideoDivisaoTamanho pojo = getPojoParams();
     this.tamanho = pojo.getTamanho();
@@ -39,7 +38,7 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
         10, 
         Integer.MAX_VALUE - 1
       ));
-      this.tamanho = total.orElseThrow(() -> new TaskException(IProgress.CANCELED_OPERATION_MESSAGE));
+      this.tamanho = total.orElseThrow(InterruptedException::new);
     }
   }
 

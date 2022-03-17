@@ -18,7 +18,6 @@ import com.github.pdfhandler4j.imp.event.PdfPageEvent;
 import com.github.pdfhandler4j.imp.event.PdfReadingEnd;
 import com.github.pdfhandler4j.imp.event.PdfReadingStart;
 import com.github.pdfhandler4j.imp.event.PdfStartEvent;
-import com.github.progress4j.IProgress;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
@@ -34,7 +33,7 @@ class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTam
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateParams() throws TaskException, InterruptedException {
     super.validateParams();
     this.tamanho = getPojoParams().getTamanho();
     if (this.tamanho == 0) {
@@ -44,7 +43,7 @@ class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTam
         2, 
         1024
       ));
-      this.tamanho = total.orElseThrow(() -> new TaskException(IProgress.CANCELED_OPERATION_MESSAGE));
+      this.tamanho = total.orElseThrow(InterruptedException::new);
     }
   }
 
