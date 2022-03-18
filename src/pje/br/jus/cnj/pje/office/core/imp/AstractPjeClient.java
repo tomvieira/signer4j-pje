@@ -119,7 +119,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
   @Override
   public final void down(IPjeTarget target, IDownloadStatus status) throws PJeClientException {
     Args.requireNonNull(status, "status is null");
-    final Supplier<HttpUriRequestBase> supplier = () -> createInput(
+    final Supplier<HttpGet> supplier = () -> createGet(
       Args.requireNonNull(target, "target is null")
     );
     get(supplier, status);
@@ -142,7 +142,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     }
   }
   
-  private void get(final Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws PJeClientException {
+  private void get(final Supplier<HttpGet> supplier, IDownloadStatus status) throws PJeClientException {
     try {
       this.socket.get(supplier, status);
     } catch (PJeClientException e) {
@@ -166,10 +166,6 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     return createOutput(new HttpGet(target.getEndPoint()), target);
   }
   
-  private final HttpUriRequestBase createInput(IPjeTarget target) {
-    return createGet(target);
-  }
-
   protected abstract T createOutput(IPjeTarget target, Object pojo) throws Exception;
 
   protected abstract T createOutput(IPjeTarget target, ISignedData signedData) throws Exception;
@@ -180,6 +176,3 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
 
   protected abstract T createOutput(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws Exception;
 }
-
-
-

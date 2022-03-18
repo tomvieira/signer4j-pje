@@ -114,11 +114,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return new PjeTarget(url, getUserAgent(), "");
   }
   
-  protected void throwCancel() throws InterruptedException {
+  protected final void throwCancel() throws InterruptedException {
     throwCancel(CANCELED_OPERATION_MESSAGE);
   }
   
-  protected void throwCancel(String message) throws InterruptedException {
+  protected final void throwCancel(String message) throws InterruptedException {
     Thread.currentThread().interrupt();
     throw getProgress().abort(new InterruptedException(message));
   }
@@ -221,7 +221,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return status.getDownloadedFile();
   }
   
-  protected void checkMainParams() throws TaskException {
+  protected final void checkMainParams() throws TaskException {
     if (!isInternalTask) {
       IMainParams main = getMainRequest();
       PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
@@ -230,7 +230,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   }
 
-  protected final void checkParams() throws TaskException, InterruptedException {
+  private final void checkParams() throws TaskException, InterruptedException {
     checkMainParams();
     validateParams();
   }
@@ -257,7 +257,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.step("Acesso permitido");
       progress.end();
       
-      beforeGet();
+      onBeforeDoGet();
       
       progress.begin(Stage.TASK_EXECUTION, 2);
       progress.step("Executando a tarefa '%s'", getId());
@@ -276,7 +276,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return fail(fail);
   }
   
-  protected void beforeGet() {}
+  protected void onBeforeDoGet() {}
 
   protected void checkServerPermission() throws TaskException {
     if (this.isInternalTask) {

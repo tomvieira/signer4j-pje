@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
@@ -30,7 +29,7 @@ import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.IAssinadorHashArquivo;
 import br.jus.cnj.pje.office.task.IPjeTarget;
 
-class PjeWebClient extends AstractPjeClient<HttpUriRequestBase> {
+class PjeWebClient extends AstractPjeClient<HttpPost> {
 
   PjeWebClient(CloseableHttpClient client, Version version) {
     super(version, new PjeWebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);

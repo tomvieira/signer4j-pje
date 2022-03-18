@@ -59,7 +59,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
    * Garante que a senha seja solicitada em todo ato de autenticação em PjeAuthenticatorTask e suas derivações 
    */
   @Override
-  protected final void beforeGet() {
+  protected final void onBeforeDoGet() {
     forceLogout();
   }  
 

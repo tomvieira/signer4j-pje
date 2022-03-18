@@ -2,7 +2,8 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.nio.charset.Charset;
 
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.json.JSONObject;
 
@@ -40,7 +41,7 @@ class PJeStdioClient extends PjeClientWrapper {
     }
 
     @Override
-    public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+    public void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws Exception {
       codec.get(supplier, status);
     }
 
@@ -61,7 +62,7 @@ class PJeStdioClient extends PjeClientWrapper {
     }
     
     @Override
-    public PjeTaskResponse post(final Supplier<HttpUriRequestBase> supplier, IResultChecker checkResults) throws Exception {
+    public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults) throws Exception {
       try {
         super.post(supplier, checkResults);
         return PjeClientMode.STDIO.success().apply("success");

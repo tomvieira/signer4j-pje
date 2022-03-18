@@ -2,7 +2,7 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.nio.charset.Charset;
 
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.json.JSONObject;
 
 import com.github.utils4j.IDownloadStatus;
@@ -20,7 +20,7 @@ class PJeClipClient extends PjeClientWrapper {
   }
   
   private static class PjeClipJsonCodec extends SocketCodec<JSONObject> {
-    private IGetCodec codec;
+    private final IGetCodec codec;
     private final Charset charset;
     
     PjeClipJsonCodec(Charset charset, IGetCodec downloader) {
@@ -34,7 +34,7 @@ class PJeClipClient extends PjeClientWrapper {
     }
 
     @Override
-    public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+    public void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws Exception {
       codec.get(supplier, status);
     }
 

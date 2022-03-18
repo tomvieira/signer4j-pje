@@ -29,7 +29,6 @@ import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
 import com.github.signer4j.imp.DeviceCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
-import com.github.signer4j.imp.MSCAPIDevManager;
 import com.github.signer4j.imp.NotDuplicatedStrategy;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
@@ -38,14 +37,13 @@ import com.github.signer4j.imp.exception.NoTokenPresentException;
 import com.github.signer4j.imp.exception.Signer4JException;
 import com.github.signer4j.imp.exception.TokenLockedException;
 
-import br.jus.cnj.pje.office.core.IPjeCertificateAcessor;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.signer4j.IPjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.imp.PjeToken;
 
-public enum PjeCertificateAcessor implements IPjeCertificateAcessor, IPjeTokenAccess {
+public enum PjeCertificateAcessor implements IPjeTokenAccess {
   
   INSTANCE;
   

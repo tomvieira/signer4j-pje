@@ -17,7 +17,6 @@ import com.github.pdfhandler4j.imp.PdfInputDescriptor.Builder;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.progress4j.imp.QuietlyProgress;
-import com.github.signer4j.imp.Config;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.gui.imp.FileListWindow;
@@ -25,6 +24,7 @@ import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
+import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
 class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
@@ -64,7 +64,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
         .peek(f -> parent.set(f.toPath().getParent()))
         .collect(toList());
       
-    Optional<String> fileName = new FileListWindow(Config.getIcon(), files).getFileName();
+    Optional<String> fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
     
     if (!fileName.isPresent()) {
       throw new InterruptedException();

@@ -7,7 +7,6 @@ import java.util.concurrent.CancellationException;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
@@ -22,7 +21,7 @@ import com.github.utils4j.imp.function.Supplier;
 
 import br.jus.cnj.pje.office.core.IResultChecker;
 
-class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
+class PjeWebCodec extends SocketCodec<HttpPost> {
 
   private static boolean isSuccess(int code) {
     return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
@@ -40,9 +39,9 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
   }
 
   @Override
-  public PjeTaskResponse post(final Supplier<HttpUriRequestBase> supplier, IResultChecker checkResults) throws Exception {
+  public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults) throws Exception {
     try {
-      final HttpPost post = (HttpPost)supplier.get();
+      final HttpPost post = supplier.get();
 
       try(CloseableHttpResponse response = client.execute(post)) {
         int code = response.getCode();
@@ -69,10 +68,10 @@ class PjeWebCodec extends SocketCodec<HttpUriRequestBase> {
   }
   
   @Override
-  public void get(Supplier<HttpUriRequestBase> supplier, IDownloadStatus status) throws Exception {
+  public void get(Supplier<HttpGet> supplier, IDownloadStatus status) throws Exception {
     
-    try(OutputStream output = status.onNewTry(1)) {
-      final HttpGet get = (HttpGet)supplier.get();
+    try(OutputStream output = status.onNewTry()) {
+      final HttpGet get = supplier.get();
       
       try(CloseableHttpResponse response = client.execute(get)) {
         int code = response.getCode();
