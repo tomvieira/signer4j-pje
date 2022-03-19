@@ -11,7 +11,7 @@ import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoFile;
 import com.github.videohandler4j.imp.ByDurationVideoSplitter;
 import com.github.videohandler4j.imp.VideoDescriptor;
-import com.github.videohandler4j.imp.VideoTool;
+import com.github.videohandler4j.imp.VideoTools;
 
 import br.jus.cnj.pje.office.task.ITarefaVideoDivisaoDuracao;
 
@@ -36,7 +36,7 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
     progress.begin(SplitterStage.SPLITTING_PATIENT);
     
     Path output = file.getParent();
-    IVideoFile video = VideoTool.FFMPEG.call(file.toFile());
+    IVideoFile video = VideoTools.FFMPEG.call(file.toFile());
     Path folder = output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + duracao + " MINUTO" + (duracao > 1 ? "S)" : ")"));
     VideoDescriptor desc;
     try {
