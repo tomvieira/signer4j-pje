@@ -1,7 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-import static br.jus.cnj.pje.office.core.imp.PjeWebClient.Checker.IF_ERROR_THROW;
-import static br.jus.cnj.pje.office.core.imp.PjeWebClient.Checker.IF_NOT_SUCCESS_THROW;
 import static com.github.utils4j.imp.Strings.trim;
 
 import java.util.Arrays;
@@ -32,7 +30,7 @@ import br.jus.cnj.pje.office.task.IPjeTarget;
 class PjeWebClient extends AstractPjeClient<HttpPost> {
 
   PjeWebClient(CloseableHttpClient client, Version version) {
-    super(version, new PjeWebCodec(client), IF_ERROR_THROW, IF_NOT_SUCCESS_THROW);
+    super(version, new PjeWebCodec(client), Checker.IF_ERROR_THROW, Checker.IF_NOT_SUCCESS_THROW);
   }
   
   private HttpPost createPost(IPjeTarget target) {

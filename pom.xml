@@ -6,7 +6,7 @@
 
   <groupId>com.github</groupId>
   <artifactId>signer4j-pje</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>2.0</version>
 
   <name>signer4j-pje</name>
   <!-- FIXME change it to the project's website -->
@@ -105,6 +105,31 @@
 	  <artifactId>httpclient5</artifactId>
 	  <version>5.1</version>
 	</dependency>
+	
+	<dependency>
+	  	<groupId>com.github</groupId>
+  		<artifactId>signer4j</artifactId>
+  		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+	  	<groupId>com.github</groupId>
+  		<artifactId>pdfhandler4j</artifactId>
+  		<version>1.0</version>
+	</dependency>
+
+	<dependency>
+	  	<groupId>com.github</groupId>
+  		<artifactId>taskresolver4j</artifactId>
+  		<version>1.0</version>
+	</dependency>
+
+	<dependency>
+	  	<groupId>com.github</groupId>
+  		<artifactId>videohandler4j</artifactId>
+  		<version>1.0</version>
+	</dependency>
+	
   </dependencies>
 
   <build>
@@ -151,5 +176,44 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    
+    <plugins>
+    	<plugin>
+    		<groupId>org.codehaus.mojo</groupId>
+    		<artifactId>build-helper-maven-plugin</artifactId>
+    		<version>3.3.0</version>
+    		<executions>
+		        <execution>
+		            <phase>generate-sources</phase>
+		            <goals>
+		                <goal>add-source</goal>
+		            </goals>
+		            <configuration>
+		                <sources>
+		                    <source>src/signer4j</source>
+		                    <source>src/pje</source>
+		                    <source>src/gui</source>
+		                    <source>src/command</source>
+		                    <source>src/client</source>
+		                    <source>src/task</source>
+		                    <source>src/task-pdf</source>
+		                    <source>src/task-video</source>
+		                    <source>src/task-util</source>
+		                    <source>src/taskmodel</source>
+		                    <source>src/taskmodel-pdf</source>
+		                    <source>src/taskmodel-video</source>
+		                    <source>src/taskmodel-util</source>
+		                    <source>src/http</source>
+		                    <source>src/stdio</source>
+		                    <source>src/clip</source>
+		                    <source>src/filewatch</source>
+		                    <source>src/shell</source>
+		                </sources>
+		            </configuration>
+		        </execution>
+		    </executions>
+    	</plugin>
+    </plugins>
+
   </build>
 </project>
