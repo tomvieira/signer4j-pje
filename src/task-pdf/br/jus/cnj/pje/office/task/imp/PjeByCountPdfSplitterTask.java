@@ -90,6 +90,7 @@ class PjeByCountPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoCo
       },
       e -> {
         success.set(false);
+        progress.abort(e);
         outputFolder.toFile().delete();
       }
     ); 

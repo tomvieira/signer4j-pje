@@ -57,7 +57,7 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
     }
     
     if (!success) {
-      throw showFail("Alguns arquivos não puderam ser divididos.");
+      throw showFail("Alguns arquivos não puderam ser divididos.", progress.getAbortCause());
     }
     
     progress.end();
