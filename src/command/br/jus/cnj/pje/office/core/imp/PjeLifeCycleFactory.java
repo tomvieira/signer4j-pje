@@ -1,8 +1,7 @@
 package br.jus.cnj.pje.office.core.imp;
 
 
-import static br.jus.cnj.pje.office.core.IPjeOffice.ENVIRONMENT_VARIABLE;
-import static com.github.utils4j.imp.Environment.resolveTo;
+import java.nio.file.Paths;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPJeLifeCycle;
@@ -30,9 +29,7 @@ public enum PjeLifeCycleFactory implements IPjeCommandFactory {
   FILEWATCH() {
     @Override
     public IPJeLifeCycle create(IBootable boot) {
-      return new PjeFileWatchServer(boot, resolveTo(ENVIRONMENT_VARIABLE, "watch").orElseThrow(
-        () -> new IllegalArgumentException("Não encontrada variável de ambiente PJEOFFICE_HOME"))
-      );
+      return new PjeFileWatchServer(boot);
     }
   }, 
   PRO {

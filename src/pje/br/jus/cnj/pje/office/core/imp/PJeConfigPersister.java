@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import com.github.signer4j.imp.ConfigPersister;
 import com.github.signer4j.imp.SignerConfig;
+import com.github.signer4j.pjeoffice.shell.ShellExtension;
 import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeConfigPersister;
@@ -21,7 +22,7 @@ class PJeConfigPersister extends ConfigPersister implements IPjeConfigPersister 
   
   private static class PjeConfig extends SignerConfig {
     PjeConfig() {
-      super("pjeoffice-pro");
+      super(ShellExtension.HOME_CONFIG_FILE.toFile());
     }
   }
   

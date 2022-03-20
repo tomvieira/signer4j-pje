@@ -14,5 +14,4 @@ class Strings {
   public static String at(String[] args, int index, String defaultIfNothing) {
     return args == null || index >= args.length ? trim(defaultIfNothing) : trim(args[index]);
   }
-
 }

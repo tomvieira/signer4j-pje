@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import com.github.signer4j.pjeoffice.shell.ShellExtension;
 import com.github.utils4j.IFilePacker;
 import com.github.utils4j.imp.FilePacker;
 import com.github.utils4j.imp.Params;
@@ -33,9 +33,9 @@ class PjeFileWatchServer extends PjeURIServer {
   
   private final Map<PjeTaskReader, List<Properties>> blockPerTask = new HashMap<>();
 
-  public PjeFileWatchServer(IBootable boot, Path folderWatching) {
+  public PjeFileWatchServer(IBootable boot) {
     super(boot, "filewatch://watch-service");
-    this.packer = new FilePacker<IOException>(folderWatching);
+    this.packer = new FilePacker<IOException>(ShellExtension.HOME_WATCHING);
   }
 
   @Override

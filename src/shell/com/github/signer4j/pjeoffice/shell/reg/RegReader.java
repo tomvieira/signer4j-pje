@@ -1,4 +1,4 @@
-package com.github.signer4j.pjeoffice.shell;
+package com.github.signer4j.pjeoffice.shell.reg;
 
 import static java.lang.Character.isDigit;
 
