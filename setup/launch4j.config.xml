@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>signer4j-pje.jar</jar>
+  <outfile>D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pjeoffice-pro.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>https://github.com/l3onardo-oliv3ira</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pje-icon.ico</icon>
+  <classPath>
+    <mainClass>br.jus.cnj.pje.office.imp.PjeOfficePRO</mainClass>
+    <cp>.</cp>
+  </classPath>
+  <jre>
+    <path>jre</path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion>1.8.0_301</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>jdkOnly</jdkPreference>
+    <runtimeBits>32/64</runtimeBits>
+    <maxHeapPercent>50</maxHeapPercent>
+  </jre>
+  <messages>
+    <startupErr>Não foi possível iniciar a aplicação.</startupErr>
+    <bundledJreErr>A instalação do PjeOffice-PRO encontra-se corrompida. Por favor, baixe a versão mais recente disponível e proceda com a reinstalação.</bundledJreErr>
+    <jreVersionErr>A instalação do PjeOffice-PRO encontra-se corrompida. Por favor, baixe a versão mais recente disponível e proceda com a reinstalação.</jreVersionErr>
+    <launcherErr>A instalação do PjeOffice-PRO encontra-se corrompida. Por favor, baixe a versão mais recente disponível e proceda com a reinstalação.</launcherErr>
+    <instanceAlreadyExistsMsg>An application instance is already running.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>

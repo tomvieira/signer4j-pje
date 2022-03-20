@@ -114,7 +114,11 @@ public class RegReader {
   public static void main(String[] args) throws IOException {
     RegReader r;
     r = new RegReader(new File("./shell/pdf.reg.mask"), IConstants.UTF_8);
-    try(PrintStream out = new PrintStream(new File("./shell/pdf.reg"))) {
+    try(PrintStream out = new PrintStream(new File("./setup/shell/pdf.reg"), IConstants.UTF_16LE.name())) {
+      r.toHex(out);
+    }
+    r = new RegReader(new File("./shell/mp4.reg.mask"), IConstants.UTF_8);
+    try(PrintStream out = new PrintStream(new File("./setup/shell/mp4.reg"), IConstants.UTF_16LE.name())) {
       r.toHex(out);
     }
   }
