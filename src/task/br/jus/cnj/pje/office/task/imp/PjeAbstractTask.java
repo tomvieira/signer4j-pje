@@ -73,8 +73,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected PjeAbstractTask(Params request, T pojo, boolean isInternalTask) {
-    super(request);
-    request.of(POJO_REQUEST_PARAM_NAME, pojo);
+    super(request.of(POJO_REQUEST_PARAM_NAME, pojo));
     this.isInternalTask = isInternalTask;
   }
   
