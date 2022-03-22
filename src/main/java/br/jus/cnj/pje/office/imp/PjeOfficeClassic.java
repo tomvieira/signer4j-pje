@@ -13,7 +13,7 @@ import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.imp.Args;
 
 import br.jus.cnj.pje.office.IPjeFrontEnd;
@@ -125,14 +125,16 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     try {
       this.frontEnd.install(office, popup);
     } catch (Exception es) {
+      this.frontEnd.dispose();
       LOGGER.error(this.frontEnd.getTitle() + "Não é suportada. Nova tentativa com Desktop", es);
       this.frontEnd = PjeOfficeFrontEnd.DESKTOP;
       try {
         this.frontEnd.install(office, popup);
       } catch (Exception ed) {
-        String message = "Incapaz de instanciar frontEnd da aplicação.\n" + ed.getMessage();
+        this.frontEnd.dispose();
+        String message = "Incapaz de instanciar frontEnd da aplicação.";
         LOGGER.error(message, ed);
-        MessageAlert.showInfo(message);
+        Dialogs.error(message);
         System.exit(1);
       }
     }

@@ -16,6 +16,7 @@ import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.signer4j.gui.alert.MessageAlert;
 import com.github.signer4j.gui.alert.PermissionDeniedAlert;
+import com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.taskresolver4j.imp.AbstractTask;
@@ -265,7 +266,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.end();
       
       return response;
-    } catch(InterruptedException e) {
+    } catch(InterruptedException | InterruptedSigner4JRuntimeException e) {
       fail = progress.abort(e);
       MessageAlert.showFail(CANCELED_OPERATION_MESSAGE);
     } catch(Exception e) {

@@ -4,8 +4,8 @@ import static br.jus.cnj.pje.office.gui.certlist.PjeCertificateListAcessor.SUPPO
 import static com.github.signer4j.IFilePath.toPaths;
 import static com.github.signer4j.imp.DeviceCertificateEntry.toEntries;
 import static com.github.signer4j.imp.Signer4JInvoker.SIGNER4J;
-import static com.github.signer4j.imp.exception.Signer4JRuntimeException.lambda;
-import static com.github.signer4j.imp.exception.Signer4JRuntimeException.of;
+import static com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException.lambda;
+import static com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException.of;
 import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 import static com.github.utils4j.gui.imp.SwingTools.isTrue;
 

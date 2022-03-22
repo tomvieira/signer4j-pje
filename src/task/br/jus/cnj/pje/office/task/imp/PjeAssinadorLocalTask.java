@@ -1,7 +1,7 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
-import static com.github.utils4j.imp.Throwables.tryRun;
+import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,9 +13,12 @@ import javax.swing.JFileChooser;
 
 import com.github.progress4j.IProgressView;
 import com.github.signer4j.ISignedData;
+import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
+import com.github.utils4j.gui.imp.ExceptionAlert;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
@@ -42,12 +45,23 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   @Override
   protected final ITaskResponse<IPjeResponse> doGet() throws TaskException {
     runAsync(() -> {
-      IProgressView progress = newProgress();
-      progress.display();
-      tryRun(super::doGet);
-      progress.undisplay();
-      progress.stackTracer(s -> LOGGER.info(s.toString()));
-      progress.dispose();
+      IProgressView progress = newProgress();      
+      try {
+        progress.display();
+        super.doGet();
+      } catch(InterruptedException | InterruptedSigner4JRuntimeException e ) {
+        MessageAlert.showFail(CANCELED_OPERATION_MESSAGE);
+      } catch(TaskException e) {
+        LOGGER.error("Falha na execução da tarefa", e);
+      } catch(Throwable e) {
+        String message = "Houve uma falha inexperada durante o processo de assinatura!";
+        LOGGER.warn(message, e);
+        ExceptionAlert.show(message, e);
+      } finally {
+        progress.undisplay();
+        progress.stackTracer(s -> LOGGER.info(s.toString()));
+        progress.dispose();
+      }
     });
     return success();
   }

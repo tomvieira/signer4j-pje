@@ -8,8 +8,8 @@ import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.signer4j.IByteProcessor;
 import com.github.signer4j.ISignatureAlgorithm;
+import com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException;
 import com.github.signer4j.imp.exception.Signer4JException;
-import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Base64;
@@ -105,10 +105,10 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
             if (!token.isAuthenticated()) {
               try {
                 token = loginToken();
-              }catch(Signer4JRuntimeException ex) {
+              }catch(InterruptedSigner4JRuntimeException ex) {
                 progress.abort(e);
                 ex.addSuppressed(e);
-                throw new TaskException("Não foi possível recuperar autenticação do token.", ex);
+                throw showFail("Não foi possível recuperar autenticação do token.", ex);
               }
               processor = token.signerBuilder().build();
             }

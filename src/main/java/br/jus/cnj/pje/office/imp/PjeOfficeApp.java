@@ -2,9 +2,6 @@
 package br.jus.cnj.pje.office.imp;  
 
 import static br.jus.cnj.pje.office.core.imp.PjeConfig.setup;
-import static com.github.utils4j.imp.Throwables.tryRuntime;
-import static javax.swing.UIManager.getSystemLookAndFeelClassName;
-import static javax.swing.UIManager.setLookAndFeel;
 
 import java.net.URI;
 
@@ -12,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.utils4j.gui.imp.LookAndFeelsInstaller;
 import com.github.utils4j.imp.Containers;
+import com.github.utils4j.imp.Environment;
 import com.github.utils4j.imp.Strings;
 import com.github.utils4j.imp.Threads;
 import com.github.utils4j.imp.Threads.ShutdownHookThread;
@@ -24,12 +23,18 @@ import br.jus.cnj.pje.office.core.imp.PJeOffice;
 import br.jus.cnj.pje.office.core.imp.PjeLifeCycleFactory;
 
 public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
+
+  static final String ENVIRONMENT_VARIABLE_NAME = "PJEOFFICE_LOOKSANDFEELS";
   
   static {
-    setup();
-    tryRuntime(() -> setLookAndFeel(getSystemLookAndFeelClassName()));
+    install();
   }
-
+  
+  private static void install() {
+    setup();
+    LookAndFeelsInstaller.install(Environment.valueFrom(ENVIRONMENT_VARIABLE_NAME).orElse("undefined"));
+  }
+  
   protected static final Logger LOGGER = LoggerFactory.getLogger(PjeOfficeApp.class);
 
   protected IPjeOffice office;
@@ -65,5 +70,5 @@ public abstract class PjeOfficeApp implements IPjeLifeCycleHook {
       return Strings.empty();
     String uri = args[0];
     return Throwables.tryCall(() -> new URI(uri).toString(), Strings.empty());
-  }
+  }  
 }

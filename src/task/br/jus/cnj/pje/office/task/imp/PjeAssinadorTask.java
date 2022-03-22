@@ -6,8 +6,8 @@ import java.util.Optional;
 import com.github.progress4j.IProgress;
 import com.github.progress4j.IStage;
 import com.github.signer4j.IByteProcessor;
+import com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException;
 import com.github.signer4j.imp.exception.Signer4JException;
-import com.github.signer4j.imp.exception.Signer4JRuntimeException;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
@@ -132,8 +132,8 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
           if (++failsCount == MAX_SEQUENTIAL_FAILURE_COUNT) {
             throw showFail("O processo de assinatura foi interrompido!", 
               "Foi alcançado o número máximo de falhas de assinatura consecutivas (" + failsCount + "). " +
-              "O token/certificado não está conectado/disponível, ou arquivos muito "+ 
-              "grandes ou já foram assinados.", e);
+              "O token/certificado não está conectado/disponível, ou os arquivos são muito "+ 
+              "grandes ou já se encontram assinados.", e);
           }            
           
           progress.abort(e);          
@@ -142,7 +142,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
             if (!token.isAuthenticated()) {
               try {
                 token = loginToken();
-              }catch(Signer4JRuntimeException ex) {
+              }catch(InterruptedSigner4JRuntimeException ex) {
                 progress.abort(e);
                 ex.addSuppressed(e);
                 throw showFail("Não foi possível recuperar autenticação do token.", ex);
