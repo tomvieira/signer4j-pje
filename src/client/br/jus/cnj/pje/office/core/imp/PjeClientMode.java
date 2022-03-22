@@ -141,7 +141,7 @@ public enum PjeClientMode {
   
   private static PjeClientMode from(String protocol) {
     for(PjeClientMode mode: values()) {
-      if (protocol.startsWith(mode.protocol))
+      if (protocol.startsWith(mode.protocol + ":"))
         return mode;
     }
     throw new RuntimeException("Unrecognized protocol " + protocol);

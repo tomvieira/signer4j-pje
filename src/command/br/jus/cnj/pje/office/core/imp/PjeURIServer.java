@@ -98,7 +98,7 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
           break;
         }
         if (context == null) {
-          LOGGER.info("Contexto indisponível");
+          LOGGER.warn("Contexto indisponível");
           continue;
         }
         Threads.startAsync("Tratando contexto: " + context.getId(), () -> submit(context));

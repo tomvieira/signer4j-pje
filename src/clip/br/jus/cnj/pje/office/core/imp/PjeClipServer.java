@@ -77,7 +77,7 @@ class PjeClipServer extends PjeURIServer {
 
     lastUri = content;
 
-    if (!lastUri.startsWith("https://jsoncompare.org")) {
+    if (!lastUri.startsWith("https://jsoncompare.org")) { //WE HAVE TO GO BACK HERE! KEEP CALM!
       return Optional.empty();
     }
     

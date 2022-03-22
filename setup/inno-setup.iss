@@ -41,7 +41,7 @@ Name: "startup" ; Description: "Iniciar o aplicativo quando o Windows iniciar" ;
 
 [Registry]
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType:string; ValueName: "PJEOFFICE_HOME"; \
-    ValueData: "{app}"; Flags: preservestringtype
+    ValueData: "{app}"; Flags: preservestringtype uninsdeletevalue
 
 [Files]
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
@@ -55,7 +55,7 @@ Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: startup
+Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: startup
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

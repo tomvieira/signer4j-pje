@@ -40,6 +40,7 @@ class PJeClipClient extends PjeClientWrapper {
 
     @Override
     public void close() throws Exception {
+      
     }
   }
 }

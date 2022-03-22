@@ -76,7 +76,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
 
     Builder builder = new PdfInputDescriptor.Builder();
     
-    files.forEach(f -> builder.add(f));
+    files.forEach(builder::add);
     
     Path output = parent.get();
     
