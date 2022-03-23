@@ -40,7 +40,7 @@ class PjeWebCodec extends SocketCodec<HttpPost> {
 
   @Override
   public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults) throws Exception {
-    try {
+    try {      
       final HttpPost post = supplier.get();
 
       try(CloseableHttpResponse response = client.execute(post)) {

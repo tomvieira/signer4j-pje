@@ -48,7 +48,8 @@ class PjeClientWebBuilder implements IPjeClientBuilder  {
   }
   
   @Override
-  public final IPjeClient build() {
+  public final IPjeClient build() {    
+    clientBuilder.setUserAgent(String.format("PjeOffice-PRO (%s)", Version.current().toString()));
     PjeWebClient client = new PjeWebClient(
       clientBuilder.build(),
       version
