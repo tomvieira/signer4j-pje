@@ -62,6 +62,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
         .map(s -> new File(s))
         .filter(File::exists)
         .peek(f -> parent.set(f.toPath().getParent()))
+        .sorted((a, b) -> a.getName().compareTo(b.getName()))
         .collect(toList());
       
     Optional<String> fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
