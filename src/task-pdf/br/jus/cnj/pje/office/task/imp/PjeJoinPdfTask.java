@@ -64,6 +64,12 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
         .peek(f -> parent.set(f.toPath().getParent()))
         .sorted((a, b) -> a.getName().compareTo(b.getName()))
         .collect(toList());
+    
+    int size = files.size();
+    
+    if (size == 1) {
+      throw showFail("A união de PDF's exige que sejam selecionados 2 ou mais arquivos.");
+    }
       
     Optional<String> fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
     
@@ -73,7 +79,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     
     progress.info("Arquivos ordenados");
 
-    int size = files.size();
+   
 
     Builder builder = new PdfInputDescriptor.Builder();
     

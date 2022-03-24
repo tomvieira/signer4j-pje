@@ -172,11 +172,15 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
 
   protected final TaskException showFail(String message) {
-    return showFail(message, null);
+    return showFail(message, message, null);
   }
   
   protected final TaskException showFail(String message, Throwable cause) {
     return showFail(message, empty(), cause);
+  }
+  
+  protected final TaskException showFail(String message, String detail) {
+    return showFail(message, detail, null);
   }
   
   protected final TaskException showFail(String message, String detail, Throwable cause) {

@@ -126,7 +126,7 @@
 
 	<dependency>
 	  	<groupId>com.github</groupId>
-  		<artifactId>videohandler4j</artifactId>
+  		<artifactId>cutplayer4jfx</artifactId>
   		<version>1.0</version>
 	</dependency>
 	

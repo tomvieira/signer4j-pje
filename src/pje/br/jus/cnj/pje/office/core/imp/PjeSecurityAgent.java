@@ -116,8 +116,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     final String targetOrigin = targetSchema.get() + "://" + targetHost.get();
     
 /*
-    //Descomente este trecho de código quando o navegador enviar o 'Origin' para o assinador via post
-     
+    //Descomente este trecho de código quando o navegador enviar o 'Origin' para o assinador via post     
     if (!nativeOrigin.get().equals(targetOrigin)) {
       whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
       LOGGER.warn(whyNot.toString());

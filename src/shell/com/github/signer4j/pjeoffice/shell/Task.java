@@ -47,7 +47,8 @@ enum Task {
     public void echo(String[] args, Properties output) {
       output.put("tamanho", at(args, 2));
     }
-  };
+  },
+  VIDEO_SPLIT_BY_SLICE("video.split_by_slice");
   
   public static Optional<Task> from(String at) {
     for(Task task: values()) {

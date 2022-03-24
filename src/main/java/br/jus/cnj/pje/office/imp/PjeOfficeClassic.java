@@ -84,7 +84,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     MenuItem mnuLog = new MenuItem("Registro de atividades");
     mnuLog.addActionListener(e -> office.showActivities());
     
-    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo Treinamento");
+    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo inseguro (evite usar)");
     mnuDev.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED){
         office.setDevMode();

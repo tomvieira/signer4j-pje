@@ -15,6 +15,10 @@ cd videohandler4j
 cmd /c "mvn clean"
 cmd /c "mvn install"
 cd..
+cd cutplayer4jfx
+cmd /c "mvn clean"
+cmd /c "mvn install"
+cd..
 cd progress4j
 cmd /c "mvn clean"
 cmd /c "mvn install"

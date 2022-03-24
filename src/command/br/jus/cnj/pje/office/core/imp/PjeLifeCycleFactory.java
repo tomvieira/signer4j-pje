@@ -1,8 +1,5 @@
 package br.jus.cnj.pje.office.core.imp;
 
-
-import java.nio.file.Paths;
-
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPJeLifeCycle;
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
