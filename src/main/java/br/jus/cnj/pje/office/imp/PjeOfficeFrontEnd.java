@@ -52,20 +52,20 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
 
     @Override
     protected void doDispose() {
-      LOGGER.debug("Removendo components do frame utilitario");
-      if (trayFrame != null) {
-        tryRun(trayFrame::removeAll);
-        trayFrame = null;
+      LOGGER.debug("Removendo trayIcon de tray");
+      if (tray != null) {
+        tryRun(() -> tray.remove(trayIcon));
+        tray = null;
       }
       LOGGER.debug("Anulando PopupMenu em trayIcon");
       if (trayIcon != null) {
         tryRun(() -> trayIcon.setPopupMenu(null));
         trayIcon = null;
       }
-      LOGGER.debug("Removendo trayIcon de tray");
-      if (tray != null) {
-        tryRun(() -> tray.remove(trayIcon));
-        tray = null;
+      LOGGER.debug("Removendo components do frame utilitario");
+      if (trayFrame != null) {
+        tryRun(trayFrame::removeAll);
+        trayFrame = null;
       }
       LOGGER.debug("systray disposed!");
     }

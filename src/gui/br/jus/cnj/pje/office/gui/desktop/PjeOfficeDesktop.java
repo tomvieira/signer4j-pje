@@ -30,6 +30,7 @@ public class PjeOfficeDesktop extends SimpleFrame {
     super("PjeOffice - " + Version.current(), PjeConfig.getIcon());
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setBounds(100, 100, 336, 235);
+    setResizable(false);
     contentPane = new JPanel();
     contentPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
     contentPane.setLayout(new BorderLayout(0, 0));
