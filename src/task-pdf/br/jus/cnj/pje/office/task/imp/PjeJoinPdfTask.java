@@ -19,6 +19,7 @@ import com.github.progress4j.IStage;
 import com.github.progress4j.imp.QuietlyProgress;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.gui.imp.FileListWindow;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
@@ -70,22 +71,31 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     if (size == 1) {
       throw showFail("A união de PDF's exige que sejam selecionados 2 ou mais arquivos.");
     }
-      
-    Optional<String> fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
+
+    Path output = parent.get();
+    Optional<String> fileName;
     
-    if (!fileName.isPresent()) {
-      throw new InterruptedException();
-    }
+    do {
+      fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
+      
+      if (!fileName.isPresent()) {
+        throw new InterruptedException();
+      }
+      
+      String fname = fileName.get() + ".pdf";
+      
+      if (!output.resolve(fname).toFile().exists())
+        break;
+      if (Dialogs.getBoolean("Arquivo '" + fname + "' já existe! Deseja sobrescrever?", "Atenção!", false))
+        break;
+      
+    }while(true);
     
     progress.info("Arquivos ordenados");
-
-   
 
     Builder builder = new PdfInputDescriptor.Builder();
     
     files.forEach(builder::add);
-    
-    Path output = parent.get();
     
     progress.begin(Stage.MERGING, 3 * size + 1);
 
