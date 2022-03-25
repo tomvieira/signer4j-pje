@@ -14,6 +14,7 @@
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
   <icon>D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pje-icon.ico</icon>
+  <var>PJEOFFICE_HOME=%EXEDIR%</var>
   <classPath>
     <mainClass>br.jus.cnj.pje.office.imp.PjeOfficePRO</mainClass>
     <cp>.</cp>
