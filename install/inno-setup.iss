@@ -23,9 +23,9 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup
+OutputDir=.
 OutputBaseFilename=setup-pjeoffice-pro
-SetupIconFile=D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pje-icon.ico
+SetupIconFile=../setup/pje-icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -44,14 +44,8 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
     ValueData: "{app}"; Flags: preservestringtype uninsdeletevalue
 
 [Files]
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pjeoffice-pro.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\signer4j-pje.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\cutplayer4jfx.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\explorer\*"; DestDir: "{app}\explorer"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\shell\*"; DestDir: "{app}\shell"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "../setup/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; NOTE: Don't use "Flags: ignoreversion" on any shared system  files
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
