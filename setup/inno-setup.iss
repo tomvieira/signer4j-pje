@@ -47,6 +47,7 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pjeoffice-pro.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\signer4j-pje.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\cutplayer4jfx.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\explorer\*"; DestDir: "{app}\explorer"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\jre\*"; DestDir: "{app}\jre"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\shell\*"; DestDir: "{app}\shell"; Flags: ignoreversion recursesubdirs createallsubdirs

@@ -36,7 +36,7 @@ public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMed
         "Não foi encontrado: " + javaw.getAbsolutePath());  
     }
     
-    File cutplayer = pjeofficeHome.resolve("cutplayer4j.jar").toFile();
+    File cutplayer = pjeofficeHome.resolve("cutplayer4jfx.jar").toFile();
     if (!cutplayer.exists()) {
       throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
         "Não foi encontrado: " + cutplayer.getAbsolutePath());  

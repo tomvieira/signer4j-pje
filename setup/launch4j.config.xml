@@ -27,6 +27,7 @@
     <jdkPreference>jdkOnly</jdkPreference>
     <runtimeBits>32/64</runtimeBits>
     <maxHeapPercent>50</maxHeapPercent>
+    <opt>-Denv.pjeoffice_home=&quot;%PJEOFFICE_HOME%&quot;</opt>
   </jre>
   <messages>
     <startupErr>Não foi possível iniciar a aplicação.</startupErr>
