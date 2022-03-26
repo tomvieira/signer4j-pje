@@ -74,12 +74,12 @@ public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMed
       "-jar",
       cutplayer.getAbsolutePath()
     );
-    params.addAll(arquivos);    
+    params.addAll(getInputFiles());    
     
     try {
       new ProcessBuilder(params).directory(pjeofficeHome.toFile()).start();      
     } catch (IOException e) {
-      throw showFail("Não foi possível iniciar iniciar o player de cortes", e);
+      throw showFail("Não foi possível iniciar o player de cortes", e);
     }      
 
     return success();

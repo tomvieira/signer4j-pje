@@ -32,6 +32,7 @@ import static com.github.utils4j.imp.Throwables.tryCall;
 import static java.net.URLDecoder.decode;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.github.taskresolver4j.exception.TaskException;
@@ -41,7 +42,7 @@ import br.jus.cnj.pje.office.task.ITarefaMedia;
 
 abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractTask<T> {
   
-  protected List<String> arquivos;
+  private List<String> arquivos;
   
   protected PjeAbstractMediaTask(Params request, T pojo) {
     super(request, pojo, true);
@@ -54,5 +55,10 @@ abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractT
         .stream()
         .map(s -> tryCall(() -> decode(s, UTF_8.name()), s))
         .collect(toList());
+    this.arquivos = Collections.unmodifiableList(this.arquivos);
+  }
+  
+  protected final List<String> getInputFiles() {
+    return this.arquivos;
   }
 }

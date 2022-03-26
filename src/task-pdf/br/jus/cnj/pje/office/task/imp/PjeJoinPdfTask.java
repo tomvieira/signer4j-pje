@@ -85,7 +85,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     
     AtomicReference<Path> parent = new AtomicReference<>();
 
-    List<File> files = arquivos.stream()
+    List<File> files = getInputFiles().stream()
         .filter(Strings::hasText)
         .map(s -> new File(s))
         .filter(File::exists)
