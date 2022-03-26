@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>signer4j-pje.jar</jar>
-  <outfile>D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pjeoffice-pro.exe</outfile>
+  <outfile>..\setup\pjeoffice-pro.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>D:\desenvolvimento\projetos\gitall4eclipse\workspace\signer4j-pje\setup\pje-icon.ico</icon>
+  <icon>..\setup\pje-icon.ico</icon>
   <var>PJEOFFICE_HOME=%EXEDIR%</var>
   <classPath>
     <mainClass>br.jus.cnj.pje.office.imp.PjeOfficePRO</mainClass>
