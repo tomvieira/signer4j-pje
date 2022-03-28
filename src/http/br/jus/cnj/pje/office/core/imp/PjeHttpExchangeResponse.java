@@ -27,12 +27,15 @@
 
 package br.jus.cnj.pje.office.core.imp;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 
+import com.github.utils4j.IConstants;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -71,5 +74,27 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
     Headers headers = response.getResponseHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
     write(data);
+  }
+
+  @Override
+  public void writeJavascript(byte[] data) throws IOException {
+    Headers headers = response.getResponseHeaders();
+    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.create("text/javascript", IConstants.UTF_8).toString());
+    write(data);
+  }
+  
+  @Override
+  public void writeFile(File file) throws IOException{
+    byte[] out = Files.readAllBytes(file.toPath());
+    String name = file.getName();
+    if (name.endsWith(".html")) {
+      writeHtml(out);
+    } else if (name.endsWith(".js")) {
+      writeJavascript(out);
+    } else if (name.endsWith(".json")) {
+      writeJson(out);
+    } else {
+      write(out);
+    }
   }
 }

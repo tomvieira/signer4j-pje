@@ -35,7 +35,6 @@ import org.json.JSONObject;
 
 import com.github.signer4j.ISignedData;
 import com.github.utils4j.IContentType;
-import com.github.utils4j.imp.Objects;
 import com.github.utils4j.imp.Pair;
 
 import br.jus.cnj.pje.office.core.IPjeHeaders;
@@ -54,7 +53,6 @@ class PJeJsonClient extends AstractPjeClient<JSONObject> {
   protected <R extends JSONObject> R createOutput(R request, IPjeTarget target) {
     request.put(HttpHeaders.COOKIE, target.getSession());
     request.put(IPjeHeaders.VERSION, version.toString());
-    request.put(HttpHeaders.USER_AGENT, target.getUserAgent());
     return request;
   }
   
@@ -114,8 +112,8 @@ class PJeJsonClient extends AstractPjeClient<JSONObject> {
   @Override
   protected JSONObject createOutput(IPjeTarget target, Object pojo) throws Exception {
     JSONObject out = createOutput(target);
-    out.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    out.put("pojo", Objects.toJson(pojo));
+    out.put("contentType", ContentType.APPLICATION_JSON.getMimeType());
+    out.put("pojo", pojo);
     return out;
   }
 }

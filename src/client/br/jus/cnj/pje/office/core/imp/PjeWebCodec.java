@@ -51,9 +51,9 @@ import br.jus.cnj.pje.office.core.IResultChecker;
 class PjeWebCodec extends SocketCodec<HttpPost> {
 
   private static boolean isSuccess(int code) {
-    return code < HttpStatus.SC_REDIRECTION; //Não seria HttpStatus.SC_BAD_REQUEST ?;
+    return (code >= HttpStatus.SC_SUCCESS && code < HttpStatus.SC_REDIRECTION) || code == HttpStatus.SC_NOT_MODIFIED; 
   }
-
+  
   private final CloseableHttpClient client;
   
   public PjeWebCodec(CloseableHttpClient client) {

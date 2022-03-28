@@ -38,11 +38,11 @@ import java.util.Properties;
 
 public class ShellExtension {
   
-  public static final String APP = "pjeoffice-pro";
+  private static final String APP = "pjeoffice-pro";
 
-  public static final Path HOME = Paths.get(System.getProperty("user.home"));
+  private static final Path HOME = Paths.get(System.getProperty("user.home"));
   
-  public static final Path HOME_CONFIG_FOLDER = HOME.resolve("." + APP);
+  private static final Path HOME_CONFIG_FOLDER = HOME.resolve("." + APP);
   
   public static final Path HOME_CONFIG_FILE = HOME_CONFIG_FOLDER.resolve(APP + ".config");
   

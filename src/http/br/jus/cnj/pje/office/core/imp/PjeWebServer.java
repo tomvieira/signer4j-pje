@@ -32,7 +32,6 @@ import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -163,15 +162,15 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     }
   }
   
-  private class PluginRequestHandler extends PjeRequestHandler {
+  private class ApiRequestHandler extends PjeRequestHandler {
     @Override
     public String getEndPoint() {
-      return BASE_END_POINT + "plugin";
+      return BASE_END_POINT + "api";
     }
 
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      response.writeHtml(Files.readAllBytes(Paths.get("./plugin.html")));
+      response.writeFile(Paths.get("./web/", request.getParameter("file").orElse("index.html")).toFile());
     }
   }
   
@@ -189,6 +188,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
   private final IPjeRequestHandler vers = new VersionRequestHandler();
   private final IPjeRequestHandler exit = new ShutdownRequestHandler();
   private final IPjeRequestHandler vaza = new LogoutRequestHandler();
+  private final IPjeRequestHandler api  = new ApiRequestHandler();
 
   PjeWebServer(IBootable finishingCode) {
     super(finishingCode, "http://127.0.0.1:" + HTTP_PORT);
@@ -253,7 +253,8 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
         .usingHandler(vers)
         .usingHandler(task)
         .usingHandler(exit)
-        .usingHandler(vaza).usingHandler(new PluginRequestHandler());
+        .usingHandler(vaza)
+        .usingHandler(api);
       startHttp();
       startHttps();
     } catch (IOException e) {

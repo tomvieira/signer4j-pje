@@ -70,13 +70,13 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     IProgress progress = getProgress();
     IQuietlyProgress quietly =  QuietlyProgress.wrap(SingleThreadProgress.wrap(progress));
-    final int size = getInputFiles().size();
+    final int size = arquivos.size();
     
     boolean success = true;
     
     progress.begin(SplitterStage.PROCESSING, size);
     for(int i = 0; i < size; i++) {
-      Path file = Paths.get(getInputFiles().get(i));
+      Path file = Paths.get(arquivos.get(i));
       
       success &= process(file, quietly);
       

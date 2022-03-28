@@ -74,7 +74,7 @@ public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMed
       "-jar",
       cutplayer.getAbsolutePath()
     );
-    params.addAll(getInputFiles());    
+    params.addAll(arquivos);
     
     try {
       new ProcessBuilder(params).directory(pjeofficeHome.toFile()).start();      

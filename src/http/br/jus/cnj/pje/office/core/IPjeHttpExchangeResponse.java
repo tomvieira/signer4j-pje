@@ -27,6 +27,7 @@
 
 package br.jus.cnj.pje.office.core;
 
+import java.io.File;
 import java.io.IOException;
 
 public interface IPjeHttpExchangeResponse extends IPjeResponse {
@@ -34,4 +35,8 @@ public interface IPjeHttpExchangeResponse extends IPjeResponse {
   void writeHtml(byte[] data) throws IOException;
   
   void writeJson(byte[] data) throws IOException;
+  
+  void writeJavascript(byte[] data) throws IOException;
+
+  void writeFile(File file) throws IOException;
 }

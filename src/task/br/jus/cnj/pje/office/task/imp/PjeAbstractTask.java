@@ -35,6 +35,8 @@ import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import javax.swing.JFileChooser;
+
 import org.apache.hc.core5.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ import com.github.signer4j.imp.exception.InterruptedSigner4JRuntimeException;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.taskresolver4j.imp.AbstractTask;
+import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.gui.imp.ExceptionAlert;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.DownloadStatus;
@@ -213,6 +216,17 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected final TaskException showFail(String message, String detail, Throwable cause) {
     ExceptionAlert.show(PjeConfig.getIcon(), message, detail, cause);
     return new TaskException(message + "\n" + detail, cause);
+  }
+  
+  protected final File[] selectFilesFromDialogs(String title) throws InterruptedException {
+    DefaultFileChooser chooser = new DefaultFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    chooser.setMultiSelectionEnabled(true);
+    chooser.setDialogTitle(title);
+    if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
+      throwCancel();
+    }
+    return chooser.getSelectedFiles();
   }
 
   protected final Optional<File> download(final IPjeTarget target, File saveAt) {

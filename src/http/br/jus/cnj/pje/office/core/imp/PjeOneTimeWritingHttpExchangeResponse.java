@@ -27,6 +27,7 @@
 
 package br.jus.cnj.pje.office.core.imp;
 
+import java.io.File;
 import java.io.IOException;
 
 import br.jus.cnj.pje.office.core.IPjeHttpExchangeResponse;
@@ -47,4 +48,13 @@ public class PjeOneTimeWritingHttpExchangeResponse extends PjeOneTimeWritingResp
     checkAndRun(() -> response.writeJson(data));
   }
 
+  @Override
+  public void writeJavascript(byte[] data) throws IOException {
+    checkAndRun(() -> response.writeJavascript(data));
+  }
+
+  @Override
+  public void writeFile(File file) throws IOException {
+    checkAndRun(() -> response.writeFile(file));
+  }
 }

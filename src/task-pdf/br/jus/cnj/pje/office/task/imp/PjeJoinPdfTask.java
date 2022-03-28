@@ -85,13 +85,13 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     
     AtomicReference<Path> parent = new AtomicReference<>();
 
-    List<File> files = getInputFiles().stream()
-        .filter(Strings::hasText)
-        .map(s -> new File(s))
-        .filter(File::exists)
-        .peek(f -> parent.set(f.toPath().getParent()))
-        .sorted((a, b) -> a.getName().compareTo(b.getName()))
-        .collect(toList());
+    List<File> files = arquivos.stream()
+      .filter(Strings::hasText)
+      .map(s -> new File(s))
+      .filter(File::exists)
+      .peek(f -> parent.set(f.toPath().getParent()))
+      .sorted((a, b) -> a.getName().compareTo(b.getName()))
+      .collect(toList());
     
     int size = files.size();
     
@@ -113,10 +113,11 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
       
       if (!output.resolve(fname).toFile().exists())
         break;
+      
       if (Dialogs.getBoolean("Arquivo '" + fname + "' já existe! Deseja sobrescrever?", "Atenção!", false))
         break;
       
-    }while(true);
+    } while(true);
     
     progress.info("Arquivos ordenados");
 

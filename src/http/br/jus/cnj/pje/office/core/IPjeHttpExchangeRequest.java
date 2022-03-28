@@ -27,6 +27,8 @@
 
 package br.jus.cnj.pje.office.core;
 
-public interface IPjeHttpExchangeRequest extends IPjeRequest {
+import java.util.Optional;
 
+public interface IPjeHttpExchangeRequest extends IPjeRequest {
+  Optional<String> getParameter(String key);
 }

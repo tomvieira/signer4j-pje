@@ -95,14 +95,7 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
 
   @Override
   protected IArquivoAssinado[] selectFiles() throws TaskException, InterruptedException {
-    DefaultFileChooser chooser = new DefaultFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    chooser.setMultiSelectionEnabled(true);
-    chooser.setDialogTitle("Selecione o(s) arquivo(s) a ser(em) assinado(s)");
-    if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
-      throwCancel();
-    }
-    return collectFiles(chooser.getSelectedFiles());
+    return collectFiles(selectFilesFromDialogs("Selecione o(s) arquivo(s) a ser(em) assinado(s)"));
   }
 
   protected IArquivoAssinado[] collectFiles(File[] files) throws TaskException {

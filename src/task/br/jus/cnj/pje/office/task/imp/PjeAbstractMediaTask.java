@@ -32,8 +32,9 @@ import static com.github.utils4j.imp.Throwables.tryCall;
 import static java.net.URLDecoder.decode;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Collections;
+import java.io.File;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
@@ -42,7 +43,7 @@ import br.jus.cnj.pje.office.task.ITarefaMedia;
 
 abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractTask<T> {
   
-  private List<String> arquivos;
+  protected List<String> arquivos;
   
   protected PjeAbstractMediaTask(Params request, T pojo) {
     super(request, pojo, true);
@@ -50,15 +51,10 @@ abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractT
 
   @Override
   protected void validateParams() throws TaskException, InterruptedException {
-    ITarefaMedia pojo = getPojoParams();
-    this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos")
-        .stream()
-        .map(s -> tryCall(() -> decode(s, UTF_8.name()), s))
-        .collect(toList());
-    this.arquivos = Collections.unmodifiableList(this.arquivos);
-  }
-  
-  protected final List<String> getInputFiles() {
-    return this.arquivos;
+    List<String> files = getPojoParams().getArquivos();
+    if (files.isEmpty()) {
+      files = Stream.of(selectFilesFromDialogs("Selecione os arquivos")).map(File::getAbsolutePath).collect(toList());
+    }
+    this.arquivos = files.stream().map(s -> tryCall(() -> decode(s, UTF_8.name()), s)).collect(toList());
   }
 }

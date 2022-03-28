@@ -27,6 +27,8 @@
 
 package br.jus.cnj.pje.office.core.imp;
 
+import java.util.Optional;
+
 import org.apache.hc.core5.http.HttpHeaders;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -51,5 +53,10 @@ public class PjeHttpExchangeRequest extends PjeUriRequest implements IPjeHttpExc
       request.getRequestHeaders().getFirst(HttpHeaders.USER_AGENT),
       origin
     );
+  }
+  
+  @Override
+  public Optional<String> getParameter(String key) {
+    return super.getParameter(key);
   }
 }

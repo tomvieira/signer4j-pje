@@ -27,7 +27,7 @@
     <maxVersion></maxVersion>
     <jdkPreference>jdkOnly</jdkPreference>
     <runtimeBits>32/64</runtimeBits>
-    <maxHeapPercent>50</maxHeapPercent>
+    <maxHeapSize>1024</maxHeapSize>
     <opt>-Denv.pjeoffice_home=&quot;%PJEOFFICE_HOME%&quot;</opt>
   </jre>
   <messages>

@@ -84,7 +84,7 @@ public abstract class PjeUriRequest implements IPjeRequest {
     return getId();
   }
   
-  private Optional<String> getParameter(String key) {
+  protected Optional<String> getParameter(String key) {
     return queryParams.stream().filter(n -> n.getName().equalsIgnoreCase(key)).map(n -> n.getValue()).findFirst();
   }
   

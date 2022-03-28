@@ -44,6 +44,7 @@ import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.IPjeFrontEnd;
+import br.jus.cnj.pje.office.core.Version;
 import br.jus.cnj.pje.office.gui.PjeImages;
 import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
@@ -73,8 +74,9 @@ enum PjeOfficeFrontEnd implements IPjeFrontEnd {
           }
         }
       });
-      trayIcon.setToolTip("PjeOffice - Assinador do Pje.");
       tray.add(trayIcon);
+      trayIcon.setToolTip("PjeOffice - Assinador do Pje.");
+      trayIcon.displayMessage("PjeOffice PRO", "Versão " + Version.current().toString(), TrayIcon.MessageType.NONE);
     }
 
     @Override
