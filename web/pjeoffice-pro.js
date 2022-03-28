@@ -46,7 +46,7 @@ const readSession = function () {
 * scope
 /*******************************************************************************************************/
 
-const pjeOfficeUser = {
+const pjeofficeUser = {
   "APP_REQUISITANTE"	: "Pje",             		//(Aplicação que faz uso do PjeOffice)
   "CODIGO_SEGURANCA"	: "",				 		//(código de segurança da aplicação - proteção CSRF)
   "WEB_ROOT"			: window.location.origin + "/" + "insert your context web root path here",
@@ -85,7 +85,7 @@ const PjeOffice = (function () {
       "sessao": readSession(),
       "aplicacao": pjeofficeUser.APP_REQUISITANTE,
       "servidor": pjeofficeUser.WEB_ROOT,
-      "codigoSeguranca": pjeOfficeUser.CODIGO_SEGURANCA,
+      "codigoSeguranca": pjeofficeUser.CODIGO_SEGURANCA,
       "tarefaId": taskId,
       "tarefa": readJson(task)  
     })) + noCache();
@@ -224,7 +224,7 @@ const PjeOffice = (function () {
       "arquivos": [{
          "nome": "arquivo",
          "url": pjeofficeUser.PAGINA_DOWNLOAD,
-         "paramsEnvio": pjeOfficeUser.PARAMS_ENVIO
+         "paramsEnvio": pjeofficeUser.PARAMS_ENVIO
        }]
     }, onSuccess, onFailed);
   };
