@@ -39,4 +39,8 @@ public interface IPjeHttpExchangeResponse extends IPjeResponse {
   void writeJavascript(byte[] data) throws IOException;
 
   void writeFile(File file) throws IOException;
+
+  void notFound() throws IOException;
+
+  void success() throws IOException;
 }

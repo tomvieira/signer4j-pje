@@ -131,7 +131,8 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       whyNot.append("Parâmetro 'servidor' não define um 'host' válido -> " + target);
       LOGGER.warn(whyNot.toString());
       return false;
-    }
+    }   
+    
     
     Optional<String> nativeOrigin = params.getOrigin();
     if (!nativeOrigin.isPresent()) {
@@ -140,16 +141,15 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }
     
-    final String targetOrigin = targetSchema.get() + "://" + targetHost.get();
+    final String targetOrigin = targetSchema.get() + "://" + targetHost.get() + ":" + targetUri.getPort();
     
-/*
     //Descomente este trecho de código quando o navegador enviar o 'Origin' para o assinador via post     
     if (!nativeOrigin.get().equals(targetOrigin)) {
       whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
       LOGGER.warn(whyNot.toString());
       return false;
     }
-*/    
+
     final IPjeServerAccess serverRequest = new PjeServerAccess(app, target, code);
     final Optional<IPjeServerAccess> access = persister.hasPermission(serverRequest.getId());
     

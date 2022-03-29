@@ -32,12 +32,14 @@ import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.utils4j.imp.Environment;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -162,7 +164,8 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     }
   }
   
-  private class ApiRequestHandler extends PjeRequestHandler {
+  
+  private class ApiDemoFrontEndRequestHandler extends PjeRequestHandler {
     @Override
     public String getEndPoint() {
       return BASE_END_POINT + "api";
@@ -170,9 +173,27 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
 
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      response.writeFile(Paths.get("./web/", request.getParameter("file").orElse("index.html")).toFile());
+      Optional<Path> p = Environment.resolveTo("PJEOFFICE_HOME", "web/" + request.getParameter("file").orElse("index.html"), false, true);
+      if (p.isPresent()) {
+        response.writeFile(p.get().toFile());       
+      } else {
+        response.notFound();
+      }
     }
   }
+  
+  private class ApiDemoBackEndRequestHandler extends PjeRequestHandler {
+
+    @Override
+    public String getEndPoint() {
+      return BASE_END_POINT + "pjefake";
+    }
+
+    @Override
+    protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
+      response.success();
+    }    
+  } 
   
   private HttpServer httpServer;
   private HttpsServer httpsServer;
@@ -183,12 +204,14 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
   private final Filter cors   = new CorsFilter();
   private final Filter access = new AccessFilter();
   
-  private final IPjeRequestHandler ping = new PingRequestHandler();
-  private final IPjeRequestHandler task = new TaskRequestHandler();
-  private final IPjeRequestHandler vers = new VersionRequestHandler();
-  private final IPjeRequestHandler exit = new ShutdownRequestHandler();
-  private final IPjeRequestHandler vaza = new LogoutRequestHandler();
-  private final IPjeRequestHandler api  = new ApiRequestHandler();
+  private final IPjeRequestHandler ping  = new PingRequestHandler();
+  private final IPjeRequestHandler task  = new TaskRequestHandler();
+  private final IPjeRequestHandler vers  = new VersionRequestHandler();
+  private final IPjeRequestHandler exit  = new ShutdownRequestHandler();
+  private final IPjeRequestHandler vaza  = new LogoutRequestHandler();
+  
+  private final IPjeRequestHandler front = new ApiDemoFrontEndRequestHandler();
+  private final IPjeRequestHandler back  = new ApiDemoBackEndRequestHandler();
 
   PjeWebServer(IBootable finishingCode) {
     super(finishingCode, "http://127.0.0.1:" + HTTP_PORT);
@@ -254,7 +277,8 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
         .usingHandler(task)
         .usingHandler(exit)
         .usingHandler(vaza)
-        .usingHandler(api);
+        .usingHandler(front)
+        .usingHandler(back);         
       startHttp();
       startHttps();
     } catch (IOException e) {

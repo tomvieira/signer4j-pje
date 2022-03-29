@@ -57,4 +57,14 @@ public class PjeOneTimeWritingHttpExchangeResponse extends PjeOneTimeWritingResp
   public void writeFile(File file) throws IOException {
     checkAndRun(() -> response.writeFile(file));
   }
+
+  @Override
+  public void notFound() throws IOException {
+    checkAndRun(() -> response.notFound());
+  }
+
+  @Override
+  public void success() throws IOException {
+    checkAndRun(() -> response.success());
+  }
 }

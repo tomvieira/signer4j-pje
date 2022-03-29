@@ -48,14 +48,14 @@ const readSession = function () {
 
 const pjeofficeUser = {
   "APP_REQUISITANTE"	: "Pje",             		//(Aplicação que faz uso do PjeOffice)
-  "CODIGO_SEGURANCA"	: "",				 		//(código de segurança da aplicação - proteção CSRF)
-  "WEB_ROOT"			: window.location.origin + "/" + "insert your context web root path here",
-  "WELCOME_MESSAGE"		: "",				 		//(mensagem para assinar durante autenticação)
-  "PAGINA_LOGIN"		: "",                    	//(página para redirecionamento pós login)
-  "PAGINA_ASSINATURA"	: "",				 		//(página que receberá assinaturas)
-  "PAGINA_UPLOAD"		: "",					 	//(página quer recebe arquivos assinados em P7S)
-  "PAGINA_DOWNLOAD"		: "",			     		//(página que entrega os arquivos a serem assinados em P7S)
-  "PARAMS_ENVIO"		: [] 					 	//(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
+  "CODIGO_SEGURANCA"	: "bypass",			 		//(código de segurança da aplicação - proteção CSRF)
+  "WEB_ROOT"			: window.location.origin + "/pjeOffice",// + "insert your context web root path here",
+  "WELCOME_MESSAGE"		: "helloworld",		 		//(mensagem para assinar durante autenticação)
+  "PAGINA_LOGIN"		: "/pjefake",     			//(página para redirecionamento pós login)
+  "PAGINA_ASSINATURA"	: "/pjefake",				//(página que receberá assinaturas)
+  "PAGINA_UPLOAD"		: "/pjefake",				//(página quer recebe arquivos assinados em P7S)
+  "PAGINA_DOWNLOAD"		: "/pjefake",				//(página que entrega os arquivos a serem assinados em P7S)
+  "PARAMS_ENVIO"		: ["foo=bar", "what=ever"] 	//(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
 };
 
 

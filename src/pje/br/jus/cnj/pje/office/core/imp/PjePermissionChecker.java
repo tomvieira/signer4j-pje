@@ -68,11 +68,9 @@ enum PjePermissionChecker implements IPjeServerAccessPermissionChecker {
     public void checkAccessPermission(IPjeServerAccess access)  throws PjePermissionDeniedException {
       Args.requireText(access, "access is null");
       
-      final byte[] cryptedBytes = Base64.base64Decode(access.getCode());
-      
       final byte[] decriptedBytes;
       try {
-        decriptedBytes = Ciphers.decryptWithRsa(cryptedBytes, KEY);
+        decriptedBytes = Ciphers.decryptWithRsa(Base64.base64Decode(access.getCode()), KEY);
       } catch (Exception e) {
         throw new PjePermissionDeniedException("Não foi possível descriptografar código de segurança. Acesso negado!", e);
       }

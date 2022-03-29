@@ -39,6 +39,7 @@ import com.github.utils4j.IConstants;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
+import br.jus.cnj.pje.office.core.IPjeHeaders;
 import br.jus.cnj.pje.office.core.IPjeHttpExchangeResponse;
 
 @SuppressWarnings("restriction")
@@ -96,5 +97,15 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
     } else {
       write(out);
     }
+  }
+
+  @Override
+  public void notFound() throws IOException {
+    response.sendResponseHeaders(HttpStatus.SC_NOT_FOUND, IPjeHeaders.NO_RESPONSE_BODY);    
+  }
+
+  @Override
+  public void success() throws IOException {
+    response.sendResponseHeaders(HttpStatus.SC_SUCCESS, IPjeHeaders.NO_RESPONSE_BODY);
   }
 }
