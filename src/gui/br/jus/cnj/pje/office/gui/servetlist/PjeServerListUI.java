@@ -185,7 +185,7 @@ public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
     this.loadedList = clone(entries);
     ServerModel model = (ServerModel)table.getModel();
     model.load(entries);
-    setVisible(true);
+    showToFront();
     return currentList;
   }
   

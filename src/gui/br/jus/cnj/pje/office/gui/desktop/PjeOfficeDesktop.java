@@ -51,20 +51,17 @@ import br.jus.cnj.pje.office.core.imp.PjeConfig;
 public class PjeOfficeDesktop extends SimpleFrame {
   private static final long serialVersionUID = 1L;
   
-  private JPanel contentPane;
+  private JPanel contentPane;  
 
   public PjeOfficeDesktop(IBootable finishingCode, PopupMenu popup) {
     super("PjeOffice - " + Version.current(), PjeConfig.getIcon());
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    setBounds(100, 100, 336, 235);
-    setResizable(false);
     contentPane = new JPanel();
     contentPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
     contentPane.setLayout(new BorderLayout(0, 0));
-    setContentPane(contentPane);
+    ImageIcon viewport = new ImageIcon(Config.getIcon());
     JButton btnMain = new JButton("");
     btnMain.add(popup);
-    btnMain.setIcon(new ImageIcon(Config.getIcon()));
+    btnMain.setIcon(viewport);
     btnMain.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         popup.show(e.getComponent(), e.getX(), e.getY());
@@ -76,6 +73,10 @@ public class PjeOfficeDesktop extends SimpleFrame {
       }
     });
     contentPane.add(btnMain, BorderLayout.CENTER);
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setResizable(false);
+    setBounds(100, 100, viewport.getIconWidth(), viewport.getIconHeight());
+    setContentPane(contentPane);
     setLocationRelativeTo(null);
   }
   
