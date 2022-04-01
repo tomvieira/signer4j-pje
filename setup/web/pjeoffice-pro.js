@@ -47,15 +47,16 @@ const readSession = function () {
 /*******************************************************************************************************/
 
 const pjeofficeUser = {
-  "APP_REQUISITANTE"	: "Pje",             		//(Aplicação que faz uso do PjeOffice)
-  "CODIGO_SEGURANCA"	: "bypass",			 		//(código de segurança da aplicação - proteção CSRF)
-  "WEB_ROOT"			: window.location.origin + "/pjeOffice",// + "insert your context web root path here",
-  "WELCOME_MESSAGE"		: "helloworld",		 		//(mensagem para assinar durante autenticação)
-  "PAGINA_LOGIN"		: "/pjefake",     			//(página para redirecionamento pós login)
-  "PAGINA_ASSINATURA"	: "/pjefake",				//(página que receberá assinaturas)
-  "PAGINA_UPLOAD"		: "/pjefake",				//(página quer recebe arquivos assinados em P7S)
-  "PAGINA_DOWNLOAD"		: "/pjefake",				//(página que entrega os arquivos a serem assinados em P7S)
-  "PARAMS_ENVIO"		: ["foo=bar", "what=ever"] 	//(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
+  "APP_REQUISITANTE"  : "Pje",             //(Aplicação que faz uso do PjeOffice)
+  "CODIGO_SEGURANCA"  : "bypass",          //(código de segurança da aplicação - proteção CSRF)
+  "MODO_TESTE"        : false,
+  "WEB_ROOT"          : window.location.origin + "/pjeOffice",// + "insert your context web root path here",
+  "WELCOME_MESSAGE"   : "helloworld",      //(mensagem para assinar durante autenticação)
+  "PAGINA_LOGIN"      : "/pjefake",        //(página para redirecionamento pós login)
+  "PAGINA_ASSINATURA" : "/pjefake",        //(página que receberá assinaturas)
+  "PAGINA_UPLOAD"     : "/pjefake",        //(página quer recebe arquivos assinados em P7S)
+  "PAGINA_DOWNLOAD"   : "/pjefake",        //(página que entrega os arquivos a serem assinados em P7S)
+  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   //(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
 };
 
 
@@ -68,9 +69,11 @@ const PjeOffice = (function () {
     
   function PjeOffice() {}
 
-  const PJEOFFICE_PROTOCOL		   = "http";
-  const PJEOFFICE_PORT			   = 8800;
-  const PJEOFFICE_POST_TIMEOUT     = 15000; //millis
+  const PJEOFFICE_PROTOCOL         = "http";
+  const PJEOFFICE_PORT             = 8800;
+  const PJEOFFICE_POST_TIMEOUT     = 10000; //millis
+
+  //Please do NOT chante this constants
   const PJEOFFICE_BASE_END_POINT   = PJEOFFICE_PROTOCOL + "://127.0.0.1:" + PJEOFFICE_PORT;
   const PJEOFFICE_BASE_CONTEXT     = "/pjeOffice/";
   const PJEOFFICE_TASK_END_POINT   = PJEOFFICE_BASE_CONTEXT + "requisicao/"
@@ -174,7 +177,7 @@ const PjeOffice = (function () {
   const parseFields = function(fields) {
     return fields.split(",").map(i => i.split("&")).map(itemFields =>
       itemFields.length == 4 ? {
-        "id"	: itemFields[0].substr(itemFields[0].indexOf("=") + 1),
+        "id"  : itemFields[0].substr(itemFields[0].indexOf("=") + 1),
         "codIni": itemFields[1].substr(itemFields[1].indexOf("=") + 1),
         "hash"  : itemFields[2].substr(itemFields[2].indexOf("=") + 1),
         "isBin" : itemFields[3].substr(itemFields[3].indexOf("=") + 1)
@@ -188,43 +191,43 @@ const PjeOffice = (function () {
 * PJEOFFICE API  
 /*******************************************************************************************************/
   
-  PjeOffice.login = function(onSuccess, onFailed) {
+  PjeOffice.login = function(onSuccess, onFailed, subject) {
     runTask_cnj_autenticador({
-      "enviarPara": pjeofficeUser.PAGINA_LOGIN,
-      "mensagem": pjeofficeUser.WELCOME_MESSAGE,
+      "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
+      "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
     }, onSuccess, onFailed);
   };
 
-  PjeOffice.loginSSO = function(token, onSuccess, onFailed) {
-	runTask_sso_autenticador({
-      "enviarPara": pjeofficeUser.PAGINA_LOGIN,
-      "mensagem": pjeofficeUser.WELCOME_MESSAGE,
+  PjeOffice.loginSSO = function(onSuccess, onFailed, subject, token) {
+    runTask_sso_autenticador({
+      "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
+      "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
       "token": token
-	}, onSuccess, onFailed);	
+    }, onSuccess, onFailed);  
   };
     
   PjeOffice.logout = function(onSuccess, onFailed) {
     logout(onSuccess, onFailed);
   };
     
-  PjeOffice.signHash = function(documents, onSuccess, onFailed) {
+  PjeOffice.signHash = function(onSuccess, onFailed, subject, documents) {
     runTask_cnj_assinadorHash({
       "algoritmoAssinatura": "ASN1MD5withRSA",
-      "uploadUrl": pjeofficeUser.PAGINA_ASSINATURA,
-      "modoTeste": false,
+      "uploadUrl": subject?.PAGINA_ASSINATURA || pjeofficeUser.PAGINA_ASSINATURA,
+      "modoTeste": subject?.MODO_TESTE || pjeofficeUser.MODO_TESTE,
       "arquivos": parseFields(documents)
     }, onSuccess, onFailed);
   };
     
-  PjeOffice.signP7s = function(onSuccess, onFailed) {
+  PjeOffice.signP7s = function(onSuccess, onFailed, subject) {
     runTask_cnj_assinador({
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
-      "enviarPara": pjeofficeUser.PAGINA_UPLOAD,
+      "enviarPara": subject?.PAGINA_UPLOAD || pjeofficeUser.PAGINA_UPLOAD,
       "arquivos": [{
          "nome": "arquivo",
-         "url": pjeofficeUser.PAGINA_DOWNLOAD,
-         "paramsEnvio": pjeofficeUser.PARAMS_ENVIO
+         "url": subject?.PAGINA_DOWNLOAD || pjeofficeUser.PAGINA_DOWNLOAD,
+         "paramsEnvio": subject?.PARAMS_ENVIO || pjeofficeUser.PARAMS_ENVIO
        }]
     }, onSuccess, onFailed);
   };
