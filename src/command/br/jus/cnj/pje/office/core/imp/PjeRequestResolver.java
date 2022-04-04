@@ -31,6 +31,7 @@ import static br.jus.cnj.pje.office.task.imp.MainRequestReader.MAIN;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.apache.hc.core5.http.HttpHeaders;
 
@@ -58,15 +59,22 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
       throw new TaskResolverException("Unabled to resolve task with empty request 'r' param");
     }
 
-    Optional<String> o = request.getOrigin();
+    Optional<String> origin = request.getOrigin();
 
-    Optional<String> a = request.getUserAgent();
+    Optional<String> userAgent = request.getUserAgent();
     
     String rValue = r.get();
     
+    Function<IMainParams, ?> withOrigin = m -> new MainOrigin(m, origin);
+    
     PjeTaskRequest tr;
     try {
-      tr = (PjeTaskRequest) MAIN.read(rValue, new PjeTaskRequest().of(HttpHeaders.USER_AGENT, a), m -> new MainOrigin((IMainParams)m, o));
+      tr = (PjeTaskRequest) 
+         MAIN.read(rValue, new PjeTaskRequest()
+        .of(IPjeRequest.PJE_REQUEST_IS_POST, request.isPost())
+        .of(HttpHeaders.USER_AGENT, userAgent), 
+        withOrigin
+      );
     } catch (IOException e) {
       throw new TaskResolverException("Unabled to read 'r' request parameter: " + rValue, e);
     }

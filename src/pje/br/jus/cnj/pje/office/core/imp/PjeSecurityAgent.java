@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
@@ -119,20 +120,19 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }
     
-    Optional<String> targetSchema = Optional.ofNullable(targetUri.getScheme());
+    Optional<String> targetSchema = Strings.optional(targetUri.getScheme());
     if (!targetSchema.isPresent()) {
       whyNot.append("Parâmetro 'servidor' não define um 'schema' válido -> " + target);
       LOGGER.warn(whyNot.toString());
       return false;
     }
     
-    Optional<String> targetHost = Optional.ofNullable(targetUri.getHost());
+    Optional<String> targetHost = Strings.optional(targetUri.getHost());
     if (!targetHost.isPresent()) {
       whyNot.append("Parâmetro 'servidor' não define um 'host' válido -> " + target);
       LOGGER.warn(whyNot.toString());
       return false;
     }   
-    
     
     Optional<String> nativeOrigin = params.getOrigin();
     if (!nativeOrigin.isPresent()) {
@@ -141,10 +141,11 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }
     
-    final String targetOrigin = targetSchema.get() + "://" + targetHost.get() + ":" + targetUri.getPort();
-    
-    //Descomente este trecho de código quando o navegador enviar o 'Origin' para o assinador via post     
-    if (!nativeOrigin.get().equals(targetOrigin)) {
+    final String targetOrigin = (targetSchema.get() + "://" + targetHost.get()).toLowerCase();
+
+    final String browserOrigin = nativeOrigin.get().toLowerCase();
+
+    if (!browserOrigin.startsWith(targetOrigin)) {
       whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
       LOGGER.warn(whyNot.toString());
       return false;

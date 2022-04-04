@@ -36,11 +36,13 @@ class PjeTarget implements IPjeTarget {
   private final String endPoint;
   private final String userAgent;
   private final String session;
+  private final boolean responseJson;
 
-  PjeTarget(String endPoint, String userAgent, String session) {
+  PjeTarget(String endPoint, String userAgent, String session, boolean responseJson) {
     this.endPoint = Args.requireText(endPoint, "endpoint is null");
     this.userAgent = Args.requireNonNull(userAgent, "userAgent is null");
     this.session = Args.requireNonNull(session, "session is null");//single sign on has empty string session but not null
+    this.responseJson = responseJson;
   }
   
   @Override
@@ -56,5 +58,10 @@ class PjeTarget implements IPjeTarget {
   @Override
   public String getSession() {
     return session;
+  }
+
+  @Override
+  public boolean isResponseJson() {
+    return responseJson;
   }
 }

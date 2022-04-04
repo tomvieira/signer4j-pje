@@ -36,7 +36,6 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.utils4j.IConstants;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import br.jus.cnj.pje.office.core.IPjeHeaders;
@@ -64,23 +63,25 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
   }
   
   @Override
+  public void setContentType(String contentType) {
+    response.getResponseHeaders().set(HttpHeaders.CONTENT_TYPE, contentType);
+  }
+  
+  @Override
   public void writeHtml(byte[] data) throws IOException {
-    Headers headers = response.getResponseHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_HTML.toString());
+    setContentType(ContentType.TEXT_HTML.toString());
     write(data);
   }
   
   @Override
   public void writeJson(byte[] data) throws IOException {
-    Headers headers = response.getResponseHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
+    setContentType(ContentType.APPLICATION_JSON.toString());
     write(data);
   }
 
   @Override
   public void writeJavascript(byte[] data) throws IOException {
-    Headers headers = response.getResponseHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, ContentType.create("text/javascript", IConstants.UTF_8).toString());
+    setContentType(ContentType.create("text/javascript", IConstants.UTF_8).toString());
     write(data);
   }
   

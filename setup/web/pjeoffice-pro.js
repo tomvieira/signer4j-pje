@@ -11,11 +11,11 @@ const Twix=function(){function t(){}t.ajax=function(t){t=t||{url:""},t.type=t.ty
 
 const readJson = function(json) {
   const jsonStringify = JSON.stringify;  
-    const arrayToJson = Array.prototype.toJSON;
-    delete Array.prototype.toJSON;
-    const output = jsonStringify(json);
-    Array.prototype.toJSON = arrayToJson;
-    return output;
+  const arrayToJson = Array.prototype.toJSON;
+  delete Array.prototype.toJSON;
+  const output = jsonStringify(json);
+  Array.prototype.toJSON = arrayToJson;
+  return output;
 };
 
 const readCookie = function (cookieName) {
@@ -51,6 +51,8 @@ const pjeofficeUser = {
   "CODIGO_SEGURANCA"  : "bypass",          //(código de segurança da aplicação - proteção CSRF)
   "MODO_TESTE"        : false,
   "WEB_ROOT"          : window.location.origin + "/pjeOffice",// + "insert your context web root path here",
+  "POST_TIMEOUT"	  : 60000,             //millis
+  
   "WELCOME_MESSAGE"   : "helloworld",      //(mensagem para assinar durante autenticação)
   "PAGINA_LOGIN"      : "/pjefake",        //(página para redirecionamento pós login)
   "PAGINA_ASSINATURA" : "/pjefake",        //(página que receberá assinaturas)
@@ -58,7 +60,6 @@ const pjeofficeUser = {
   "PAGINA_DOWNLOAD"   : "/pjefake",        //(página que entrega os arquivos a serem assinados em P7S)
   "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   //(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
 };
-
 
 
 /********************************************************************************************************
@@ -71,9 +72,9 @@ const PjeOffice = (function () {
 
   const PJEOFFICE_PROTOCOL         = "http";
   const PJEOFFICE_PORT             = 8800;
-  const PJEOFFICE_POST_TIMEOUT     = 10000; //millis
+  const PJEOFFICE_POST_TIMEOUT	   = 60000; //millis
 
-  //Please do NOT chante this constants
+  //Please do NOT change this constants if you don't know what your really doing
   const PJEOFFICE_BASE_END_POINT   = PJEOFFICE_PROTOCOL + "://127.0.0.1:" + PJEOFFICE_PORT;
   const PJEOFFICE_BASE_CONTEXT     = "/pjeOffice/";
   const PJEOFFICE_TASK_END_POINT   = PJEOFFICE_BASE_CONTEXT + "requisicao/"
@@ -93,85 +94,98 @@ const PjeOffice = (function () {
       "tarefa": readJson(task)  
     })) + noCache();
   };
-    
-  const post = function (endPoint, onSuccess, onFailed) {
+  
+  const post = function (subject, endPoint, onSuccess, onFailed) {
+	let complete = false;
     Twix.ajax({
       "url": PJEOFFICE_BASE_END_POINT + endPoint,
       "type": 'POST',
       "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
-      "timeout": PJEOFFICE_POST_TIMEOUT,
-      "success": onSuccess,
-      "error": onFailed,
-      "async": true
+      "timeout": subject?.POST_TIMEOUT || PJEOFFICE_POST_TIMEOUT,
+      "async": true,
+      "error": function(status, statusText, response) { 
+		 if (complete) return; 
+		 if (onFailed) onFailed(statusText, response); 
+		 complete = true;
+	     },
+      "success": function(data, statusText, response) {
+	     if (complete) return;
+	     if (data.success) {
+		   if (onSuccess) onSuccess(data, response);
+		 } else {
+		   if (onFailed) onFailed(statusText, response);	
+		 }
+		 complete = true;
+      },
     });
   };
   
-  const runTask = function(taskId, task, onSuccess, onFailed) {
-    post(createQueryParams(taskId, task), onSuccess, onFailed);
+  const runTask = function(subject, taskId, task, onSuccess, onFailed) {
+    post(subject, createQueryParams(taskId, task), onSuccess, onFailed);
   };
   
-  const runTask_cnj_assinador = function(task, onSuccess, onFailed) {
-    runTask('cnj.assinador', task, onSuccess, onFailed);
+  const runTask_cnj_assinador = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'cnj.assinador', task, onSuccess, onFailed);
   };
   
-  const runTask_cnj_assinadorHash = function(task, onSuccess, onFailed) {
-    runTask('cnj.assinadorHash', task, onSuccess, onFailed);
+  const runTask_cnj_assinadorHash = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'cnj.assinadorHash', task, onSuccess, onFailed);
   };
   
-  const runTask_cnj_autenticador = function(task, onSuccess, onFailed) {
-    runTask('cnj.autenticador', task, onSuccess, onFailed);
+  const runTask_cnj_autenticador = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'cnj.autenticador', task, onSuccess, onFailed);
   };
   
-  const runTask_cnj_assinadorBase64 = function(task, onSuccess, onFailed) {
-    runTask('cnj.assinadorBase64', task, onSuccess, onFailed);
+  const runTask_cnj_assinadorBase64 = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'cnj.assinadorBase64', task, onSuccess, onFailed);
   };
   
-  const runTask_sso_autenticador = function(task, onSuccess, onFailed) {
-    runTask('sso.autenticador', task, onSuccess, onFailed);
+  const runTask_sso_autenticador = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'sso.autenticador', task, onSuccess, onFailed);
   };
   
-  const runTask_util_impressor = function(task, onSuccess, onFailed) {
-    runTask('util.impressor', task, onSuccess, onFailed);
+  const runTask_util_impressor = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'util.impressor', task, onSuccess, onFailed);
   };
   
-  const runTask_util_downloader = function(task, onSuccess, onFailed) {
-    runTask('util.downloader', task, onSuccess, onFailed);
+  const runTask_util_downloader = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'util.downloader', task, onSuccess, onFailed);
   };
   
-  const runTask_pdf_join = function(task, onSuccess, onFailed) {
-    runTask('pdf.join', task, onSuccess, onFailed);
+  const runTask_pdf_join = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'pdf.join', task, onSuccess, onFailed);
   };
   
-  const runTask_pdf_split_by_size= function(task, onSuccess, onFailed) {
-    runTask('pdf.split_by_size', task, onSuccess, onFailed);
+  const runTask_pdf_split_by_size= function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'pdf.split_by_size', task, onSuccess, onFailed);
   };
   
-  const runTask_pdf_split_by_parity = function(task, onSuccess, onFailed) {
-    runTask('pdf.split_by_parity', task, onSuccess, onFailed);
+  const runTask_pdf_split_by_parity = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'pdf.split_by_parity', task, onSuccess, onFailed);
   };
   
-  const runTask_pdf_split_by_count = function(task, onSuccess, onFailed) {
-    runTask('pdf.split_by_count', task, onSuccess, onFailed);
+  const runTask_pdf_split_by_count = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'pdf.split_by_count', task, onSuccess, onFailed);
   };
   
-  const runTask_pdf_split_by_pages = function(task, onSuccess, onFailed) {
-    runTask('pdf.split_by_pages', task, onSuccess, onFailed);
+  const runTask_pdf_split_by_pages = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'pdf.split_by_pages', task, onSuccess, onFailed);
   };
   
-  const runTask_video_split_by_duration = function(task, onSuccess, onFailed) {
-    runTask('video.split_by_duration', task, onSuccess, onFailed);
+  const runTask_video_split_by_duration = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'video.split_by_duration', task, onSuccess, onFailed);
   };
   
-  const runTask_video_split_by_size = function(task, onSuccess, onFailed) {
-    runTask('video.split_by_size', task, onSuccess, onFailed);
+  const runTask_video_split_by_size = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'video.split_by_size', task, onSuccess, onFailed);
   };
   
-  const runTask_video_split_by_slice = function(task, onSuccess, onFailed) {
-    runTask('video.split_by_slice', task, onSuccess, onFailed);
+  const runTask_video_split_by_slice = function(subject, task, onSuccess, onFailed) {
+    runTask(subject, 'video.split_by_slice', task, onSuccess, onFailed);
   };
   
-  const logout = function(onSuccess, onFailed) {
-    post(PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), onSuccess, onFailed);
+  const logout = function(subject, onSuccess, onFailed) {
+    post(subject, PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), onSuccess, onFailed);
   };
   
   const parseFields = function(fields) {
@@ -191,27 +205,27 @@ const PjeOffice = (function () {
 * PJEOFFICE API  
 /*******************************************************************************************************/
   
-  PjeOffice.login = function(onSuccess, onFailed, subject) {
-    runTask_cnj_autenticador({
+  PjeOffice.login = function(subject, onSuccess, onFailed) {
+    runTask_cnj_autenticador(subject, {
       "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
       "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
     }, onSuccess, onFailed);
   };
 
-  PjeOffice.loginSSO = function(onSuccess, onFailed, subject, token) {
-    runTask_sso_autenticador({
+  PjeOffice.loginSSO = function(token, subject, onSuccess, onFailed) {
+    runTask_sso_autenticador(subject, {
       "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
       "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
       "token": token
     }, onSuccess, onFailed);  
   };
     
-  PjeOffice.logout = function(onSuccess, onFailed) {
-    logout(onSuccess, onFailed);
+  PjeOffice.logout = function(subject, onSuccess, onFailed) {
+    logout(subject, onSuccess, onFailed);
   };
     
-  PjeOffice.signHash = function(onSuccess, onFailed, subject, documents) {
-    runTask_cnj_assinadorHash({
+  PjeOffice.signHash = function(documents, subject, onSuccess, onFailed) {
+    runTask_cnj_assinadorHash(subject, {
       "algoritmoAssinatura": "ASN1MD5withRSA",
       "uploadUrl": subject?.PAGINA_ASSINATURA || pjeofficeUser.PAGINA_ASSINATURA,
       "modoTeste": subject?.MODO_TESTE || pjeofficeUser.MODO_TESTE,
@@ -219,8 +233,8 @@ const PjeOffice = (function () {
     }, onSuccess, onFailed);
   };
     
-  PjeOffice.signP7s = function(onSuccess, onFailed, subject) {
-    runTask_cnj_assinador({
+  PjeOffice.signP7s = function(subject, onSuccess, onFailed) {
+    runTask_cnj_assinador(subject, {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
       "enviarPara": subject?.PAGINA_UPLOAD || pjeofficeUser.PAGINA_UPLOAD,

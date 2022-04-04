@@ -108,7 +108,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      PjeWebTaskResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.success(request.isPost()).processResponse(response);
     }
   }
   
@@ -133,7 +133,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de parada do servidor");
-      PjeWebTaskResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.success(request.isPost()).processResponse(response);
       PjeWebServer.this.exit();
     }
   }
@@ -147,7 +147,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       LOGGER.info("Recebida requisição de logout do certificado");
-      PjeWebTaskResponse.SUCCESS.processResponse(response);
+      PjeWebTaskResponse.success(request.isPost()).processResponse(response);
       PjeWebServer.this.logout();
     }    
   } 
@@ -235,7 +235,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
   
   @Override
   protected void handleException(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response, Exception e) {
-    tryRun(() -> PjeWebTaskResponse.FAIL.processResponse(response));
+    tryRun(() -> PjeWebTaskResponse.fail(request.isPost()).processResponse(response));
   }
   
   private void startHttps() throws IOException {

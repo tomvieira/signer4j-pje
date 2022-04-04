@@ -42,16 +42,8 @@ public class PjeHttpExchangeRequest extends PjeUriRequest implements IPjeHttpExc
     super(
       request.getRequestURI(), 
       request.getRequestHeaders().getFirst(HttpHeaders.USER_AGENT),
-      request.getRequestHeaders().getFirst(IPjeHeaders.ORIGIN)
-    );
-  }
-  
-  //constructor for FakeOrigin development mode
-  protected PjeHttpExchangeRequest(HttpExchange request, String origin) {
-    super(
-      request.getRequestURI(), 
-      request.getRequestHeaders().getFirst(HttpHeaders.USER_AGENT),
-      origin
+      request.getRequestHeaders().getFirst(IPjeHeaders.ORIGIN),
+      "post".equalsIgnoreCase(request.getRequestMethod())
     );
   }
   

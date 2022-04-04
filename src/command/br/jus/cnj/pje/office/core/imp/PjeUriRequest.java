@@ -36,6 +36,8 @@ import java.util.Optional;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
 
+import com.github.utils4j.imp.Strings;
+
 import br.jus.cnj.pje.office.core.IPjeRequest;
 
 public abstract class PjeUriRequest implements IPjeRequest {
@@ -47,11 +49,14 @@ public abstract class PjeUriRequest implements IPjeRequest {
   private final List<NameValuePair> queryParams;
   
   private final Optional<String> origin;
+
+  private final boolean post;
   
-  protected PjeUriRequest(URI input, String userAgent, String origin) {
+  protected PjeUriRequest(URI input, String userAgent, String origin, boolean post) {
     this.queryParams = parseParams(this.uri = input);
     this.userAgent = trim(userAgent, "Unknown");
-    this.origin = Optional.of(trim(origin));
+    this.origin = Strings.optional(origin);
+    this.post = post;
   }
 
   @Override
@@ -72,6 +77,11 @@ public abstract class PjeUriRequest implements IPjeRequest {
   @Override
   public final Optional<String> getOrigin() {
     return origin;
+  }
+  
+  @Override
+  public final boolean isPost() {
+    return post;
   }
   
   @Override

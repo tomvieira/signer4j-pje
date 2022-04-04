@@ -56,7 +56,7 @@ class PJeClipClient extends PjeClientWrapper {
     }
     
     @Override
-    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker) throws Exception {
+    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker, boolean json) throws Exception {
       return new PjeClipTaskResponse(supplier.get().toString(), charset);
     }
 

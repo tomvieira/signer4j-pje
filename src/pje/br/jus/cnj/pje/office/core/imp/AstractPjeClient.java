@@ -93,7 +93,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(target, "target is null"),
       Args.requireNonNull(signedData, "signed data null")
     );
-    return post(supplier, ifErrorThrow);
+    return post(supplier, ifErrorThrow, target.isResponseJson());
   }
   
   @Override
@@ -103,7 +103,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(signedData, "signedData null"),
       Args.requireNonNull(file, "file is null")
     );
-    return post(supplier, ifNotSuccessThrow);
+    return post(supplier, ifNotSuccessThrow, target.isResponseJson());
   }
   
   @Override
@@ -113,7 +113,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(file, "file is null"),
       Args.requireNonNull(contentType, "contentType is null")
     );
-    return post(supplier, ifErrorThrow);
+    return post(supplier, ifErrorThrow, target.isResponseJson());
   }
   
   @Override
@@ -122,7 +122,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(target, "target is null"),
       Args.requireNonNull(files, "files null")
     );
-    return post(supplier, ifNotSuccessThrow);
+    return post(supplier, ifNotSuccessThrow, target.isResponseJson());
   }
   
   @Override
@@ -131,7 +131,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(target, "target is null"),
       Args.requireText(certificateChain64, "certificateChain64 empty")
     );
-    return post(supplier, ifNotSuccessThrow);
+    return post(supplier, ifNotSuccessThrow, target.isResponseJson());
   }
   
   @Override
@@ -140,7 +140,7 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
       Args.requireNonNull(target, "target is null"), 
       Args.requireNonNull(dadosSSO , "dadosSSO is empty")
     );
-    return post(supplier, IResultChecker.NOTHING);
+    return post(supplier, IResultChecker.NOTHING, target.isResponseJson());
   }  
   
   @Override
@@ -157,9 +157,9 @@ public abstract class AstractPjeClient<T> implements IPjeClient {
     this.socket.close();
   }
 
-  private PjeTaskResponse post(final Supplier<T> supplier, IResultChecker checkResults) throws PJeClientException {
+  private PjeTaskResponse post(final Supplier<T> supplier, IResultChecker checkResults, boolean json) throws PJeClientException {
     try {
-      return this.socket.post(supplier, checkResults);
+      return this.socket.post(supplier, checkResults, json);
     } catch (PJeClientException e) {
       throw e;
     } catch (InterruptedException e) {

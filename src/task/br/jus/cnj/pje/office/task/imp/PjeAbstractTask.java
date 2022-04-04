@@ -57,6 +57,7 @@ import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeClient;
+import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
@@ -124,6 +125,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return getParameterValue(ITaskExecutorParams.PJE_REQUEST_EXECUTOR);
   }
   
+  private final boolean isPostRequest() {
+    return getParameter(IPjeRequest.PJE_REQUEST_IS_POST).orElse(false);
+  }
+  
   private final String getEndpointFor(String sendTo) {
     return getServerAddress() + sendTo;
   }
@@ -137,11 +142,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final IPjeTarget getTarget(String url) {
-    return new PjeTarget(getEndpointFor(url), getUserAgent(), getSession());
+    return new PjeTarget(getEndpointFor(url), getUserAgent(), getSession(), isPostRequest());
   }
   
   protected final IPjeTarget getExternalTarget(String url) {
-    return new PjeTarget(url, getUserAgent(), "");
+    return new PjeTarget(url, getUserAgent(), "", false);
   }
   
   protected final void throwCancel() throws InterruptedException {
@@ -178,15 +183,15 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final ITaskResponse<IPjeResponse> fail(Throwable exception) {
-    return PjeClientMode.failFrom(getServerAddress()).apply(exception) ;
+    return PjeClientMode.failFrom(getServerAddress(), isPostRequest()).apply(exception) ;
   }
   
   protected final PjeTaskResponse success() {
-    return PjeClientMode.successFrom(getServerAddress()).apply("success");
+    return PjeClientMode.successFrom(getServerAddress(), isPostRequest()).apply("success");
   }
 
   protected final PjeTaskResponse success(String output) {
-    return PjeClientMode.successFrom(getServerAddress()).apply("success: " + output);
+    return PjeClientMode.successFrom(getServerAddress(), isPostRequest()).apply("success: " + output);
   }
   
   protected final Optional<File> download(final IPjeTarget target) throws TaskException {

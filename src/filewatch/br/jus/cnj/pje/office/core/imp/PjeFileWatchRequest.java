@@ -33,6 +33,6 @@ import java.net.URISyntaxException;
 class PjeFileWatchRequest extends PjeUriRequest {
   
   public PjeFileWatchRequest(String uri, String origin) throws URISyntaxException {
-    super(new URI(uri), "java.nio.file.WatchService", origin);
+    super(new URI(uri), "java.nio.file.WatchService", origin, false);
   }
 }

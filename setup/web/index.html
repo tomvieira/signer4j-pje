@@ -7,10 +7,15 @@
 <script src="/pjeOffice/api/?file=pjeoffice-pro.js">
 </script>
 <script>
-function success() {}
-function fail() {}
-PjeOffice.loginSSO("LEONARDO", success, fail);
-//PjeOffice.logout(success, fail);
+
+const onSuccess = function(data, response) {
+	alert("SUCESSO (" + data + " : " + response.status + ")");
+};
+
+const onFailed = function(status, response) {
+	alert("CANCEL (" + status + " : " + response.status + ")" );
+};
+
 </script>
 </head>
 <body>
@@ -37,6 +42,7 @@ PjeOffice.loginSSO("LEONARDO", success, fail);
 	  </ul>
     </div>
     <div class="col-9">
+      <button onclick="PjeOffice.login(null, onSuccess, onFailed);">LOGAR</button>
       One of three columns
     </div>
   </div>

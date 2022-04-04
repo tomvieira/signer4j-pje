@@ -30,6 +30,8 @@ package br.jus.cnj.pje.office.core;
 import java.util.Optional;
 
 public interface IPjeRequest {
+  String PJE_REQUEST_IS_POST = IPjeRequest.class.getSimpleName() + ".isPost";
+
   String PJE_REQUEST_PARAMETER_NAME = "r";
 
   String PJE_REQUEST_PARAMETER_CACHE = "u";
@@ -43,4 +45,6 @@ public interface IPjeRequest {
   Optional<String> getUserAgent();
 
   Optional<String> getOrigin();
+  
+  boolean isPost();
 }

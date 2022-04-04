@@ -66,7 +66,7 @@ class PjeWebCodec extends SocketCodec<HttpPost> {
   }
 
   @Override
-  public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults) throws Exception {
+  public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults, boolean json) throws Exception {
     try {      
       final HttpPost post = supplier.get();
 
@@ -87,7 +87,7 @@ class PjeWebCodec extends SocketCodec<HttpPost> {
           }
           checkResults.run(responseText);
         }
-        return PjeWebTaskResponse.SUCCESS;
+        return PjeWebTaskResponse.success(json);
       }
     }catch(CancellationException e) {
       throw new PJeClientException("Operação cancelada. Os dados não foram enviados ao servidor.", e);

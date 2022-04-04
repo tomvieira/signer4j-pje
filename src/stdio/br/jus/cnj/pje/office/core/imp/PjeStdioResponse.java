@@ -42,4 +42,9 @@ class PjeStdioResponse implements IPjeResponse {
   public void flush() throws IOException {
     System.out.flush();
   }
+
+  @Override
+  public void setContentType(String contentType) {
+    
+  }
 }

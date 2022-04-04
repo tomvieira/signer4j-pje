@@ -29,31 +29,62 @@ package br.jus.cnj.pje.office.core.imp;
 
 import java.io.IOException;
 
+import org.apache.hc.core5.http.ContentType;
+
 import com.github.utils4j.imp.Base64;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-public final class PjeWebTaskResponse extends PjeTaskResponse {
+public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   
-  //A .gif file with 1 pixels
-  public static final PjeWebTaskResponse SUCCESS = new PjeWebTaskResponse(
-    true, "R0lGODlhAQABAPAAAEz/AAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
-  );
-  
-  //A .png file with 2 pixels
-  public static final PjeWebTaskResponse FAIL = new PjeWebTaskResponse(
-    false, "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAABHNCSVQICAgIfAhkiAAAABFJREFUCJlj/M/A8J+BgYEBAA0FAgD+6nhnAAAAAElFTkSuQmCC"
-  );
-
-  private byte[] content;
-  
-  PjeWebTaskResponse(boolean success, String base64Content) {
-    super(success);
-    this.content = Base64.base64Decode(base64Content);
+  public static PjeWebTaskResponse success(boolean json) {
+    return json ? JSON_SUCCESS : IMAGE_SUCCESS;
   }
   
-  @Override
-  public void processResponse(IPjeResponse response) throws IOException {
-    response.write(content);
+  public static PjeWebTaskResponse fail(boolean json) {
+    return json ? JSON_FAIL: IMAGE_FAIL;
+  }
+
+  //A simple json   {"success": true}
+  private static final PjeWebTaskResponse JSON_SUCCESS = new PjeWebTaskResponse(true, "eyJzdWNjZXNzIjogdHJ1ZX0=") {
+    @Override
+    public void processResponse(IPjeResponse response) throws IOException {
+      response.setContentType(ContentType.APPLICATION_JSON.toString());
+      response.write(content);
+    }
+  };
+  
+  //A simple json   {"success": false}
+  private static final PjeWebTaskResponse JSON_FAIL = new PjeWebTaskResponse(false, "eyJzdWNjZXNzIjogZmFsc2V9") {
+    @Override
+    public void processResponse(IPjeResponse response) throws IOException {
+      response.setContentType(ContentType.APPLICATION_JSON.toString());
+      response.write(content);
+    }
+  };
+  
+  //A .gif file with 1 pixels
+  private static final PjeWebTaskResponse IMAGE_SUCCESS = new PjeWebTaskResponse(true, "R0lGODlhAQABAPAAAEz/AAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==") {
+    @Override
+    public void processResponse(IPjeResponse response) throws IOException {
+      response.setContentType(ContentType.IMAGE_GIF.toString());
+      response.write(content);
+    }
+  };
+  
+  //A .png file with 2 pixels
+  private static final PjeWebTaskResponse IMAGE_FAIL = new PjeWebTaskResponse(false, "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAABHNCSVQICAgIfAhkiAAAABFJREFUCJlj/M/A8J+BgYEBAA0FAgD+6nhnAAAAAElFTkSuQmCC") {
+    @Override
+    public void processResponse(IPjeResponse response) throws IOException {
+      response.setContentType(ContentType.IMAGE_PNG.toString());
+      response.write(content);
+    }
+  };
+
+  protected final byte[] content;
+  
+  private PjeWebTaskResponse(boolean success, String base64Content) {
+    super(success);
+    this.content = Base64.base64Decode(base64Content);
   }
 }

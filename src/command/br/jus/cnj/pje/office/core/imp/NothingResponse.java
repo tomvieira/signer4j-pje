@@ -41,4 +41,9 @@ public enum NothingResponse implements IPjeResponse {
   @Override
   public void flush() throws IOException {
   }
+
+  @Override
+  public void setContentType(String contentType) {
+    
+  }
 }

@@ -49,4 +49,9 @@ public class PjeResponseWrapper<T extends IPjeResponse> implements IPjeResponse 
   public void flush() throws IOException {
     response.flush();
   }
+
+  @Override
+  public void setContentType(String contentType) {
+    response.setContentType(contentType);
+  }
 }

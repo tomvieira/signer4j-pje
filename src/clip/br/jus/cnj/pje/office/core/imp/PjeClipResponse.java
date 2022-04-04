@@ -58,4 +58,9 @@ class PjeClipResponse implements IPjeResponse {
   public void write(byte[] data) throws IOException {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(new String(data, charset)), null);
   }
+
+  @Override
+  public void setContentType(String contentType) {
+    
+  }
 }

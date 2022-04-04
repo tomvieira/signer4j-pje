@@ -78,7 +78,6 @@ enum PjeServerMode {
 
     HttpsServer setupSSL(final HttpsServer server) throws IOException {
       try {
-        //TODO revisar e testar!
         final SSLContext sslContext = SSLContext.getInstance("TLS");
         final char[] password = "pjeoffice".toCharArray();
         KeyStore keyStore = KeyStore.getInstance("JKS");

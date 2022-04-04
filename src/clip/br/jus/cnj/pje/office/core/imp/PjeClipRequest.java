@@ -32,6 +32,6 @@ import java.net.URISyntaxException;
 
 class PjeClipRequest extends PjeUriRequest {
   public PjeClipRequest(String uri, String origin) throws URISyntaxException {
-    super(new URI(uri), "java.awt.datatransfer.Clipboard", origin);
+    super(new URI(uri), "java.awt.datatransfer.Clipboard", origin, false);
   }
 }
