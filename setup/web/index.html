@@ -9,11 +9,11 @@
 <script>
 
 const onSuccess = function(data, response) {
-	alert("SUCESSO (" + data + " : " + response.status + ")");
+	alert("SUCESSO (" + readJson(data) + " : " + response.status + ")");
 };
 
 const onFailed = function(status, response) {
-	alert("CANCEL (" + status + " : " + response.status + ")" );
+	alert("FALHA (" + status + " : " + response.status + ")" );
 };
 
 </script>
@@ -42,7 +42,7 @@ const onFailed = function(status, response) {
 	  </ul>
     </div>
     <div class="col-9">
-      <button onclick="PjeOffice.login(null, onSuccess, onFailed);">LOGAR</button>
+      <button onclick="PjeOffice.login('leonardo', {'onSuccess': onSuccess, 'onFailed': onFailed});">LOGAR</button>
       One of three columns
     </div>
   </div>

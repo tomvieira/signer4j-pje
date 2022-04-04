@@ -46,19 +46,49 @@ const readSession = function () {
 * scope
 /*******************************************************************************************************/
 
-const pjeofficeUser = {
-  "APP_REQUISITANTE"  : "Pje",             //(Aplicação que faz uso do PjeOffice)
-  "CODIGO_SEGURANCA"  : "bypass",          //(código de segurança da aplicação - proteção CSRF)
-  "MODO_TESTE"        : false,
-  "WEB_ROOT"          : window.location.origin + "/pjeOffice",// + "insert your context web root path here",
-  "POST_TIMEOUT"	  : 60000,             //millis
+const defaultSubject = {
+   //Aplicação que faz uso do PjeOffice
+   //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+  "APP_REQUISITANTE"  : "Pje",
+
+   //Código de segurança da aplicação - proteção CSRF
+   //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+  "CODIGO_SEGURANCA"  : "bypass",
+
+  //Endpoint raiz da aplicação. Comporá o parâmetro 'servidor' da requisição principal (main) e usada
+  //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
+  //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+  //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor. Aqui está informado /pjeOffice
+  //porque o próprio PjeOffice simula em Mock da aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
+  "WEB_ROOT"          : window.location.origin + "/pjeOffice",
+
+  //Para ambientes de testes, desenvolvimento, treinamento informe true. Informe false para produção
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "MODO_TESTE"        : false,             
+
+  //O timeout das requisições POST entre o navegador e o PjeOffice. 
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API. 
+  "POST_TIMEOUT"	  : 60000, //milliseconds
   
-  "WELCOME_MESSAGE"   : "helloworld",      //(mensagem para assinar durante autenticação)
-  "PAGINA_LOGIN"      : "/pjefake",        //(página para redirecionamento pós login)
-  "PAGINA_ASSINATURA" : "/pjefake",        //(página que receberá assinaturas)
-  "PAGINA_UPLOAD"     : "/pjefake",        //(página quer recebe arquivos assinados em P7S)
-  "PAGINA_DOWNLOAD"   : "/pjefake",        //(página que entrega os arquivos a serem assinados em P7S)
-  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   //(parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S)
+  //Página para redirecionamento pós login
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_LOGIN"      : "/pjefake",
+        
+  //Página que receberá assinaturas
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_ASSINATURA" : "/pjefake",
+        
+  //Página quer recebe arquivos assinados em P7S
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_UPLOAD"     : "/pjefake",        
+
+  //Página que entrega os arquivos a serem assinados em P7S
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.  
+  "PAGINA_DOWNLOAD"   : "/pjefake",
+
+  //Parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S
+  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   
 };
 
 
@@ -87,9 +117,9 @@ const PjeOffice = (function () {
   const createQueryParams = function(taskId, task) {
     return PJEOFFICE_TASK_END_POINT + "?r=" + encodeURIComponent(readJson({
       "sessao": readSession(),
-      "aplicacao": pjeofficeUser.APP_REQUISITANTE,
-      "servidor": pjeofficeUser.WEB_ROOT,
-      "codigoSeguranca": pjeofficeUser.CODIGO_SEGURANCA,
+      "aplicacao": defaultSubject.APP_REQUISITANTE,
+      "servidor": defaultSubject.WEB_ROOT,
+      "codigoSeguranca": defaultSubject.CODIGO_SEGURANCA,
       "tarefaId": taskId,
       "tarefa": readJson(task)  
     })) + noCache();
@@ -204,44 +234,60 @@ const PjeOffice = (function () {
 /********************************************************************************************************
 * PJEOFFICE API  
 /*******************************************************************************************************/
+  /*
+  Estrutura da instância apiContext
+  apiContext = {
+	"subject": {
+	  "MODO_TESTE"        : false,                     	//se não informado será considerado defaultSubject.MODO_TESTE             
+	  "POST_TIMEOUT"	  : 60000, 					   	//se não informado será considerado defaultSubject.POST_TIMEOUT   
+	  "PAGINA_LOGIN"      : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_LOGIN	
+	  "PAGINA_ASSINATURA" : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+	  "PAGINA_UPLOAD"     : "/pjefake",        			//se não informado será considerado defaultSubject.PAGINA_UPLOAD
+	  "PAGINA_DOWNLOAD"   : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
+	  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]	//se não informado será considerado defaultSubject.PARAMS_ENVIO
+	},
+	"onSuccess": function(data, response) {},			//se não informada a notificação é ignorada
+	"onFailed": function(statusText, response) {}       //se não informada a notificação é ignorada
+  };
+  */
   
-  PjeOffice.login = function(subject, onSuccess, onFailed) {
-    runTask_cnj_autenticador(subject, {
-      "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
-      "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
+  PjeOffice.login = function(welcomeMessage, apiContext) {
+    runTask_cnj_autenticador(apiContext?.subject, {
+      "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
+      "mensagem": welcomeMessage,
     }, onSuccess, onFailed);
   };
 
-  PjeOffice.loginSSO = function(token, subject, onSuccess, onFailed) {
-    runTask_sso_autenticador(subject, {
-      "enviarPara": subject?.PAGINA_LOGIN || pjeofficeUser.PAGINA_LOGIN,
-      "mensagem": subject?.WELCOME_MESSAGE || pjeofficeUser.WELCOME_MESSAGE,
+  PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
+    runTask_sso_autenticador(apiContext?.subject, {
+      "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
+      "mensagem": welcomeMessage,
       "token": token
     }, onSuccess, onFailed);  
   };
     
-  PjeOffice.logout = function(subject, onSuccess, onFailed) {
-    logout(subject, onSuccess, onFailed);
+  PjeOffice.logout = function(apiContext) {
+    logout(apiContext?.subject, apiContext?.onSuccess, apiContext?.onFailed);
   };
     
-  PjeOffice.signHash = function(documents, subject, onSuccess, onFailed) {
-    runTask_cnj_assinadorHash(subject, {
+  PjeOffice.signHash = function(documents, apiContext) {
+    runTask_cnj_assinadorHash(apiContext?.subject, {
       "algoritmoAssinatura": "ASN1MD5withRSA",
-      "uploadUrl": subject?.PAGINA_ASSINATURA || pjeofficeUser.PAGINA_ASSINATURA,
-      "modoTeste": subject?.MODO_TESTE || pjeofficeUser.MODO_TESTE,
+      "uploadUrl": apiContext?.subject?.PAGINA_ASSINATURA || defaultSubject.PAGINA_ASSINATURA,
+      "modoTeste": apiContext?.subject?.MODO_TESTE || defaultSubject.MODO_TESTE,
       "arquivos": parseFields(documents)
     }, onSuccess, onFailed);
   };
     
-  PjeOffice.signP7s = function(subject, onSuccess, onFailed) {
-    runTask_cnj_assinador(subject, {
+  PjeOffice.signP7s = function(apiContext) {
+    runTask_cnj_assinador(apiContext?.subject, {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
-      "enviarPara": subject?.PAGINA_UPLOAD || pjeofficeUser.PAGINA_UPLOAD,
+      "enviarPara": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
       "arquivos": [{
          "nome": "arquivo",
-         "url": subject?.PAGINA_DOWNLOAD || pjeofficeUser.PAGINA_DOWNLOAD,
-         "paramsEnvio": subject?.PARAMS_ENVIO || pjeofficeUser.PARAMS_ENVIO
+         "url": apiContext?.subject?.PAGINA_DOWNLOAD || defaultSubject.PAGINA_DOWNLOAD,
+         "paramsEnvio": apiContext?.subject?.PARAMS_ENVIO || defaultSubject.PARAMS_ENVIO
        }]
     }, onSuccess, onFailed);
   };
