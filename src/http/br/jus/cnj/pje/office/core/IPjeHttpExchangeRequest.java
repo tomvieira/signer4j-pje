@@ -24,7 +24,6 @@
 * SOFTWARE.
 */
 
-
 package br.jus.cnj.pje.office.core;
 
 import java.util.Optional;

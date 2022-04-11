@@ -24,7 +24,6 @@
 * SOFTWARE.
 */
 
-
 package br.jus.cnj.pje.office.core.imp;
 
 import static br.jus.cnj.pje.office.task.imp.MainRequestReader.MAIN;
@@ -41,7 +40,7 @@ import com.github.taskresolver4j.exception.TaskResolverException;
 import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.IMainParams;
-import br.jus.cnj.pje.office.task.imp.MainOrigin;
+import br.jus.cnj.pje.office.task.imp.FullMain;
 
 enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, PjeTaskRequest> {
   INSTANCE;
@@ -49,34 +48,28 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
   @Override
   public PjeTaskRequest resolve(IPjeRequest request) throws TaskResolverException {
 
-    Optional<String> u = request.getParameterU();
+    final Optional<String> u = request.getParameterU();
     if (!u.isPresent()) {
       throw new TaskResolverException("Parâmetro 'u' não faz parte da requisição! (browser cache issue)");
     }
 	    
-    Optional<String> r = request.getParameterR();
+    final Optional<String> r = request.getParameterR();
     if (!r.isPresent()) {
       throw new TaskResolverException("Unabled to resolve task with empty request 'r' param");
     }
-
-    Optional<String> origin = request.getOrigin();
-
-    Optional<String> userAgent = request.getUserAgent();
     
-    String rValue = r.get();
-    
-    Function<IMainParams, ?> withOrigin = m -> new MainOrigin(m, origin);
+    final Function<IMainParams, IMainParams> wrapper = m -> new FullMain(m, request);
     
     PjeTaskRequest tr;
     try {
-      tr = (PjeTaskRequest) 
-         MAIN.read(rValue, new PjeTaskRequest()
+      tr = MAIN.read(r.get(), 
+        new PjeTaskRequest()
         .of(IPjeRequest.PJE_REQUEST_IS_POST, request.isPost())
-        .of(HttpHeaders.USER_AGENT, userAgent), 
-        withOrigin
+        .of(HttpHeaders.USER_AGENT, request.getUserAgent()), 
+        wrapper
       );
     } catch (IOException e) {
-      throw new TaskResolverException("Unabled to read 'r' request parameter: " + rValue, e);
+      throw new TaskResolverException("Unabled to read 'r' request parameter: " + r.get(), e);
     }
     
     StringBuilder because = new StringBuilder();

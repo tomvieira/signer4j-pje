@@ -146,7 +146,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      LOGGER.info("Recebida requisição de logout do certificado");
+      LOGGER.info("Recebida requisição de logout do token");
       PjeWebTaskResponse.success(request.isPost()).processResponse(response);
       PjeWebServer.this.logout();
     }    
@@ -163,7 +163,6 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
       PjeWebServer.this.execute(request, response);
     }
   }
-  
   
   private class ApiDemoFrontEndRequestHandler extends PjeRequestHandler {
     @Override

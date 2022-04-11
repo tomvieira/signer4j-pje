@@ -24,7 +24,6 @@
 * SOFTWARE.
 */
 
-
 package br.jus.cnj.pje.office.core.imp;
 
 import java.util.Optional;
@@ -38,6 +37,7 @@ import br.jus.cnj.pje.office.core.IPjeHttpExchangeRequest;
 
 @SuppressWarnings("restriction")
 public class PjeHttpExchangeRequest extends PjeUriRequest implements IPjeHttpExchangeRequest {
+  
   public PjeHttpExchangeRequest(HttpExchange request) {
     super(
       request.getRequestURI(), 

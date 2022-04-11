@@ -36,7 +36,7 @@ public interface IMainParams {
   Optional<String> getServidor();
   
   Optional<String> getOrigin();
-
+  
   Optional<String> getAplicacao();
 
   Optional<String> getSessao();
@@ -46,4 +46,6 @@ public interface IMainParams {
   Optional<String> getTarefaId();
 
   Optional<String> getTarefa();
+  
+  boolean fromPostRequest();
 }

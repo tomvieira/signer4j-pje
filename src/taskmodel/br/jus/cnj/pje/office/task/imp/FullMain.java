@@ -31,19 +31,25 @@ import java.util.Optional;
 
 import com.github.utils4j.imp.Args;
 
+import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public class MainOrigin extends MainWrapper {
+public class FullMain extends MainWrapper {
 
-  private final Optional<String> origin;
+  private final IPjeRequest request;
   
-  public MainOrigin(IMainParams main, Optional<String> origin) {
+  public FullMain(IMainParams main, IPjeRequest request) {
     super(main);
-    this.origin = Args.requireNonNull(origin, "origin is null");    
+    this.request = Args.requireNonNull(request, "request is null");
   }
   
   @Override
   public final Optional<String> getOrigin() {
-    return origin;
+    return request.getOrigin();
+  }
+
+  @Override
+  public final boolean fromPostRequest() {
+    return request.isPost();
   }
 }

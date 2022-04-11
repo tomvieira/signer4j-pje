@@ -63,7 +63,7 @@ class PJeStdioClient extends PjeClientWrapper {
     }
     
     @Override
-    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker, boolean json) throws Exception {
+    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker) throws Exception {
       return new PjeStdioTaskResponse(supplier.get().toString(), charset);
     }
 
@@ -89,12 +89,12 @@ class PJeStdioClient extends PjeClientWrapper {
     }
     
     @Override
-    public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults, boolean json) throws Exception {
+    public PjeTaskResponse post(final Supplier<HttpPost> supplier, IResultChecker checkResults) throws Exception {
       try {
-        super.post(supplier, checkResults, json);
-        return PjeClientMode.STDIO.success(json).apply("success");
+        super.post(supplier, checkResults);
+        return PjeClientMode.STDIO.success().apply("success");
       }catch(Exception e) {
-        return PjeClientMode.STDIO.fail(json).apply(e);
+        return PjeClientMode.STDIO.fail().apply(e);
       }
     }
   }

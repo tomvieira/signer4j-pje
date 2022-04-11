@@ -48,46 +48,46 @@ const readSession = function () {
 
 const defaultSubject = {
    //Aplicação que faz uso do PjeOffice
-   //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+   //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
   "APP_REQUISITANTE"  : "Pje",
 
    //Código de segurança da aplicação - proteção CSRF
-   //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+   //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
   "CODIGO_SEGURANCA"  : "bypass",
 
   //Endpoint raiz da aplicação. Comporá o parâmetro 'servidor' da requisição principal (main) e usada
   //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
-  //Este parâmetro é obrigatório e NÃO deveria ser sobrescrito dinamicamente em tempo de chamada API
+  //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
   //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor. Aqui está informado /pjeOffice
   //porque o próprio PjeOffice simula em Mock da aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
   "WEB_ROOT"          : window.location.origin + "/pjeOffice",
 
-  //Para ambientes de testes, desenvolvimento, treinamento informe true. Informe false para produção
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Para ambientes de testes, desenvolvimento, treinamento e cia informe true. Informe false para produção
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "MODO_TESTE"        : false,             
 
   //O timeout das requisições POST entre o navegador e o PjeOffice. 
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API. 
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API. 
   "POST_TIMEOUT"	  : 60000, //milliseconds
   
   //Página para redirecionamento pós login
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PAGINA_LOGIN"      : "/pjefake",
         
   //Página que receberá assinaturas
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PAGINA_ASSINATURA" : "/pjefake",
         
-  //Página quer recebe arquivos assinados em P7S
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Página que recebe arquivos assinados em P7S
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PAGINA_UPLOAD"     : "/pjefake",        
 
   //Página que entrega os arquivos a serem assinados em P7S
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.  
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.  
   "PAGINA_DOWNLOAD"   : "/pjefake",
 
   //Parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S
-  //Este parâmetro PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   
 };
 
@@ -238,16 +238,16 @@ const PjeOffice = (function () {
   Estrutura da instância apiContext
   apiContext = {
 	"subject": {
-	  "MODO_TESTE"        : false,                     	//se não informado será considerado defaultSubject.MODO_TESTE             
-	  "POST_TIMEOUT"	  : 60000, 					   	//se não informado será considerado defaultSubject.POST_TIMEOUT   
-	  "PAGINA_LOGIN"      : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_LOGIN	
-	  "PAGINA_ASSINATURA" : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_ASSINATURA
-	  "PAGINA_UPLOAD"     : "/pjefake",        			//se não informado será considerado defaultSubject.PAGINA_UPLOAD
-	  "PAGINA_DOWNLOAD"   : "/pjefake",					//se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
-	  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]	//se não informado será considerado defaultSubject.PARAMS_ENVIO
+	  "MODO_TESTE"        : false,                     	//Opcional: se não informado será considerado defaultSubject.MODO_TESTE             
+	  "POST_TIMEOUT"	  : 60000, 					   	//Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+	  "PAGINA_LOGIN"      : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN	
+	  "PAGINA_ASSINATURA" : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+	  "PAGINA_UPLOAD"     : "/pjefake",        			//Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+	  "PAGINA_DOWNLOAD"   : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
+	  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]	//Opcional: se não informado será considerado defaultSubject.PARAMS_ENVIO
 	},
-	"onSuccess": function(data, response) {},			//se não informada a notificação é ignorada
-	"onFailed": function(statusText, response) {}       //se não informada a notificação é ignorada
+	"onSuccess": function(data, response) {},			//Opcional: se não informada a notificação é ignorada
+	"onFailed": function(statusText, response) {}       //Opcional: se não informada a notificação é ignorada
   };
   */
   
@@ -255,7 +255,7 @@ const PjeOffice = (function () {
     runTask_cnj_autenticador(apiContext?.subject, {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
-    }, onSuccess, onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed);
   };
 
   PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
@@ -263,7 +263,7 @@ const PjeOffice = (function () {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
       "token": token
-    }, onSuccess, onFailed);  
+    }, apiContext?.onSuccess, apiContext?.onFailed);  
   };
     
   PjeOffice.logout = function(apiContext) {
@@ -276,7 +276,7 @@ const PjeOffice = (function () {
       "uploadUrl": apiContext?.subject?.PAGINA_ASSINATURA || defaultSubject.PAGINA_ASSINATURA,
       "modoTeste": apiContext?.subject?.MODO_TESTE || defaultSubject.MODO_TESTE,
       "arquivos": parseFields(documents)
-    }, onSuccess, onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed);
   };
     
   PjeOffice.signP7s = function(apiContext) {
@@ -289,7 +289,7 @@ const PjeOffice = (function () {
          "url": apiContext?.subject?.PAGINA_DOWNLOAD || defaultSubject.PAGINA_DOWNLOAD,
          "paramsEnvio": apiContext?.subject?.PARAMS_ENVIO || defaultSubject.PARAMS_ENVIO
        }]
-    }, onSuccess, onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed);
   };
   
   return PjeOffice;

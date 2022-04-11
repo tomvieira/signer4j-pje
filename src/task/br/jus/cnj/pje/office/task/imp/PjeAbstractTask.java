@@ -98,7 +98,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   };
   
-  private boolean isInternalTask;
+  private final boolean isInternalTask;
   
   protected PjeAbstractTask(Params request, T pojo) {
     this(request, pojo, false);
@@ -142,11 +142,11 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final IPjeTarget getTarget(String url) {
-    return new PjeTarget(getEndpointFor(url), getUserAgent(), getSession(), isPostRequest());
+    return new PjeTarget(getEndpointFor(url), getUserAgent(), getSession());
   }
   
   protected final IPjeTarget getExternalTarget(String url) {
-    return new PjeTarget(url, getUserAgent(), "", false);
+    return new PjeTarget(url, getUserAgent(), "");
   }
   
   protected final void throwCancel() throws InterruptedException {
@@ -183,15 +183,15 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final ITaskResponse<IPjeResponse> fail(Throwable exception) {
-    return PjeClientMode.failFrom(getServerAddress(), isPostRequest()).apply(exception) ;
+    return PjeClientMode.failFrom(getServerAddress()).apply(exception) ;
   }
   
   protected final PjeTaskResponse success() {
-    return PjeClientMode.successFrom(getServerAddress(), isPostRequest()).apply("success");
+    return PjeClientMode.successFrom(getServerAddress()).apply("success");
   }
 
   protected final PjeTaskResponse success(String output) {
-    return PjeClientMode.successFrom(getServerAddress(), isPostRequest()).apply("success: " + output);
+    return PjeClientMode.successFrom(getServerAddress()).apply("success: " + output);
   }
   
   protected final Optional<File> download(final IPjeTarget target) throws TaskException {
@@ -315,7 +315,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       progress.step("Tarefa completa. Status de sucesso: %s", response.isSuccess());
       progress.end();
       
-      return response;
+      return isPostRequest() ? response.asJson() : response;
     } catch(InterruptedException | InterruptedSigner4JRuntimeException e) {
       fail = progress.abort(e);
       MessageAlert.showFail(CANCELED_OPERATION_MESSAGE);
@@ -323,7 +323,8 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       fail = progress.abort(e);
     }
     LOGGER.error("Não foi possível executar a tarefa " + getId(), fail);
-    return fail(fail);
+    ITaskResponse<IPjeResponse> failResponse = fail(fail);
+    return isPostRequest() ? failResponse.asJson() : failResponse;
   }
   
   protected void onBeforeDoGet() {}

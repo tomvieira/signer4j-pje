@@ -56,7 +56,7 @@ class PJeFileWatchClient extends PjeClientWrapper {
     }
     
     @Override
-    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker, boolean json) throws Exception {
+    public PjeTaskResponse post(Supplier<JSONObject> supplier, IResultChecker checker) throws Exception {
       return new PjeFileWatchTaskResponse(supplier.get().toString(), charset);
     }
 

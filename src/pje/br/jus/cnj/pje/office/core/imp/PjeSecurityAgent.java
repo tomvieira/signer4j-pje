@@ -134,21 +134,29 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }   
     
-    Optional<String> nativeOrigin = params.getOrigin();
-    if (!nativeOrigin.isPresent()) {
-      whyNot.append("Origem da requisição é desconhecida e será rejeitada por segurança (CSRF prevent)");
-      LOGGER.warn(whyNot.toString());
-      return false;
-    }
-    
-    final String targetOrigin = (targetSchema.get() + "://" + targetHost.get()).toLowerCase();
-
-    final String browserOrigin = nativeOrigin.get().toLowerCase();
-
-    if (!browserOrigin.startsWith(targetOrigin)) {
-      whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
-      LOGGER.warn(whyNot.toString());
-      return false;
+    /* A sentença IF que segue não deveria existir porque toda requisição ao assinador via protocolo http(s) DEVERIA
+     * ser feita com POST para que ORIGIN fosse sempre conhecido e, portanto, sujeito a tratamento CSRF. Por ora esta 
+     * condicional fromPostRequest deve ser testada para que o servidores que ainda não foram atualizados com a nova
+     * abordagem (requisições POST) não fossem impedidos de autenticação pela ausência de ORIGIN em requisições GET 
+     * (idempotência)
+     */
+    if (params.fromPostRequest()) {
+      Optional<String> nativeOrigin = params.getOrigin();
+      if (!nativeOrigin.isPresent()) {
+        whyNot.append("Origem da requisição é desconhecida e será rejeitada por segurança (CSRF prevent)");
+        LOGGER.warn(whyNot.toString());
+        return false;
+      }
+      
+      final String targetOrigin = (targetSchema.get() + "://" + targetHost.get()).toLowerCase();
+  
+      final String browserOrigin = nativeOrigin.get().toLowerCase();
+  
+      if (!browserOrigin.startsWith(targetOrigin)) {
+        whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
+        LOGGER.warn(whyNot.toString());
+        return false;
+      }
     }
 
     final IPjeServerAccess serverRequest = new PjeServerAccess(app, target, code);

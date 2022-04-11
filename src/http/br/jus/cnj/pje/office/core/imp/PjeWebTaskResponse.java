@@ -37,6 +37,14 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   
+  public static PjeWebTaskResponse success() {
+    return success(false);
+  }
+  
+  public static PjeWebTaskResponse fail() {
+    return fail(false);
+  }
+
   public static PjeWebTaskResponse success(boolean json) {
     return json ? JSON_SUCCESS : IMAGE_SUCCESS;
   }
@@ -70,6 +78,11 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
       response.setContentType(ContentType.IMAGE_GIF.toString());
       response.write(content);
     }
+    
+    @Override
+    public final PjeWebTaskResponse asJson() {
+      return JSON_SUCCESS;
+    }
   };
   
   //A .png file with 2 pixels
@@ -78,6 +91,11 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
     public void processResponse(IPjeResponse response) throws IOException {
       response.setContentType(ContentType.IMAGE_PNG.toString());
       response.write(content);
+    }
+    
+    @Override
+    public PjeWebTaskResponse asJson() {
+      return JSON_FAIL;
     }
   };
 

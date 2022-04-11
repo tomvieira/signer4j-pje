@@ -31,5 +31,4 @@ public interface IPjeTarget {
   String getEndPoint();
   String getUserAgent();
   String getSession();
-  boolean isResponseJson();
 }

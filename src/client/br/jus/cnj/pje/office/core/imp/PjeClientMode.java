@@ -65,12 +65,12 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Function<String, PjeTaskResponse> success(boolean json) {
+    protected Function<String, PjeTaskResponse> success() {
       return (o) -> new PjeStdioTaskResponse(o);
     }
 
     @Override
-    protected Function<Throwable, PjeTaskResponse> fail(boolean json) {
+    protected Function<Throwable, PjeTaskResponse> fail() {
       return (t) -> new PjeStdioTaskResponse(Throwables.rootMessage(t), false);
     }
   },
@@ -87,12 +87,12 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Function<String, PjeTaskResponse> success(boolean json) {
+    protected Function<String, PjeTaskResponse> success() {
       return (o) -> new PjeClipTaskResponse(o);
     }
 
     @Override
-    protected Function<Throwable, PjeTaskResponse> fail(boolean json) {
+    protected Function<Throwable, PjeTaskResponse> fail() {
       return (t) -> new PjeClipTaskResponse(Throwables.rootMessage(t), false);
     }
   },
@@ -116,13 +116,13 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Function< String, PjeTaskResponse> success(boolean json) {
-      return (o) -> PjeWebTaskResponse.success(json);
+    protected Function< String, PjeTaskResponse> success() {
+      return (o) -> PjeWebTaskResponse.success();
     }
 
     @Override
-    protected Function<Throwable, PjeTaskResponse> fail(boolean json) {
-      return (t) -> PjeWebTaskResponse.fail(json);
+    protected Function<Throwable, PjeTaskResponse> fail() {
+      return (t) -> PjeWebTaskResponse.fail();
     }
   },
   HTTPS("https") {
@@ -148,13 +148,13 @@ public enum PjeClientMode {
     }
 
     @Override
-    protected Function<Throwable, PjeTaskResponse> fail(boolean json) {
-      return HTTP.fail(json);
+    protected Function<Throwable, PjeTaskResponse> fail() {
+      return HTTP.fail();
     }
 
     @Override
-    protected Function<String, PjeTaskResponse> success(boolean json) {
-      return HTTP.success(json);
+    protected Function<String, PjeTaskResponse> success() {
+      return HTTP.success();
     }
   },
   NOTHING("nothing") {
@@ -189,12 +189,12 @@ public enum PjeClientMode {
     return from(trim(address).toLowerCase()).getClient(canceller);
   }
   
-  public static Function<Throwable, PjeTaskResponse> failFrom(String address, boolean json) {
-    return from(trim(address).toLowerCase()).fail(json);
+  public static Function<Throwable, PjeTaskResponse> failFrom(String address) {
+    return from(trim(address).toLowerCase()).fail();
   }
   
-  public static Function<String, PjeTaskResponse> successFrom(String address, boolean json) {
-    return from(trim(address).toLowerCase()).success(json);
+  public static Function<String, PjeTaskResponse> successFrom(String address) {
+    return from(trim(address).toLowerCase()).success();
   }
   
   private IPjeClient client;
@@ -209,11 +209,11 @@ public enum PjeClientMode {
     return protocol;
   }
 
-  protected Function<String, PjeTaskResponse> success(boolean json) {
+  protected Function<String, PjeTaskResponse> success() {
     return (o) -> PjeTaskResponse.NOTHING_SUCCESS;
   }
   
-  protected Function<Throwable, PjeTaskResponse> fail(boolean json) {
+  protected Function<Throwable, PjeTaskResponse> fail() {
     return (t) -> PjeTaskResponse.NOTHING_FAIL;
   }
   

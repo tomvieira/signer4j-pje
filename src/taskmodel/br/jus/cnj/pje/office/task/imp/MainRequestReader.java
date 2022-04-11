@@ -40,10 +40,11 @@ import com.github.taskresolver4j.imp.AbstractRequestReader;
 import com.github.utils4j.IParam;
 import com.github.utils4j.imp.Params;
 
+import br.jus.cnj.pje.office.core.imp.PjeTaskRequest;
 import br.jus.cnj.pje.office.task.IJsonTranslator;
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public class MainRequestReader extends AbstractRequestReader<Params, IMainParams> implements IJsonTranslator {
+public class MainRequestReader extends AbstractRequestReader<PjeTaskRequest, IMainParams> implements IJsonTranslator {
   
   public static final MainRequestReader MAIN = new MainRequestReader();
 
@@ -90,6 +91,11 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
     public Optional<String> getOrigin() {
       return Optional.empty();
     }
+
+    @Override
+    public boolean fromPostRequest() {
+      return false;
+    }
   }
 
   private MainRequestReader() {
@@ -97,7 +103,7 @@ public class MainRequestReader extends AbstractRequestReader<Params, IMainParams
   }
 
   @Override
-  protected ITask<?> createTask(Params output, IMainParams main) throws IOException {
+  protected ITask<?> createTask(PjeTaskRequest output, IMainParams main) throws IOException {
     output.of(PJE_MAIN_REQUEST_PARAM, main);
     
     Optional<String> app = main.getAplicacao();

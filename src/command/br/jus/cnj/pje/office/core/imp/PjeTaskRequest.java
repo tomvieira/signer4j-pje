@@ -27,10 +27,22 @@
 
 package br.jus.cnj.pje.office.core.imp;
 
+import java.util.Optional;
+
 import com.github.taskresolver4j.imp.DefaultTaskRequest;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
-class PjeTaskRequest extends DefaultTaskRequest<IPjeResponse> {
+public class PjeTaskRequest extends DefaultTaskRequest<IPjeResponse> {
   public PjeTaskRequest() {}
+  
+  @Override
+  public PjeTaskRequest of(String name, Optional<?> value) {
+    return (PjeTaskRequest)super.of(name,  value);
+  }
+  
+  @Override
+  public PjeTaskRequest of(String name, Object value) {
+    return (PjeTaskRequest)super.of(name, value);
+  }
 }
