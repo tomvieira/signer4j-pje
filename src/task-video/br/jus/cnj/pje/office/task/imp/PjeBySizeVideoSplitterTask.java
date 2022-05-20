@@ -74,14 +74,15 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
     
     progress.begin(SplitterStage.SPLITTING_PATIENT);
     
-    Path output = file.getParent();
     IVideoFile video = VideoTools.FFMPEG.call(file.toFile());
+
+    final Path output = file.getParent().resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + tamanho + " MB)");
     
     VideoDescriptor desc;
     try {
       desc = new VideoDescriptor.Builder(".mp4")
         .add(video)
-        .output(output.resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + tamanho + " MB)"))
+        .output(output)
         .build();
     } catch (IOException e1) {
       LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
@@ -93,7 +94,11 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
       .apply(desc)
       .subscribe(
         e -> progress.info(e.getMessage()),
-        e -> success.set(false)
+        e -> {
+          success.set(false);
+          output.toFile().delete();
+          progress.abort(e);
+        }
       );
 
     progress.end();
