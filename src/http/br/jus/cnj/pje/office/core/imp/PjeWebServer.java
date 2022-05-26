@@ -198,7 +198,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
   private HttpsServer httpsServer;
   private PjeWebServerBuilder setup;
   
-  private final AtomicBoolean running = new AtomicBoolean(false);
+  private final AtomicBoolean taskRunning = new AtomicBoolean(false);
 
   private final Filter cors   = new CorsFilter();
   private final Filter access = new AccessFilter();
@@ -220,11 +220,11 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
   public void execute(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) {
     if (!isStarted())
       throw new IllegalStateException("web server not started!");
-    if (!running.getAndSet(true)) {
+    if (!taskRunning.getAndSet(true)) {
       try {
         super.execute(request, response);
       }finally {
-        running.set(false);
+        taskRunning.set(false);
       }
     } else {
       MessageAlert.showInfo("Ainda há uma operação em andamento!\nCancele ou aguarde a finalização!");

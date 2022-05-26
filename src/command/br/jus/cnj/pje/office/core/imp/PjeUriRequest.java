@@ -90,6 +90,11 @@ public abstract class PjeUriRequest implements IPjeRequest {
   }
   
   @Override
+  public boolean isInternal() {
+    return false;
+  }
+  
+  @Override
   public final String toString() {
     return getId();
   }

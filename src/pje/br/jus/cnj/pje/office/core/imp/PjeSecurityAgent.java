@@ -136,7 +136,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     
     /* A sentença IF que segue não deveria existir porque toda requisição ao assinador via protocolo http(s) DEVERIA
      * ser feita com POST para que ORIGIN fosse sempre conhecido e, portanto, sujeito a tratamento CSRF. Por ora esta 
-     * condicional fromPostRequest deve ser testada para que o servidores que ainda não foram atualizados com a nova
+     * condicional fromPostRequest deve ser testada para que os servidores que ainda não foram atualizados com a nova
      * abordagem (requisições POST) não fossem impedidos de autenticação pela ausência de ORIGIN em requisições GET 
      * (idempotência)
      */

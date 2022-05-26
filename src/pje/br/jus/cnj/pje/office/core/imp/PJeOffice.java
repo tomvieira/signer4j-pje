@@ -33,18 +33,23 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.Threads.startAsync;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
+
+import javax.swing.JFileChooser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
-import com.github.signer4j.imp.SignatureAlgorithm;
-import com.github.signer4j.imp.SignatureType;
 import com.github.signer4j.imp.WindowLockDettector;
-import com.github.signer4j.pjeoffice.shell.ShellExtension;
+import com.github.signer4j.pjeoffice.shell.ShellExtensionPopup;
+import com.github.utils4j.IOfferer;
+import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Args;
+import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.States;
 import com.github.utils4j.imp.Threads;
 
@@ -54,9 +59,6 @@ import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
-import br.jus.cnj.pje.office.task.imp.AssinaturaPadrao;
-import br.jus.cnj.pje.office.task.imp.PjeSignMode;
-import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 import io.reactivex.disposables.Disposable;
 
 public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
@@ -276,15 +278,20 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   }
   
   @Override
-  public void showOfflineSigner() {
+  public void selectTo() {
     checkIsAlive();
-    ShellExtension.main(
-      PjeTaskReader.CNJ_ASSINADOR.getId(), 
-      ".", 
-      "selectfolder",  //enviarPara
-      PjeSignMode.LOCAL.getKey(), //modo
-      AssinaturaPadrao.NOT_ENVELOPED.getKey(),//padraoAssinatura
-      SignatureType.ATTACHED.getKey(), // tipoAssinatura
-      SignatureAlgorithm.SHA1withRSA.getName()); //algoritmoHash
+    DefaultFileChooser chooser = new DefaultFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    chooser.setMultiSelectionEnabled(true);
+    chooser.setDialogTitle("Seleção de arquivos");
+    if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null))
+      return;
+    File[] files = chooser.getSelectedFiles();
+    if (Containers.isEmpty(files))
+      return;
+    Optional<IOfferer> o = commander.asOfferer();
+    if (!o.isPresent())
+      return;
+    new ShellExtensionPopup(o.get(), Containers.arrayList(files)).showToFront();
   }
 }

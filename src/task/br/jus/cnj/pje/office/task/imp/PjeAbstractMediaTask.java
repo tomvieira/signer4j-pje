@@ -48,7 +48,7 @@ abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractT
   protected PjeAbstractMediaTask(Params request, T pojo) {
     super(request, pojo, true);
   }
-
+  
   @Override
   protected void validateParams() throws TaskException, InterruptedException {
     List<String> files = getPojoParams().getArquivos();

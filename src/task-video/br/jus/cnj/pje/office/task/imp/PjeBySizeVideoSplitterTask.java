@@ -86,6 +86,7 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
         .build();
     } catch (IOException e1) {
       LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
+      progress.abort(e1);
       return false;
     }
     

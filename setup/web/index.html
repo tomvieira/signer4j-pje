@@ -21,13 +21,16 @@ const onFailed = function(status, response) {
 <body>
   <div class="row">
     <div class="col-12">
-    	PjeOffice API - DEMO
+    	<ul class="list-group">
+    		<li class="list-group-item">PjeOffice API - DEMO</li>
+    	</ul>    	
     </div>
   </div>
   <div class="row">
     <div class="col-3">
       <ul class="list-group">
 		<li class="list-group-item">PjeOffice.login</li>
+		<li class="list-group-item">PjeOffice.loginSSO</li>
 		<li class="list-group-item">PjeOffice.logout</li>
 	  </ul>
       
@@ -35,14 +38,14 @@ const onFailed = function(status, response) {
      	<li class="list-group-item">PjeOffice.signHash</li>
 		<li class="list-group-item">PjeOffice.signP7s</li>
 	  </ul>
-
-      <ul class="list-group">
-		<li class="list-group-item">PjeOffice.pdf</li>
-		<li class="list-group-item">PjeOffice.pdf</li>
-	  </ul>
     </div>
     <div class="col-9">
-      <button onclick="PjeOffice.login('leonardo', {'onSuccess': onSuccess, 'onFailed': onFailed});">LOGAR</button>
+      <button onclick="PjeOffice.login('leonardo', {
+           'onSuccess': onSuccess, 
+           'onFailed': onFailed
+         });">
+         LOGAR
+      </button>
       One of three columns
     </div>
   </div>

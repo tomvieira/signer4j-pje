@@ -64,8 +64,9 @@ enum PjeRequestResolver implements IRequestResolver<IPjeRequest, IPjeResponse, P
     try {
       tr = MAIN.read(r.get(), 
         new PjeTaskRequest()
+        .of(IPjeRequest.PJE_REQUEST_INSTANCE, request)
         .of(IPjeRequest.PJE_REQUEST_IS_POST, request.isPost())
-        .of(HttpHeaders.USER_AGENT, request.getUserAgent()), 
+        .of(HttpHeaders.USER_AGENT, request.getUserAgent()),
         wrapper
       );
     } catch (IOException e) {

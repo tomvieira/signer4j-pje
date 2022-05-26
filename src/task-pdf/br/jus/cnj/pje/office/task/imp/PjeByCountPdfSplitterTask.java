@@ -89,6 +89,7 @@ class PjeByCountPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoCo
         .output(outputFolder)
         .build();
     } catch (IOException e1) {
+      progress.abort(e1);
       LOGGER.error("Não foi possível criar pasta " + parentFolder.toString(), e1);
       return false;
     }

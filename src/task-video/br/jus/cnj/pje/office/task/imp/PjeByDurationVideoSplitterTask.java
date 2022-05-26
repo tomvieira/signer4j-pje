@@ -73,6 +73,7 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
         .build();
     } catch (IOException e1) {
       LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
+      progress.abort(e1);
       return false;
     }
     
@@ -83,6 +84,7 @@ class PjeByDurationVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDi
         (e) -> progress.info(e.getMessage()),
         (e) -> {
           success.set(false);
+          progress.abort(e);
           folder.toFile().delete();
         }
       );

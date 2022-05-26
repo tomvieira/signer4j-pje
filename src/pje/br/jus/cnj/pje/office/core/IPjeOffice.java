@@ -54,5 +54,5 @@ public interface IPjeOffice extends IBootable {
 
   void kill();
 
-  void showOfflineSigner();
+  void selectTo();
 }

@@ -72,12 +72,12 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     MenuItem mnuConfig = new MenuItem("Configuração de certificado");
     mnuConfig.addActionListener(e -> office.showCertificates());
 
-    MenuItem mnuSigner = new MenuItem("Assinador offline");
-    mnuSigner.addActionListener(e -> office.showOfflineSigner());
-
     MenuItem mnuServer = new MenuItem("Servidores autorizados");
     mnuServer.addActionListener(e -> office.showAuthorizedServers());
 
+    MenuItem mnuSelect = new MenuItem("Selecionar arquivos para...");   
+    mnuSelect.addActionListener(e -> office.selectTo());    
+    
     CheckboxMenuItem mnuOneTime = new CheckboxMenuItem(ONE_TIME.geLabel());
     CheckboxMenuItem mnuAways = new CheckboxMenuItem(AWAYS.geLabel());
     CheckboxMenuItem mnuConfirm = new CheckboxMenuItem(CONFIRM.geLabel());
@@ -139,10 +139,10 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     
     mnuOption.add(mnuDev);
 
-    popup.add(mnuConfig);
-    popup.add(mnuSigner);
-    popup.add(mnuServer);
+    popup.add(mnuSelect);
     popup.addSeparator();
+    popup.add(mnuConfig);
+    popup.add(mnuServer);
     popup.add(mnuSecurity);
     popup.addSeparator();
     popup.add(mnuOption);

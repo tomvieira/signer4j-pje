@@ -77,7 +77,7 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
     progress.begin(SplitterStage.PROCESSING, size);
     for(int i = 0; i < size; i++) {
       Path file = Paths.get(arquivos.get(i));
-      
+
       success &= process(file, quietly);
       
       progress.step("Dividido arquivo %s", file);

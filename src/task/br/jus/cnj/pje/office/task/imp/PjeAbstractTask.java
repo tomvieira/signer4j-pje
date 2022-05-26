@@ -64,6 +64,7 @@ import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
+import br.jus.cnj.pje.office.core.imp.PjeHttpExchangeRequest;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
@@ -99,7 +100,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   };
   
   private final boolean isInternalTask;
-  
+
   protected PjeAbstractTask(Params request, T pojo) {
     this(request, pojo, false);
   }
@@ -164,6 +165,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   protected final IPjeSecurityAgent getSecurityAgent() {
     return getParameterValue(IPjeSecurityAgent.PARAM_NAME);
+  }
+  
+  protected final IPjeRequest getNativeRequest() {
+    return getParameterValue(IPjeRequest.PJE_REQUEST_INSTANCE);
   }
   
   protected final IPjeToken loginToken() {
@@ -271,17 +276,17 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return status.getDownloadedFile();
   }
   
-  protected final void checkMainParams() throws TaskException {
-    if (!isInternalTask) {
-      IMainParams main = getMainRequest();
-      PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
-      PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
-      PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
-    }
+  private void checkMainParams() throws TaskException {
+    IMainParams main = getMainRequest();
+    PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
+    PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
+    PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
   }
 
   private final void checkParams() throws TaskException, InterruptedException {
-    checkMainParams();
+    if (!isInternalTask) {
+      checkMainParams();
+    }
     validateParams();
   }
   
@@ -330,7 +335,10 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   protected void onBeforeDoGet() {}
 
   protected void checkServerPermission() throws TaskException {
-    if (this.isInternalTask) {
+    if (isInternalTask) {
+      if (!getNativeRequest().isInternal()) {
+        throw new TaskException("Permissão negada. Tarefa deve ser executada apenas em contexto interno/local.");
+      }
       return;
     }
     final IMainParams params = getMainRequest();

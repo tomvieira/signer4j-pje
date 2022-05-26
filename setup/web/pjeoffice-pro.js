@@ -59,7 +59,7 @@ const defaultSubject = {
   //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
   //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
   //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor. Aqui está informado /pjeOffice
-  //porque o próprio PjeOffice simula em Mock da aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
+  //porque o próprio PjeOffice simula em Mock a aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
   "WEB_ROOT"          : window.location.origin + "/pjeOffice",
 
   //Para ambientes de testes, desenvolvimento, treinamento e cia informe true. Informe false para produção
