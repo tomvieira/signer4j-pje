@@ -28,10 +28,8 @@
 package br.jus.cnj.pje.office.core;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import com.github.utils4j.ILifeCycle;
-import com.github.utils4j.IOfferer;
 
 import io.reactivex.Observable;
 
@@ -40,10 +38,6 @@ public interface IPJeLifeCycle extends ILifeCycle<IOException> {
     STARTUP,
     SHUTDOWN,
     KILL
-  }
-  
-  default Optional<IOfferer> asOfferer() {
-    return Optional.empty();
   }
   
   Observable<LifeCycle> lifeCycle();

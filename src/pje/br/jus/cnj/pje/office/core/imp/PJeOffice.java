@@ -31,11 +31,11 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+import static com.github.utils4j.imp.Containers.arrayList;
 import static com.github.utils4j.imp.Threads.startAsync;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import javax.swing.JFileChooser;
 
@@ -46,7 +46,6 @@ import com.github.signer4j.IWindowLockDettector;
 import com.github.signer4j.IWorkstationLockListener;
 import com.github.signer4j.imp.WindowLockDettector;
 import com.github.signer4j.pjeoffice.shell.ShellExtensionPopup;
-import com.github.utils4j.IOfferer;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Args;
 import com.github.utils4j.imp.Containers;
@@ -289,9 +288,6 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     File[] files = chooser.getSelectedFiles();
     if (Containers.isEmpty(files))
       return;
-    Optional<IOfferer> o = commander.asOfferer();
-    if (!o.isPresent())
-      return;
-    new ShellExtensionPopup(o.get(), Containers.arrayList(files)).showToFront();
+    ShellExtensionPopup.show(arrayList(files));
   }
 }

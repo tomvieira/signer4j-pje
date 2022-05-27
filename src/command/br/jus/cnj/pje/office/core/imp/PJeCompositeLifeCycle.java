@@ -28,14 +28,10 @@
 package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.utils4j.imp.Throwables.tryRun;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
-import com.github.utils4j.IOfferer;
 import com.github.utils4j.imp.Containers;
 
 import br.jus.cnj.pje.office.core.IPJeLifeCycle;
@@ -73,14 +69,6 @@ class PJeCompositeLifeCycle implements IPJeLifeCycle {
     }
   }
   
-  @Override
-  public final Optional<IOfferer> asOfferer() { 
-    Optional<IPJeLifeCycle> o = cycles.stream().filter(c -> c instanceof IOfferer).findFirst();
-    if (!o.isPresent())
-      return empty();
-    return of((IOfferer)o.get());    
-  }
-
   private void doStart() throws IOException {
     for(int i = 0; i < this.cycles.size(); i++) {
       IPJeLifeCycle cycle = this.cycles.get(i);

@@ -45,7 +45,6 @@ import java.util.Properties;
 
 import com.github.signer4j.pjeoffice.shell.ShellExtension;
 import com.github.utils4j.IFilePacker;
-import com.github.utils4j.IOfferer;
 import com.github.utils4j.imp.FilePacker;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.function.Executable;
@@ -55,7 +54,7 @@ import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.imp.PjeTaskReader;
 
-class PjeFileWatchServer extends PjeURIServer implements IOfferer {
+class PjeFileWatchServer extends PjeURIServer {
   
   private final IFilePacker<IOException> packer;
   
@@ -66,11 +65,6 @@ class PjeFileWatchServer extends PjeURIServer implements IOfferer {
     this.packer = new FilePacker<IOException>(ShellExtension.HOME_WATCHING);
   }
 
-  @Override
-  public final void offer(List<File> files) throws InterruptedException {
-    this.packer.offer(files);
-  }
-  
   @Override
   protected void doStart() throws IOException {
     packer.start();

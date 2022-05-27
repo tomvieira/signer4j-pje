@@ -51,7 +51,7 @@ public class ShellExtension {
   private ShellExtension() {}
 
   public static void main(String... args) {
-    
+
     if (!HOME_WATCHING.toFile().exists()) {
       return;
     }
@@ -76,7 +76,7 @@ public class ShellExtension {
     try(FileOutputStream out = new FileOutputStream(output)) {
       p.store(out, null);
     } catch (Exception e) {
-      ;//ignore!
+      e.printStackTrace();
     }
   }
 }

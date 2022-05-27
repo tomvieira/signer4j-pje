@@ -24,8 +24,6 @@
 * SOFTWARE.
 */
 
-
-
 package br.jus.cnj.pje.office.imp;  
 
 import static br.jus.cnj.pje.office.core.imp.PjeConfig.setup;

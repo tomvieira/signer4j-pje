@@ -25,7 +25,6 @@
 */
 
 
-
 package br.jus.cnj.pje.office.imp;  
 
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;

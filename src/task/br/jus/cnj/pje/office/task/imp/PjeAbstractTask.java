@@ -64,7 +64,6 @@ import br.jus.cnj.pje.office.core.IPjeTokenAccess;
 import br.jus.cnj.pje.office.core.imp.PJeClientException;
 import br.jus.cnj.pje.office.core.imp.PjeClientMode;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
-import br.jus.cnj.pje.office.core.imp.PjeHttpExchangeRequest;
 import br.jus.cnj.pje.office.core.imp.PjeTaskResponse;
 import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.task.IMainParams;
