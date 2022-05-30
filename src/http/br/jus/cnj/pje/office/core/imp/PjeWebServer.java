@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.gui.alert.MessageAlert;
+import com.github.utils4j.IConstants;
 import com.github.utils4j.imp.Environment;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Headers;
@@ -190,7 +191,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
 
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      response.success();
+      response.writeHtml("Sucesso".getBytes(IConstants.DEFAULT_CHARSET));      
     }    
   } 
   

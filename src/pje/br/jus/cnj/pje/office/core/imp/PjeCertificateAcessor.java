@@ -56,6 +56,7 @@ import com.github.signer4j.gui.utils.InvalidPinAlert;
 import com.github.signer4j.imp.AbstractStrategy;
 import com.github.signer4j.imp.DeviceCertificateEntry;
 import com.github.signer4j.imp.DeviceManager;
+import com.github.signer4j.imp.MSCAPIDevManager;
 import com.github.signer4j.imp.NotDuplicatedStrategy;
 import com.github.signer4j.imp.exception.ExpiredCredentialException;
 import com.github.signer4j.imp.exception.InvalidPinException;
@@ -101,7 +102,7 @@ public enum PjeCertificateAcessor implements IPjeTokenAccess {
     //this.devManager = new MSCAPIDevManager();
   }
   
-  private IPjeToken toToken(IDevice device) {
+  private IPjeToken toToken(IDevice device) {    
     return new PjeToken(device.getSlot().getToken(), strategy);
   }
   

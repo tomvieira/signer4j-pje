@@ -39,36 +39,34 @@ const readSession = function () {
 };
 
 
-
-/********************************************************************************************************
-* This is your PjeOffice user instance representation. Alternativaly you can remove this code from here, 
-* create this object dynamicaly in your application with all attributes and put it in global javascript
-* scope
-/*******************************************************************************************************/
+/*****************************************************************************************************************
+* Esta é a representação  da sua instância PjeOffice. Alternativamente você pode remover este código daqui,
+* criar este objeto dinamicamente na sua aplicação com todos os atributos e colocá-la no escopo global javascript. 
+/*****************************************************************************************************************/
 
 const defaultSubject = {
    //Aplicação que faz uso do PjeOffice
-   //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
+   //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
   "APP_REQUISITANTE"  : "Pje",
 
-   //Código de segurança da aplicação - proteção CSRF
-   //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
+  //Código de segurança da aplicação - proteção CSRF
+  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
   "CODIGO_SEGURANCA"  : "bypass",
 
   //Endpoint raiz da aplicação. Comporá o parâmetro 'servidor' da requisição principal (main) e usada
   //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
-  //Este parâmetro é OBRIGATÓRIO e NÃO PODE ser sobrescrito dinamicamente em tempo de chamada API
-  //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor. Aqui está informado /pjeOffice
+  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
+  //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor pje. Aqui é informado /pjeOffice
   //porque o próprio PjeOffice simula em Mock a aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
   "WEB_ROOT"          : window.location.origin + "/pjeOffice",
 
-  //Para ambientes de testes, desenvolvimento, treinamento e cia informe true. Informe false para produção
-  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  //Para ambientes de testes, desenvolvimento, treinamento e cia informe MODO_TESTE=true. Informe false para produção
+  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API.
   "MODO_TESTE"        : false,             
 
   //O timeout das requisições POST entre o navegador e o PjeOffice. 
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API. 
-  "POST_TIMEOUT"	  : 60000, //milliseconds
+  "POST_TIMEOUT"	  : 600000, //milliseconds (10 minutes)
   
   //Página para redirecionamento pós login
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
@@ -102,9 +100,8 @@ const PjeOffice = (function () {
 
   const PJEOFFICE_PROTOCOL         = "http";
   const PJEOFFICE_PORT             = 8800;
-  const PJEOFFICE_POST_TIMEOUT	   = 60000; //millis
 
-  //Please do NOT change this constants if you don't know what your really doing
+  //Please do NOT change this constants if you don't know what you really doing
   const PJEOFFICE_BASE_END_POINT   = PJEOFFICE_PROTOCOL + "://127.0.0.1:" + PJEOFFICE_PORT;
   const PJEOFFICE_BASE_CONTEXT     = "/pjeOffice/";
   const PJEOFFICE_TASK_END_POINT   = PJEOFFICE_BASE_CONTEXT + "requisicao/"
@@ -128,90 +125,37 @@ const PjeOffice = (function () {
   const post = function (subject, endPoint, onSuccess, onFailed) {
 	let complete = false;
     Twix.ajax({
-      "url": PJEOFFICE_BASE_END_POINT + endPoint,
-      "type": 'POST',
-      "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
-      "timeout": subject?.POST_TIMEOUT || PJEOFFICE_POST_TIMEOUT,
-      "async": true,
-      "error": function(status, statusText, response) { 
-		 if (complete) return; 
-		 if (onFailed) onFailed(statusText, response); 
-		 complete = true;
-	     },
-      "success": function(data, statusText, response) {
-	     if (complete) return;
-	     if (data.success) {
-		   if (onSuccess) onSuccess(data, response);
-		 } else {
-		   if (onFailed) onFailed(statusText, response);	
-		 }
-		 complete = true;
-      },
-    });
+		"url": PJEOFFICE_BASE_END_POINT + endPoint,
+      	"type": 'POST',
+      	"headers": { "Content-Type": 'application/x-www-form-urlencoded'},
+      	"timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
+      	"async": true,
+      	"error": function(status, statusText, response) {
+			if ('timeout' === status)
+				alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');		
+		 	if (complete) 
+				return;  
+		 	if (onFailed)
+				onFailed(statusText, response); 
+		 	complete = true;
+		},
+      	"success": function(data, statusText, response) {
+	    	if (complete)
+				return;
+	     	if (data.success) { //json response must return 'success' attribute!
+				if (onSuccess)
+					onSuccess(data, response);
+		 	} else {
+		   		if (onFailed)
+					onFailed(statusText, response);	
+		 	}
+		 	complete = true;
+      	},
+	});
   };
   
   const runTask = function(subject, taskId, task, onSuccess, onFailed) {
     post(subject, createQueryParams(taskId, task), onSuccess, onFailed);
-  };
-  
-  const runTask_cnj_assinador = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'cnj.assinador', task, onSuccess, onFailed);
-  };
-  
-  const runTask_cnj_assinadorHash = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'cnj.assinadorHash', task, onSuccess, onFailed);
-  };
-  
-  const runTask_cnj_autenticador = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'cnj.autenticador', task, onSuccess, onFailed);
-  };
-  
-  const runTask_cnj_assinadorBase64 = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'cnj.assinadorBase64', task, onSuccess, onFailed);
-  };
-  
-  const runTask_sso_autenticador = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'sso.autenticador', task, onSuccess, onFailed);
-  };
-  
-  const runTask_util_impressor = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'util.impressor', task, onSuccess, onFailed);
-  };
-  
-  const runTask_util_downloader = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'util.downloader', task, onSuccess, onFailed);
-  };
-  
-  const runTask_pdf_join = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'pdf.join', task, onSuccess, onFailed);
-  };
-  
-  const runTask_pdf_split_by_size= function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'pdf.split_by_size', task, onSuccess, onFailed);
-  };
-  
-  const runTask_pdf_split_by_parity = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'pdf.split_by_parity', task, onSuccess, onFailed);
-  };
-  
-  const runTask_pdf_split_by_count = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'pdf.split_by_count', task, onSuccess, onFailed);
-  };
-  
-  const runTask_pdf_split_by_pages = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'pdf.split_by_pages', task, onSuccess, onFailed);
-  };
-  
-  const runTask_video_split_by_duration = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'video.split_by_duration', task, onSuccess, onFailed);
-  };
-  
-  const runTask_video_split_by_size = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'video.split_by_size', task, onSuccess, onFailed);
-  };
-  
-  const runTask_video_split_by_slice = function(subject, task, onSuccess, onFailed) {
-    runTask(subject, 'video.split_by_slice', task, onSuccess, onFailed);
   };
   
   const logout = function(subject, onSuccess, onFailed) {
@@ -239,7 +183,7 @@ const PjeOffice = (function () {
   apiContext = {
 	"subject": {
 	  "MODO_TESTE"        : false,                     	//Opcional: se não informado será considerado defaultSubject.MODO_TESTE             
-	  "POST_TIMEOUT"	  : 60000, 					   	//Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+	  "POST_TIMEOUT"	  : 300000, 					//Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
 	  "PAGINA_LOGIN"      : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN	
 	  "PAGINA_ASSINATURA" : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
 	  "PAGINA_UPLOAD"     : "/pjefake",        			//Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
@@ -252,14 +196,14 @@ const PjeOffice = (function () {
   */
   
   PjeOffice.login = function(welcomeMessage, apiContext) {
-    runTask_cnj_autenticador(apiContext?.subject, {
+    runTask(apiContext?.subject, 'cnj.autenticador', {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
 
   PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
-    runTask_sso_autenticador(apiContext?.subject, {
+    runTask(apiContext?.subject, 'sso.autenticador', {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
       "token": token
@@ -271,7 +215,7 @@ const PjeOffice = (function () {
   };
     
   PjeOffice.signHash = function(documents, apiContext) {
-    runTask_cnj_assinadorHash(apiContext?.subject, {
+    runTask(apiContext?.subject, 'cnj.assinadorHash', {
       "algoritmoAssinatura": "ASN1MD5withRSA",
       "uploadUrl": apiContext?.subject?.PAGINA_ASSINATURA || defaultSubject.PAGINA_ASSINATURA,
       "modoTeste": apiContext?.subject?.MODO_TESTE || defaultSubject.MODO_TESTE,
@@ -279,8 +223,8 @@ const PjeOffice = (function () {
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
     
-  PjeOffice.signP7s = function(apiContext) {
-    runTask_cnj_assinador(apiContext?.subject, {
+  PjeOffice.signRemoteP7s = function(apiContext) {
+    runTask(apiContext?.subject, 'cnj.assinador', {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
       "enviarPara": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
@@ -291,6 +235,19 @@ const PjeOffice = (function () {
        }]
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
-  
+
+  /*
+  PjeOffice.signBase64 = function(documents, apiContext) {
+	runTask(apiContext?.subject, 'cnj.assinadorBase64', {
+	  "algoritmoAssinatura":"ASN1MD5withRSA",
+	  "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
+      "arquivos": [{
+	  	 "hashDoc": "",
+  		 "conteudoBase64": ""
+	  }]
+	}, apiContext?.onSuccess, apiContext?.onFailed);	
+  };
+  */
+
   return PjeOffice;
 })();
