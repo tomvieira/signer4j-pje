@@ -66,7 +66,7 @@ const defaultSubject = {
 
   //O timeout das requisições POST entre o navegador e o PjeOffice. 
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API. 
-  "POST_TIMEOUT"	  : 600000, //milliseconds (10 minutes)
+  "POST_TIMEOUT"    : 600000, //milliseconds (10 minutes)
   
   //Página para redirecionamento pós login
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
@@ -123,35 +123,35 @@ const PjeOffice = (function () {
   };
   
   const post = function (subject, endPoint, onSuccess, onFailed) {
-	let complete = false;
+  let complete = false;
     Twix.ajax({
-		"url": PJEOFFICE_BASE_END_POINT + endPoint,
-      	"type": 'POST',
-      	"headers": { "Content-Type": 'application/x-www-form-urlencoded'},
-      	"timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
-      	"async": true,
-      	"error": function(status, statusText, response) {
-			if ('timeout' === status)
-				alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');		
-		 	if (complete) 
-				return;  
-		 	if (onFailed)
-				onFailed(statusText, response); 
-		 	complete = true;
-		},
-      	"success": function(data, statusText, response) {
-	    	if (complete)
-				return;
-	     	if (data.success) { //json response must return 'success' attribute!
-				if (onSuccess)
-					onSuccess(data, response);
-		 	} else {
-		   		if (onFailed)
-					onFailed(statusText, response);	
-		 	}
-		 	complete = true;
-      	},
-	});
+    "url": PJEOFFICE_BASE_END_POINT + endPoint,
+        "type": 'POST',
+        "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
+        "timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
+        "async": true,
+        "error": function(status, statusText, response) {
+      if ('timeout' === status)
+        alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');    
+       if (complete) 
+        return;  
+       if (onFailed)
+        onFailed(statusText, response); 
+       complete = true;
+    },
+        "success": function(data, statusText, response) {
+        if (complete)
+        return;
+         if (data.success) { //json response must return 'success' attribute!
+        if (onSuccess)
+          onSuccess(data, response);
+       } else {
+           if (onFailed)
+          onFailed(statusText, response);  
+       }
+       complete = true;
+        },
+  });
   };
   
   const runTask = function(subject, taskId, task, onSuccess, onFailed) {
@@ -181,17 +181,17 @@ const PjeOffice = (function () {
   /*
   Estrutura da instância apiContext
   apiContext = {
-	"subject": {
-	  "MODO_TESTE"        : false,                     	//Opcional: se não informado será considerado defaultSubject.MODO_TESTE             
-	  "POST_TIMEOUT"	  : 300000, 					//Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-	  "PAGINA_LOGIN"      : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN	
-	  "PAGINA_ASSINATURA" : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
-	  "PAGINA_UPLOAD"     : "/pjefake",        			//Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
-	  "PAGINA_DOWNLOAD"   : "/pjefake",					//Opcional: se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
-	  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]	//Opcional: se não informado será considerado defaultSubject.PARAMS_ENVIO
-	},
-	"onSuccess": function(data, response) {},			//Opcional: se não informada a notificação é ignorada
-	"onFailed": function(statusText, response) {}       //Opcional: se não informada a notificação é ignorada
+  "subject": {
+    "MODO_TESTE"        : false,               //Opcional: se não informado será considerado defaultSubject.MODO_TESTE             
+    "POST_TIMEOUT"    : 300000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    "PAGINA_LOGIN"      : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+    "PAGINA_ASSINATURA" : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+    "PAGINA_UPLOAD"     : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+    "PAGINA_DOWNLOAD"   : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
+    "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]  //Opcional: se não informado será considerado defaultSubject.PARAMS_ENVIO
+  },
+  "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+  "onFailed": function(statusText, response) {}       //Opcional: se não informada a notificação é ignorada
   };
   */
   
@@ -238,14 +238,14 @@ const PjeOffice = (function () {
 
   /*
   PjeOffice.signBase64 = function(documents, apiContext) {
-	runTask(apiContext?.subject, 'cnj.assinadorBase64', {
-	  "algoritmoAssinatura":"ASN1MD5withRSA",
-	  "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
-      "arquivos": [{
-	  	 "hashDoc": "",
-  		 "conteudoBase64": ""
-	  }]
-	}, apiContext?.onSuccess, apiContext?.onFailed);	
+    runTask(apiContext?.subject, 'cnj.assinadorBase64', {
+      "algoritmoAssinatura":"ASN1MD5withRSA",
+      "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
+        "arquivos": [{
+         "hashDoc": "",
+         "conteudoBase64": ""
+      }]
+    }, apiContext?.onSuccess, apiContext?.onFailed);  
   };
   */
 
