@@ -40,8 +40,9 @@ const readSession = function () {
 
 
 /*****************************************************************************************************************
-* Esta é a representação  da sua instância PjeOffice. Alternativamente você pode remover este código daqui,
-* criar este objeto dinamicamente na sua aplicação com todos os atributos e colocá-la no escopo global javascript. 
+* A constante 'defaultSubject' é a a configuração 'global' padrão usada pela instância PjeOffice. Alternativamente 
+* você pode remover este código daqui e definir esta instância na sua aplicação com todos os atributos e colocá-la 
+* no escopo global javascript. 
 /*****************************************************************************************************************/
 
 const defaultSubject = {
@@ -57,11 +58,12 @@ const defaultSubject = {
   //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
   //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
   //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor pje. Aqui é informado /pjeOffice
-  //porque o próprio PjeOffice simula em Mock a aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api ")
+  //porque o próprio PjeOffice simula em Mock a aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api "
   "WEB_ROOT"          : window.location.origin + "/pjeOffice",
 
   //Para ambientes de testes, desenvolvimento, treinamento e cia informe MODO_TESTE=true. Informe false para produção
-  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API.
+  //Este parâmetro evita enviar hash's assinados em ambientes de treinamento ou similares
+  //Este parâmetro é OBRIGATÓRIO para assinatura de hash's e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API.
   "MODO_TESTE"        : false,             
 
   //O timeout das requisições POST entre o navegador e o PjeOffice. 
@@ -72,26 +74,18 @@ const defaultSubject = {
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PAGINA_LOGIN"      : "/pjefake",
         
-  //Página que receberá assinaturas
+  //Página que receberá assinaturas de hash's
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
   "PAGINA_ASSINATURA" : "/pjefake",
         
   //Página que recebe arquivos assinados em P7S
   //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
-  "PAGINA_UPLOAD"     : "/pjefake",        
-
-  //Página que entrega os arquivos a serem assinados em P7S
-  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.  
-  "PAGINA_DOWNLOAD"   : "/pjefake",
-
-  //Parâmetros adicionais a serem enviados juntamente com arquivo remoto baixado e assinado em P7S
-  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
-  "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]   
+  "PAGINA_UPLOAD"     : "/pjefake",
 };
 
 
 /********************************************************************************************************
-* PJEOFFICE INSTANCE AVAILABLE FOR ALL APPLICATION  
+* Instância PjeOffice disponível para toda a aplicação  
 /*******************************************************************************************************/
 
 const PjeOffice = (function () {
@@ -123,35 +117,35 @@ const PjeOffice = (function () {
   };
   
   const post = function (subject, endPoint, onSuccess, onFailed) {
-  let complete = false;
+    let complete = false;
     Twix.ajax({
-    "url": PJEOFFICE_BASE_END_POINT + endPoint,
-        "type": 'POST',
-        "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
-        "timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
-        "async": true,
-        "error": function(status, statusText, response) {
-      if ('timeout' === status)
-        alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');    
-       if (complete) 
-        return;  
-       if (onFailed)
-        onFailed(statusText, response); 
-       complete = true;
-    },
-        "success": function(data, statusText, response) {
+      "url": PJEOFFICE_BASE_END_POINT + endPoint,
+      "type": 'POST',
+      "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
+      "timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
+      "async": true,
+      "error": function(status, statusText, response) {
+        if ('timeout' === status)
+          alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');    
+        if (complete) 
+          return;  
+        if (onFailed)
+          onFailed(statusText, response); 
+        complete = true;
+      },
+      "success": function(data, statusText, response) {
         if (complete)
-        return;
-         if (data.success) { //json response must return 'success' attribute!
-        if (onSuccess)
-          onSuccess(data, response);
-       } else {
-           if (onFailed)
-          onFailed(statusText, response);  
-       }
-       complete = true;
-        },
-  });
+          return;
+        if (data.success) { //json response must return's 'success' attribute!
+          if (onSuccess)
+            onSuccess(data, response);
+        } else {
+          if (onFailed)
+            onFailed(statusText, response);  
+        }
+        complete = true;
+      },
+    });
   };
   
   const runTask = function(subject, taskId, task, onSuccess, onFailed) {
@@ -161,7 +155,8 @@ const PjeOffice = (function () {
   const logout = function(subject, onSuccess, onFailed) {
     post(subject, PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), onSuccess, onFailed);
   };
-  
+
+  //código legado do pjeoffice do CNJ    
   const parseFields = function(fields) {
     return fields.split(",").map(i => i.split("&")).map(itemFields =>
       itemFields.length == 4 ? {
@@ -175,26 +170,23 @@ const PjeOffice = (function () {
     );
   };
 
+
 /********************************************************************************************************
-* PJEOFFICE API  
-/*******************************************************************************************************/
-  /*
-  Estrutura da instância apiContext
-  apiContext = {
-  "subject": {
-    "MODO_TESTE"        : false,               //Opcional: se não informado será considerado defaultSubject.MODO_TESTE             
-    "POST_TIMEOUT"    : 300000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-    "PAGINA_LOGIN"      : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
-    "PAGINA_ASSINATURA" : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
-    "PAGINA_UPLOAD"     : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
-    "PAGINA_DOWNLOAD"   : "/pjefake",          //Opcional: se não informado será considerado defaultSubject.PAGINA_DOWNLOAD
-    "PARAMS_ENVIO"      : ["foo=bar", "what=ever"]  //Opcional: se não informado será considerado defaultSubject.PARAMS_ENVIO
-  },
-  "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
-  "onFailed": function(statusText, response) {}       //Opcional: se não informada a notificação é ignorada
-  };
-  */
-  
+* API: PjdOffice.login  
+/********************************************************************************************************
+
+    welcomeMessage: É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação (obrigatório)
+
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_LOGIN"      : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+      },
+      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    };
+
+  */  
   PjeOffice.login = function(welcomeMessage, apiContext) {
     runTask(apiContext?.subject, 'cnj.autenticador', {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
@@ -202,6 +194,24 @@ const PjeOffice = (function () {
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
 
+
+/********************************************************************************************************
+* API: PjeOffice.loginSSO  
+/********************************************************************************************************
+
+    welcomeMessage:  É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação (obrigatório).
+
+    token: O token de autenticação SSO (obrigatório)
+
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_LOGIN"      : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+      },
+      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    };
+  */
   PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
     runTask(apiContext?.subject, 'sso.autenticador', {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
@@ -210,10 +220,53 @@ const PjeOffice = (function () {
     }, apiContext?.onSuccess, apiContext?.onFailed);  
   };
     
+
+/********************************************************************************************************
+* API: PjeOffice.logout  
+/********************************************************************************************************
+   
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"      : 600000,               //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+      },
+      "onSuccess": function(data, response) {},     //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+    };
+  */
   PjeOffice.logout = function(apiContext) {
     logout(apiContext?.subject, apiContext?.onSuccess, apiContext?.onFailed);
   };
-    
+
+
+/********************************************************************************************************
+* API: PjeOffice.signHash:  
+/********************************************************************************************************
+
+    documents: As strings separadas por , (vírgulas) que contem os hash's dos documentos a serem assinados e demais parâmetros.
+
+    Exemplo:
+     documents = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false';
+
+    Onde:
+      id:		O identificador do documento 
+      codIni:   ?
+      md5:  	O hash a ser assinado
+      isBin:    ? - pjeoffice original este parâmetro é inútil
+
+    Nota: Os parâmetros id, codIni e md5 são devolvidos ao servidor juntamente com assinatura e cadeia de certificados. 
+
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_ASSINATURA" : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+        "MODO_TESTE"        : false, 	  			 //Opcional: se não informado será considerado defaultSubject.MODO_TESTE	
+      },
+      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    };
+
+  */   
+
   PjeOffice.signHash = function(documents, apiContext) {
     runTask(apiContext?.subject, 'cnj.assinadorHash', {
       "algoritmoAssinatura": "ASN1MD5withRSA",
@@ -222,32 +275,72 @@ const PjeOffice = (function () {
       "arquivos": parseFields(documents)
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
-    
-  PjeOffice.signRemoteP7s = function(apiContext) {
+
+
+/********************************************************************************************************
+* API: PjeOffice.signRemoteP7s  
+/********************************************************************************************************
+
+    documents = [
+      {"nome": "arquivo",  "url": "/pagina_download?p=1", "paramsEnvio": ["foo=bar", "what=ever"]},
+      {"nome": "arquivo",  "url": "/pagina_download?p=2", "paramsEnvio": ["foo=bar", "what=ever", "code=sample"]},
+      {"nome": "arquivo",  "url": "/pagina_download?p=3", "paramsEnvio": ["foo=bar", "what=ever"]}
+    ];
+
+    Onde:
+	  nome:        O nome do campo/parâmetro que chegará no servidor contendo a assinatura do documento 
+	  url:         A url da página de download que entrega os arquivos a serem assinados em P7S
+	  paramsEnvio: Parâmetros adicionais a serem enviados juntamente com a assinatura em P7S
+
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"  : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_UPLOAD" : "/pjefake"                 //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+      },
+      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    };	
+  */      
+  PjeOffice.signRemoteP7s = function(documents, apiContext) {
     runTask(apiContext?.subject, 'cnj.assinador', {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
       "enviarPara": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
-      "arquivos": [{
-         "nome": "arquivo",
-         "url": apiContext?.subject?.PAGINA_DOWNLOAD || defaultSubject.PAGINA_DOWNLOAD,
-         "paramsEnvio": apiContext?.subject?.PARAMS_ENVIO || defaultSubject.PARAMS_ENVIO
-       }]
+      "arquivos": documents
     }, apiContext?.onSuccess, apiContext?.onFailed);
   };
 
-  /*
+
+/********************************************************************************************************
+* API: PjeOffice.signBase64  
+/********************************************************************************************************
+
+	documents = [
+	  {"hashDoc": "fc3ff98e8c6a0d3087d515c0473f8677",  "conteudoBase64": "aGVsbG8gd29ybGQh"},
+      {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}      
+    ];
+
+    Onde: 
+      hashDoc:        O hash do documento a ser assinado
+      conteudoBase64: O conteúdo a ser assinado encodado em formato base 64
+
+    apiContext = {
+      "subject": {
+        "POST_TIMEOUT"  : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_UPLOAD" : "/pjefake"                 //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+      },
+      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    };
+  */
+
   PjeOffice.signBase64 = function(documents, apiContext) {
     runTask(apiContext?.subject, 'cnj.assinadorBase64', {
       "algoritmoAssinatura":"ASN1MD5withRSA",
       "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
-        "arquivos": [{
-         "hashDoc": "",
-         "conteudoBase64": ""
-      }]
+      "arquivos": documents
     }, apiContext?.onSuccess, apiContext?.onFailed);  
   };
-  */
 
   return PjeOffice;
 })();
