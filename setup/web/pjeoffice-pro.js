@@ -2,7 +2,7 @@
 /* A LIGHTWEIGHT XMLHttpRequest LIBRARY 
 /*******************************************************************************************************/
 
-const Twix=function(){function t(){}t.ajax=function(t){t=t||{url:""},t.type=t.type&&t.type.toUpperCase()||"GET",t.headers=t.headers||{},t.timeout=parseInt(t.timeout)||0,t.success=t.success||function(){},t.error=t.error||function(){},t.async="undefined"==typeof t.async?!0:t.async;var e=new XMLHttpRequest;t.timeout>0&&(e.timeout=t.timeout,e.ontimeout=function(){t.error("timeout","timeout",e)}),e.open(t.type,t.url,t.async);for(var s in t.headers)t.headers.hasOwnProperty(s)&&e.setRequestHeader(s,t.headers[s]);return e.send(t.data),e.onreadystatechange=function(){if(4==this.readyState&&(this.status>=200&&this.status<300||304==this.status)){var e=this.responseText,s=this.getResponseHeader("Content-Type");s&&s.match(/json/)&&(e=JSON.parse(this.responseText)),t.success(e,this.statusText,this)}else 4==this.readyState&&t.error(this.status,this.statusText,this)},0==t.async&&(4==e.readyState&&(e.status>=200&&e.status<300||304==e.status)?t.success(e.responseText,e):4==e.readyState&&t.error(e.status,e.statusText,e)),e};var e=function(e,s,n,r){return"function"==typeof n&&(r=n,n=void 0),t.ajax({url:s,data:n,type:e,success:r})};return t.get=function(t,s,n){return e("GET",t,s,n)},t.head=function(t,s,n){return e("HEAD",t,s,n)},t.post=function(t,s,n){return e("POST",t,s,n)},t.patch=function(t,s,n){return e("PATCH",t,s,n)},t.put=function(t,s,n){return e("PUT",t,s,n)},t["delete"]=function(t,s,n){return e("DELETE",t,s,n)},t.options=function(t,s,n){return e("OPTIONS",t,s,n)},t}();__=Twix;
+const PjeClient=function(){function t(){}t.ajax=function(t){t=t||{url:""},t.type=t.type&&t.type.toUpperCase()||"GET",t.headers=t.headers||{},t.timeout=parseInt(t.timeout)||0,t.success=t.success||function(){},t.error=t.error||function(){},t.async="undefined"==typeof t.async?!0:t.async;var e=new XMLHttpRequest;t.timeout>0&&(e.timeout=t.timeout,e.ontimeout=function(){t.error("timeout","timeout",e)}),e.open(t.type,t.url,t.async);for(var s in t.headers)t.headers.hasOwnProperty(s)&&e.setRequestHeader(s,t.headers[s]);return e.send(t.data),e.onreadystatechange=function(){if(4==this.readyState&&(this.status>=200&&this.status<300||304==this.status)){var e=this.responseText,s=this.getResponseHeader("Content-Type");s&&s.match(/json/)&&(e=JSON.parse(this.responseText)),t.success(e,this.statusText,this)}else 4==this.readyState&&t.error(this.status,this.statusText,this)},0==t.async&&(4==e.readyState&&(e.status>=200&&e.status<300||304==e.status)?t.success(e.responseText,e):4==e.readyState&&t.error(e.status,e.statusText,e)),e};var e=function(e,s,n,r){return"function"==typeof n&&(r=n,n=void 0),t.ajax({url:s,data:n,type:e,success:r})};return t.get=function(t,s,n){return e("GET",t,s,n)},t.head=function(t,s,n){return e("HEAD",t,s,n)},t.post=function(t,s,n){return e("POST",t,s,n)},t.patch=function(t,s,n){return e("PATCH",t,s,n)},t.put=function(t,s,n){return e("PUT",t,s,n)},t["delete"]=function(t,s,n){return e("DELETE",t,s,n)},t.options=function(t,s,n){return e("OPTIONS",t,s,n)},t}();__=PjeClient;
 
 
 /********************************************************************************************************
@@ -50,7 +50,7 @@ const defaultSubject = {
    //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
   "APP_REQUISITANTE"  : "Pje",
 
-  //Código de segurança da aplicação - proteção CSRF
+  //Código de segurança da aplicação - proteção CSRF fornecido pelo CNJ 
   //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
   "CODIGO_SEGURANCA"  : "bypass",
 
@@ -116,9 +116,9 @@ const PjeOffice = (function () {
     })) + noCache();
   };
   
-  const post = function (subject, endPoint, onSuccess, onFailed) {
+  const post = function (subject, endPoint, onSuccess, onFailed, onUnavailable) {
     let complete = false;
-    Twix.ajax({
+    PjeClient.ajax({
       "url": PJEOFFICE_BASE_END_POINT + endPoint,
       "type": 'POST',
       "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
@@ -129,8 +129,8 @@ const PjeOffice = (function () {
           alert('Alcançado tempo máximo de espera por resposta do PjeOffice (timeout)');    
         if (complete) 
           return;  
-        if (onFailed)
-          onFailed(statusText, response); 
+        if (onUnavailable)
+          onUnavailable(statusText, response); 
         complete = true;
       },
       "success": function(data, statusText, response) {
@@ -148,12 +148,12 @@ const PjeOffice = (function () {
     });
   };
   
-  const runTask = function(subject, taskId, task, onSuccess, onFailed) {
-    post(subject, createQueryParams(taskId, task), onSuccess, onFailed);
+  const runTask = function(subject, taskId, task, onSuccess, onFailed, onUnavailable) {
+    post(subject, createQueryParams(taskId, task), onSuccess, onFailed, onUnavailable);
   };
   
-  const logout = function(subject, onSuccess, onFailed) {
-    post(subject, PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), onSuccess, onFailed);
+  const logout = function(subject, onSuccess, onFailed, onUnavailable) {
+    post(subject, PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), onSuccess, onFailed, onUnavailable);
   };
 
   //código legado do pjeoffice do CNJ    
@@ -184,6 +184,7 @@ const PjeOffice = (function () {
       },
       "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
       "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+      "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
     };
 
   */  
@@ -191,7 +192,7 @@ const PjeOffice = (function () {
     runTask(apiContext?.subject, 'cnj.autenticador', {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
-    }, apiContext?.onSuccess, apiContext?.onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);
   };
 
 
@@ -210,6 +211,7 @@ const PjeOffice = (function () {
       },
       "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
       "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+      "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
     };
   */
   PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
@@ -217,7 +219,7 @@ const PjeOffice = (function () {
       "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
       "token": token
-    }, apiContext?.onSuccess, apiContext?.onFailed);  
+    }, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);  
   };
     
 
@@ -231,10 +233,11 @@ const PjeOffice = (function () {
       },
       "onSuccess": function(data, response) {},     //Opcional: se não informada a notificação é ignorada
       "onFailed": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+      "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
     };
   */
   PjeOffice.logout = function(apiContext) {
-    logout(apiContext?.subject, apiContext?.onSuccess, apiContext?.onFailed);
+    logout(apiContext?.subject, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);
   };
 
 
@@ -242,28 +245,28 @@ const PjeOffice = (function () {
 * API: PjeOffice.signHash:  
 /********************************************************************************************************
 
-    documents: As strings separadas por , (vírgulas) que contem os hash's dos documentos a serem assinados e demais parâmetros.
+  documents: As strings separadas por , (vírgulas) que contem os hash's dos documentos a serem assinados e demais parâmetros.
 
-    Exemplo:
-     documents = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false';
+  Exemplo:
+    documents = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649;
 
-    Onde:
-      id:		O identificador do documento 
-      codIni:   ?
-      md5:  	O hash a ser assinado
-      isBin:    ? - pjeoffice original este parâmetro é inútil
+  Onde:
+    id:     ? (veja documentação Pje) 
+    codIni: ? (veja documentação Pje)
+    md5:    O hash a ser assinado
 
-    Nota: Os parâmetros id, codIni e md5 são devolvidos ao servidor juntamente com assinatura e cadeia de certificados. 
+  Nota: Os parâmetros id, codIni e md5 são devolvidos ao servidor juntamente com assinatura e cadeia de certificados. 
 
-    apiContext = {
-      "subject": {
-        "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-        "PAGINA_ASSINATURA" : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
-        "MODO_TESTE"        : false, 	  			 //Opcional: se não informado será considerado defaultSubject.MODO_TESTE	
-      },
-      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
-      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
-    };
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+      "PAGINA_ASSINATURA" : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+      "MODO_TESTE"        : false, 	  			   //Opcional: se não informado será considerado defaultSubject.MODO_TESTE	
+    },
+    "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+    "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada1
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
 
   */   
 
@@ -273,7 +276,7 @@ const PjeOffice = (function () {
       "uploadUrl": apiContext?.subject?.PAGINA_ASSINATURA || defaultSubject.PAGINA_ASSINATURA,
       "modoTeste": apiContext?.subject?.MODO_TESTE || defaultSubject.MODO_TESTE,
       "arquivos": parseFields(documents)
-    }, apiContext?.onSuccess, apiContext?.onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);
   };
 
 
@@ -299,6 +302,7 @@ const PjeOffice = (function () {
       },
       "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
       "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+      "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
     };	
   */      
   PjeOffice.signRemoteP7s = function(documents, apiContext) {
@@ -307,7 +311,7 @@ const PjeOffice = (function () {
       "tipoAssinatura": "ATTACHED",
       "enviarPara": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
       "arquivos": documents
-    }, apiContext?.onSuccess, apiContext?.onFailed);
+    }, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);
   };
 
 
@@ -326,11 +330,12 @@ const PjeOffice = (function () {
 
     apiContext = {
       "subject": {
-        "POST_TIMEOUT"  : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-        "PAGINA_UPLOAD" : "/pjefake"                 //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+        "POST_TIMEOUT"  : 600000,                       //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+        "PAGINA_UPLOAD" : "/pjefake"                    //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
       },
-      "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
-      "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+      "onSuccess": function(data, response) {},         //Opcional: se não informada a notificação é ignorada
+      "onFailed": function(statusText, response) {}     //Opcional: se não informada a notificação é ignorada
+      "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada       
     };
   */
 
@@ -339,7 +344,7 @@ const PjeOffice = (function () {
       "algoritmoAssinatura":"ASN1MD5withRSA",
       "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
       "arquivos": documents
-    }, apiContext?.onSuccess, apiContext?.onFailed);  
+    }, apiContext?.onSuccess, apiContext?.onFailed, apiContext?.onUnavailable);  
   };
 
   return PjeOffice;

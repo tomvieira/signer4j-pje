@@ -171,7 +171,7 @@ public enum PjeClientMode {
       if (protocol.startsWith(mode.protocol + ":"))
         return mode;
     }
-    throw new RuntimeException("Unrecognized protocol " + protocol);
+    return NOTHING;//throw new RuntimeException("Unrecognized protocol " + protocol);
   }
   
   public static void closeClients() {
@@ -210,11 +210,11 @@ public enum PjeClientMode {
   }
 
   protected Function<String, PjeTaskResponse> success() {
-    return (o) -> PjeTaskResponse.NOTHING_SUCCESS;
+    return (o) -> PjeWebTaskResponse.NOTHING_SUCCESS;
   }
   
   protected Function<Throwable, PjeTaskResponse> fail() {
-    return (t) -> PjeTaskResponse.NOTHING_FAIL;
+    return (t) -> PjeWebTaskResponse.NOTHING_FAIL;
   }
   
   protected final IPjeClient getClient() {

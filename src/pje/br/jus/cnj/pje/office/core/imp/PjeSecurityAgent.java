@@ -134,6 +134,9 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
       return false;
     }   
     
+    final int targetPort = computePort(targetUri.getPort(), targetSchema.get());
+    
+    
     /* A sentença IF que segue não deveria existir porque toda requisição ao assinador via protocolo http(s) DEVERIA
      * ser feita com POST para que ORIGIN fosse sempre conhecido e, portanto, sujeito a tratamento CSRF. Por ora esta 
      * condicional fromPostRequest deve ser testada para que os servidores que ainda não foram atualizados com a nova
@@ -147,12 +150,39 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
         LOGGER.warn(whyNot.toString());
         return false;
       }
+  
+      final String nativeUri = nativeOrigin.get().toLowerCase();
       
-      final String targetOrigin = (targetSchema.get() + "://" + targetHost.get()).toLowerCase();
-  
-      final String browserOrigin = nativeOrigin.get().toLowerCase();
-  
-      if (!browserOrigin.startsWith(targetOrigin)) {
+      URI browserUri;
+      try {
+        browserUri = new URI(nativeUri);
+      } catch (URISyntaxException e1) {
+        whyNot.append("Header 'Origin' enviado não corresponde a uma URI válida -> " + nativeUri);
+        LOGGER.warn(whyNot.toString());
+        return false;
+      }
+      
+      Optional<String> browserSchema = Strings.optional(browserUri.getScheme());
+      if (!browserSchema.isPresent()) {
+        whyNot.append("Header 'Origin' enviado não define um 'schema' válido -> " + nativeUri);
+        LOGGER.warn(whyNot.toString());
+        return false;
+      }
+      
+      Optional<String> browserHost = Strings.optional(browserUri.getHost());
+      if (!browserHost.isPresent()) {
+        whyNot.append("Header 'Origin' enviado não define um 'host' válido -> " + nativeUri);
+        LOGGER.warn(whyNot.toString());
+        return false;
+      }   
+      
+      final int browserPort = computePort(browserUri.getPort(), browserSchema.get());
+
+      final String browserOrigin = (browserSchema.get() + "://" + browserHost.get()).toLowerCase() + ":" + browserPort; 
+
+      final String targetOrigin = (targetSchema.get() + "://" + targetHost.get()).toLowerCase() + ":" + targetPort;
+      
+      if (!browserOrigin.equals(targetOrigin)) {
         whyNot.append("A origem da requisição é inválida e será rejeitada por segurança (CSRF prevent)");
         LOGGER.warn(whyNot.toString());
         return false;
@@ -184,5 +214,12 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
           "'.\nRevise as configurações no menu 'Servidores autorizados' do PjeOffice.");
     }
     return ok;
+  }
+
+  private static int computePort(int defaultPort, String schema) {
+    return defaultPort >= 0 ? defaultPort : 
+      "http".equalsIgnoreCase(schema) ? 80 : 
+      "https".equalsIgnoreCase(schema) ? 443 : 
+      defaultPort;
   }
 }

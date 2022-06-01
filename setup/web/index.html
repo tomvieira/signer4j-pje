@@ -12,95 +12,160 @@
          background-color: #e6ffe6;
          border: solid 1px;
          }
+         b {
+         font-size: xx-large;
+         }
+         span {
+         color: red;
+         }
       </style>
       <script src="/pjeOffice/api/?file=pjeoffice-pro.js"></script>
       <script>
-         const onSuccess = function(data, response) {
-         	alert("SUCCESS! (" + readJson(data) + " : " + response.status + ")");
-         };
-         const onFailed = function(status, response) {
-         	alert("FAILED!");
-         };
-         const apiContext = {   		
-           'onSuccess': onSuccess, 
-           'onFailed': onFailed
-         };
+      	//exemplos of utilities to quick demo
+      
+		const onSuccess = function(data, response) {
+          alert("SUCCESS! (" + response.status + ")");
+        };
+        
+        const onFailed = function(status, response) {
+          alert("FAILED!");
+        };
+        
+        const  onUnavailable = function(status, response) {
+          alert("PjeOffice PRO unavailable!");
+        }
+        
+        const apiContext = {   		
+          'onSuccess': onSuccess, 
+          'onFailed': onFailed,
+          'onUnavailable': onUnavailable
+        };
          
-         const documents1 = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false';
+        const documents1 = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false';
          
-         const documents2 = [
-           {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever"]},
-           {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever", "code=sample"]},
-           {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever"]}
-         ];
+        const documents2 = [
+          {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever"]},
+          {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever", "code=exemplo"]},
+          {"nome": "arquivo",  "url": "/pjefake", "paramsEnvio": ["foo=bar", "what=ever"]}
+        ];
          
-         const documents3 = [
-           {"hashDoc": "fc3ff98e8c6a0d3087d515c0473f8677",  "conteudoBase64": "aGVsbG8gd29ybGQh"},
-           {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}      
-         ];
+        const documents3 = [
+          {"hashDoc": "fc3ff98e8c6a0d3087d515c0473f8677",  "conteudoBase64": "aGVsbG8gd29ybGQh"},
+          {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}      
+        ];
       </script>
    </head>
    <body>
       <ul>
          <li>
-            <strong>PjeOffice API - Quick Demo</strong>
-            <p>
-               Para se fazer uso desta demonstração habilite temporariamente o <em>'Modo inseguro'</em> clicando em <em>Opções -> Modo inseguro</em>
-            </p>
+            <b>PjeOffice API - Quick Demo</b>
+			<p><span>Antes de fazer uso desta demonstração habilite temporariamente no PjeOffice PRO o 'modo inseguro' em <em>Opções -> Modo inseguro</em></span></p>
          </li>
       </ul>
       <ul>
+      	<li>
+      		<h3>Configuração 'global' padrão usada pela instância PjeOffice</h3> 
+			<div>      	
+<pre>
+const defaultSubject = {
+   //Aplicação que faz uso do PjeOffice
+   //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
+  "APP_REQUISITANTE"  : "Pje",
+
+  //Código de segurança da aplicação - proteção CSRF fornecido pelo CNJ
+  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
+  "CODIGO_SEGURANCA"  : "bypass",
+
+  //Endpoint raiz da aplicação. Comporá o parâmetro 'servidor' da requisição principal (main) e usada
+  //para validação conjunta com CODIGO_SEGURANÇA e cabeçalho 'ORIGIN' em proteções CSRF.
+  //Este parâmetro é OBRIGATÓRIO e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API
+  //OBS: Troque este final /pjeOffice pelo contexto da aplicação do servidor pje. Aqui é informado /pjeOffice
+  //porque o próprio PjeOffice simula em Mock a aplicação web para demonstração da api em http://127.0.0.1:8800/pjeOffice/api "
+  "WEB_ROOT"          : window.location.origin + "/pjeOffice",
+
+  //Para ambientes de testes, desenvolvimento, treinamento e cia informe MODO_TESTE=true. Informe false para produção
+  //Este parâmetro evita enviar hash's assinados em ambientes de treinamento ou similares
+  //Este parâmetro é OBRIGATÓRIO para assinatura de hash's e NÃO DEVERIA ser sobrescrito dinamicamente em tempo de chamada API.
+  "MODO_TESTE"        : false,             
+
+  //O timeout das requisições POST entre o navegador e o PjeOffice. 
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API. 
+  "POST_TIMEOUT"    : 600000, //milliseconds (10 minutes)
+  
+  //Página para redirecionamento pós login
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_LOGIN"      : "/pjefake",
+        
+  //Página que receberá assinaturas de hash's
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_ASSINATURA" : "/pjefake",
+        
+  //Página que recebe arquivos assinados em P7S
+  //Este parâmetro é OBRIGATÓRIO e PODE ser sobrescrito dinamicamente em tempo de chamada API.
+  "PAGINA_UPLOAD"     : "/pjefake",
+};
+</pre>
+			</div>      	
+      	</li>
+      </ul>
+      <ul>
          <li>
-            <strong>Utilities code</strong><br>
-            sample:
+            <strong>Código utilitário para demonstração</strong><br>            
             <div>
-               <pre>
+<pre>
   const onSuccess = function(data, response) {
-    alert("SUCCESS (" + readJson(data) + " : " + response.status + ")");
+    alert("SUCCESS (" + response.status + ")");   //janela padrão de sucesso na execução!
   };
   const onFailed = function(status, response) {
-    alert("FAILED!");
-  };</pre>
-            </div>
+    alert("FAILED!");                             //janela padrão de falha na execução!
+  };
+  const  onUnavailable = function(status, response) {
+    alert("PjeOffice PRO unavailable!");          //janela padrão de indisponibilidade do PjeOffice (não está em execução)
+  };  
+</pre>
+			</div>
             <hr>
          </li>         
       </ul>
-      
       <ul>
          <li>
-            <strong>PjeOffice.login = function(welcomeMessage, apiContext)</strong><br>
-            docs:
-			<div>			
-			<pre>
-  welcomeMessage: É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação (obrigatório)
+            <h3>Autenticação com certificado digital</h3>
+            <strong>PjeOffice.login = function(welcomeMessage, apiContext)</strong>                        
+			<div>						
+<pre>
+  welcomeMessage: É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação da assinatura (obrigatório)
 
   apiContext = {
     "subject": {
-    "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-    "PAGINA_LOGIN"      : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+      "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+      "PAGINA_LOGIN"      : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
     },
     "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
-  };</pre>
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
 			</div>            
-            sample:
+            exemplo:
             <div>
-               <pre>
+<pre>
   &lt;button onclick=&quot;PjeOffice.login('your welcome message', apiContext);&quot;&gt;
 	LOGIN
-  &lt;/button&gt;</pre>
+  &lt;/button&gt;
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>            
             <button onclick="PjeOffice.login('welcomeMessage', apiContext);">
             LOGIN
             </button>
+            
             <hr>
          </li>
          <li>
-            <strong>PjeOffice.loginSSO = function(welcomeMessage, token, apiContext)</strong><br>
-            
+         	<h3>Autenticação com certificado digital para aplicaçõe em SSO (single sign on)</h3>
+            <strong>PjeOffice.loginSSO = function(welcomeMessage, token, apiContext)</strong><br>            
 			<div>			
-			<pre>
+<pre>
   welcomeMessage:  É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação (obrigatório).
 
   token: O token de autenticação SSO (obrigatório)
@@ -112,68 +177,116 @@
     },
     "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
-  };</pre>
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
 			</div>            
-            sample:
+            exemplo:
             <div>
-               <pre>
+<pre>
   &lt;button onclick=&quot;PjeOffice.loginSSO('your welcome message', 'your token', apiContext);&quot;&gt;
 	LOGIN SSO
-  &lt;/button&gt;</pre>
+  &lt;/button&gt;
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>
             <button onclick="PjeOffice.loginSSO('welcomeMessage', 'tokengerado', apiContext);">
             LOGIN SSO
             </button>
+            
             <hr>
          </li>
          <li>
-            <strong>PjeOffice.logout = function(apiContext)</strong><br>
-            sample:
+         	<h3>Logout do certificado digital (token)</h3>
+            <strong>PjeOffice.logout = function(apiContext)</strong><br>            
+			<div>			
+<pre>
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    },
+    "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+    "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
+			</div>              
+            exemplo:
             <div>
-               <pre>
+<pre>
   &lt;button onclick=&quot;PjeOffice.logout(apiContext);&quot;&gt;
 	LOGOUT
-  &lt;/button&gt;</pre>
+  &lt;/button&gt;
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>
             <button onclick="PjeOffice.logout(apiContext);">
             LOGOUT
-            </button>						
+            </button>            						
             <hr>
          </li>
          <li>
-            <strong>PjeOffice.signHash = function(documents, apiContext)</strong><br>
-            sample:
+         	<h3>Assinatura de uma coleção de hash's de documentos</h3>
+            <strong>PjeOffice.signHash = function(documents, apiContext)</strong><br>            
             <div>
-               <pre>
+<pre>
+  documents: As strings separadas por , (vírgulas) que contém os hash's dos documentos a serem assinados e demais parâmetros.
+
+  Exemplo:
+    documents = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false;
+
+  Onde:
+    id:     ? (veja documentação Pje) 
+    codIni: ? (veja documentação Pje)
+    md5:    O hash a ser assinado
+    isBin:  ? (veja documentação Pje)
+
+  Nota: Para os propósitos do PjeOffice, apenas md5 é relevante para fins de assinatura, porém os parâmetros id, codIni e md5 são devolvidos ao 
+  servidor do Pje juntamente com assinatura e cadeia de certificados. 
+
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"      : 600000,                //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+      "PAGINA_ASSINATURA" : "/pjefake",            //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
+      "MODO_TESTE"        : false,                 //Opcional: se não informado será considerado defaultSubject.MODO_TESTE	
+    },
+    "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
+    "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };</pre>
+            </div>
+            exemplo:            
+            <div>
+<pre>
   const documents = 'id=1&codIni=1&md5=ba560650ddd4dd6bd819e9a056986ed5&isBin=false,id=2&codIni=2&md5=c6db06dcd7aef21f006198694cf48649&isBin=false';
 
   &lt;button onclick=&quot;PjeOffice.signHash(documents1, apiContext);&quot;&gt;
-	SIGN DOCUMENT HASH'S
-  &lt;/button&gt;</pre>
+	SIGN HASH
+  &lt;/button&gt;
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>
             <button onclick="PjeOffice.signHash(documents1, apiContext);">
-            SIGN DOCUMENT HASH'S
-            </button>						
+               SIGN HASH
+            </button>
+            						
             <hr>
          </li>
          <li>
-            <strong>PjeOffice.signRemoteP7s = function(apiContext)</strong><br>
-            docs:
+            <h3>Assinatura de documentos remotos</h3>
+            <strong>PjeOffice.signRemoteP7s = function(documents, apiContext)</strong><br>
 			<div>			
-			<pre>
+<pre>
   documents = [
     {"nome": "arquivo",  "url": "/pagina_download?p=1", "paramsEnvio": ["foo=bar", "what=ever"]},
-    {"nome": "arquivo",  "url": "/pagina_download?p=2", "paramsEnvio": ["foo=bar", "what=ever", "code=sample"]},
+    {"nome": "arquivo",  "url": "/pagina_download?p=2", "paramsEnvio": ["foo=bar", "what=ever", "code=exemplo"]},
     {"nome": "arquivo",  "url": "/pagina_download?p=3", "paramsEnvio": ["foo=bar", "what=ever"]}
   ];
 
   Onde:
     nome:        O nome do campo/parâmetro que chegará no servidor contendo a assinatura do documento 
     url:         A url da página de download que entrega os arquivos a serem assinados em P7S
-    paramsEnvio: Parâmetros adicionais a serem enviados juntamente com a assinatura em P7S
+    paramsEnvio: Parâmetros adicionais a serem enviados juntamente com a assinatura
 
   apiContext = {
     "subject": {
@@ -182,35 +295,40 @@
     },
     "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
-  };</pre>
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
 			</div>            
-            sample:
+            exemplo:
             <div>
-               <pre>
+<pre>
   &lt;button onclick=&quot;PjeOffice.signRemoteP7s(documents, apiContext);&quot;&gt;
-	SIGN REMOTE DOCUMENT 
-  &lt;/button&gt;</pre>
+	SIGN REMOTE
+  &lt;/button&gt;
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>
             <button onclick="PjeOffice.signRemoteP7s(documents2, apiContext);">
-            SIGN REMOTE DOCUMENT
-            </button>						
+	           SIGN REMOTE
+            </button>            						
             <hr>
          </li>
          <li>
+         	<h2>Assinatura de documentos codificados em base 64</h2>
             <strong>PjeOffice.signBase64 = function(documents, apiContext)</strong><br>
-			docs:
 			<div>			
-			<pre>
+<pre>
   documents = [
     {"hashDoc": "fc3ff98e8c6a0d3087d515c0473f8677",  "conteudoBase64": "aGVsbG8gd29ybGQh"},
     {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}      
   ];
 
   Onde: 
-    hashDoc:        O hash do documento a ser assinado
+    hashDoc:        O hash do documento
     conteudoBase64: O conteúdo a ser assinado encodado em formato base 64
 
+  Notas: 
+  
   apiContext = {
     "subject": {
       "POST_TIMEOUT"  : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
@@ -218,24 +336,24 @@
     },
     "onSuccess": function(data, response) {},      //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}  //Opcional: se não informada a notificação é ignorada
-  };</pre>
-			</div>
-			            
-            sample:
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
+  };
+</pre>
+			</div>			            
+            exemplo:
             <div>
-               <pre>
+<pre>
   &lt;button onclick=&quot;PjeOffice.signBase64(documents, apiContext);&quot;&gt;
-	SIGN REMOTE DOCUMENT 
+	 SIGN BASE64
   &lt;/button&gt;
-			</pre>
+</pre>
             </div>
-            <p>test:</p>
+            <p>testar:</p>
             <button onclick="PjeOffice.signBase64(documents3, apiContext);">
-            SIGN BASE64 DOCUMENT
-            </button>						
+            SIGN BASE64
+            </button>      						
             <hr>
-         </li>
-         
+         </li>         
       </ul>
    </body>
 </html>

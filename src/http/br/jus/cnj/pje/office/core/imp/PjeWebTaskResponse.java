@@ -99,6 +99,20 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
     }
   };
 
+  public static final PjeTaskResponse NOTHING_SUCCESS = new PjeTaskResponse(true) {
+    @Override
+    public PjeWebTaskResponse asJson() {
+      return JSON_SUCCESS;
+    }  
+  };
+  
+  public static final PjeTaskResponse NOTHING_FAIL = new PjeTaskResponse(false) {
+    @Override
+    public PjeWebTaskResponse asJson() {
+      return JSON_FAIL;
+    }
+  };
+  
   protected final byte[] content;
   
   private PjeWebTaskResponse(boolean success, String base64Content) {

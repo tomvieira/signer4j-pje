@@ -34,11 +34,9 @@ import com.github.taskresolver4j.ITaskResponse;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 
 public abstract class PjeTaskResponse implements ITaskResponse<IPjeResponse> {
-  public static final PjeTaskResponse NOTHING_SUCCESS = new PjeTaskResponse(true) {};
-  public static final PjeTaskResponse NOTHING_FAIL = new PjeTaskResponse(false) {};
-  
-  private final  boolean success;
 
+  private final  boolean success;
+  
   protected PjeTaskResponse(boolean success) {
     this.success = success;
   }
@@ -46,7 +44,7 @@ public abstract class PjeTaskResponse implements ITaskResponse<IPjeResponse> {
   @Override
   public final boolean isSuccess() {
     return success;
-  }
+  }  
   
   @Override
   public void processResponse(IPjeResponse response) throws IOException {
