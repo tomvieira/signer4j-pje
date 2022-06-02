@@ -42,6 +42,7 @@ import com.github.videohandler4j.IVideoFile;
 import com.github.videohandler4j.imp.BySizeVideoSplitter;
 import com.github.videohandler4j.imp.VideoDescriptor;
 import com.github.videohandler4j.imp.VideoTools;
+import com.github.videohandler4j.imp.exception.VideoDurationNotFound;
 
 import br.jus.cnj.pje.office.task.ITarefaVideoDivisaoTamanho;
 
@@ -74,7 +75,14 @@ public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVide
     
     progress.begin(SplitterStage.SPLITTING_PATIENT);
     
-    IVideoFile video = VideoTools.FFMPEG.call(file.toFile());
+    IVideoFile video;
+    try {
+      video = VideoTools.FFMPEG.call(file.toFile());
+    } catch (VideoDurationNotFound e) {    
+      LOGGER.error("Não foi possível encontrar duração do vídeo ", e);
+      progress.abort(e);
+      return false;
+    }
 
     final Path output = file.getParent().resolve(video.getShortName() + "_(VÍDEOS DE ATÉ " + tamanho + " MB)");
     

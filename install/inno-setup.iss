@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PjeOffice PRO"
-#define MyAppVersion "2.0.3"
+#define MyAppVersion "2.0.4"
 #define MyAppPublisher "Leonardo Oliveira"
 #define MyAppURL "https://github.com/l3onardo-oliv3ira"
 #define MyAppExeName "pjeoffice-pro.exe"
