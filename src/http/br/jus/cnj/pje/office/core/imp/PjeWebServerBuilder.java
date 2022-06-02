@@ -47,7 +47,7 @@ class PjeWebServerBuilder implements IPjeWebServerSetup{
 
   private final List<IPjeRequestHandler> handlers = new ArrayList<>();
 
-  private final ExecutorService executor = Executors.newFixedThreadPool(4);
+  private final ExecutorService executor = Executors.newFixedThreadPool(8);
 
   @Override
   public int getPort() {

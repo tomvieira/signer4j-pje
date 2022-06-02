@@ -124,7 +124,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
         try {
           final IAssinadorHashArquivo file = this.arquivos.get(i);
           
-          final String id = file.getId().orElse("[" + i + "]");
+          final String id = file.getId().orElse("[index: " + i + "]");
           
           progress.step("Documento Id: %s", id);
           

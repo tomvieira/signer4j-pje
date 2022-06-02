@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpStatus;
 
 import com.github.signer4j.gui.alert.MessageAlert;
@@ -121,7 +122,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
 
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      response.writeJson(Version.jsonBytes());
+      response.write(Version.jsonBytes(), ContentType.APPLICATION_JSON.toString());
     }
   }
   
@@ -175,7 +176,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
       Optional<Path> p = Environment.resolveTo("PJEOFFICE_HOME", "web/" + request.getParameter("file").orElse("index.html"), false, true);
       if (p.isPresent()) {
-        response.writeFile(p.get().toFile());       
+        response.write(p.get().toFile());       
       } else {
         response.notFound();
       }
@@ -191,7 +192,7 @@ class PjeWebServer extends AbstractPjeCommander<IPjeHttpExchangeRequest, IPjeHtt
 
     @Override
     protected void process(IPjeHttpExchangeRequest request, IPjeHttpExchangeResponse response) throws IOException {
-      response.writeHtml("Sucesso".getBytes(IConstants.DEFAULT_CHARSET));      
+      response.write("Sucesso".getBytes(IConstants.DEFAULT_CHARSET), ContentType.TEXT_HTML.toString());      
     }    
   } 
   

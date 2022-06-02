@@ -60,7 +60,7 @@ class PjeClipResponse implements IPjeResponse {
   }
 
   @Override
-  public void setContentType(String contentType) {
-    
+  public void write(byte[] data, String contentType) throws IOException {
+    write(data);
   }
 }

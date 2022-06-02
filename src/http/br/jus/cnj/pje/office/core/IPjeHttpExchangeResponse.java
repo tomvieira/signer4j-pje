@@ -32,14 +32,9 @@ import java.io.IOException;
 
 public interface IPjeHttpExchangeResponse extends IPjeResponse {
 
-  void writeHtml(byte[] data) throws IOException;
+  void write(File file) throws IOException;
+  void write(byte[] data, String contentType) throws IOException;
   
-  void writeJson(byte[] data) throws IOException;
-  
-  void writeJavascript(byte[] data) throws IOException;
-
-  void writeFile(File file) throws IOException;
-
   void notFound() throws IOException;
 
   void success() throws IOException;

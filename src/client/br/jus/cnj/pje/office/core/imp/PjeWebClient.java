@@ -46,6 +46,7 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import com.github.signer4j.ISignedData;
 import com.github.utils4j.IContentType;
+import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.Objects;
 
 import br.jus.cnj.pje.office.core.IResultChecker;
@@ -77,12 +78,14 @@ class PjeWebClient extends AstractPjeClient<HttpPost> {
   @Override
   protected HttpPost createOutput(IPjeTarget target, ISignedData signedData, IAssinadorHashArquivo file) throws Exception {
     final HttpPost postRequest = createPost(target);
-    final List<NameValuePair> parameters = Arrays.asList(
+    final List<NameValuePair> parameters = Containers.arrayList(
       new BasicNameValuePair("assinatura", signedData.getSignature64()),
       new BasicNameValuePair("cadeiaCertificado", signedData.getCertificateChain64()),
       new BasicNameValuePair("id", file.getId().orElse("")),
       new BasicNameValuePair("codIni", file.getCodIni().orElse("")),
       new BasicNameValuePair("hash", file.getHash().get()));
+//    if (file.getIsBin().isPresent())
+//      parameters.add(new BasicNameValuePair("isBin", file.getIsBin().toString()));
     if (file.getIdTarefa().isPresent())
       parameters.add(new BasicNameValuePair("idTarefa", file.getIdTarefa().get().toString())); 
     postRequest.setEntity(new UrlEncodedFormEntity(parameters));
@@ -101,7 +104,7 @@ class PjeWebClient extends AstractPjeClient<HttpPost> {
     file.getParamsEnvio().stream().map(param -> {
       int idx = (param = trim(param)).indexOf('=');
       return new BasicNameValuePair(
-        idx < 0 ? param : param.substring(idx),  
+        idx < 0 ? param : param.substring(0, idx),  
         idx < 0 ? ""    : param.substring(idx + 1)
       );
     }).forEach(nv -> builder.addPart(nv.getName(), new StringBody(nv.getValue(), ContentType.TEXT_PLAIN)));

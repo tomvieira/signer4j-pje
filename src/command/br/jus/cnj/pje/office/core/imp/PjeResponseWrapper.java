@@ -51,7 +51,7 @@ public class PjeResponseWrapper<T extends IPjeResponse> implements IPjeResponse 
   }
 
   @Override
-  public void setContentType(String contentType) {
-    response.setContentType(contentType);
+  public void write(byte[] data, String contentType) throws IOException {
+    response.write(data, contentType);
   }
 }

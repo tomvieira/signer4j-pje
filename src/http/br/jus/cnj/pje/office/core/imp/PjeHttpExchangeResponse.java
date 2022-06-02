@@ -50,6 +50,10 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
     this.response = response;
   }
 
+  private void setContentType(String contentType) {
+    response.getResponseHeaders().set(HttpHeaders.CONTENT_TYPE, contentType);
+  }
+  
   @Override
   public void write(byte[] data) throws IOException {
     response.sendResponseHeaders(HttpStatus.SC_SUCCESS, data.length);
@@ -60,46 +64,14 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
   @Override
   public void flush() throws IOException {
     response.getResponseBody().flush();
-  }
+  }  
   
   @Override
-  public void setContentType(String contentType) {
-    response.getResponseHeaders().set(HttpHeaders.CONTENT_TYPE, contentType);
-  }
-  
-  @Override
-  public void writeHtml(byte[] data) throws IOException {
-    setContentType(ContentType.TEXT_HTML.toString());
+  public void write(byte[] data, String contentType) throws IOException {
+    setContentType(contentType);
     write(data);
   }
   
-  @Override
-  public void writeJson(byte[] data) throws IOException {
-    setContentType(ContentType.APPLICATION_JSON.toString());
-    write(data);
-  }
-
-  @Override
-  public void writeJavascript(byte[] data) throws IOException {
-    setContentType(ContentType.create("text/javascript", IConstants.UTF_8).toString());
-    write(data);
-  }
-  
-  @Override
-  public void writeFile(File file) throws IOException{
-    byte[] out = Files.readAllBytes(file.toPath());
-    String name = file.getName();
-    if (name.endsWith(".html")) {
-      writeHtml(out);
-    } else if (name.endsWith(".js")) {
-      writeJavascript(out);
-    } else if (name.endsWith(".json")) {
-      writeJson(out);
-    } else {
-      write(out);
-    }
-  }
-
   @Override
   public void notFound() throws IOException {
     response.sendResponseHeaders(HttpStatus.SC_NOT_FOUND, IPjeHeaders.NO_RESPONSE_BODY);    
@@ -109,4 +81,36 @@ public class PjeHttpExchangeResponse implements IPjeHttpExchangeResponse {
   public void success() throws IOException {
     response.sendResponseHeaders(HttpStatus.SC_SUCCESS, IPjeHeaders.NO_RESPONSE_BODY);
   }
+
+  /**
+   * Common file format content type's
+   * */
+  @Override
+  public void write(File file) throws IOException{
+    byte[] out = Files.readAllBytes(file.toPath());
+    String name = file.getName().toLowerCase();
+    if (name.endsWith(".html")) {
+      write(out, ContentType.TEXT_HTML.toString());
+    } else if (name.endsWith(".js")) {
+      write(out, ContentType.create("text/javascript", IConstants.UTF_8).toString());
+    } else if (name.endsWith(".json")) {
+      write(out, ContentType.APPLICATION_JSON.toString());
+    } else if (name.endsWith(".pdf")){
+      write(out, ContentType.APPLICATION_PDF.toString());
+    } else if (name.endsWith(".bmp")) {
+      write(out, ContentType.IMAGE_BMP.toString());
+    } else if (name.endsWith(".gif")) {
+      write(out, ContentType.IMAGE_GIF.toString());
+    } else if (name.endsWith(".jpeg")) {
+      write(out, ContentType.IMAGE_JPEG.toString());
+    } else if (name.endsWith(".png")) {
+      write(out, ContentType.IMAGE_PNG.toString());
+    } else if (name.endsWith(".svg")) {
+      write(out, ContentType.IMAGE_SVG.toString());
+    } else if (name.endsWith(".tiff")) {
+      write(out, ContentType.IMAGE_TIFF.toString());
+    } else {
+      write(out, ContentType.APPLICATION_OCTET_STREAM.toString());
+    }
+  }  
 }

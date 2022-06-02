@@ -39,23 +39,8 @@ public class PjeOneTimeWritingHttpExchangeResponse extends PjeOneTimeWritingResp
   }
 
   @Override
-  public void writeHtml(byte[] data) throws IOException {
-    checkAndRun(() -> response.writeHtml(data));
-  }
-
-  @Override
-  public void writeJson(byte[] data) throws IOException {
-    checkAndRun(() -> response.writeJson(data));
-  }
-
-  @Override
-  public void writeJavascript(byte[] data) throws IOException {
-    checkAndRun(() -> response.writeJavascript(data));
-  }
-
-  @Override
-  public void writeFile(File file) throws IOException {
-    checkAndRun(() -> response.writeFile(file));
+  public void write(File file) throws IOException {
+    checkAndRun(() -> response.write(file));
   }
 
   @Override
@@ -66,5 +51,10 @@ public class PjeOneTimeWritingHttpExchangeResponse extends PjeOneTimeWritingResp
   @Override
   public void success() throws IOException {
     checkAndRun(() -> response.success());
+  }
+
+  @Override
+  public void write(byte[] data, String contentType) throws IOException {
+    checkAndRun(() -> response.write(data, contentType));
   }
 }

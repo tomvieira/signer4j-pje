@@ -57,8 +57,7 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   private static final PjeWebTaskResponse JSON_SUCCESS = new PjeWebTaskResponse(true, "eyJzdWNjZXNzIjogdHJ1ZX0=") {
     @Override
     public void processResponse(IPjeResponse response) throws IOException {
-      response.setContentType(ContentType.APPLICATION_JSON.toString());
-      response.write(content);
+      response.write(content, ContentType.APPLICATION_JSON.toString());
     }
   };
   
@@ -66,8 +65,7 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   private static final PjeWebTaskResponse JSON_FAIL = new PjeWebTaskResponse(false, "eyJzdWNjZXNzIjogZmFsc2V9") {
     @Override
     public void processResponse(IPjeResponse response) throws IOException {
-      response.setContentType(ContentType.APPLICATION_JSON.toString());
-      response.write(content);
+      response.write(content, ContentType.APPLICATION_JSON.toString());
     }
   };
   
@@ -75,8 +73,7 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   private static final PjeWebTaskResponse IMAGE_SUCCESS = new PjeWebTaskResponse(true, "R0lGODlhAQABAPAAAEz/AAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==") {
     @Override
     public void processResponse(IPjeResponse response) throws IOException {
-      response.setContentType(ContentType.IMAGE_GIF.toString());
-      response.write(content);
+      response.write(content, ContentType.IMAGE_GIF.toString());
     }
     
     @Override
@@ -89,8 +86,7 @@ public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   private static final PjeWebTaskResponse IMAGE_FAIL = new PjeWebTaskResponse(false, "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAABHNCSVQICAgIfAhkiAAAABFJREFUCJlj/M/A8J+BgYEBAA0FAgD+6nhnAAAAAElFTkSuQmCC") {
     @Override
     public void processResponse(IPjeResponse response) throws IOException {
-      response.setContentType(ContentType.IMAGE_PNG.toString());
-      response.write(content);
+      response.write(content, ContentType.IMAGE_PNG.toString());
     }
     
     @Override
