@@ -127,7 +127,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     
     files.forEach(builder::add);
     
-    progress.begin(Stage.MERGING, 3 * size + 1);
+    progress.begin(Stage.MERGING, 4 * size + 1);
 
     InputDescriptor desc;
     try {

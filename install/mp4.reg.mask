@@ -48,59 +48,11 @@
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z007SCB]
-"MUIVerb"="Gerar 1 vídeo a cada 10 minutos"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z007SCB\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 10
-
-
-
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z008CIO]
-"MUIVerb"="Gerar 1 vídeo a cada 15 minutos"
+"MUIVerb"="Gerar 1 vídeo a cada 'n' minutos..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z008CIO\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 15
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z009UZU]
-"MUIVerb"="Gerar 1 vídeo a cada 20 minutos"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z009UZU\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 20
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z010PMF]
-"MUIVerb"="Gerar 1 vídeo a cada 25 minutos"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z010PMF\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 25
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z011XXW]
-"MUIVerb"="Gerar 1 vídeo a cada 30 minutos"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z011XXW\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 30
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z012DKB]
-"MUIVerb"="Gerar 1 vídeo a cada 1 hora"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z012DKB\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 60
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z013ILQ]
-"MUIVerb"="Gerar 1 vídeo a cada 2 horas"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z013ILQ\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 120
+@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 0
 
 
 

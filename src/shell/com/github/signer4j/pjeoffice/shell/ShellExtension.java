@@ -36,6 +36,9 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
+
+
 public class ShellExtension {
   
   private static final String APP = "pjeoffice-pro";
@@ -49,9 +52,12 @@ public class ShellExtension {
   public static final Path HOME_WATCHING = HOME_CONFIG_FOLDER.resolve("watching");
   
   private ShellExtension() {}
-
+  
+  private static void showMessage(String message) {
+    JOptionPane.showMessageDialog(null,  message);    
+  }
+  
   public static void main(String... args) {
-
     if (!HOME_WATCHING.toFile().exists()) {
       return;
     }
@@ -60,6 +66,7 @@ public class ShellExtension {
     if (!otask.isPresent()) {
       return;
     }
+    
     File input = new File(at(args, 1));
     if (!input.exists()) {
       return;
@@ -73,10 +80,18 @@ public class ShellExtension {
 
     File output = HOME_WATCHING.resolve(task.getId() + "." + input.getName() + ".task").toFile();
 
+    final String outputPath = output.getAbsolutePath();
+    
     try(FileOutputStream out = new FileOutputStream(output)) {
       p.store(out, null);
     } catch (Exception e) {
-      e.printStackTrace();
+        String detail = "<html><body><h3>Não foi possível realizar a operação!</h3>";
+      if (outputPath.length() >= 255) {
+        detail += "<p>O caminho/nome do arquivo ultrapassa 256 caracteres.<br><br>"
+          + "Tente diminuir o tamanho do nome do arquivo ou hierarquia de pastas!</p>";
+      }
+      detail += "</body></html>";
+      showMessage(detail);
     }
   }
 }

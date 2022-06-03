@@ -89,7 +89,7 @@
 
 
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z012KZB]
-"MUIVerb"="Unir PDF's selecionados"
+"MUIVerb"="Unir PDF's selecionados..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\merge.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z012KZB\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.join "%1"
