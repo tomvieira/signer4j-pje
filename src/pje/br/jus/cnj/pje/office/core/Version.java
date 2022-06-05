@@ -30,7 +30,7 @@ package br.jus.cnj.pje.office.core;
 import com.github.utils4j.IConstants;
 
 public enum Version {
-  _2_0_5("2.0.5"); //remember: last version must be first enum position
+  _2_0_6("2.0.6"); //remember: last version must be first enum position
   
   private String version;
 
