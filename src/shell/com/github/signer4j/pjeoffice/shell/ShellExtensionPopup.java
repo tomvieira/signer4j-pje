@@ -144,14 +144,8 @@ public class ShellExtensionPopup extends SimpleFrame {
   private void createMp4Actions() {
     if (mp4s.isEmpty()) return;
     addAction("Gerar 1 vídeo a cada 90MB (Pje)", this::mp4Split90);
-    addAction("Gerar 1 vídeo a cada 'n'MB...", this::mp4SplitN);
-    addAction("Gerar 1 vídeo a cada 10 minutos", this::mp4Split10);
-    addAction("Gerar 1 vídeo a cada 15 minutos", this::mp4Split15);
-    addAction("Gerar 1 vídeo a cada 20 minutos", this::mp4Split20);
-    addAction("Gerar 1 vídeo a cada 25 minutos", this::mp4Split25);
-    addAction("Gerar 1 vídeo a cada 30 minutos", this::mp4Split30);
-    addAction("Gerar 1 vídeo a cada 1 hora", this::mp4Split1h);
-    addAction("Gerar 1 vídeo a cada 2 horas", this::mp4Split2h);
+    addAction("Gerar 1 vídeo a cada 'n'MB...", this::mp4SplitNSize);
+    addAction("Gerar 1 vídeo a cada 'n' minutos", this::mp4SplitNTime);
     addAction("Gerar cortes específicos...", this::mp4Slice);
   }
   
@@ -159,36 +153,12 @@ public class ShellExtensionPopup extends SimpleFrame {
     mp4SplitBySize(action, 90);
   }
 
-  private void mp4SplitN(ActionEvent action) {
+  private void mp4SplitNSize(ActionEvent action) {
     mp4SplitBySize(action, 0);
   }
 
-  private void mp4Split10(ActionEvent action) {
-    mp4SplitByDuration(action, 10);
-  }
-
-  private void mp4Split15(ActionEvent action) {
-    mp4SplitByDuration(action, 15);
-  }
-
-  private void mp4Split20(ActionEvent action) {
-    mp4SplitByDuration(action, 20);
-  }
-
-  private void mp4Split25(ActionEvent action) {
-    mp4SplitByDuration(action, 25);    
-  }
-
-  private void mp4Split30(ActionEvent action) {
-    mp4SplitByDuration(action, 30);    
-  }
-
-  private void mp4Split1h(ActionEvent action) {
-    mp4SplitByDuration(action, 60);    
-  }
-
-  private void mp4Split2h(ActionEvent action) {
-    mp4SplitByDuration(action, 120);    
+  private void mp4SplitNTime(ActionEvent action) {
+    mp4SplitByDuration(action, 0);    
   }
 
   private void signAtSameFolder(ActionEvent e) {
