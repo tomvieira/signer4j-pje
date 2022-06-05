@@ -24,7 +24,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=.
-OutputBaseFilename=setup-pjeoffice-pro
+OutputBaseFilename=pjeoffice-pro-v{#MyAppVersion}
 SetupIconFile=../setup/pje-icon.ico
 Compression=lzma
 SolidCompression=yes
