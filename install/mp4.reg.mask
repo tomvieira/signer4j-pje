@@ -8,29 +8,6 @@
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell]
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z002GRC]
-"MUIVerb"="Assinar e salvar na mesma pasta"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z002GRC\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" samefolder
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z003HVN]
-"MUIVerb"="Assinar e salvar em nova pasta"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z003HVN\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" newfolder
-
-
-
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z004XTS]
-"MUIVerb"="Assinar e salvar em pasta específica..."
-"Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z004XTS\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" selectfolder
-
-
 
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z005ERI]
 "MUIVerb"="Gerar 1 vídeo a cada 90MB (Pje)"

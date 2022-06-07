@@ -28,7 +28,8 @@
     <jdkPreference>jdkOnly</jdkPreference>
     <runtimeBits>32/64</runtimeBits>
     <maxHeapSize>1024</maxHeapSize>
-    <opt>-Denv.pjeoffice_home=&quot;%PJEOFFICE_HOME%&quot;</opt>
+    <opt>-Dpjeoffice_home=&quot;%PJEOFFICE_HOME%&quot;</opt>
+    <opt>-Dffmpeg_home=&quot;%PJEOFFICE_HOME%&quot;</opt>
   </jre>
   <messages>
     <startupErr>Não foi possível iniciar a aplicação.</startupErr>

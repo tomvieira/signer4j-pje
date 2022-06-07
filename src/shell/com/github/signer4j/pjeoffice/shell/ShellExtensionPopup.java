@@ -111,7 +111,6 @@ public class ShellExtensionPopup extends SimpleFrame {
   } 
 
   private void createActions() {
-    createSigningActions();    
     createPdfActions();
     createMp4Actions();
   }
@@ -129,6 +128,7 @@ public class ShellExtensionPopup extends SimpleFrame {
   private void createPdfActions() {
     if (pdfs.isEmpty())
       return;
+    createSigningActions();    
     addAction("Gerar 1 pdf a cada 10MB (Pje)", this::pdfSplit10);
     addAction("Gerar 1 pdf a cada 'n'MB...", this::pdfSplitN);
     addAction("Gerar 1 pdf por página", this::pdfSplitCount1);
@@ -142,7 +142,8 @@ public class ShellExtensionPopup extends SimpleFrame {
   }
 
   private void createMp4Actions() {
-    if (mp4s.isEmpty()) return;
+    if (mp4s.isEmpty())
+      return;
     addAction("Gerar 1 vídeo a cada 90MB (Pje)", this::mp4Split90);
     addAction("Gerar 1 vídeo a cada 'n'MB...", this::mp4SplitNSize);
     addAction("Gerar 1 vídeo a cada 'n' minutos", this::mp4SplitNTime);

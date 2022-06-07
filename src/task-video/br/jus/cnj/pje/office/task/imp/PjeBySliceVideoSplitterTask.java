@@ -69,15 +69,18 @@ public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMed
         "Não foi encontrado: " + cutplayer.getAbsolutePath());  
     }
     
+    File fileHome = pjeofficeHome.toFile();
     List<String> params = Containers.arrayList(
       javaw.getAbsolutePath(),
+      "-Dpjeoffice_home=" + fileHome.getAbsolutePath(),
+      "-Dffmpeg_home=" + fileHome.getAbsolutePath(),
       "-jar",
       cutplayer.getAbsolutePath()
     );
-    params.addAll(arquivos);
+    params.addAll(arquivos);   
     
     try {
-      new ProcessBuilder(params).directory(pjeofficeHome.toFile()).start();      
+      new ProcessBuilder(params).directory(fileHome).start();      
     } catch (IOException e) {
       throw showFail("Não foi possível iniciar o player de cortes", e);
     }      
