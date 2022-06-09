@@ -40,7 +40,7 @@ const readSession = function () {
 
 
 /*****************************************************************************************************************
-* A constante 'defaultSubject' é a a configuração 'global' padrão usada pela instância PjeOffice. Alternativamente 
+* A constante 'defaultSubject' é a configuração 'global' padrão usada pela instância PjeOffice. Alternativamente 
 * você pode remover este código daqui e definir esta instância na sua aplicação com todos os atributos e colocá-la 
 * no escopo global javascript. 
 /*****************************************************************************************************************/
@@ -118,7 +118,7 @@ const PjeOffice = (function () {
   };
 
   const post = function (endPoint, apiContext) {
-	const subject       = apiContext?.subject;
+    const subject       = apiContext?.subject;
     const onSuccess     = apiContext?.onSuccess;
     const onFailed      = apiContext?.onFailed;
     const onUnavailable = apiContext?.onUnavailable;
