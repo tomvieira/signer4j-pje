@@ -79,7 +79,7 @@ Opera como a função anterior porém predefine 'n' igual a 10MB, minimizando a 
 
 ### Gerar 1 PDF a cada 'n' páginas
 
-Divide o(s) arquivo(s) PDF's em uma coleção de outros arquivos (volumes) de modo que individualmente cada um tenha seu total de páginas igual a 'n' (você informa explicitamente o valor de 'n'). Na demonstração abaixo arquivos são dividido em outros 3 volumes com 5 páginas cada. 
+Divide o(s) arquivo(s) PDF's em uma coleção de outros arquivos (volumes) de modo que individualmente cada um tenha seu total de páginas igual a 'n' (você informa explicitamente o valor de 'n'). Na demonstração abaixo arquivos são divididos em outros 3 volumes com 5 páginas cada. 
 <details>
 <summary>Ver demonstração</summary>
 
@@ -96,7 +96,7 @@ Opera como a função anterior porém predefine 'n' igual a 1, minimizando a qua
 
 ### Gerar 1 PDF com as páginas ÍMPARES/PARES
 
-Há cenários em que um volume considerável de folhas são digitalizada mas a configuração do scanner conduziu à digitalização das folhas em modo frente e verso. No caso infeliz do volume ter sido composto por folhas com informações em apenas um dos lados, o PDF gerado pela digitalização possuirá 50% das páginas com conteúdo vazio (páginas em branco). Para evitar uma nova digitalização ou reconfiguração do scanner, esta função permite que a partir do documento digitalizado seja gerado rapidamente um novo documento formado apenas pelas páginas ímpares/pares, conforme o caso.
+Há cenários em que um volume considerável de folhas são digitalizadas mas a configuração do scanner conduziu à digitalização das folhas em modo frente e verso. No caso infeliz do volume ter sido composto por folhas com informações em apenas um dos lados, o PDF gerado pela digitalização possuirá 50% das páginas com conteúdo vazio (páginas em branco). Para evitar uma nova digitalização ou reconfiguração do scanner, esta função permite que a partir do documento digitalizado seja gerado rapidamente um novo documento formado apenas pelas páginas ímpares/pares, conforme o caso.
 
 <details>
 <summary>Ver demonstração</summary>
