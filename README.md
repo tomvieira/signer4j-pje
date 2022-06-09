@@ -123,7 +123,7 @@ Na demonstração o arquivo  _Processo.pdf_  composto por 648 páginas é dividi
 
 ### Unir PDF's selecionados
 
-A forma mais rápida de simples de unir dois ou mais documentos PDF's em um único arquivo. A função  _unir PDF's selecionados_  permite definir a ordem de mesclagem dos documentos em um arquivo final. Na demonstração que segue, partes de um livro são unidos de modo a gerar um único documento (  _LIVRO COMPLETO.pdf_  ).
+A forma mais rápida e simples de unir dois ou mais documentos PDF's em um único arquivo. A função  _unir PDF's selecionados_  permite definir a ordem de mesclagem dos documentos em um arquivo final. Na demonstração que segue, partes de um livro são unidos de modo a gerar um único documento (  _LIVRO COMPLETO.pdf_  ).
 
 <details>
 <summary>Ver demonstração</summary>
@@ -155,7 +155,7 @@ Opera como a função anterior porém prédefine 'n' igual a 90, minimizando a q
 
 ### Gerar 1 vídeo a cada 'n' minutos
 
-A forma mais rápida de simples de dividir um vídeo em fatias fixas de tempo. Na demonstração, um vídeo com mais de 2 horas é dividido em vídeos menores com duração não maior que 30 minutos:
+A forma mais rápida e simples de dividir um vídeo em fatias fixas de tempo. Na demonstração, um vídeo com mais de 2 horas é dividido em vídeos menores com duração não maior que 30 minutos:
 
 <details>
 <summary>Ver demonstração</summary>
