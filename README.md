@@ -1,5 +1,5 @@
 # PjeOffice PRO
-Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJeOffice). Esta **NÃO** é a implementação oficial do CNJ - trata-se de um exercício prático de programação de um assinador de documentos com as mesmas características daquele mantido pelo CNJ mas com funcionalidades adicionais de uso e segurança comumentes demandadas por usuários do Pje.
+Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJeOffice). Esta **NÃO** é a implementação oficial do CNJ - trata-se de um exercício prático de programação de um assinador de documentos com as mesmas características e recursos daquele mantido pelo CNJ mas com funcionalidades adicionais de uso e segurança comumentes demandadas por usuários do Pje.
 
 ## Funcionalidades Adicionais
 
@@ -63,13 +63,13 @@ https://user-images.githubusercontent.com/12123680/172888514-72c97fdf-fde9-4c73-
 
 </details>
 
-Os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão que permitiu limitar seu tamanho a 'n'MB (no exemplo, páginas 1, 265 e 644).
+> **Note**
+> Perceba que os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão que permitiu limitar seu tamanho a 'n'MB (na demonstração, páginas 1, 265 e 644).
 
 > **Warning**
-> Vale destacar que este recurso NÃO se confunde com funções de compactação/otimização de PDF's comumente encontradas em ferramentas especializadas para este fim.
+> Vale destacar que este recurso NÃO se confunde com funções de compactação/otimização de PDF's comumente encontradas em ferramentas especializadas para este fim[^1].
 
-> **Note**
-> O PjeOffice PRO faz uso apenas da compactação padrão de PDF's juntamente com uma estimativa da contribuição da página no tamanho total do arquivo para calcular quais páginas marcam a divisão do arquivo original de modo e submeter o tamanho dos volumes ao limite superior desejado ('n'MB). Em virtude da diversidade de formatações, versões, fontes, imagens, etc que podem ser incorporados em arquivos PDF's, **podem ocorrer exceções** das quais a tolerância desejada não seja alcançada embora o PjeOffice PRO tenha feito o seu melhor esforço pra assegurar que o tamanho informado não seja ultrapassado. Neste caso específico, ainda que ultrapasse o valor informado, a solução deixará o tamanho dos volumes o mais próximo possível do desejado. Alternativamente você pode tentar diminuir explicitamente o valor de 'n' de modo a possibilitar ao PjeOffice PRO o reequilibrio dos pesos das páginas ao resubmeter os volumes a um novo limite superior.
+[^1]: O PjeOffice PRO faz uso apenas da compactação padrão de PDF's juntamente com uma estimativa da contribuição da página no tamanho total do arquivo para calcular quais páginas marcam a divisão do arquivo original de modo e submeter o tamanho dos volumes ao limite superior desejado ('n'MB). Em virtude da diversidade de formatações, versões, fontes, imagens, etc que podem ser incorporados em arquivos PDF's, **podem ocorrer exceções** das quais a tolerância desejada não seja alcançada embora o PjeOffice PRO tenha feito o seu melhor esforço pra assegurar que o tamanho informado não seja ultrapassado. Neste caso específico, ainda que ultrapasse o valor informado, a solução deixará o tamanho dos volumes o mais próximo possível do desejado. Alternativamente você pode tentar diminuir explicitamente o valor de 'n' de modo a possibilitar ao PjeOffice PRO o reequilibrio dos pesos das páginas ao resubmeter os volumes a um novo limite superior.
 
 
 ### Gerar 1 PDF a cada 10MB (Pje)
@@ -79,14 +79,16 @@ Opera como a função anterior porém predefine 'n' igual a 10MB, minimizando a 
 
 ### Gerar 1 PDF a cada 'n' páginas
 
-Divide o(s) arquivo(s) PDF's em uma coleção de outros arquivos (volumes) de modo que individualmente cada um tenha seu total de páginas igual a 'n' (você informa explicitamente o valor de 'n'). Na demonstração abaixo arquivos são dividido em outros 3 volumes com 5 páginas cada. Os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão que permitiu limitar seu volume a 'n' páginas (no exemplo, páginas 1, 6 e 11).
-
+Divide o(s) arquivo(s) PDF's em uma coleção de outros arquivos (volumes) de modo que individualmente cada um tenha seu total de páginas igual a 'n' (você informa explicitamente o valor de 'n'). Na demonstração abaixo arquivos são dividido em outros 3 volumes com 5 páginas cada. 
 <details>
 <summary>Ver demonstração</summary>
 
 https://user-images.githubusercontent.com/12123680/172888596-8254523b-2db7-48e9-a07c-fdd65a53e6bf.mp4
 
 </details>
+
+>**Note**
+>Perceba que os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão que permitiu limitar seu volume a 'n' páginas (na demonstração, páginas 1, 6 e 11).
 
 ### Gerar 1 PDF por página
 
@@ -114,7 +116,10 @@ https://user-images.githubusercontent.com/12123680/172888746-9532802f-e517-41dd-
   
 </details>
 
-Na demonstração o arquivo  _Processo.pdf_  composto por 648 páginas é dividido em 3 volumes (separados por ponto e vírgula): O primeiro com apenas a primeira página, o segundo com as páginas 10ª até a 20ª e o terceiro com as páginas 200ª até a última página (* é um sinônimo para  _última página_  ). Os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão limitadas às páginas do seu desejo.
+Na demonstração o arquivo  _Processo.pdf_  composto por 648 páginas é dividido em 3 volumes (separados por ponto e vírgula): O primeiro com apenas a primeira página, o segundo com as páginas 10ª até a 20ª e o terceiro com as páginas 200ª até a última página (* é um sinônimo para  _última página_  ). 
+
+>**Note**
+>Perceba que os arquivos de volumes finais marcam em seus nomes a página do arquivo original onde iniciou a divisão limitadas às páginas do seu desejo.
 
 ### Unir PDF's selecionados
 
@@ -138,7 +143,11 @@ https://user-images.githubusercontent.com/12123680/172888847-5b5472e4-8fdb-4186-
 
 </details>
 
-Note que os arquivos de vídeo finais marcam em seus nomes os intervalos de tempo (relativo ao arquivo original) que iniciou a divisão e que permitiram limitar seus tamanhos a 'n'MB. Importante destacar que os arquivos gerados são mantidos com a mesma qualidade do arquivo original, ou seja, esta função NÃO deve ser entendida como formas de otimização e/ou compressão de vídeos.
+> **Note**
+> Perceba que os arquivos de vídeo finais marcam em seus nomes os intervalos de tempo (relativo ao arquivo original) que iniciou a divisão e que permitiram limitar seus tamanhos a 'n'MB. 
+
+> **Warning**
+> Vale destacar que os arquivos gerados são mantidos com a mesma qualidade do arquivo original, ou seja, esta função NÃO deve ser entendida como formas de otimização e/ou compressão de vídeos.
 
 ### Gerar 1 vídeo a cada 90MB (Pje)
 
@@ -155,7 +164,11 @@ https://user-images.githubusercontent.com/12123680/172888906-4da490c1-472b-478b-
   
 </details>
 
-Note que os arquivos de vídeo finais marcam em seus nomes os intervalos de tempo (relativo ao arquivo original) que iniciou a divisão e que permitiram limitar suas durações a 'n' minutos. Importante destacar que os arquivos gerados são mantidos com a mesma qualidade do arquivo original, ou seja, esta função NÃO deve ser entendida como formas de otimização e/ou compressão de vídeos.
+>**Note**
+>Perceba que os arquivos de vídeo finais marcam em seus nomes os intervalos de tempo (relativo ao arquivo original) que iniciou a divisão e que permitiram limitar suas durações a 'n' minutos. 
+
+> **Warning**
+>Importante destacar que os arquivos gerados são mantidos com a mesma qualidade do arquivo original, ou seja, esta função NÃO deve ser entendida como formas de otimização e/ou compressão de vídeos.
 
 ### Gerar cortes específicos
 
