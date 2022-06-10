@@ -55,6 +55,11 @@
           {"hashDoc": "fc3ff98e8c6a0d3087d515c0473f8677",  "conteudoBase64": "aGVsbG8gd29ybGQh"},
           {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}     
         ];
+        
+        const printer = "LPT1";
+        
+        const content = ["^XA^LL240^FO50,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO482,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO40,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO472,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO80,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO512,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO50,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO482,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO80,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO512,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO60,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO492,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO60,190^ADN,11,8^FD^FS^FO492,190^ADN,11,8^FD^FS^FO88,210^ACN,11,7^FD[Apenas Teste]^FS^FO520,210^ACN,11,7^FD[Apenas Teste]^FS^FO40,230^ABN,11,7^FD^FS^FO472,230^ABN,11,7^FD^FS^XZ"];
+        
       </script>
    </head>
    <body>
@@ -397,7 +402,52 @@ const defaultSubject = {
             SIGN BASE64
             </button>      						
             <hr>
-         </li>         
+         </li>       
+         
+         
+         
+         
+         
+         
+         <li>
+            <h2>Impressão de etiquetas em impressoras Zebras</h2>
+            <div>			
+<pre>
+/***************************************************************************************************************************
+* API: PjeOffice.printTag = function(printer, content, apiContext)
+/***************************************************************************************************************************
+  const printer = "LPT1";
+  const content = ["^XA^LL240^FO50,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO482,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO40,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO472,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO80,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO512,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO50,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO482,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO80,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO512,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO60,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO492,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO60,190^ADN,11,8^FD^FS^FO492,190^ADN,11,8^FD^FS^FO88,210^ACN,11,7^FD[Apenas Teste]^FS^FO520,210^ACN,11,7^FD[Apenas Teste]^FS^FO40,230^ABN,11,7^FD^FS^FO472,230^ABN,11,7^FD^FS^XZ"];
+  
+  Onde: 
+    printer: O nome da impressora
+    content: O array de dados a serem impressos 
+    
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    },
+    "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
+    "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
+  };
+</pre>
+            </div>			            
+            exemplo:
+            <div>
+<pre>
+  &lt;button onclick=&quot;PjeOffice.printTag(printer, content, apiContext);&quot;&gt;
+	 PRINT TAG
+  &lt;/button&gt;
+</pre>
+            </div>
+            <p>testar:</p>
+            <button onclick="PjeOffice.printTag(printer, content, apiContext);">
+            PRINT TAG
+            </button>      						
+            <hr>
+         </li>    
+           
       </ul>
    </body>
 </html>

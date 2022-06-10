@@ -84,7 +84,7 @@ class PjePrintingTask extends PjeAbstractTask<ITarefaImpressao> {
       int i = 0;
       do {
         String message = Strings.trim(conteudo.get(i), "empty");
-        progress.step("Imprimindo conteudo[%i]:%s", i, message);
+        progress.step("Imprimindo conteudo[%s]:%s", i, message);
         printer.println(message);
         printer.flush();
       }while(++i < size);

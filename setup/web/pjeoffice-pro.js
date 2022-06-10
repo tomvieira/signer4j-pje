@@ -206,5 +206,13 @@ const PjeOffice = (function () {
     }, apiContext);  
   };
 
+  PjeOffice.printTag = function(printer, content, apiContext) {
+	runTask('util.impressor', {
+      "impressora": printer,
+      "conteudo": content
+	}, apiContext);
+  };
+
+
   return PjeOffice;
 })();
