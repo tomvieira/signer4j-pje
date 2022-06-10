@@ -60,4 +60,4 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 Filename: "{app}\shell\install.bat"; Parameters: "{app}"; Flags: runhidden
 
 [UninstallRun]
-Filename: "{app}\shell\uninstall.bat"; Flags: runhidden
+Filename: "{app}\shell\uninstall.bat"; Flags: runhidden; RunOnceId: "DelPjeOfficePro"
