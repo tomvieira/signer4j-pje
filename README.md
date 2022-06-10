@@ -4,7 +4,7 @@ Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJ
 ## Funcionalidades Adicionais
 
 ### Integração com Windows Explorer
-Tarefas repetitivas precisam ser práticas para minimizar o estresse e dedicar tempo/energia em atividades mais relevantes. O PjeOffice PRO atalha algumas tarefas comuns dos usuários através do menu de contexto do Windows e dispensa alguns recursos de ferramentas externas para manuseio de arquivos do Pje, especialmente PDF's e vídeos (mp4). Neste cenário o PJeOffice PRO foi escrito para ganhar mais "funções de escritório" e otimizado para conseguir lidar com arquivos PDF's de tamanhos significativamente incomuns (da ordem de gigabytes) sem sujeitar (ou minimizar) aos usuários erros de falta de memória ou criação "descontrolada" de arquivos temporários em suas máquinas pois, ainda que existam ferramentas online para lidar com estes problemas, o uso delas pode se tornar improdutivo por exigir que sejam feitos upload's e posterior download's dos arquivos manuseados, além de eventualmente impor ao usuário algum tipo de cotas para uso ou limitações de banda para envio/recebimento de documentos consideravelmente grandes.
+Tarefas repetitivas precisam ser práticas para minimizar o estresse e dedicar tempo/energia em atividades mais relevantes. O PjeOffice PRO atalha algumas tarefas comuns dos usuários através do menu de contexto do Windows e dispensa alguns recursos de ferramentas externas para manuseio de arquivos do Pje, especialmente PDF's e vídeos (mp4). Neste cenário o PJeOffice PRO foi escrito para ganhar mais "funções de escritório" e otimizado para conseguir lidar com arquivos PDF's de tamanhos significativamente incomuns (da ordem de gigabytes) sem sujeitar (ou minimizar) aos usuários erros de falta de memória ou criação "descontrolada" de arquivos temporários em seu ambiente pois, ainda que existam ferramentas online para lidar com estes problemas, o uso delas pode se tornar improdutivo por exigir que sejam feitos upload's e download's dos arquivos manuseados, além de eventualmente impor ao usuário algum tipo de cotas para uso ou limitações de banda para envio/recebimento de documentos consideravelmente grandes.
 
 ### Tratamento de arquivos PDF
 
@@ -151,7 +151,7 @@ https://user-images.githubusercontent.com/12123680/172888847-5b5472e4-8fdb-4186-
 
 ### Gerar 1 vídeo a cada 90MB (Pje)
 
-Opera como a função anterior porém prédefine 'n' igual a 90, minimizando a quantidade de cliques para o caso comum.
+Opera como a função anterior porém predefine 'n' igual a 90, minimizando a quantidade de cliques para o caso comum.
 
 ### Gerar 1 vídeo a cada 'n' minutos
 
