@@ -56,7 +56,7 @@
           {"hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643",  "conteudoBase64": "c2FtcGxlIGNvZGUh="}     
         ];
         
-        const printer = "LPT1";
+        const printerPort = "LPT1";
         
         const content = ["^XA^LL240^FO50,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO482,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO40,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO472,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO80,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO512,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO50,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO482,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO80,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO512,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO60,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO492,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO60,190^ADN,11,8^FD^FS^FO492,190^ADN,11,8^FD^FS^FO88,210^ACN,11,7^FD[Apenas Teste]^FS^FO520,210^ACN,11,7^FD[Apenas Teste]^FS^FO40,230^ABN,11,7^FD^FS^FO472,230^ABN,11,7^FD^FS^XZ"];
         
@@ -414,13 +414,13 @@ const defaultSubject = {
             <div>			
 <pre>
 /***************************************************************************************************************************
-* API: PjeOffice.printTag = function(printer, content, apiContext)
+* API: PjeOffice.printTag = function(printerPort, content, apiContext)
 /***************************************************************************************************************************
-  const printer = "LPT1";
+  const printerPort = "LPT1:";
   const content = ["^XA^LL240^FO50,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO482,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO40,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO472,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO80,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO512,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO50,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO482,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO80,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO512,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO60,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO492,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO60,190^ADN,11,8^FD^FS^FO492,190^ADN,11,8^FD^FS^FO88,210^ACN,11,7^FD[Apenas Teste]^FS^FO520,210^ACN,11,7^FD[Apenas Teste]^FS^FO40,230^ABN,11,7^FD^FS^FO472,230^ABN,11,7^FD^FS^XZ"];
   
   Onde: 
-    printer: O nome da impressora
+    printerPort: O nome da impressora
     content: O array de dados a serem impressos 
     
   apiContext = {
@@ -436,13 +436,13 @@ const defaultSubject = {
             exemplo:
             <div>
 <pre>
-  &lt;button onclick=&quot;PjeOffice.printTag(printer, content, apiContext);&quot;&gt;
+  &lt;button onclick=&quot;PjeOffice.printTag(printerPort, content, apiContext);&quot;&gt;
 	 PRINT TAG
   &lt;/button&gt;
 </pre>
             </div>
             <p>testar:</p>
-            <button onclick="PjeOffice.printTag(printer, content, apiContext);">
+            <button onclick="PjeOffice.printTag(printerPort, content, apiContext);">
             PRINT TAG
             </button>      						
             <hr>

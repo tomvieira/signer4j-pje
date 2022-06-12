@@ -143,3 +143,5 @@ ffmpeg -i "concat:file1.mpg|file2.mpg|file3.mpg" -c copy output.mpg
      * -ss => start time (in seconds or hh:mm:ss)
      * -to => end time (in seconds or hh:mm:ss)
      */
+     
+     http://fizzed.com/oss/rxtx-for-java

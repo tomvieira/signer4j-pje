@@ -33,5 +33,5 @@ import java.util.Optional;
 public interface ITarefaImpressao {
   List<String> getConteudo();
   
-  Optional<String> getImpressora();
+  Optional<String> getPorta();
 }

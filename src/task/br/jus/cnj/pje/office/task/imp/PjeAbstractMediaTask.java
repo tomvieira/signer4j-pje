@@ -50,7 +50,7 @@ abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractT
   }
   
   @Override
-  protected void validateParams() throws TaskException, InterruptedException {
+  protected void validateTaskParams() throws TaskException, InterruptedException {
     List<String> files = getPojoParams().getArquivos();
     if (files.isEmpty()) {
       files = Stream.of(selectFilesFromDialogs("Selecione os arquivos")).map(File::getAbsolutePath).collect(toList());

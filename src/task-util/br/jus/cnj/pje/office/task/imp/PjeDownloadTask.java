@@ -53,7 +53,7 @@ class PjeDownloadTask extends PjeAbstractTask<ITarefaDownload> {
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
     ITarefaDownload pojo = getPojoParams();
     String urlurl = PjeTaskChecker.checkIfPresent(pojo.getUrl(), "url");
     this.url = tryCall(() -> decode(urlurl, UTF_8.name()), urlurl);

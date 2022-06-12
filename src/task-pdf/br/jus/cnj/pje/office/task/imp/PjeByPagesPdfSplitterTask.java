@@ -64,8 +64,8 @@ class PjeByPagesPdfSplitterTask extends PjeSplitterMediaTask<ITarefaMedia> {
   }
 
   @Override
-  protected void validateParams() throws TaskException, InterruptedException {
-    super.validateParams();
+  protected void validateTaskParams() throws TaskException, InterruptedException {
+    super.validateTaskParams();
     Optional<String> intervals = new PrintStyleDialog(PjeConfig.getIcon()).getPagesInterval();
     if (!intervals.isPresent()) {
       throw new InterruptedException();

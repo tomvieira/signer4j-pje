@@ -67,8 +67,8 @@ class PjeAssinadorRemotoTask extends PjeAssinadorTask {
   }
   
   @Override
-  protected void validateParams() throws TaskException {
-    super.validateParams();
+  protected void validateTaskParams() throws TaskException {
+    super.validateTaskParams();
     final ITarefaAssinador params = getPojoParams();
     this.arquivos = PjeTaskChecker.checkIfNull(params.getArquivos(), "arquivos");
     this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara");

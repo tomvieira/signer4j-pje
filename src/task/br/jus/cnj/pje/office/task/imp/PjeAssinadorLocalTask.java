@@ -64,8 +64,8 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
 
   @Override
-  protected void validateParams() throws TaskException {
-    super.validateParams();
+  protected void validateTaskParams() throws TaskException {
+    super.validateTaskParams();
     //insert here new validations
   }
 

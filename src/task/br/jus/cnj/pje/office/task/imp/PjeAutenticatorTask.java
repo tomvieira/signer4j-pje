@@ -71,7 +71,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
   }
   
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
     final ITarefaAutenticador params = getPojoParams();
     this.enviarPara = PjeTaskChecker.checkIfPresent(params.getEnviarPara(), "enviarPara"); 
     this.mensagem = PjeTaskChecker.checkIfPresent(params.getMensagem(), "mensagem");

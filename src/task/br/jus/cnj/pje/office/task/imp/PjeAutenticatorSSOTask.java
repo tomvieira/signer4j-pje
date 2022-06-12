@@ -47,8 +47,8 @@ class PjeAutenticatorSSOTask extends PjeAutenticatorTask {
   protected String token;
 
   @Override
-  protected void validateParams() throws TaskException {
-    super.validateParams();
+  protected void validateTaskParams() throws TaskException {
+    super.validateTaskParams();
     this.token = PjeTaskChecker.checkIfPresent(getPojoParams().getToken(), "token"); 
   }
   

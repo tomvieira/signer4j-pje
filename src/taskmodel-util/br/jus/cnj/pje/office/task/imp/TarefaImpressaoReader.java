@@ -49,7 +49,7 @@ class TarefaImpressaoReader extends AbstractRequestReader<Params, ITarefaImpress
   final static class TarefaImpressao implements ITarefaImpressao {
     private List<String> conteudo = new ArrayList<>();
     
-    private String impressora = "LPT1";
+    private String porta = "LPT1:";
 
     @Override
     public final List<String> getConteudo() {
@@ -57,8 +57,8 @@ class TarefaImpressaoReader extends AbstractRequestReader<Params, ITarefaImpress
     }
 
     @Override
-    public Optional<String> getImpressora() {
-      return Strings.optional(impressora);
+    public Optional<String> getPorta() {
+      return Strings.optional(porta);
     }
   }
   

@@ -81,7 +81,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
     ITarefaAssinadorHash params = getPojoParams();
     this.algorithm = PjeTaskChecker.checkIfSupportedSig(params.getAlgoritmoAssinatura(), "algoritmoAssinatura");
     this.uploadUrl = PjeTaskChecker.checkIfPresent(params.getUploadUrl(), "uploadUrl");

@@ -83,7 +83,7 @@ abstract class PjeAssinadorTask extends PjeAbstractTask<ITarefaAssinador> {
   }
   
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
     ITarefaAssinador params = getPojoParams();
     this.modo = PjeTaskChecker.checkIfPresent(params.getModo(), "modo");
     this.padraoAssinatura = PjeTaskChecker.checkIfPresent(params.getPadraoAssinatura(), "padraoAssinatura").checkIfDependentParamsIsPresent(params);

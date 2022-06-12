@@ -66,8 +66,8 @@ public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
   }
   
   @Override
-  protected void validateParams() throws TaskException {
-    super.validateParams();
+  protected void validateTaskParams() throws TaskException {
+    super.validateTaskParams();
     final ITarefaAssinador pojo = getPojoParams();
     this.arquivos = PjeTaskChecker.checkIfNotEmpty(pojo.getArquivos(), "arquivos");
     this.enviarPara = PjeTaskChecker.checkIfPresent(pojo.getEnviarPara(), "enviarPara");

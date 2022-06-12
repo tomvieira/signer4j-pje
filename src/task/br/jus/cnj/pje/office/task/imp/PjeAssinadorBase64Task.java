@@ -80,7 +80,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
   private List<IAssinadorBase64Arquivo> arquivos;
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
    ITarefaAssinadorBase64 pojo = getPojoParams();
    this.algoritmoAssinatura = PjeTaskChecker.checkIfSupportedSig(pojo.getAlgoritmoAssinatura(), "algoritmoAssinatura");
    this.uploadUrl = PjeTaskChecker.checkIfPresent(pojo.getUploadUrl(), "uploadUrl");

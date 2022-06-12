@@ -78,7 +78,9 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   private static enum Stage implements IStage {
     
-    PREPARING_PARAMETERS("Validação de parâmetros"),
+    PREPARING_MAIN_PARAMETERS("Validação dos parâmetros principais"),
+
+    PREPARING_TASK_PARAMETERS("Validação dos parâmetros da tarefa"),
 
     PERMISSION_CHECKING("Checagem de permissões"),
     
@@ -153,8 +155,17 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     throwCancel(CANCELED_OPERATION_MESSAGE);
   }
   
+  protected final void throwCancel(boolean interrupt) throws InterruptedException {
+    throwCancel(CANCELED_OPERATION_MESSAGE, interrupt);
+  }
+
   protected final void throwCancel(String message) throws InterruptedException {
-    Thread.currentThread().interrupt();
+    throwCancel(message, true);
+  }
+  
+  protected final void throwCancel(String message, boolean interrupt) throws InterruptedException {
+    if (interrupt)
+      Thread.currentThread().interrupt();
     throw getProgress().abort(new InterruptedException(message));
   }
   
@@ -275,18 +286,13 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return status.getDownloadedFile();
   }
   
-  private void checkMainParams() throws TaskException {
-    IMainParams main = getMainRequest();
-    PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
-    PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
-    PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
-  }
-
-  private final void checkParams() throws TaskException, InterruptedException {
+  private final void validateMainParams() throws TaskException, InterruptedException {
     if (!isInternalTask) {
-      checkMainParams();
+      IMainParams main = getMainRequest();
+      PjeTaskChecker.checkIfPresent(main.getServidor(), "servidor");
+      PjeTaskChecker.checkIfPresent(main.getCodigoSeguranca(), "codigoSeguranca");
+      PjeTaskChecker.checkIfPresent(main.getAplicacao(), "aplicacao");
     }
-    validateParams();
   }
   
   @Override
@@ -299,9 +305,9 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     final IProgress progress = getProgress();
     Throwable fail;
     try {
-      progress.begin(Stage.PREPARING_PARAMETERS, 2);
-      progress.step("Preparando parâmetros de execução");
-      checkParams();
+      progress.begin(Stage.PREPARING_MAIN_PARAMETERS, 2);
+      progress.step("Preparando parâmetros de execução principais");
+      validateMainParams();
       progress.step("Principais parâmetros validados");
       progress.end();
       
@@ -310,11 +316,18 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
       checkServerPermission();
       progress.step("Acesso permitido");
       progress.end();
+
+      progress.begin(Stage.PREPARING_TASK_PARAMETERS, 2);
+      progress.step("Preparando parâmetros de execução da tarefa");
+      validateTaskParams();
+      progress.step("Parâmetros da tarefa validados");
+      progress.end();
+
+      progress.begin(Stage.TASK_EXECUTION, 2);
+      progress.step("Executando a tarefa '%s'", getId());
       
       onBeforeDoGet();
       
-      progress.begin(Stage.TASK_EXECUTION, 2);
-      progress.step("Executando a tarefa '%s'", getId());
       ITaskResponse<IPjeResponse> response = doGet(); 
       progress.step("Tarefa completa. Status de sucesso: %s", response.isSuccess());
       progress.end();
@@ -331,7 +344,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     return isPostRequest() ? failResponse.asJson() : failResponse;
   }
   
-  protected void onBeforeDoGet() {}
+  protected void onBeforeDoGet() throws TaskException, InterruptedException {}
 
   protected void checkServerPermission() throws TaskException {
     if (isInternalTask) {
@@ -351,7 +364,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
     }
   }
 
-  protected abstract void validateParams() throws TaskException, InterruptedException;
+  protected abstract void validateTaskParams() throws TaskException, InterruptedException;
   
   protected abstract ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException;
 }

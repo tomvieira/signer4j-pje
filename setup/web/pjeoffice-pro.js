@@ -206,9 +206,9 @@ const PjeOffice = (function () {
     }, apiContext);  
   };
 
-  PjeOffice.printTag = function(printer, content, apiContext) {
+  PjeOffice.printTag = function(printerPort, content, apiContext) {
 	runTask('util.impressor', {
-      "impressora": printer,
+      "porta": printerPort,
       "conteudo": content
 	}, apiContext);
   };

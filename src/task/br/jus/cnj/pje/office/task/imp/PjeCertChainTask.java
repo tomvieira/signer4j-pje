@@ -45,7 +45,7 @@ class PjeCertChainTask extends PjeAbstractTask<ITarefaCertChain> {
   }
 
   @Override
-  protected void validateParams() throws TaskException {
+  protected void validateTaskParams() throws TaskException {
     ITarefaCertChain pojo = getPojoParams();
     this.uploadUrl = PjeTaskChecker.checkIfPresent(pojo.getUploadUrl(),  "uploadUrl");
   }
