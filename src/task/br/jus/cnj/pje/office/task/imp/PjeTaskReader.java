@@ -236,6 +236,22 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
     public boolean accept(File f) {
       return super.accept(f) && f.getName().toLowerCase().endsWith(".mp4");
     }
+  },
+  VIDEO_CONVERT_WEBM("video.convert_webm") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaVideoConversaoWebmReader.INSTANCE;
+    }
+
+    @Override
+    public String toJson(Params input) throws Exception {
+      return TarefaVideoConversaoWebmReader.INSTANCE.toJson(input);
+    }
+
+    @Override
+    public boolean accept(File f) {
+      return super.accept(f) && f.getName().toLowerCase().endsWith(".mp4");
+    }
   };
 
   //do not create new array's instances for each call

@@ -25,35 +25,33 @@
 */
 
 
-package br.jus.cnj.pje.office.core;
+package br.jus.cnj.pje.office.task.imp;
 
-import com.github.utils4j.IConstants;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public enum Version {
-  _2_0_8("2.0.8"); //remember: last version must be first enum position
-  
-  private String version;
+import com.github.progress4j.IQuietlyProgress;
+import com.github.utils4j.imp.Params;
+import com.github.videohandler4j.imp.VideoDescriptor;
+import com.github.videohandler4j.imp.WEBMConverter;
 
-  private Version(String version) {
-    this.version = version;
+import br.jus.cnj.pje.office.task.ITarefaMedia;
+
+public class PjeWebmConverterTask extends PjeBasicConverterTask {
+  
+  protected PjeWebmConverterTask(Params request, ITarefaMedia pojo) {
+    super(request, pojo, ".webm");
   }
-  
-  private static final Version[] VALUES = Version.values();
-  
-  public static Version current() {
-    return VALUES[0];
-  }
-  
-  public static byte[] jsonBytes() {
-    return current().toJson().getBytes(IConstants.DEFAULT_CHARSET);
-  }
-  
-  public String toJson() {
-    return "{ \"versao\": \"" + this + "\" }";
-  }
-  
+
   @Override
-  public String toString() {
-    return version;
+  protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
+    new WEBMConverter()
+    .apply(desc)
+    .subscribe(
+      e -> progress.info(e.getMessage()),
+      e -> {
+        success.set(false);
+        progress.abort(e);
+      }
+    );    
   }
 }

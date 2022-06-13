@@ -27,61 +27,23 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.progress4j.IQuietlyProgress;
-import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
-import com.github.videohandler4j.IVideoFile;
 import com.github.videohandler4j.imp.OggAudioExtractor;
 import com.github.videohandler4j.imp.VideoDescriptor;
-import com.github.videohandler4j.imp.VideoTools;
-import com.github.videohandler4j.imp.exception.VideoDurationNotFound;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public class PjeAudioExtractorTask extends PjeMediaProcessingTask<ITarefaMedia> {
+public class PjeAudioExtractorTask extends PjeBasicConverterTask {
   
   protected PjeAudioExtractorTask(Params request, ITarefaMedia pojo) {
-    super(request, pojo);
+    super(request, pojo, ".ogg", "Audio-");
   }
 
   @Override
-  protected void validateTaskParams() throws TaskException, InterruptedException {
-    super.validateTaskParams();
-  }
-
-  @Override
-  protected boolean process(Path file, IQuietlyProgress progress) {
-    
-    progress.begin(SplitterStage.CONVERTING);
-    
-    IVideoFile video;
-    try {
-      video = VideoTools.FFMPEG.call(file.toFile());
-    } catch (VideoDurationNotFound e) {    
-      LOGGER.error("Não foi possível encontrar duração do vídeo ", e);
-      progress.abort(e);
-      return false;
-    }
-
-    final Path output = file.getParent();
-    
-    VideoDescriptor desc;
-    try {
-      desc = new VideoDescriptor.Builder(".ogg")
-        .add(video)
-        .output(output)
-        .build();
-    } catch (IOException e1) {
-      LOGGER.error("Não foi possível criar pasta " + output.toString(), e1);
-      progress.abort(e1);
-      return false;
-    }
-    
-    AtomicBoolean success = new AtomicBoolean(true);
+  protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
     new OggAudioExtractor()
       .apply(desc)
       .subscribe(
@@ -91,9 +53,5 @@ public class PjeAudioExtractorTask extends PjeMediaProcessingTask<ITarefaMedia> 
           progress.abort(e);
         }
       );
-
-    progress.end();
-
-    return success.get();
   }
 }

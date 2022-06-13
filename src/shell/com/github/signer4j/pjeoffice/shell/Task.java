@@ -75,7 +75,9 @@ enum Task {
       output.put("tamanho", at(args, 2));
     }
   },
-  VIDEO_SPLIT_BY_SLICE("video.split_by_slice");
+  VIDEO_SPLIT_BY_SLICE("video.split_by_slice"),
+  VIDEO_EXTRACT_AUDIO("video.extract_audio"),
+  VIDEO_CONVERT_WEBM("video.convert_webm");
   
   public static Optional<Task> from(String at) {
     for(Task task: values()) {

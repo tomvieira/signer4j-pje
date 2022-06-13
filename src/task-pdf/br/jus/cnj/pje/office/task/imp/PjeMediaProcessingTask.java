@@ -70,7 +70,7 @@ abstract class PjeMediaProcessingTask<T extends ITarefaMedia> extends PjeAbstrac
   @Override
   protected ITaskResponse<IPjeResponse> doGet() throws TaskException, InterruptedException {
     IProgress progress = getProgress();
-    IQuietlyProgress quietly =  QuietlyProgress.wrap(SingleThreadProgress.wrap(progress));
+    IQuietlyProgress quietly =  QuietlyProgress.wrap(progress);//SingleThreadProgress.wrap(progress));
     final int size = arquivos.size();
     
     boolean success = true;

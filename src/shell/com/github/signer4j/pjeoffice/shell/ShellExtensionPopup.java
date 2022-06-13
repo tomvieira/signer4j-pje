@@ -148,6 +148,8 @@ public class ShellExtensionPopup extends SimpleFrame {
     addAction("Gerar 1 vídeo a cada 'n'MB...", this::mp4SplitNSize);
     addAction("Gerar 1 vídeo a cada 'n' minutos", this::mp4SplitNTime);
     addAction("Gerar cortes específicos...", this::mp4Slice);
+    addAction("Extrair audio OGG", this::mp4Audio);
+    addAction("Converter para WEBM", this::mp4Webm);
   }
   
   private void mp4Split90(ActionEvent action) {
@@ -294,6 +296,24 @@ public class ShellExtensionPopup extends SimpleFrame {
       ); 
     });
   }
+  
+  private void mp4Audio(ActionEvent action) {
+    forEach(mp4s, f -> {
+      ShellExtension.main(
+        PjeTaskReader.VIDEO_EXTRACT_AUDIO.getId(),
+        f.getAbsolutePath()        
+      ); 
+    });
+  }
+
+  private void mp4Webm(ActionEvent action) {
+    forEach(mp4s, f -> {
+      ShellExtension.main(
+        PjeTaskReader.VIDEO_CONVERT_WEBM.getId(),
+        f.getAbsolutePath()        
+      ); 
+    });
+  }  
   
   private void forEach(List<File> files, Consumer<File> consumer) {
     if (files.size() > 150) {
