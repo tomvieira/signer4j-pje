@@ -25,39 +25,44 @@
 */
 
 
-package br.jus.cnj.pje.office.gui.certlist;
+package br.jus.cnj.pje.office.task.imp;
 
-//import java.util.List;
-import java.util.function.Predicate;
+import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.VIDEO_EXTRACT_AUDIO;
 
-import com.github.signer4j.ICertificate;
-import com.github.signer4j.ICertificates;
-//import com.github.signer4j.IChoice;
-import com.github.signer4j.IKeyStoreAccess;
-import com.github.signer4j.imp.DefaultChooser;
-//import com.github.signer4j.imp.exception.Signer4JException;
+import java.io.IOException;
 
-public class PjeCertificateListAcessor extends DefaultChooser {
+import com.github.taskresolver4j.ITask;
+import com.github.utils4j.imp.Params;
+
+import br.jus.cnj.pje.office.task.ITarefaMedia;
+
+
+/*************************************************************************************
+ * Leitor para extração de audios de VÍDEOS
+/*************************************************************************************/
+
+class TarefaVideoExtracaoAudioReader extends TarefaMediaReader<ITarefaMedia> {
+
+  public static final TarefaVideoExtracaoAudioReader INSTANCE = new TarefaVideoExtracaoAudioReader();
   
-  public static final Predicate<ICertificate> SUPPORTED_CERTIFICATE =  c -> c.getKeyUsage().isDigitalSignature() && (c.hasCertificatePF() || c.hasCertificatePJ());
-
-  public PjeCertificateListAcessor(IKeyStoreAccess keyStore, ICertificates certificates) {
-    super(keyStore, certificates);
+  private TarefaVideoExtracaoAudioReader() {
+    super(TarefaMedia.class);
   }
-  
+
   @Override
-  protected Predicate<ICertificate> getPredicate() {
-    return SUPPORTED_CERTIFICATE;
+  protected ITask<?> createTask(Params output, ITarefaMedia pojo) throws IOException {
+    return new PjeAudioExtractorTask(output, pojo);
   }
- 
-//  @Override
-//  protected IChoice doChoose(List<CertificateEntry> options) throws Signer4JException {
-//    if (options.size() == 1) {
-//      CertificateEntry c = options.get(0);
-//      if (!c.isExpired() && c.isRemembered()) {
-//        return toChoice(c);
-//      }
-//    }
-//    return super.doChoose(options);
-//  }
+
+  @Override
+  protected String getTarefaId() {
+    return VIDEO_EXTRACT_AUDIO.getId();
+  }
+
+  @Override
+  protected Object getTarefa(Params param) {
+    TarefaMedia tarefa= new TarefaMedia();
+    tarefa.arquivos = param.getValue("arquivos");
+    return tarefa;
+  }
 }

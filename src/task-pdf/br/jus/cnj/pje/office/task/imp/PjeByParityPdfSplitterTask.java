@@ -50,7 +50,7 @@ import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoParidade;
 
-class PjeByParityPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoParidade> {
+class PjeByParityPdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisaoParidade> {
   
   private static enum Stage implements IStage {
     SPLITING_EVEN("Descartando páginas ímpares"),

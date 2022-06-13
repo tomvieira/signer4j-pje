@@ -55,7 +55,7 @@ import com.github.utils4j.imp.Strings;
 import br.jus.cnj.pje.office.core.imp.PjeConfig;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-class PjeByPagesPdfSplitterTask extends PjeSplitterMediaTask<ITarefaMedia> {
+class PjeByPagesPdfSplitterTask extends PjeMediaProcessingTask<ITarefaMedia> {
   
   private List<DefaultPagesSlice> slices = new ArrayList<>();
   

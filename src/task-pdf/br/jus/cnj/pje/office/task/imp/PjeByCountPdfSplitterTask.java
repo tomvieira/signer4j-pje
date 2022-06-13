@@ -53,7 +53,7 @@ import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoContagem;
 
-class PjeByCountPdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoContagem> {
+class PjeByCountPdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisaoContagem> {
   
   private long totalPaginas;
   

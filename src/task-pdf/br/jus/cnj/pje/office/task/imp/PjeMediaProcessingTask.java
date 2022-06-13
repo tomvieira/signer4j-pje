@@ -42,12 +42,13 @@ import com.github.utils4j.imp.Params;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractMediaTask<T> {
+abstract class PjeMediaProcessingTask<T extends ITarefaMedia> extends PjeAbstractMediaTask<T> {
   
   public enum SplitterStage implements IStage {
     PROCESSING("Processando arquivos"),
     READING("Lendo o arquivo (seja paciente...)"),
     SPLITING ("Dividindo arquivos"),
+    CONVERTING ("Convertendo arquivos (seja paciente...)"),
     SPLITTING_PATIENT("Dividindo arquivos (seja paciente...)");
     
     private final String message;
@@ -62,7 +63,7 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
     }
   }
 
-  protected PjeSplitterMediaTask(Params request, T pojo) {
+  protected PjeMediaProcessingTask(Params request, T pojo) {
     super(request, pojo);
   }
   
@@ -80,16 +81,16 @@ abstract class PjeSplitterMediaTask<T extends ITarefaMedia> extends PjeAbstractM
 
       success &= process(file, quietly);
       
-      progress.step("Dividido arquivo %s", file);
+      progress.step("Gerado arquivo %s", file);
     }
     
     if (!success) {
-      throw showFail("Alguns arquivos não puderam ser divididos.", progress.getAbortCause());
+      throw showFail("Alguns arquivos não puderam ser gerados.", progress.getAbortCause());
     }
     
     progress.end();
     
-    showInfo("Arquivos divididos com sucesso.", "Ótimo!");
+    showInfo("Arquivos gerados com sucesso.", "Ótimo!");
     return success();
   }
 

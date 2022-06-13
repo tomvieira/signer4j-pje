@@ -46,7 +46,7 @@ import com.github.videohandler4j.imp.exception.VideoDurationNotFound;
 
 import br.jus.cnj.pje.office.task.ITarefaVideoDivisaoTamanho;
 
-public class PjeBySizeVideoSplitterTask extends PjeSplitterMediaTask<ITarefaVideoDivisaoTamanho> {
+public class PjeBySizeVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVideoDivisaoTamanho> {
   
   private long tamanho;
   

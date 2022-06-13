@@ -51,7 +51,7 @@ import com.github.utils4j.imp.Params;
 
 import br.jus.cnj.pje.office.task.ITarefaPdfDivisaoTamanho;
 
-class PjeBySizePdfSplitterTask extends PjeSplitterMediaTask<ITarefaPdfDivisaoTamanho> {
+class PjeBySizePdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisaoTamanho> {
   
   private long tamanho;
   
