@@ -48,9 +48,17 @@
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.extract_audio "%1"
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z927ZOC]
+
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z031ZOU]
 "MUIVerb"="Converter para WEBM"
-"Icon"="%PJEOFFICE_HOME%\\explorer\\shrink.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z927ZOC\command]
+"Icon"="%PJEOFFICE_HOME%\\explorer\\web.ico"
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z031ZOU\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.convert_webm "%1"
 
+
+
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z041ZOU]
+"MUIVerb"="Otimizar..."
+"Icon"="%PJEOFFICE_HOME%\\explorer\\optimize.ico"
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z041ZOU\command]
+@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.optimize "%1"

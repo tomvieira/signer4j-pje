@@ -25,35 +25,44 @@
 */
 
 
-package br.jus.cnj.pje.office.core;
+package br.jus.cnj.pje.office.task.imp;
 
-import com.github.utils4j.IConstants;
+import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.VIDEO_OPTIMIZE;
 
-public enum Version {
-  _2_0_9("2.0.9"); //remember: last version must be first enum position
-  
-  private String version;
+import java.io.IOException;
 
-  private Version(String version) {
-    this.version = version;
+import com.github.taskresolver4j.ITask;
+import com.github.utils4j.imp.Params;
+
+import br.jus.cnj.pje.office.task.ITarefaMedia;
+
+
+/*************************************************************************************
+ * Leitor para otimização de vídeos
+/*************************************************************************************/
+
+class TarefaVideoOtimizacaoReader extends TarefaMediaReader<ITarefaMedia> {
+
+  public static final TarefaVideoOtimizacaoReader INSTANCE = new TarefaVideoOtimizacaoReader();
+  
+  private TarefaVideoOtimizacaoReader() {
+    super(TarefaMedia.class);
   }
-  
-  private static final Version[] VALUES = Version.values();
-  
-  public static Version current() {
-    return VALUES[0];
-  }
-  
-  public static byte[] jsonBytes() {
-    return current().toJson().getBytes(IConstants.DEFAULT_CHARSET);
-  }
-  
-  public String toJson() {
-    return "{ \"versao\": \"" + this + "\" }";
-  }
-  
+
   @Override
-  public String toString() {
-    return version;
+  protected ITask<?> createTask(Params output, ITarefaMedia pojo) throws IOException {
+    return new PjeVideoOptimizerTask(output, pojo);
+  }
+
+  @Override
+  protected String getTarefaId() {
+    return VIDEO_OPTIMIZE.getId();
+  }
+
+  @Override
+  protected Object getTarefa(Params param) {
+    TarefaMedia tarefa= new TarefaMedia();
+    tarefa.arquivos = param.getValue("arquivos");
+    return tarefa;
   }
 }

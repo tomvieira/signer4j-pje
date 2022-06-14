@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.progress4j.IQuietlyProgress;
-import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 import com.github.videohandler4j.IVideoFile;
@@ -56,11 +55,6 @@ public abstract class PjeBasicConverterTask extends PjeMediaProcessingTask<ITare
     this.prefix = prefix;
   }
 
-  @Override
-  protected void validateTaskParams() throws TaskException, InterruptedException {
-    super.validateTaskParams();
-  }
-  
   @Override
   protected boolean process(Path file, IQuietlyProgress progress) {
     

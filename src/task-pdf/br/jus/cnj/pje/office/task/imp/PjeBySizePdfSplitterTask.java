@@ -60,8 +60,7 @@ class PjeBySizePdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisaoT
   }
 
   @Override
-  protected void validateTaskParams() throws TaskException, InterruptedException {
-    super.validateTaskParams();
+  protected void doValidateTaskParams() throws TaskException, InterruptedException {
     this.tamanho = getPojoParams().getTamanho();
     if (this.tamanho == 0) {
       Optional<Integer> total = ofNullable(getInteger(

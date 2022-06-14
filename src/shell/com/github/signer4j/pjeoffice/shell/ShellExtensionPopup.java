@@ -45,7 +45,6 @@ import com.github.signer4j.imp.SignatureType;
 import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.gui.imp.SimpleFrame;
 import com.github.utils4j.imp.Args;
-import com.github.utils4j.imp.Booleans;
 
 import br.jus.cnj.pje.office.core.imp.PjeProgressFactory;
 import br.jus.cnj.pje.office.task.imp.AssinaturaPadrao;
@@ -342,12 +341,12 @@ public class ShellExtensionPopup extends SimpleFrame {
   @Override
   protected void onEscPressed(ActionEvent e) {
     setAlwaysOnTop(false);
-    Boolean cancell = Dialogs.getBoolean(
+    Dialogs.Choice choice = Dialogs.getBoolean(
       "Deseja mesmo cancelar a operação?",
       "Cancelamento da operação", 
       false
     );
-    if (Booleans.isTrue(cancell, false)) {
+    if (choice == Dialogs.Choice.YES) {
       this.close();
     }
   }

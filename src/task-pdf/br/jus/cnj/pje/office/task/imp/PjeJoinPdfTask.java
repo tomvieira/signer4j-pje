@@ -48,7 +48,6 @@ import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.gui.imp.FileListWindow;
-import com.github.utils4j.imp.Booleans;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 
@@ -115,8 +114,8 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
       if (!output.resolve(fname).toFile().exists())
         break;
       
-      Boolean override = Dialogs.getBoolean("Arquivo '" + fname + "' já existe! Deseja sobrescrever?", "Atenção!", false); 
-      if (Booleans.isTrue(override, false))
+      Dialogs.Choice override = Dialogs.getBoolean("Arquivo '" + fname + "' já existe! Deseja sobrescrever?", "Atenção!", false); 
+      if (override == Dialogs.Choice.YES)
         break;
       
     } while(true);

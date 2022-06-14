@@ -34,7 +34,6 @@ import com.github.progress4j.IProgress;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.progress4j.IStage;
 import com.github.progress4j.imp.QuietlyProgress;
-import com.github.progress4j.imp.SingleThreadProgress;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;

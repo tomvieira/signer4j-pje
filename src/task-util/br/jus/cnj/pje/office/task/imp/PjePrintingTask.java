@@ -30,7 +30,6 @@ package br.jus.cnj.pje.office.task.imp;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.Duration;
 import java.util.List;
 
 import com.github.progress4j.IProgress;
@@ -38,7 +37,6 @@ import com.github.progress4j.IStage;
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.gui.imp.Dialogs;
-import com.github.utils4j.imp.Booleans;
 import com.github.utils4j.imp.Params;
 import com.github.utils4j.imp.Strings;
 import com.github.videohandler4j.imp.TimeTools;
@@ -81,13 +79,13 @@ class PjePrintingTask extends PjeAbstractTask<ITarefaImpressao> {
   
   @Override
   protected void onBeforeDoGet() throws TaskException, InterruptedException {
-    //Evita ataques DDO's de impressão por fishing!
-    Boolean cancell = Dialogs.getBoolean(
+    //Dificulta ataques DDO's de impressão por fishing!
+    Dialogs.Choice choice = Dialogs.getBoolean(
       "Confirma a impressão de dados?",
       "Confirmação", 
       false
     );
-    if (!Booleans.isTrue(cancell, false)) {
+    if (choice != Dialogs.Choice.YES) {
       throwCancel(false);
     }
   }
@@ -102,7 +100,7 @@ class PjePrintingTask extends PjeAbstractTask<ITarefaImpressao> {
       do {
         String message = Strings.trim(conteudo.get(i), "empty");
         progress.step("Enviando conteúdo [%s]:%s", i, message);
-        progress.info("Aguardando resposta da porta '%s' (seja paciênte...)", porta);
+        progress.info("Aguardando resposta da porta '%s' (seja paciente...)", porta);
         long start = System.currentTimeMillis();
         printer.println(message);
         printer.flush();

@@ -55,8 +55,7 @@ public class PjeBySizeVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVi
   }
 
   @Override
-  protected void validateTaskParams() throws TaskException, InterruptedException {
-    super.validateTaskParams();
+  protected void doValidateTaskParams() throws TaskException, InterruptedException {
     ITarefaVideoDivisaoTamanho pojo = getPojoParams();
     this.tamanho = pojo.getTamanho();
     if (this.tamanho == 0) {

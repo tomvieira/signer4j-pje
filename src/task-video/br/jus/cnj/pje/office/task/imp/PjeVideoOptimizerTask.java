@@ -24,40 +24,52 @@
 * SOFTWARE.
 */
 
-
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.utils4j.IConstants.UTF_8;
-import static com.github.utils4j.imp.Throwables.tryCall;
-import static java.net.URLDecoder.decode;
-import static java.util.stream.Collectors.toList;
+import static com.github.utils4j.gui.imp.Dialogs.getInteger;
+import static java.util.Optional.ofNullable;
 
-import java.io.File;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
+import com.github.videohandler4j.imp.BitrateApplier;
+import com.github.videohandler4j.imp.VideoDescriptor;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-abstract class PjeAbstractMediaTask<T extends ITarefaMedia> extends PjeAbstractTask<T> {
+public class PjeVideoOptimizerTask extends PjeBasicConverterTask {
+
+  private int bitrate;
   
-  protected List<String> arquivos;
-  
-  protected PjeAbstractMediaTask(Params request, T pojo) {
-    super(request, pojo, true);
+  protected PjeVideoOptimizerTask(Params request, ITarefaMedia pojo) {
+    super(request, pojo, Strings.empty(), "Otimizado-");
   }
   
   @Override
-  protected final void validateTaskParams() throws TaskException, InterruptedException {
-    List<String> files = getPojoParams().getArquivos();
-    if (files.isEmpty()) {
-      files = Stream.of(selectFilesFromDialogs("Selecione os arquivos")).map(File::getAbsolutePath).collect(toList());
-    }
-    this.arquivos = files.stream().map(s -> tryCall(() -> decode(s, UTF_8.name()), s)).collect(toList());
-    doValidateTaskParams();
+  protected void doValidateTaskParams() throws TaskException, InterruptedException {
+    Optional<Integer> bitrate = ofNullable(getInteger(
+      "Valor do bitrate:", 
+      320, 
+      96, 
+      Integer.MAX_VALUE - 1
+    ));
+    this.bitrate = bitrate.orElseThrow(InterruptedException::new);
   }
 
-  protected void doValidateTaskParams() throws TaskException, InterruptedException {}
+  @Override
+  protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
+    new BitrateApplier(bitrate)
+    .apply(desc)
+    .subscribe(
+      e -> progress.info(e.getMessage()),
+      e -> {
+        success.set(false);
+        progress.abort(e);
+      }
+    );    
+  }
 }

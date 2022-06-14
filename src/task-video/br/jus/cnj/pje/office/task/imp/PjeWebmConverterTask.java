@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.imp.VideoDescriptor;
-import com.github.videohandler4j.imp.WEBMConverter;
+import com.github.videohandler4j.imp.WebmConverter;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
@@ -44,7 +44,7 @@ public class PjeWebmConverterTask extends PjeBasicConverterTask {
 
   @Override
   protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
-    new WEBMConverter()
+    new WebmConverter()
     .apply(desc)
     .subscribe(
       e -> progress.info(e.getMessage()),

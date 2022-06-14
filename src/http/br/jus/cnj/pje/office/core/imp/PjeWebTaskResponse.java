@@ -38,11 +38,11 @@ import br.jus.cnj.pje.office.core.IPjeResponse;
 public abstract class PjeWebTaskResponse extends PjeTaskResponse {
   
   public static PjeWebTaskResponse success() {
-    return success(false);
+    return success(false); //default to image output format
   }
   
   public static PjeWebTaskResponse fail() {
-    return fail(false);
+    return fail(false); //default to image output format
   }
 
   public static PjeWebTaskResponse success(boolean json) {

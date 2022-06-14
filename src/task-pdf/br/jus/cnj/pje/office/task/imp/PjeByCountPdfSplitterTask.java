@@ -62,8 +62,7 @@ class PjeByCountPdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisao
   }
 
   @Override
-  protected void validateTaskParams() throws TaskException, InterruptedException {
-    super.validateTaskParams();
+  protected void doValidateTaskParams() throws TaskException, InterruptedException {
     this.totalPaginas = getPojoParams().getTotalPaginas();
     if (this.totalPaginas <= 0) {
       Optional<Integer> total = ofNullable(getInteger(
