@@ -26,43 +26,39 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.utils4j.gui.imp.Dialogs.getInteger;
-import static java.util.Optional.ofNullable;
-
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
-import com.github.utils4j.imp.Strings;
-import com.github.videohandler4j.imp.BitrateApplier;
 import com.github.videohandler4j.imp.VideoDescriptor;
+import com.github.videohandler4j.imp.VideoOptimizer;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public class PjeVideoOptimizerTask extends PjeBasicConverterTask {
+public class PjeVideoOptimizerTask extends PjeBasicConverterTask<ITarefaMedia> {
 
-  private int bitrate;
+//  private int bitrate;
   
   protected PjeVideoOptimizerTask(Params request, ITarefaMedia pojo) {
-    super(request, pojo, Strings.empty(), "Otimizado-");
-  }
+    super(request, pojo, "Otimizado-");
+  } 
+
   
   @Override
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
-    Optional<Integer> bitrate = ofNullable(getInteger(
-      "Valor do bitrate:", 
-      320, 
-      96, 
-      Integer.MAX_VALUE - 1
-    ));
-    this.bitrate = bitrate.orElseThrow(InterruptedException::new);
+//    Optional<Integer> bitrate = ofNullable(getInteger(
+//      "Valor do bitrate:", 
+//      512, 
+//      96, 
+//      Integer.MAX_VALUE - 1
+//    ));
+//    this.bitrate = bitrate.orElseThrow(InterruptedException::new);
   }
 
   @Override
   protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
-    new BitrateApplier(bitrate)
+    new VideoOptimizer()
     .apply(desc)
     .subscribe(
       e -> progress.info(e.getMessage()),

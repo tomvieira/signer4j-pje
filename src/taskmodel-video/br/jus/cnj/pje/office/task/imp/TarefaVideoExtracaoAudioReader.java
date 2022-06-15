@@ -30,27 +30,38 @@ package br.jus.cnj.pje.office.task.imp;
 import static br.jus.cnj.pje.office.task.imp.PjeTaskReader.VIDEO_EXTRACT_AUDIO;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.github.taskresolver4j.ITask;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
-import br.jus.cnj.pje.office.task.ITarefaMedia;
+import br.jus.cnj.pje.office.task.ITarefaVideoExtracaoAudio;
 
 
 /*************************************************************************************
  * Leitor para extração de audios de VÍDEOS
 /*************************************************************************************/
 
-class TarefaVideoExtracaoAudioReader extends TarefaMediaReader<ITarefaMedia> {
+class TarefaVideoExtracaoAudioReader extends TarefaMediaReader<ITarefaVideoExtracaoAudio> {
 
   public static final TarefaVideoExtracaoAudioReader INSTANCE = new TarefaVideoExtracaoAudioReader();
+
+  final static class TarefaVideoExtracaoAudio extends TarefaMedia implements ITarefaVideoExtracaoAudio {
+    private String tipo;
+
+    @Override
+    public Optional<String> getTipo() {
+      return Strings.optional(tipo);
+    }
+  }
   
   private TarefaVideoExtracaoAudioReader() {
-    super(TarefaMedia.class);
+    super(TarefaVideoExtracaoAudio.class);
   }
 
   @Override
-  protected ITask<?> createTask(Params output, ITarefaMedia pojo) throws IOException {
+  protected ITask<?> createTask(Params output, ITarefaVideoExtracaoAudio pojo) throws IOException {
     return new PjeAudioExtractorTask(output, pojo);
   }
 
@@ -61,8 +72,9 @@ class TarefaVideoExtracaoAudioReader extends TarefaMediaReader<ITarefaMedia> {
 
   @Override
   protected Object getTarefa(Params param) {
-    TarefaMedia tarefa= new TarefaMedia();
-    tarefa.arquivos = param.getValue("arquivos");
+    TarefaVideoExtracaoAudio tarefa= new TarefaVideoExtracaoAudio();
+    tarefa.arquivos = param.getValue("arquivos");    
+    tarefa.tipo = param.getValue("tipo");
     return tarefa;
   }
 }

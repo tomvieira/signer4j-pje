@@ -62,7 +62,7 @@ public class PjeBySizeVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVi
       Optional<Integer> total = ofNullable(getInteger(
         "Tamanho máximo do arquivo (MB):", 
         90, 
-        10, 
+        2, 
         Integer.MAX_VALUE - 1
       ));
       this.tamanho = total.orElseThrow(InterruptedException::new);

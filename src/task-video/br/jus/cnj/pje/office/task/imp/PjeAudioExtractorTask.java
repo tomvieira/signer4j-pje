@@ -27,31 +27,58 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
+import static br.jus.cnj.pje.office.task.imp.PjeTaskChecker.checkIfPresent;
+import static com.github.utils4j.imp.Throwables.tryCall;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.github.filehandler4j.IFileHandler;
 import com.github.progress4j.IQuietlyProgress;
+import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Params;
+import com.github.videohandler4j.IVideoInfoEvent;
+import com.github.videohandler4j.imp.Mp3AudioExtractor;
 import com.github.videohandler4j.imp.OggAudioExtractor;
 import com.github.videohandler4j.imp.VideoDescriptor;
 
-import br.jus.cnj.pje.office.task.ITarefaMedia;
+import br.jus.cnj.pje.office.task.ITarefaVideoExtracaoAudio;
 
-public class PjeAudioExtractorTask extends PjeBasicConverterTask {
+public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExtracaoAudio> {
   
-  protected PjeAudioExtractorTask(Params request, ITarefaMedia pojo) {
-    super(request, pojo, ".ogg", "Audio-");
+  private static enum Media {
+    OGG (new OggAudioExtractor()),
+    MP3 (new Mp3AudioExtractor());
+
+    private final IFileHandler<IVideoInfoEvent> handler;
+    
+    Media(IFileHandler<IVideoInfoEvent> handler) {
+      this.handler = handler;
+    }  
+  }
+  
+  private Media tipo = Media.MP3;
+  
+  protected PjeAudioExtractorTask(Params request, ITarefaVideoExtracaoAudio pojo) {
+    super(request, pojo, "Audio-");
+  }
+  
+  protected void doValidateTaskParams() throws TaskException, InterruptedException {
+    this.tipo = tryCall(() -> Media.valueOf(checkIfPresent(getPojoParams().getTipo(), "tipo").toUpperCase().trim()), Media.MP3);
   }
 
   @Override
   protected void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success) {
-    new OggAudioExtractor()
-      .apply(desc)
-      .subscribe(
-        e -> progress.info(e.getMessage()),
-        e -> {
-          success.set(false);
-          progress.abort(e);
-        }
-      );
+    this.tipo.handler.apply(desc).subscribe(
+      e -> progress.info(e.getMessage()),
+      e -> {
+        success.set(false);
+        progress.abort(e);
+      }
+    );
+  }
+
+  @Override
+  protected final String getExtension() {
+    return "." + this.tipo.name().toLowerCase();
   }
 }

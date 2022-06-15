@@ -41,11 +41,19 @@
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z021ZOU]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z011ZOU]
 "MUIVerb"="Extrair audio OGG"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\audio.ico"
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z011ZOU\command]
+@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.extract_audio "%1" ogg
+
+
+
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z021ZOU]
+"MUIVerb"="Extrair audio MP3"
+"Icon"="%PJEOFFICE_HOME%\\explorer\\audio.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\Z021ZOU\command]
-@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.extract_audio "%1"
+@=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.extract_audio "%1" mp3
 
 
 

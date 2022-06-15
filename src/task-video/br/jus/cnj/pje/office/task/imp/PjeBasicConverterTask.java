@@ -41,17 +41,16 @@ import com.github.videohandler4j.imp.exception.VideoDurationNotFound;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public abstract class PjeBasicConverterTask extends PjeMediaProcessingTask<ITarefaMedia> {
+public abstract class PjeBasicConverterTask<T extends ITarefaMedia> extends PjeMediaProcessingTask<T> {
   
-  private final String extension, prefix;
+  private final String prefix;
   
-  protected PjeBasicConverterTask(Params request, ITarefaMedia pojo, String extension) {
-    this(request, pojo, extension, Strings.empty());
+  protected PjeBasicConverterTask(Params request, T pojo) {
+    this(request, pojo, Strings.empty());
   }
   
-  protected PjeBasicConverterTask(Params request, ITarefaMedia pojo, String extension, String prefix) {
+  protected PjeBasicConverterTask(Params request, T pojo, String prefix) {
     super(request, pojo);
-    this.extension = extension;
     this.prefix = prefix;
   }
 
@@ -73,7 +72,7 @@ public abstract class PjeBasicConverterTask extends PjeMediaProcessingTask<ITare
     
     VideoDescriptor desc;
     try {
-      desc = new VideoDescriptor.Builder(extension)
+      desc = new VideoDescriptor.Builder(getExtension())
         .add(video)
         .output(output)
         .namePrefix(prefix)
@@ -92,6 +91,10 @@ public abstract class PjeBasicConverterTask extends PjeMediaProcessingTask<ITare
 
     return success.get();
   }
-
+  
+  protected String getExtension() {
+    return Strings.empty();
+  }
+  
   protected abstract void execute(IQuietlyProgress progress, VideoDescriptor desc, AtomicBoolean success);
 }
