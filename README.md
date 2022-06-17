@@ -233,10 +233,11 @@ Em breve...
 
 ## Funcionalidades de Segurança
 
-A assinatura de documentos no PJe pode ser uma operação repetitiva. Nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informações de senha conforme figura que segue, são elas:
+Assinar documentos no PJe pode ser uma operação repetitiva. Nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informação de senha conforme figura que segue:
 
 > Segurança
-  ![Segurança](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
+  ![Opções](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
+
 
 > **Note**
 A estratégia de solicitação de senha pode ser alterada facilmente e a qualquer momento de forma que o recurso será aplicado 
@@ -265,10 +266,9 @@ confirmará com um único clique o aviso dado pelo assinador informando que o di
 que segue:
 
 > Segurança
-  ![Segurança](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/confirm-use.png)
+  ![Confirmação](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/confirm-use.png)
 
-
-Como na opção anterior, cabe ao usuário também ficar atento quanto ao uso indevido do seu dispositivo eu ausências temporárias
+Como na opção anterior, cabe ao usuário também ficar atento quanto ao uso indevido do seu dispositivo em ausências temporárias
 do seu equipamento.
 
 
@@ -279,7 +279,7 @@ Como medidas adicionais de segurança o PjeOffice PRO adota os chamados ciclos d
 - Na entrada do sistema Pje, toda tentativa de autenticação exigirá a informação da senha, **mesmo que**  a opção  _"Solicitar apenas uma vez"_  esteja habilitada e já tenha sido informada anteriormente. A praticidade de informação única da senha **só se aplicará após a entrada já previamente autenticada com a senha exigida**, ou seja, uma tentativa de autenticação na plataforma Pje marca o fim de um ciclo existente e início de um novo ciclo no qual as funcionalidades de segurança estarão sujeitas.
 
 
-- Um logoff ou bloqueio explícito da máquina pelo usuário ou por ociosidade da estação (política de REDE) colocará o assinador em modo de 
+- Um logoff ou bloqueio explícito da máquina pelo usuário ou por ociosidade da estação (política de rede) colocará o assinador em modo de 
 hibernação, finalizando a sessão do token e marcando o fim do ciclo de autenticação atual (se houver). O assinador vai retomar o seu trabalho 
 quando do desbloqueio / login / fim da ociosidade. O propósito deste mecanismo é dificultar a exploração de eventual falha
 de segurança **minimizando o tempo de exposição da sessão aberta do token do usuário a artefatos maliciosos**, além da possibilidade de integração
