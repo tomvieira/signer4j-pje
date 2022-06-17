@@ -194,7 +194,7 @@ Em breve...
 
 ### Converter para WEBM
 
-Algumas aplicações do judiciário fazem uso do formato de vídeo WEBM (por exemplo, SEEU - Sistema Eletrônico de Execução Unificado). O propósito desta função é oferecer um meio rápido e prático para converter vídeos MP4 para WEBM.
+Algumas aplicações do judiciário fazem uso do formato de vídeo WEBM (por exemplo, PROJUDI - Processo Eletrônico do Judiciário). O propósito desta função é oferecer um meio rápido e prático para converter vídeos MP4 para WEBM.
 
 <details>
 <summary>Ver demonstração</summary>
