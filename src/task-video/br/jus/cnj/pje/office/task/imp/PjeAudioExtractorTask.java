@@ -63,6 +63,7 @@ public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExt
     super(request, pojo, "Audio-");
   }
   
+  @Override
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
     Optional<Media> ot;
     try {
