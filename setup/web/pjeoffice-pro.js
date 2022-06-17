@@ -207,12 +207,11 @@ const PjeOffice = (function () {
   };
 
   PjeOffice.printTag = function(printerPort, content, apiContext) {
-	runTask('util.impressor', {
+    runTask('util.impressor', {
       "porta": printerPort,
       "conteudo": content
-	}, apiContext);
+    }, apiContext);
   };
-
 
   return PjeOffice;
 })();
