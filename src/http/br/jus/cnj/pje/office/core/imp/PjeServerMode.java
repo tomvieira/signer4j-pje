@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -88,12 +87,7 @@ enum PjeServerMode {
           sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
           server.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
             public void configure(HttpsParameters params) {
-              SSLContext sslContext;
-              try {
-                sslContext = SSLContext.getDefault();
-              } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("Incapaz de ler o contexto default SSLContext", e);
-              }
+              SSLContext sslContext = getSSLContext();
               params.setNeedClientAuth(false);
               SSLEngine engine = sslContext.createSSLEngine();
               params.setCipherSuites(engine.getEnabledCipherSuites());

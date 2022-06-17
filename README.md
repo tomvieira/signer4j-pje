@@ -172,7 +172,7 @@ https://user-images.githubusercontent.com/12123680/172888906-4da490c1-472b-478b-
 
 ### Gerar cortes específicos
 
-Se o seu desejo é fazer recortes personalizados, esta função lhe permite informar os trechos do vídeo que serão do seu interesse. Na demonstração que segue, dois cortes são realizados: um marcando o início da audiência e outro a sentença.
+Se o seu desejo é criar recortes personalizados, esta função lhe permite informar os trechos do vídeo que serão do seu interesse. Na demonstração que segue, dois cortes são realizados: um marcando o início da audiência e outro a sentença.
 
 <details>
 <summary>Ver demonstração</summary>
@@ -181,13 +181,55 @@ https://user-images.githubusercontent.com/12123680/172888950-2b49d2d7-f609-472c-
   
 </details>
 
+### Extrair audio
+
+Se o seu desejo é obter apenas o audio de determinado vídeo, esta função lhe permite extraí-lo para o format MP3 ou OGG.
+
+<details>
+<summary>Ver demonstração</summary>
+
+Em breve...
+  
+</details>
+
 ### Converter para WEBM
 
+Algumas aplicações do judiciário fazem uso do formato de vídeo WEBM (por exemplo, SEEU - Sistema Eletrônico de Execução Unificado). O propósito desta função é oferecer um meio rápido e prático para converter vídeos MP4 para WEBM.
+
+<details>
+<summary>Ver demonstração</summary>
+
+Em breve...
+  
+</details>
+
+
+> **Warning**
+> Esta função **PODE** diminuir a qualidade do vídeo e caberá ao próprio usuário aplicar seu critério aceitando ou não o resultado apresentado.
+
+> **Note**
+> Esta função **NÃO** altera o arquivo original. 
+
+
+### Otimizar tamanho
+
+Você já deve saber que o tamanho dos arquivos a serem enviados ao Pje estão sujeitos a um limite superior. O propósito desta função é otimizar o(s) arquivo(s) de vídeo MP4 no sentido de diminuir o seu tamanho ao mesmo temo que tenta deixar seu conteúdo "visualmente aceitável". 
+
+Na demonstração abaixo um arquivo de aproximadamente 204MB ( _Audiência.mp4_ ) é otimizado gerando outro arquivo final "visualmente aceitável" e com o tamanho 10 vezes menor (20MB). 
+
+<details>
+<summary>Ver demonstração</summary>
+
 Em breve...
 
-### Extrair audio OGG
+</details>
 
-Em breve...
+> **Warning**
+> Esta função atua alterando alguns parâmetros de renderização do vídeo em um esforço de equilibrar qualidade vs tamanho, ou seja, diferentemente das funções anteriores **haverá perda de qualidade do vídeo** e caberá ao próprio usuário aplicar seu critério aceitando ou não o resultado apresentado. 
+> **Note**
+> Esta função **NÃO** altera o arquivo original. 
+
+
 
 
 

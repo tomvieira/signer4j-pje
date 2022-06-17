@@ -107,8 +107,8 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     mnuSecurity.add(mnuOneTime);
     mnuSecurity.add(mnuConfirm);
 
-    MenuItem mnuLog = new MenuItem("Registro de atividades");
-    mnuLog.addActionListener(e -> office.showActivities());
+//    MenuItem mnuLog = new MenuItem("Registro de atividades");
+//    mnuLog.addActionListener(e -> office.showActivities());
     
     CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo inseguro (evite usar)");
     mnuDev.addItemListener(e -> {
@@ -123,7 +123,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
     mnuExit.addActionListener(e ->  office.exit());
 
     Menu mnuOption = new Menu("Opções");
-    mnuOption.add(mnuLog);
+    //mnuOption.add(mnuLog);
 
     if (PjeOfficeFrontEnd.supportsSystray()) {
       final IPjeFrontEnd front = frontEnd.next();

@@ -269,7 +269,6 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
       return super.accept(f) && f.getName().toLowerCase().endsWith(".mp4");
     }
   };
-  ;
 
   //do not create new array's instances for each call
   private static final PjeTaskReader[] VALUES = PjeTaskReader.values(); 
