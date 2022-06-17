@@ -231,7 +231,58 @@ Em breve...
 > Esta função **NÃO** altera o arquivo original. 
 
 
+## Funcionalidades de Segurança
+
+A assinatura de documentos no PJe pode ser uma operação repetitiva. Nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informações de senha conforme figura que segue, são elas:
+
+> Segurança
+  ![Segurança](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
+
+> **Note**
+A estratégia de solicitação de senha pode ser alterada facilmente e a qualquer momento de forma que o recurso será aplicado 
+imediatamente sem que para isso seja exigido o reinício do assinador.
+
+### Sempre solicitar senha
+
+É a alternativa mais segura, porém a menos produtiva. Segura porque qualquer operação que envolva o uso da chave privada do
+certificado só prosseguirá com a digitação explicita da senha no teclado. Menos produtiva porque em dias em que houver um 
+volume considerável de documentos a serem assinados, a senha será informada para cada documento (nos casos de assinatura 
+em lote, a senha será informada a cada lote, ou seja, em dois lotes de 20 documentos, a senha será solicitada 2 (duas) 
+vezes ao invés de 2*20=40 vezes).
+
+### Solicitar senha uma vez
+
+É a alternativa menos segura, porém a mais produtiva. Mais produtiva porque não haverá gasto de tempo com a digitação de 
+senhas no teclado e menos segura porque o acesso físico à máquina por terceiros de má fé possibilitará a este realizar a 
+assinatura mesmo desconhecendo a senha do legítimo usuário. Neste caso caberá ao dono do certificado ficar atento quanto ao
+uso indevido do seu dispositivo por pessoas que fizerem uso do seu computador previamente autenticado em sua conta.
+
+### Apenas confirmar o uso do dispositivo
+
+É a alternativa intermediária entre produtividade e segurança. O comportamento do assinador será o mesmo que a
+opção  _“Sempre solicitar senha”_ , porém ao invés da senha ser digitada explicitamente no teclado, o usuário apenas 
+confirmará com um único clique o aviso dado pelo assinador informando que o dispositivo está sendo utilizado conforme tela
+que segue:
+
+> Segurança
+  ![Segurança](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/confirm-use.png)
 
 
+Como na opção anterior, cabe ao usuário também ficar atento quanto ao uso indevido do seu dispositivo eu ausências temporárias
+do seu equipamento.
+
+
+### Ciclos de autenticação
+
+Como medidas adicionais de segurança o PjeOffice PRO adota os chamados ciclos de autenticação. Um ciclo de autenticação é uma sequência de eventos que provocam o fechamento ou abertura de uma sessão de autenticação no token do usuário tal que:
+
+- Na entrada do sistema Pje, toda tentativa de autenticação exigirá a informação da senha, **mesmo que**  a opção  _"Solicitar apenas uma vez"_  esteja habilitada e já tenha sido informada anteriormente. A praticidade de informação única da senha **só se aplicará após a entrada já previamente autenticada com a senha exigida**, ou seja, uma tentativa de autenticação na plataforma Pje marca o fim de um ciclo existente e início de um novo ciclo no qual as funcionalidades de segurança estarão sujeitas.
+
+
+- Um logoff ou bloqueio explícito da máquina pelo usuário ou por ociosidade da estação (política de REDE) colocará o assinador em modo de 
+hibernação, finalizando a sessão do token e marcando o fim do ciclo de autenticação atual (se houver). O assinador vai retomar o seu trabalho 
+quando do desbloqueio / login / fim da ociosidade. O propósito deste mecanismo é dificultar a exploração de eventual falha
+de segurança **minimizando o tempo de exposição da sessão aberta do token do usuário a artefatos maliciosos**, além da possibilidade de integração
+com políticas de segurança da rede aplicadas ao logoff automático de estações ou similares.
 
 

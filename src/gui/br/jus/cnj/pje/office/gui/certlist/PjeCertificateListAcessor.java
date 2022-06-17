@@ -27,15 +27,15 @@
 
 package br.jus.cnj.pje.office.gui.certlist;
 
-//import java.util.List;
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.github.signer4j.ICertificate;
 import com.github.signer4j.ICertificates;
-//import com.github.signer4j.IChoice;
+import com.github.signer4j.IChoice;
 import com.github.signer4j.IKeyStoreAccess;
 import com.github.signer4j.imp.DefaultChooser;
-//import com.github.signer4j.imp.exception.Signer4JException;
+import com.github.signer4j.imp.exception.Signer4JException;
 
 public class PjeCertificateListAcessor extends DefaultChooser {
   
@@ -50,14 +50,14 @@ public class PjeCertificateListAcessor extends DefaultChooser {
     return SUPPORTED_CERTIFICATE;
   }
  
-//  @Override
-//  protected IChoice doChoose(List<CertificateEntry> options) throws Signer4JException {
-//    if (options.size() == 1) {
-//      CertificateEntry c = options.get(0);
-//      if (!c.isExpired() && c.isRemembered()) {
-//        return toChoice(c);
-//      }
-//    }
-//    return super.doChoose(options);
-//  }
+  @Override
+  protected IChoice doChoose(List<CertificateEntry> options) throws Signer4JException {
+    if (options.size() == 1) {
+      CertificateEntry c = options.get(0);
+      if (!c.isExpired() /* && c.isRemembered()*/) {
+        return toChoice(c);
+      }
+    }
+    return super.doChoose(options);
+  }
 }
