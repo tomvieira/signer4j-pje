@@ -1,5 +1,5 @@
 # PjeOffice PRO
-Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJeOffice). Esta **NÃO** é a implementação oficial do CNJ - trata-se de um exercício prático de programação de um assinador de documentos com as mesmas características e recursos daquele mantido pelo CNJ mas com funcionalidades adicionais de uso e segurança comumentes demandadas por usuários do Pje.
+Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJeOffice). Esta **NÃO** é a implementação oficial do CNJ - trata-se de um exercício prático de programação de um assinador de documentos com as mesmas características e recursos daquele mantido pelo CNJ mas enriquecido com funcionalidades de uso e segurança comumentes demandadas por usuários do Pje.
 
 ## Funcionalidades Adicionais
 
