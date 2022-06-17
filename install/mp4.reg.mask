@@ -27,7 +27,7 @@
 
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\03]
 "MUIVerb"="Gerar 1 vídeo a cada 'n' minutos..."
-"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
+"Icon"="%PJEOFFICE_HOME%\\explorer\\video-cut.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\03\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_duration "%1" 0
 
@@ -35,7 +35,7 @@
 
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\04]
 "MUIVerb"="Gerar cortes específicos..."
-"Icon"="%PJEOFFICE_HOME%\\explorer\\video-cut.ico"
+"Icon"="%PJEOFFICE_HOME%\\explorer\\vcut.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\04\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.split_by_slice "%1"
 
