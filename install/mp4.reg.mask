@@ -58,7 +58,7 @@
 
 
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\07]
-"MUIVerb"="Otimizar"
+"MUIVerb"="Otimizar tamanho"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\optimize.ico"
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\Shell\PjeOffice\shell\07\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" video.optimize "%1"
