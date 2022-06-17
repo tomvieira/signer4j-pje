@@ -11,7 +11,7 @@ Tarefas repetitivas precisam ser práticas para minimizar o estresse e dedicar t
 > Contexto
   ![Contexto PDF](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/context-pdf.png)
 
-### Tratamento de arquivos de vídeo (MP4)
+### Tratamento de arquivos MP4
 
 > Contexto
   ![Contexto MP4](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/context-mp4.png)
@@ -226,7 +226,8 @@ Em breve...
 
 > **Warning**
 > Esta função atua alterando alguns parâmetros de renderização do vídeo em um esforço de equilibrar qualidade vs tamanho, ou seja, diferentemente das funções anteriores **haverá perda de qualidade do vídeo** e caberá ao próprio usuário aplicar seu critério aceitando ou não o resultado apresentado. 
-> **Note**
+
+> **Note**
 > Esta função **NÃO** altera o arquivo original. 
 
 
