@@ -235,8 +235,7 @@ Em breve...
 
 Assinar documentos no PJe pode ser uma operação repetitiva. Nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informação de senha conforme figura que segue:
 
-> Segurança
-  ![Opções](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
+> ![Opções](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
 
 
 > **Note**
@@ -265,8 +264,7 @@ opção  _“Sempre solicitar senha”_ , porém ao invés da senha ser digitada
 confirmará com um único clique o aviso dado pelo assinador informando que o dispositivo está sendo utilizado conforme tela
 que segue:
 
-> Segurança
-  ![Confirmação](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/confirm-use.png)
+> ![Confirmação](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/confirm-use.png)
 
 Como na opção anterior, cabe ao usuário também ficar atento quanto ao uso indevido do seu dispositivo em ausências temporárias
 do seu equipamento.
