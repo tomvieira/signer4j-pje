@@ -8,88 +8,88 @@
 [HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell]
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z002ZEW]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\01]
 "MUIVerb"="Assinar e salvar na mesma pasta"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z002ZEW\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\01\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" samefolder
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z003PKB]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\02]
 "MUIVerb"="Assinar e salvar em nova pasta"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z003PKB\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\02\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" newfolder
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z004HOF]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\03]
 "MUIVerb"="Assinar e salvar em pasta específica..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\sign.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z004HOF\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\03\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" cnj.assinador "%1" selectfolder
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z005OET]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\04]
 "MUIVerb"="Gerar 1 pdf a cada 10MB (Pje)"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\pendrive-small.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z005OET\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\04\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_size "%1" 10
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z006ZUY]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\05]
 "MUIVerb"="Gerar 1 pdf a cada 'n'MB..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\pendrive.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z006ZUY\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\05\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_size "%1" 0
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z007QYQ]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\06]
 "MUIVerb"="Gerar 1 pdf por página"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\pages.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z007QYQ\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\06\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_count "%1" 1
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z008DGR]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\07]
 "MUIVerb"="Gerar 1 pdf a cada 'n' páginas..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\n.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z008DGR\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\07\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_count "%1" 0
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z009EJG]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\08]
 "MUIVerb"="Gerar 1 pdf com as páginas ÍMPARES"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\impar.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z009EJG\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\08\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_parity "%1" false
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z010RAS]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\09]
 "MUIVerb"="Gerar 1 pdf com as páginas PARES"
 "Icon"="%PJEOFFICE_HOME%\\explorer\\par.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z010RAS\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\09\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_parity "%1" true
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z011GLV]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\10]
 "MUIVerb"="Gerar pdf's com páginas específicas..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\arrange.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z011GLV\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\10\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.split_by_pages "%1"
 
 
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z012KZB]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\11]
 "MUIVerb"="Unir pdf's selecionados..."
 "Icon"="%PJEOFFICE_HOME%\\explorer\\merge.ico"
-[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\Z012KZB\command]
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.pdf\Shell\PjeOffice\shell\11\command]
 @=hex(2):"%PJEOFFICE_HOME%\jre\bin\javaw.exe" -jar "%PJEOFFICE_HOME%\shell\shell.jar" pdf.join "%1"

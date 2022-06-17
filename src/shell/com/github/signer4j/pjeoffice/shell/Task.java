@@ -76,8 +76,13 @@ enum Task {
     }
   },
   VIDEO_SPLIT_BY_SLICE("video.split_by_slice"),
-  VIDEO_EXTRACT_AUDIO("video.extract_audio"),
-  VIDEO_CONVERT_WEBM("video.convert_webm");
+  VIDEO_EXTRACT_AUDIO("video.extract_audio") {
+    public void echo(String[] args, Properties output) {
+      output.put("tipo", Strings.at(args, 2));
+    }
+  },
+  VIDEO_CONVERT_WEBM("video.convert_webm"),
+  VIDEO_OPTIMIZE("video.optimize");
   
   public static Optional<Task> from(String at) {
     for(Task task: values()) {

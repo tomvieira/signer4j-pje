@@ -28,13 +28,14 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.PjeTaskChecker.checkIfPresent;
-import static com.github.utils4j.imp.Throwables.tryCall;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.filehandler4j.IFileHandler;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoInfoEvent;
 import com.github.videohandler4j.imp.Mp3AudioExtractor;
@@ -46,9 +47,9 @@ import br.jus.cnj.pje.office.task.ITarefaVideoExtracaoAudio;
 public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExtracaoAudio> {
   
   private static enum Media {
-    OGG (new OggAudioExtractor()),
-    MP3 (new Mp3AudioExtractor());
-
+    MP3 (new Mp3AudioExtractor()),
+    OGG (new OggAudioExtractor());
+    
     private final IFileHandler<IVideoInfoEvent> handler;
     
     Media(IFileHandler<IVideoInfoEvent> handler) {
@@ -56,14 +57,28 @@ public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExt
     }  
   }
   
-  private Media tipo = Media.MP3;
+  private Media tipo;
   
   protected PjeAudioExtractorTask(Params request, ITarefaVideoExtracaoAudio pojo) {
     super(request, pojo, "Audio-");
   }
   
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
-    this.tipo = tryCall(() -> Media.valueOf(checkIfPresent(getPojoParams().getTipo(), "tipo").toUpperCase().trim()), Media.MP3);
+    Optional<Media> ot;
+    try {
+      ot = Optional.of(Media.valueOf(checkIfPresent(getPojoParams().getTipo(), "tipo").toUpperCase().trim()));
+    }catch(Exception e) {
+      ot = Dialogs.getOption("Escolha um formato de audio:", Media.values());
+    }
+    if (!ot.isPresent()) {
+      throwCancel();
+    }
+    this.tipo = ot.get();
+  }
+  
+  @Override
+  protected final String getExtension() {
+    return "." + this.tipo.name().toLowerCase();
   }
 
   @Override
@@ -75,10 +90,5 @@ public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExt
         progress.abort(e);
       }
     );
-  }
-
-  @Override
-  protected final String getExtension() {
-    return "." + this.tipo.name().toLowerCase();
   }
 }

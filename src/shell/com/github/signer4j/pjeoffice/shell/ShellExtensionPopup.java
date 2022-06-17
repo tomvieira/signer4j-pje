@@ -147,8 +147,9 @@ public class ShellExtensionPopup extends SimpleFrame {
     addAction("Gerar 1 vídeo a cada 'n'MB...", this::mp4SplitNSize);
     addAction("Gerar 1 vídeo a cada 'n' minutos", this::mp4SplitNTime);
     addAction("Gerar cortes específicos...", this::mp4Slice);
-    addAction("Extrair audio OGG", this::mp4Audio);
+    addAction("Extrair audio...", this::mp4Audio);
     addAction("Converter para WEBM", this::mp4Webm);
+    addAction("Otimizar", this::mp4Optimize);
   }
   
   private void mp4Split90(ActionEvent action) {
@@ -309,6 +310,15 @@ public class ShellExtensionPopup extends SimpleFrame {
     forEach(mp4s, f -> {
       ShellExtension.main(
         PjeTaskReader.VIDEO_CONVERT_WEBM.getId(),
+        f.getAbsolutePath()        
+      ); 
+    });
+  }  
+  
+  private void mp4Optimize(ActionEvent action) {
+    forEach(mp4s, f -> {
+      ShellExtension.main(
+        PjeTaskReader.VIDEO_OPTIMIZE.getId(),
         f.getAbsolutePath()        
       ); 
     });

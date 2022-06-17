@@ -346,7 +346,7 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   
   protected void onBeforeDoGet() throws TaskException, InterruptedException {}
 
-  protected void checkServerPermission() throws TaskException {
+  protected final void checkServerPermission() throws TaskException {
     if (isInternalTask) {
       if (!getNativeRequest().isInternal()) {
         throw new TaskException("Permissão negada. Tarefa deve ser executada apenas em contexto interno/local.");

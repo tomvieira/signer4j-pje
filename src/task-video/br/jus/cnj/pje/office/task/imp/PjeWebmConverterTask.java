@@ -36,10 +36,15 @@ import com.github.videohandler4j.imp.WebmConverter;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public class PjeWebmConverterTask extends PjeBasicConverterTask {
+public class PjeWebmConverterTask extends PjeBasicConverterTask<ITarefaMedia> {
   
   protected PjeWebmConverterTask(Params request, ITarefaMedia pojo) {
-    super(request, pojo, ".webm");
+    super(request, pojo, "WEBM-");
+  }
+  
+  @Override
+  protected String getExtension() {
+    return ".webm";
   }
 
   @Override
