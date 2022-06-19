@@ -96,10 +96,11 @@ const PjeOffice = (function () {
   //Please do NOT change this constants if you don't know what you really doing
   const PJEOFFICE_PROTOCOL         = "http";
   const PJEOFFICE_PORT             = 8800;
-  const PJEOFFICE_BASE_END_POINT   = PJEOFFICE_PROTOCOL + "://127.0.0.1:" + PJEOFFICE_PORT;
+  const PJEOFFICE_BASE_ENDPOINT    = PJEOFFICE_PROTOCOL + "://127.0.0.1:" + PJEOFFICE_PORT;
   const PJEOFFICE_BASE_CONTEXT     = "/pjeOffice/";
-  const PJEOFFICE_TASK_END_POINT   = PJEOFFICE_BASE_CONTEXT + "requisicao/";
-  const PJEOFFICE_LOGOUT_END_POINT = PJEOFFICE_BASE_CONTEXT + "logout/";
+  const PJEOFFICE_TASK_ENDPOINT    = PJEOFFICE_BASE_CONTEXT + "requisicao/";
+  const PJEOFFICE_LOGOUT_ENDPOINT  = PJEOFFICE_BASE_CONTEXT + "logout/";
+  const PJEOFFICE_VERSION_ENDPOINT = PJEOFFICE_BASE_CONTEXT + "versao/"
   const PJEOFFICE_TIMEOUT_ALERT    = 'Alcançado tempo máximo de espera por resposta do PjeOffice PRO (timeout)';     
 
   const noCache = function() {
@@ -107,7 +108,7 @@ const PjeOffice = (function () {
   };
   
   const createQueryParams = function(taskId, task) {
-    return PJEOFFICE_TASK_END_POINT + "?r=" + encodeURIComponent(readJson({
+    return PJEOFFICE_TASK_ENDPOINT + "?r=" + encodeURIComponent(readJson({
       "sessao": readSession(),
       "aplicacao": defaultSubject.APP_REQUISITANTE,
       "servidor": defaultSubject.WEB_ROOT,
@@ -124,7 +125,7 @@ const PjeOffice = (function () {
     const onUnavailable = apiContext?.onUnavailable;
     let complete = false;
     PjeClient.ajax({
-      "url": PJEOFFICE_BASE_END_POINT + endPoint,
+      "url": PJEOFFICE_BASE_ENDPOINT + endPoint,
       "type": 'POST',
       "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
       "timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
@@ -133,14 +134,15 @@ const PjeOffice = (function () {
         if ('timeout' === status)
           alert(PJEOFFICE_TIMEOUT_ALERT);    
         if (complete) 
-          return;  
+          return;
+        complete = true;
         if (onUnavailable)
           onUnavailable(statusText, response); 
-        complete = true;
       },
       "success": function(data, statusText, response) {
         if (complete)
           return;
+        complete = true;
         if (data.success) { //json response must return's 'success' attribute, ever!
           if (onSuccess)
             onSuccess(data, response);
@@ -148,7 +150,6 @@ const PjeOffice = (function () {
           if (onFailed)
             onFailed(statusText, response);  
         }
-        complete = true;
       },
     });
   };
@@ -157,9 +158,17 @@ const PjeOffice = (function () {
     post(createQueryParams(taskId, task), apiContext);
   };
   
-  const logout = function(apiContext) {
-    post(PJEOFFICE_LOGOUT_END_POINT + '?' + noCache(), apiContext);
+  PjeOffice.logout = function(apiContext) {
+    post(PJEOFFICE_LOGOUT_ENDPOINT + '?' + noCache(), apiContext);
   };
+
+  PjeOffice.ping = function(apiContext) {
+	post(PJEOFFICE_BASE_CONTEXT + '?' + noCache(), apiContext);
+  };
+  
+  PjeOffice.about = function(apiContext) {
+	post(PJEOFFICE_VERSION_ENDPOINT + '?' + noCache(), apiContext);
+  }
 
   PjeOffice.login = function(welcomeMessage, apiContext) {
     runTask('cnj.autenticador', {
@@ -176,10 +185,6 @@ const PjeOffice = (function () {
     }, apiContext);  
   };
     
-  PjeOffice.logout = function(apiContext) {
-    logout(apiContext);
-  };
-
   PjeOffice.signHash = function(documents, apiContext) {
     runTask('cnj.assinadorHash', {
       "algoritmoAssinatura": "ASN1MD5withRSA",
@@ -189,7 +194,7 @@ const PjeOffice = (function () {
     }, apiContext);
   };
 
-  PjeOffice.signRemoteP7s = function(documents, apiContext) {
+  PjeOffice.signRemote = function(documents, apiContext) {
     runTask('cnj.assinador', {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",

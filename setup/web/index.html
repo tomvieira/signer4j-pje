@@ -2,14 +2,14 @@
 <html>
    <head>
       <meta charset="ISO-8859-1">
-      <title>Pje API</title>
+      <title>PjeOffice PRO - API</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
       <style>
          ul{
          list-style-type: none; /* Remove bullets */
          }
          div {
-         background-color: #e6ffe6;
+         background-color: #F5FAEA;
          border: solid 1px;
          }
          span {
@@ -21,15 +21,15 @@
       	//exemplos of utilities to quick demo
       
         const onSuccess = function(data, response) {
-          alert("SUCCESS! (" + response.status + ")");
+          alert("PjeOffice retornou SUCESSO! (" + readJson(data) + ")");
         };
         
         const onFailed = function(status, response) {
-          alert("FAILED!");
+          alert("PjeOffice retornou FALHA!");
         };
         
         const  onUnavailable = function(status, response) {
-          alert("PjeOffice PRO unavailable!");
+          alert("PjeOffice INDISPONÍVEL!");
         }
         
         const apiContext = {   		
@@ -65,13 +65,15 @@
    <body>
       <ul>
          <li>
-            <h1>PjeOffice API - Quick Demo</h1>
-			<p><span>Antes de fazer uso desta demonstração habilite temporariamente no PjeOffice PRO o 'modo inseguro' em <em>Opções -> Modo inseguro</em></span></p>
+            <h1>Javascript API - Quick Demo</h1>
+			<p>Nota: Para esta demonstração o PjeOffice PRO simulará em mock o <em>backend</em> da solução web, portanto, para este fim específico é necessário
+			que seja previamente habilitado o <span>'modo inseguro'</span> acessando <span><em>Opções -> Modo inseguro</em></span>. Este modo desabilita as checagens de segurança e 
+			proteções CSRF.</p>
          </li>
       </ul>
       <ul>
       	<li>
-      		<h3>Configuração 'global' padrão usada pela instância PjeOffice</h3> 
+      		<h3>Configuração padrão usada pela instância PjeOffice</h3> 
 			<div>      	
 <pre>
 const defaultSubject = {
@@ -117,24 +119,27 @@ const defaultSubject = {
       </ul>
       <ul>
          <li>
-            <strong>Código utilitário para demonstração</strong><br>            
+            <strong>Código utilitário para demonstração (callback)</strong><br>            
             <div>
 <pre>
   const onSuccess = function(data, response) {
-    alert("SUCCESS (" + response.status + ")");   //janela padrão de sucesso na execução!
+    alert("PjeOffice retornou SUCESSO! (" + readJson(data) + ")");  //janela padrão de sucesso na execução!
   };
+  
   const onFailed = function(status, response) {
-    alert("FAILED!");                             //janela padrão de falha na execução!
+    alert("PjeOffice retornou FALHA!");                             //janela padrão de falha na execução!
   };
+  
   const  onUnavailable = function(status, response) {
-    alert("PjeOffice PRO unavailable!");          //janela padrão de indisponibilidade do PjeOffice (não está em execução)
-  };  
+    alert("PjeOffice INDISPONÍVEL!");                               //janela padrão de indisponibilidade do PjeOffice (não está em execução)
+  }
 </pre>
             </div>
             <hr>
          </li>         
       </ul>
       <ul>
+      
          <li>
             <h3>Autenticação com certificado digital</h3>
 			<div>									
@@ -307,7 +312,7 @@ const defaultSubject = {
             <div>			
 <pre>
 /***************************************************************************************************************************
-* API: PjeOffice.signRemoteP7s = function(documents, apiContext)  
+* API: PjeOffice.signRemote = function(documents, apiContext)  
 /***************************************************************************************************************************
    
   documents: O array onde cada entrada contém informações dos respectivos documentos a serem assinados
@@ -345,13 +350,13 @@ const defaultSubject = {
             exemplo:
             <div>
 <pre>
-  &lt;button onclick=&quot;PjeOffice.signRemoteP7s(documents, apiContext);&quot;&gt;
+  &lt;button onclick=&quot;PjeOffice.signRemote(documents, apiContext);&quot;&gt;
 	SIGN REMOTE
   &lt;/button&gt;
 </pre>
             </div>
             <p>testar:</p>
-            <button onclick="PjeOffice.signRemoteP7s(documents2, apiContext);">
+            <button onclick="PjeOffice.signRemote(documents2, apiContext);">
 	           SIGN REMOTE
             </button>            						
             <hr>
@@ -402,15 +407,70 @@ const defaultSubject = {
             SIGN BASE64
             </button>      						
             <hr>
-         </li>       
+         </li>   
+      	<li>
+            <h3>Teste da disponibilidade do assinador</h3>
+			<div>									
+<pre>
+/***************************************************************************************************************************
+* API: PjeOffice.ping = function(apiContext) 
+/***************************************************************************************************************************
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    },
+    "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
+            </div>            
+            exemplo:
+            <div>
+<pre>
+  &lt;button onclick=&quot;PjeOffice.ping(apiContext);&quot;&gt;
+	PING
+  &lt;/button&gt;
+</pre>
+            </div>
+            <p>testar:</p>            
+            <button onclick="PjeOffice.ping(apiContext);">
+            PING
+            </button>
+            <hr>
+         </li>
          
-         
-         
-         
-         
-         
+      	<li>
+            <h3>Versão do assinador</h3>
+			<div>									
+<pre>
+/***************************************************************************************************************************
+* API: PjeOffice.about = function(apiContext) 
+/***************************************************************************************************************************
+  apiContext = {
+    "subject": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    },
+    "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
+  };
+</pre>
+            </div>            
+            exemplo:
+            <div>
+<pre>
+  &lt;button onclick=&quot;PjeOffice.about(apiContext);&quot;&gt;
+	ABOUT
+  &lt;/button&gt;
+</pre>
+            </div>
+            <p>testar:</p>            
+            <button onclick="PjeOffice.about(apiContext);">
+            ABOUT
+            </button>
+            <hr>
+         </li>
          <li>
-            <h2>Impressão de etiquetas em impressoras Zebras</h2>
+            <h2>Impressão de etiquetas em impressoras zebras</h2>
             <div>			
 <pre>
 /***************************************************************************************************************************
@@ -446,8 +506,7 @@ const defaultSubject = {
             PRINT TAG
             </button>      						
             <hr>
-         </li>    
-           
+         </li> 
       </ul>
    </body>
 </html>

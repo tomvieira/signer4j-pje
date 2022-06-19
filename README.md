@@ -4,7 +4,7 @@ Uma alternativa ao assinador [PjeOffice](http://www.pje.jus.br/wiki/index.php/PJ
 ## Funcionalidades Adicionais
 
 ### Integração com Windows Explorer
-Tarefas repetitivas precisam ser práticas para minimizar o estresse e dedicar tempo/energia em atividades mais relevantes. O PjeOffice PRO atalha algumas tarefas comuns dos usuários através do menu de contexto do Windows e dispensa alguns recursos de ferramentas externas para manuseio de arquivos do Pje, especialmente PDF's e vídeos (mp4). Neste cenário o PJeOffice PRO foi escrito para ganhar mais "funções de escritório" e otimizado para conseguir lidar com arquivos PDF's de tamanhos significativamente incomuns (da ordem de gigabytes) sem sujeitar (ou minimizar) aos usuários erros de falta de memória ou criação "descontrolada" de arquivos temporários em seu ambiente pois, ainda que existam ferramentas online para lidar com estes problemas, o uso delas pode se tornar improdutivo por exigir que sejam feitos upload's e download's dos arquivos manuseados, além de eventualmente impor ao usuário algum tipo de cotas para uso ou limitações de banda para envio/recebimento de documentos consideravelmente grandes.
+Tarefas repetitivas precisam ser práticas pra que tempo seja dedicado em atividades mais relevantes. O PjeOffice PRO atalha algumas tarefas comuns dos usuários através do menu de contexto do Windows e dispensa alguns recursos de ferramentas externas para manuseio de arquivos do Pje, especialmente PDF's e vídeos (mp4). Em um novo cenário o PJeOffice PRO foi escrito para ganhar mais "funções de escritório" e otimizado para conseguir lidar com arquivos PDF's de tamanhos significativamente incomuns (da ordem de gigabytes) sem sujeitar (ou minimizar) aos usuários erros de falta de memória ou criação "descontrolada" de arquivos temporários em seu ambiente pois, ainda que existam ferramentas online para lidar com estes problemas, o uso delas pode se tornar improdutivo por exigir que sejam feitos upload's e download's dos arquivos manuseados, além de eventualmente impor ao usuário algum tipo de cotas para uso ou limitações de banda para envio/recebimento de documentos consideravelmente grandes.
 
 ### Tratamento de arquivos PDF
 
@@ -233,7 +233,7 @@ Em breve...
 
 ## Funcionalidades de Segurança
 
-Assinar documentos no PJe pode ser uma operação repetitiva. Nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informação de senha conforme figura que segue:
+Assinar documentos no PJe pode ser uma operação repetitiva e nesta versão PRO o usuário também tem a oportunidade de decidir entre três estratégias de informação de senha para assinatura conforme figura que segue:
 
 > ![Opções](https://github.com/l3onardo-oliv3ira/signer4j-pje/blob/main/screen/security.png)
 
@@ -272,15 +272,15 @@ do seu equipamento.
 
 ### Ciclos de autenticação
 
-Como medidas adicionais de segurança o PjeOffice PRO adota os chamados ciclos de autenticação. Um ciclo de autenticação é uma sequência de eventos que provocam o fechamento ou abertura de uma sessão de autenticação no token do usuário tal que:
+Como medidas adicionais de mitigação em segurança o PjeOffice PRO adota ciclos de autenticação. Um ciclo de autenticação é uma sequência de eventos que provocam o fechamento ou abertura de uma sessão autenticada no dispositivo/token do usuário tal que:
 
 - Na entrada do sistema Pje, toda tentativa de autenticação exigirá a informação da senha, **mesmo que**  a opção  _"Solicitar apenas uma vez"_  esteja habilitada e já tenha sido informada anteriormente. A praticidade de informação única da senha **só se aplicará após a entrada já previamente autenticada com a senha exigida**, ou seja, uma tentativa de autenticação na plataforma Pje marca o fim de um ciclo existente e início de um novo ciclo no qual as funcionalidades de segurança estarão sujeitas.
 
 
-- Um logoff ou bloqueio explícito da máquina pelo usuário ou por ociosidade da estação (política de rede) colocará o assinador em modo de 
-hibernação, finalizando a sessão do token e marcando o fim do ciclo de autenticação atual (se houver). O assinador vai retomar o seu trabalho 
-quando do desbloqueio / login / fim da ociosidade. O propósito deste mecanismo é dificultar a exploração de eventual falha
-de segurança **minimizando o tempo de exposição da sessão aberta do token do usuário a artefatos maliciosos**, além da possibilidade de integração
-com políticas de segurança da rede aplicadas ao logoff automático de estações ou similares.
+- Um logoff ou bloqueio explícito da máquina pelo usuário ou por ociosidade da estação (política de rede) colocará o assinador em 
+modo de hibernação, finalizando a sessão do token e marcando o fim do ciclo de autenticação atual (se houver). O assinador vai retomar o seu trabalho quando do desbloqueio / login / fim da ociosidade. O propósito deste mecanismo é dificultar a exploração de eventual falha de segurança **minimizando o tempo de exposição da sessão aberta do token do usuário a artefatos maliciosos**, além da possibilidade de integração com políticas de segurança da rede aplicadas ao logoff automático das estações de rede.
 
 
+### Javascript API
+
+O PjeOffice PRO provê uma API javascript para acesso aos recursos do assinador via protocolo HTTP. A documentação e exemplos de uso da API podem ser acessados por meio do endereço http://localhost:8800/pjeOffice/api do seu navegador após execução do assinador.

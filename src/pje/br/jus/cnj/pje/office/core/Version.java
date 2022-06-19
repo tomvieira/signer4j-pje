@@ -49,7 +49,7 @@ public enum Version {
   }
   
   public String toJson() {
-    return "{ \"versao\": \"" + this + "\" }";
+    return "{ \"versao\": \"" + this + "\", \"success\": true }";
   }
   
   @Override

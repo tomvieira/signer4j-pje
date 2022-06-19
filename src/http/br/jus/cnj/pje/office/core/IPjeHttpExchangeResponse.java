@@ -33,9 +33,7 @@ import java.io.IOException;
 public interface IPjeHttpExchangeResponse extends IPjeResponse {
 
   void write(File file) throws IOException;
-  void write(byte[] data, String contentType) throws IOException;
   
   void notFound() throws IOException;
-
   void success() throws IOException;
 }
