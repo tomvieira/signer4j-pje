@@ -1,44 +1,46 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta charset="ISO-8859-1">
-      <title>PjeOffice PRO - API</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-      <style>
-         ul{
-         list-style-type: none; /* Remove bullets */
-         }
-         div {
-         background-color: #F5FAEA;
-         border: solid 1px;
-         }
-         span {
-         color: red;
-         }
-      </style>
-      <script src="/pjeOffice/api/?file=pjeoffice-pro.js"></script>
-      <script>
-      	//exemplos of utilities to quick demo
+  <head>
+    <meta charset="ISO-8859-1">
+    <title>PjeOffice PRO - API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+      ul {
+        list-style-type: none;
+        /* Remove bullets */
+      }
+
+      div {
+        background-color: #F5FAEA;
+        border: solid 1px;
+      }
+
+      span {
+        color: red;
+      }
+    </style>
+    <script src="/pjeOffice/api/?file=pjeoffice-pro.js"></script>
+    <script>
+      //exemplos of utilities to quick demo
+      const onSuccess = function(data, response) {
+        alert("PjeOffice retornou SUCESSO! (" + readJson(data) + ")");
+      };
       
-        const onSuccess = function(data, response) {
-          alert("PjeOffice retornou SUCESSO! (" + readJson(data) + ")");
-        };
-        
-        const onFailed = function(status, response) {
-          alert("PjeOffice retornou FALHA!");
-        };
-        
-        const  onUnavailable = function(status, response) {
-          alert("PjeOffice INDISPONÍVEL!");
-        }
-        
-        const apiContext = {   		
-          'onSuccess': onSuccess, 
-          'onFailed': onFailed,
-          'onUnavailable': onUnavailable
-        };
-         
-        const documents1 = [
+      const onFailed = function(status, response) {
+        alert("PjeOffice retornou FALHA!");
+      };
+      
+      const onUnavailable = function(status, response) {
+        alert("PjeOffice INDISPONÍVEL!");
+      }
+      
+      const apiContext = {
+        'onSuccess': onSuccess,
+        'onFailed': onFailed,
+        'onUnavailable': onUnavailable
+      };
+      
+      const documents1 = [
           {"id": 1, "codIni": 1, "hash": "ba560650ddd4dd6bd819e9a056986ed5", "isBin": false, "idTarefa": 5 },
           {"id": 2, "codIni": 2, "hash": "c6db06dcd7aef21f006198694cf48649", "isBin": false },
           {"hash": "5eb63bbbe01eeed093cb22bb8f5acdc3"},
@@ -59,22 +61,22 @@
         const printerPort = "LPT1";
         
         const content = ["^XA^LL240^FO50,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO482,30^ADN,11,8^FDPjeOffice Pro - Print Test^FS^FO40,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO472,54^ABN,11,7^FDSETOR DE PROTOCOLO GERAL E INTEGRADO^FS^FO80,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO512,74^ADN,11,8^FD99/99/9999 99:99 h^FS^FO50,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO482,92^ADN,11,8^FDProt. nro. 9999.9999999-9^FS^FO80,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO512,115^BY2,3,50^BCN,,N,N,N^FD>;999999999999>69^FS^FO60,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO492,170^ADN,11,8^FD9999999-99.9999.999.9999^FS^FO60,190^ADN,11,8^FD^FS^FO492,190^ADN,11,8^FD^FS^FO88,210^ACN,11,7^FD[Apenas Teste]^FS^FO520,210^ACN,11,7^FD[Apenas Teste]^FS^FO40,230^ABN,11,7^FD^FS^FO472,230^ABN,11,7^FD^FS^XZ"];
-        
+   
       </script>
-   </head>
-   <body>
-      <ul>
-         <li>
-            <h1>Javascript API - Quick Demo</h1>
-			<p>Nota: Para esta demonstração o PjeOffice PRO simulará em mock o <em>backend</em> da solução web, portanto, para este fim específico é necessário
-			que seja previamente habilitado o <span>'modo inseguro'</span> acessando <span><em>Opções -> Modo inseguro</em></span>. Este modo desabilita as checagens de segurança e 
-			proteções CSRF.</p>
-         </li>
-      </ul>
-      <ul>
-      	<li>
-      		<h3>Configuração padrão usada pela instância PjeOffice</h3> 
-			<div>      	
+  </head>
+  <body>
+    <ul>
+      <li>
+        <h1>Javascript API - Quick Demo</h1>
+        <p>Nota: Para esta demonstração o PjeOffice PRO simulará em mock o <em>backend</em> da solução web, portanto, para este fim específico é necessário que seja previamente habilitado o <span>'modo inseguro'</span> acessando <span>
+            <em>Opções -> Modo inseguro</em>
+          </span>. Este modo desabilita as checagens de segurança e proteções CSRF. </p>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Configuração padrão usada pela instância PjeOffice</h3>
+        <div>
 <pre>
 const defaultArguments = {
    //Aplicação que faz uso do PjeOffice
@@ -118,13 +120,14 @@ const defaultArguments = {
   "PAGINA_CERTCHAIN"  : "/pjefake"
 };
 </pre>
-            </div>      	
-      	</li>
-      </ul>
-      <ul>
-         <li>
-            <strong>Código utilitário para demonstração (callback)</strong><br>            
-            <div>
+        </div>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <strong>Código utilitário para demonstração (callback)</strong>
+        <br>
+        <div>
 <pre>
   const onSuccess = function(data, response) {
     alert("PjeOffice retornou SUCESSO! (" + readJson(data) + ")");  //janela padrão de sucesso na execução!
@@ -138,15 +141,14 @@ const defaultArguments = {
     alert("PjeOffice INDISPONÍVEL!");                               //janela padrão de indisponibilidade do PjeOffice (não está em execução)
   }
 </pre>
-            </div>
-            <hr>
-         </li>         
-      </ul>
-      <ul>
-      
-         <li>
-            <h3>Autenticação com certificado digital</h3>
-			<div>									
+        </div>
+        <hr>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Autenticação com certificado digital</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.login = function(welcomeMessage, apiContext) 
@@ -164,25 +166,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.login('your welcome message', apiContext);&quot;&gt;
-	LOGIN
+  LOGIN
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>            
-            <button onclick="PjeOffice.login('welcomeMessage', apiContext);">
-            LOGIN
-            </button>
-            
-            <hr>
-         </li>
-         <li>
-         	<h3>Autenticação com certificado digital para aplicações em SSO (single sign on)</h3>
-			<div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.login('welcomeMessage', apiContext);"> LOGIN </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Autenticação com certificado digital para aplicações em SSO (single sign on)</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.loginSSO = function(welcomeMessage, token, apiContext)
@@ -202,25 +199,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.loginSSO('your welcome message', 'your token', apiContext);&quot;&gt;
-	LOGIN SSO
+  LOGIN SSO
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.loginSSO('welcomeMessage', 'tokengerado', apiContext);">
-            LOGIN SSO
-            </button>
-            
-            <hr>
-         </li>
-         <li>
-            <h3>Logout do certificado digital (token)</h3>
-            <div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.loginSSO('welcomeMessage', 'tokengerado', apiContext);"> LOGIN SSO </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Logout do certificado digital (token)</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.logout = function(apiContext)
@@ -235,24 +227,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>              
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.logout(apiContext);&quot;&gt;
-	LOGOUT
+  LOGOUT
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.logout(apiContext);">
-            LOGOUT
-            </button>            						
-            <hr>
-         </li>
-         <li>
-            <h3>Assinatura de hash's de documentos</h3>
-            <div>
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.logout(apiContext);"> LOGOUT </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Assinatura de hash's de documentos</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.signHash = function(documents, apiContext)  
@@ -272,7 +260,7 @@ const defaultArguments = {
   Onde:
     id:       ? (veja documentação Pje)  
     codIni:   ? (veja documentação Pje)
-    hash:     O hash a ser assinado		//Obrigatório!			
+    hash:     O hash a ser assinado    //Obrigatório!      
     isBin:    ? (veja documentação Pje)
     idTarefa: ? (veja documentação Pje)
 
@@ -289,31 +277,26 @@ const defaultArguments = {
     "argument": {
       "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
       "PAGINA_ASSINATURA" : "/pjefake",                //Opcional: se não informado será considerado defaultArguments.PAGINA_ASSINATURA
-      "MODO_TESTE"        : false,                     //Opcional: se não informado será considerado defaultArguments.MODO_TESTE	
+      "MODO_TESTE"        : false,                     //Opcional: se não informado será considerado defaultArguments.MODO_TESTE  
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };</pre>
-            </div>
-            exemplo:            
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.signHash(documents, apiContext);&quot;&gt;
-	SIGN HASH
+  SIGN HASH
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.signHash(documents1, apiContext);">
-               SIGN HASH
-            </button>
-            						
-            <hr>
-         </li>
-         <li>
-            <h3>Assinatura de documentos remotos</h3>
-            <div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.signHash(documents1, apiContext);"> SIGN HASH </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Assinatura de documentos remotos</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.signRemote = function(documents, apiContext)  
@@ -350,24 +333,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.signRemote(documents, apiContext);&quot;&gt;
-	SIGN REMOTE
+  SIGN REMOTE
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.signRemote(documents2, apiContext);">
-	           SIGN REMOTE
-            </button>            						
-            <hr>
-         </li>
-         <li>
-            <h2>Assinatura de documentos codificados em Base64</h2>
-            <div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.signRemote(documents2, apiContext);"> SIGN REMOTE </button>
+        <hr>
+      </li>
+      <li>
+        <h2>Assinatura de documentos codificados em Base64</h2>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.signBase64 = function(documents, apiContext)
@@ -397,24 +376,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
   };
 </pre>
-            </div>			            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.signBase64(documents, apiContext);&quot;&gt;
-	 SIGN BASE64
+   SIGN BASE64
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.signBase64(documents3, apiContext);">
-            SIGN BASE64
-            </button>      						
-            <hr>
-         </li>   
-         <li>
-            <h2>Leitura da cadeia de certificados do usuário</h2>
-            <div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.signBase64(documents3, apiContext);"> SIGN BASE64 </button>
+        <hr>
+      </li>
+      <li>
+        <h2>Leitura da cadeia de certificados do usuário</h2>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.readCertChain = function(apiContext)
@@ -433,24 +408,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
   };
 </pre>
-            </div>			            
-            exemplo:
-            <div>
-<pre>
+        </div> exemplo: <div>
+          <pre>
   &lt;button onclick=&quot;PjeOffice.readCertChain(apiContext);&quot;&gt;
-	 READ CERTCHAIN
+   READ CERTCHAIN
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.readCertChain(apiContext);">
-            READ CERTCHAIN
-            </button>      						
-            <hr>
-        </li>   
-      	<li>
-            <h3>Teste da disponibilidade do assinador</h3>
-			<div>									
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.readCertChain(apiContext);"> READ CERTCHAIN </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Teste da disponibilidade do assinador</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.ping = function(apiContext) 
@@ -463,25 +434,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>            
-            exemplo:
-            <div>
-<pre>
+        </div> exemplo: <div>
+          <pre>
   &lt;button onclick=&quot;PjeOffice.ping(apiContext);&quot;&gt;
-	PING
+  PING
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>            
-            <button onclick="PjeOffice.ping(apiContext);">
-            PING
-            </button>
-            <hr>
-         </li>
-         
-      	<li>
-            <h3>Versão do assinador</h3>
-			<div>									
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.ping(apiContext);"> PING </button>
+        <hr>
+      </li>
+      <li>
+        <h3>Versão do assinador</h3>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.about = function(apiContext) 
@@ -494,24 +460,20 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
   };
 </pre>
-            </div>            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.about(apiContext);&quot;&gt;
-	ABOUT
+  ABOUT
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>            
-            <button onclick="PjeOffice.about(apiContext);">
-            ABOUT
-            </button>
-            <hr>
-         </li>
-         <li>
-            <h2>Impressão de etiquetas em impressoras zebras</h2>
-            <div>			
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.about(apiContext);"> ABOUT </button>
+        <hr>
+      </li>
+      <li>
+        <h2>Impressão de etiquetas em impressoras zebras</h2>
+        <div>
 <pre>
 /***************************************************************************************************************************
 * API: PjeOffice.printTag = function(printerPort, content, apiContext)
@@ -521,7 +483,7 @@ const defaultArguments = {
   
   Onde: 
     printerPort: A porta da impressora que receberá 'content'
-    content: O array de dados a serem impressos 
+    content: O array de dados a serem impressos em formato ZPL (http://labelary.com/zpl.html ; http://labelary.com/docs.html)
     
   apiContext = {
     "argument": {
@@ -532,21 +494,17 @@ const defaultArguments = {
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
   };
 </pre>
-            </div>			            
-            exemplo:
-            <div>
+        </div> exemplo: <div>
 <pre>
   &lt;button onclick=&quot;PjeOffice.printTag(printerPort, content, apiContext);&quot;&gt;
-	 PRINT TAG
+   PRINT TAG
   &lt;/button&gt;
 </pre>
-            </div>
-            <p>testar:</p>
-            <button onclick="PjeOffice.printTag(printerPort, content, apiContext);">
-            PRINT TAG
-            </button>      						
-            <hr>
-         </li> 
-      </ul>
-   </body>
+        </div>
+        <p>testar:</p>
+        <button onclick="PjeOffice.printTag(printerPort, content, apiContext);"> PRINT TAG </button>
+        <hr>
+      </li>
+    </ul>
+  </body>
 </html>
