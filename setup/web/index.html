@@ -306,8 +306,8 @@ const defaultArguments = {
 
   Exemplo:
     const documents = [
-      {"nome": "arq1.p7s",  "url": "/pagina_download?p=1", "paramsEnvio": ["foo=bar", "what=ever"]},
-      {"nome": "arq2.p7s",  "url": "/pagina_download?p=2", "paramsEnvio": ["foo=bar", "what=ever", "code=exemplo"]},
+      {"nome": "arq1.txt",  "url": "/pagina_download?p=1", "paramsEnvio": ["foo=bar", "what=ever"]},
+      {"nome": "arq2.txt",  "url": "/pagina_download?p=2", "paramsEnvio": ["foo=bar", "what=ever", "code=exemplo"]},
       {"nome": "arq3.xml",  "url": "/pagina_download?p=3", "paramsEnvio": ["foo=bar", "what=ever", "nomeDoCampoDoArquivo=saida"]}
     ];
   
@@ -320,7 +320,7 @@ const defaultArguments = {
 
   O que o servidor receberá:
     * Parâmetro 'nomeDoCampoDoArquivo' (no exemplo, campo 'saida'), com o array de bytes puro que representa o documento assinado e 
-      filename de ByteArrayBody 'nome' (no exemplo, 'arq1.p7s', etc).
+     filename de ByteArrayBody 'nome' (no exemplo, 'arq1.txt.p7s', 'arq2.txt.p7s', 'arq3.xml.p7s').
     * Os respectivos parâmetros 'n=v' definidos em 'paramsEnvio'
 
   apiContext = {

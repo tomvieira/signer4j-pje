@@ -44,7 +44,7 @@ import br.jus.cnj.pje.office.task.IPjeTarget;
 
 public interface IPjeClient extends AutoCloseable {
   
-  String PJE_DEFAULT_USER_AGENT = "PjeOffice " + Version.current();
+  String PJE_DEFAULT_USER_AGENT = "PjeOffice-PRO (" + Version.current() + ")";
   
   IGetCodec getCodec();
   
