@@ -70,6 +70,12 @@ public enum PjeTaskReader implements Supplier<IRequestReader<Params>>, IJsonTran
       return TarefaAssinadorBase64Reader.INSTANCE;
     }
   },
+  CNJ_CERTCHAIN("cnj.certchain") {
+    @Override
+    public IRequestReader<Params> get() {
+      return TarefaCertChainReader.INSTANCE;
+    }
+  },
   SSO_AUTENTICADOR("sso.autenticador"){
     @Override
     public IRequestReader<Params> get() {

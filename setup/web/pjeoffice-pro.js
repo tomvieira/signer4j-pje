@@ -40,12 +40,12 @@ const readSession = function () {
 
 
 /*****************************************************************************************************************
-* A constante 'defaultSubject' é a configuração 'global' padrão usada pela instância PjeOffice. Alternativamente 
+* A constante 'defaultArguments' é a configuração 'global' padrão usada pela instância PjeOffice. Alternativamente 
 * você pode remover este código daqui e definir esta instância na sua aplicação com todos os atributos e colocá-la 
 * no escopo global javascript. 
 /*****************************************************************************************************************/
 
-const defaultSubject = {
+const defaultArguments = {
    //Aplicação que faz uso do PjeOffice
    //Este parâmetro é OBRIGATÓRIO e deveria ser entendido como uma constante por toda aplicação 
   "APP_REQUISITANTE"  : "Pje",
@@ -79,9 +79,13 @@ const defaultSubject = {
   //Este parâmetro é OBRIGATÓRIO e PODE SER SOBRESCRITO dinamicamente em tempo de chamada API
   "PAGINA_ASSINATURA" : "/pjefake",
         
-  //Página que recebe arquivos assinados em P7S
+  //Página que receberá arquivos assinados em P7S
   //Este parâmetro é OBRIGATÓRIO e PODE SER SOBRESCRITO dinamicamente em tempo de chamada API.
   "PAGINA_UPLOAD"     : "/pjefake",
+  
+  //Página que receberá a cadeia de certificados do usuário
+  //Este parâmetro é OBRIGATÓRIO e PODE SER SOBRESCRITO dinamicamente em tempo de chamada API.
+  "PAGINA_CERTCHAIN"  : "/pjefake"
 };
 
 
@@ -110,16 +114,16 @@ const PjeOffice = (function () {
   const createQueryParams = function(taskId, task) {
     return PJEOFFICE_TASK_ENDPOINT + "?r=" + encodeURIComponent(readJson({
       "sessao": readSession(),
-      "aplicacao": defaultSubject.APP_REQUISITANTE,
-      "servidor": defaultSubject.WEB_ROOT,
-      "codigoSeguranca": defaultSubject.CODIGO_SEGURANCA,
+      "aplicacao": defaultArguments.APP_REQUISITANTE,
+      "servidor": defaultArguments.WEB_ROOT,
+      "codigoSeguranca": defaultArguments.CODIGO_SEGURANCA,
       "tarefaId": taskId,
       "tarefa": readJson(task)  
     })) + noCache();
   };
 
   const post = function (endPoint, apiContext) {
-    const subject       = apiContext?.subject;
+    const argument      = apiContext?.argument;
     const onSuccess     = apiContext?.onSuccess;
     const onFailed      = apiContext?.onFailed;
     const onUnavailable = apiContext?.onUnavailable;
@@ -128,7 +132,7 @@ const PjeOffice = (function () {
       "url": PJEOFFICE_BASE_ENDPOINT + endPoint,
       "type": 'POST',
       "headers": { "Content-Type": 'application/x-www-form-urlencoded'},
-      "timeout": subject?.POST_TIMEOUT || defaultSubject.POST_TIMEOUT,
+      "timeout": argument?.POST_TIMEOUT || defaultArguments.POST_TIMEOUT,
       "async": true,
       "error": function(status, statusText, response) {
         if ('timeout' === status)
@@ -172,14 +176,14 @@ const PjeOffice = (function () {
 
   PjeOffice.login = function(welcomeMessage, apiContext) {
     runTask('cnj.autenticador', {
-      "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
+      "enviarPara": apiContext?.argument?.PAGINA_LOGIN || defaultArguments.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
     }, apiContext);
   };
 
   PjeOffice.loginSSO = function(welcomeMessage, token, apiContext) {
     runTask('sso.autenticador', {
-      "enviarPara": apiContext?.subject?.PAGINA_LOGIN || defaultSubject.PAGINA_LOGIN,
+      "enviarPara": apiContext?.argument?.PAGINA_LOGIN || defaultArguments.PAGINA_LOGIN,
       "mensagem": welcomeMessage,
       "token": token
     }, apiContext);  
@@ -188,8 +192,8 @@ const PjeOffice = (function () {
   PjeOffice.signHash = function(documents, apiContext) {
     runTask('cnj.assinadorHash', {
       "algoritmoAssinatura": "ASN1MD5withRSA",
-      "uploadUrl": apiContext?.subject?.PAGINA_ASSINATURA || defaultSubject.PAGINA_ASSINATURA,
-      "modoTeste": apiContext?.subject?.MODO_TESTE || defaultSubject.MODO_TESTE,
+      "uploadUrl": apiContext?.argument?.PAGINA_ASSINATURA || defaultArguments.PAGINA_ASSINATURA,
+      "modoTeste": apiContext?.argument?.MODO_TESTE || defaultArguments.MODO_TESTE,
       "arquivos": documents
     }, apiContext);
   };
@@ -198,7 +202,7 @@ const PjeOffice = (function () {
     runTask('cnj.assinador', {
       "modo": "REMOTO",
       "tipoAssinatura": "ATTACHED",
-      "enviarPara": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
+      "enviarPara": apiContext?.argument?.PAGINA_UPLOAD || defaultArguments.PAGINA_UPLOAD,
       "arquivos": documents
     }, apiContext);
   };
@@ -206,9 +210,15 @@ const PjeOffice = (function () {
   PjeOffice.signBase64 = function(documents, apiContext) {
     runTask('cnj.assinadorBase64', {
       "algoritmoAssinatura":"ASN1MD5withRSA",
-      "uploadUrl": apiContext?.subject?.PAGINA_UPLOAD || defaultSubject.PAGINA_UPLOAD,
+      "uploadUrl": apiContext?.argument?.PAGINA_UPLOAD || defaultArguments.PAGINA_UPLOAD,
       "arquivos": documents
     }, apiContext);  
+  };
+  
+  PjeOffice.readCertChain = function(apiContext) {
+    runTask('cnj.certchain', {
+	  "uploadUrl":apiContext?.argument?.PAGINA_CERTCHAIN || defaultArguments.PAGINA_CERTCHAIN,
+    }, apiContext);	
   };
 
   PjeOffice.printTag = function(printerPort, content, apiContext) {

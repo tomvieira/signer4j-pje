@@ -40,6 +40,8 @@ import br.jus.cnj.pje.office.task.ITarefaCertChain;
 
 class TarefaCertChainReader extends AbstractRequestReader<Params, ITarefaCertChain> {
 
+  public static final TarefaCertChainReader INSTANCE = new TarefaCertChainReader(); 
+  
   public static class TarefaCertChain implements ITarefaCertChain {
     private String uploadUrl;
     

@@ -76,7 +76,7 @@
       		<h3>Configuração padrão usada pela instância PjeOffice</h3> 
 			<div>      	
 <pre>
-const defaultSubject = {
+const defaultArguments = {
    //Aplicação que faz uso do PjeOffice
    //Este parâmetro é OBRIGATÓRIO e deveria ser entendido como uma constante por toda aplicação 
   "APP_REQUISITANTE"  : "Pje",
@@ -112,6 +112,10 @@ const defaultSubject = {
   //Página que recebe arquivos assinados em P7S
   //Este parâmetro é OBRIGATÓRIO e PODE SER SOBRESCRITO dinamicamente em tempo de chamada API.
   "PAGINA_UPLOAD"     : "/pjefake",
+  
+  //Página que receberá a cadeia de certificados do usuário
+  //Este parâmetro é OBRIGATÓRIO e PODE SER SOBRESCRITO dinamicamente em tempo de chamada API.
+  "PAGINA_CERTCHAIN"  : "/pjefake"
 };
 </pre>
             </div>      	
@@ -151,9 +155,9 @@ const defaultSubject = {
   welcomeMessage: É a mensagem 'aleatória' a ser assinada para garantia de autenticação pós validação da assinatura (obrigatório)
 
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-      "PAGINA_LOGIN"      : "/pjefake",                //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_LOGIN"      : "/pjefake",                //Opcional: se não informado será considerado defaultArguments.PAGINA_LOGIN  
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -189,9 +193,9 @@ const defaultSubject = {
   token: O token de autenticação SSO (obrigatório)
 
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-      "PAGINA_LOGIN"      : "/pjefake",                //Opcional: se não informado será considerado defaultSubject.PAGINA_LOGIN  
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_LOGIN"      : "/pjefake",                //Opcional: se não informado será considerado defaultArguments.PAGINA_LOGIN  
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -223,8 +227,8 @@ const defaultSubject = {
 /***************************************************************************************************************************
 
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -282,10 +286,10 @@ const defaultSubject = {
     * Os parâmetros 'id', 'codIni', 'hash', 'idTarefa', 'hash' tal como recebidos
     
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-      "PAGINA_ASSINATURA" : "/pjefake",                //Opcional: se não informado será considerado defaultSubject.PAGINA_ASSINATURA
-      "MODO_TESTE"        : false,                     //Opcional: se não informado será considerado defaultSubject.MODO_TESTE	
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_ASSINATURA" : "/pjefake",                //Opcional: se não informado será considerado defaultArguments.PAGINA_ASSINATURA
+      "MODO_TESTE"        : false,                     //Opcional: se não informado será considerado defaultArguments.MODO_TESTE	
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -337,9 +341,9 @@ const defaultSubject = {
     * Os respectivos parâmetros 'n=v' definidos em 'paramsEnvio'
 
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-      "PAGINA_UPLOAD" : "/pjefake"                     //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+    "argument": {
+      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_UPLOAD" : "/pjefake"                     //Opcional: se não informado será considerado defaultArguments.PAGINA_UPLOAD
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -362,7 +366,7 @@ const defaultSubject = {
             <hr>
          </li>
          <li>
-            <h2>Assinatura de documentos codificados em base 64</h2>
+            <h2>Assinatura de documentos codificados em Base64</h2>
             <div>			
 <pre>
 /***************************************************************************************************************************
@@ -376,7 +380,7 @@ const defaultSubject = {
 
   Onde: 
     hashDoc:        O hash do documento
-    conteudoBase64: O conteúdo a ser assinado encodado em formato base 64 
+    conteudoBase64: O conteúdo a ser assinado encodado em formato Base64 
 
   O que o servidor receberá:
     No corpo da requisição post, um array json no qual cada entrada terá um representante do respectivo arquivo assinado:
@@ -384,9 +388,9 @@ const defaultSubject = {
      { "hashDoc": "5961d2cdf0e51fb952e80cf2b7beb643", "assinaturaBase64": "YzJGdGNHeGxJR052WkdVaA==" }]
      
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
-      "PAGINA_UPLOAD" : "/pjefake"                     //Opcional: se não informado será considerado defaultSubject.PAGINA_UPLOAD
+    "argument": {
+      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_UPLOAD" : "/pjefake"                     //Opcional: se não informado será considerado defaultArguments.PAGINA_UPLOAD
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
@@ -408,6 +412,42 @@ const defaultSubject = {
             </button>      						
             <hr>
          </li>   
+         <li>
+            <h2>Leitura da cadeia de certificados do usuário</h2>
+            <div>			
+<pre>
+/***************************************************************************************************************************
+* API: PjeOffice.readCertChain = function(apiContext)
+/***************************************************************************************************************************
+
+  O que o servidor receberá:
+    Parâmetro 'cadeiaDeCertificadosBase64' com a cadeia de certificados do usuário em formato Base64
+    
+  apiContext = {
+    "argument": {
+      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
+      "PAGINA_CERTCHAIN" : "/pjefake"                  //Opcional: se não informado será considerado defaultArguments.PAGINA_CERTCHAIN
+    },
+    "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
+    "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada
+    "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada    
+  };
+</pre>
+            </div>			            
+            exemplo:
+            <div>
+<pre>
+  &lt;button onclick=&quot;PjeOffice.readCertChain(apiContext);&quot;&gt;
+	 READ CERTCHAIN
+  &lt;/button&gt;
+</pre>
+            </div>
+            <p>testar:</p>
+            <button onclick="PjeOffice.readCertChain(apiContext);">
+            READ CERTCHAIN
+            </button>      						
+            <hr>
+        </li>   
       	<li>
             <h3>Teste da disponibilidade do assinador</h3>
 			<div>									
@@ -416,8 +456,8 @@ const defaultSubject = {
 * API: PjeOffice.ping = function(apiContext) 
 /***************************************************************************************************************************
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
@@ -447,8 +487,8 @@ const defaultSubject = {
 * API: PjeOffice.about = function(apiContext) 
 /***************************************************************************************************************************
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    "argument": {
+      "POST_TIMEOUT"      : 600000,                    //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onUnavailable": function(statusText, response) {} //Opcional: se não informada a notificação é ignorada
@@ -484,8 +524,8 @@ const defaultSubject = {
     content: O array de dados a serem impressos 
     
   apiContext = {
-    "subject": {
-      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultSubject.POST_TIMEOUT   
+    "argument": {
+      "POST_TIMEOUT"  : 600000,                        //Opcional: se não informado será considerado defaultArguments.POST_TIMEOUT   
     },
     "onSuccess": function(data, response) {},          //Opcional: se não informada a notificação é ignorada
     "onFailed": function(statusText, response) {}      //Opcional: se não informada a notificação é ignorada

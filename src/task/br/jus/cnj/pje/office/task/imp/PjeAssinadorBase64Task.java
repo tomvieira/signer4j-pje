@@ -69,15 +69,15 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
     }
   }
   
-  public PjeAssinadorBase64Task(Params request, ITarefaAssinadorBase64 pojo) {
-    super(request, pojo);
-  }
-  
   private ISignatureAlgorithm algoritmoAssinatura;
 
   private String uploadUrl;
 
   private List<IAssinadorBase64Arquivo> arquivos;
+
+  public PjeAssinadorBase64Task(Params request, ITarefaAssinadorBase64 pojo) {
+    super(request, pojo);
+  }
 
   @Override
   protected void validateTaskParams() throws TaskException {
@@ -149,7 +149,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
       progress.end();
       
       if (saida.isEmpty()) {
-        throw new TaskException("Nenhum documento pôde ser assinado de um total de " + total);
+        throw showFail("Nenhum documento pôde ser assinado de um total de " + total);
       }
       
       progress.begin(Stage.FILE_SENDING);
