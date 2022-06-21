@@ -146,7 +146,7 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     if (params.fromPostRequest()) {
       Optional<String> nativeOrigin = params.getOrigin();
       if (!nativeOrigin.isPresent()) {
-        whyNot.append("Origem da requisição é desconhecida e será rejeitada por segurança (CSRF prevent)");
+        whyNot.append("Origem da requisição é desconhecida e foi rejeitada por segurança (CSRF prevent)");
         LOGGER.warn(whyNot.toString());
         return false;
       }
