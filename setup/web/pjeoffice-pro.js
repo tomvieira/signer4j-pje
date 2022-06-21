@@ -217,7 +217,7 @@ const PjeOffice = (function () {
   
   PjeOffice.readCertChain = function(apiContext) {
     runTask('cnj.certchain', {
-	  "uploadUrl":apiContext?.argument?.PAGINA_CERTCHAIN || defaultArguments.PAGINA_CERTCHAIN,
+      "uploadUrl":apiContext?.argument?.PAGINA_CERTCHAIN || defaultArguments.PAGINA_CERTCHAIN,
     }, apiContext);	
   };
 
