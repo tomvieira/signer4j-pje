@@ -215,7 +215,7 @@ public class ShellExtensionPopup extends SimpleFrame {
           PjeSignMode.DEFINIDO.getKey(), //modo
           AssinaturaPadrao.NOT_ENVELOPED.getKey(),//padraoAssinatura
           SignatureType.ATTACHED.getKey(), // tipoAssinatura
-          SignatureAlgorithm.SHA1withRSA.getName() //algoritmoHash
+          SignatureAlgorithm.SHA512withRSA.getName() //algoritmoHash
         ); 
     });
   }

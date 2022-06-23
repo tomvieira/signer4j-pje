@@ -46,7 +46,7 @@ import br.jus.cnj.pje.office.task.IArquivo;
 import br.jus.cnj.pje.office.task.IArquivoAssinado;
 import br.jus.cnj.pje.office.task.ITarefaAssinador;
 
-public class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
+class PjeAssinadorLocalDefinido extends PjeAssinadorLocalTask {
 
   private static enum Stage implements IStage {
     SELECTING_FILE; 

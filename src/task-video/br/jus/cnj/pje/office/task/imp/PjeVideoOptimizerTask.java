@@ -36,7 +36,7 @@ import com.github.videohandler4j.imp.VideoOptimizer;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public class PjeVideoOptimizerTask extends PjeBasicConverterTask<ITarefaMedia> {
+class PjeVideoOptimizerTask extends PjeBasicConverterTask<ITarefaMedia> {
 
 //  private int bitrate;
   

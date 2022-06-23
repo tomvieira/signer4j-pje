@@ -41,7 +41,7 @@ import com.github.videohandler4j.imp.exception.VideoDurationNotFound;
 
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public abstract class PjeBasicConverterTask<T extends ITarefaMedia> extends PjeMediaProcessingTask<T> {
+abstract class PjeBasicConverterTask<T extends ITarefaMedia> extends PjeMediaProcessingTask<T> {
   
   private final String prefix;
   

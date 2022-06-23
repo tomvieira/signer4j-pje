@@ -44,7 +44,7 @@ import com.github.videohandler4j.imp.VideoDescriptor;
 
 import br.jus.cnj.pje.office.task.ITarefaVideoExtracaoAudio;
 
-public class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExtracaoAudio> {
+class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExtracaoAudio> {
   
   private static enum Media {
     MP3 (new Mp3AudioExtractor()),

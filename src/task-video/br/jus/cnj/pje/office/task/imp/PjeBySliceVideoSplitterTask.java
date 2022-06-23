@@ -42,7 +42,7 @@ import com.github.utils4j.imp.Params;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
 
-public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMedia> {
+class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMedia> {
   
   protected PjeBySliceVideoSplitterTask(Params request, ITarefaMedia pojo) {
     super(request, pojo);
@@ -57,10 +57,14 @@ public class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMed
     
     Path pjeofficeHome = home.get();
     
-    File javaw = pjeofficeHome.resolve("jre").resolve("bin").resolve("javaw.exe").toFile();
+    Path bin = pjeofficeHome.resolve("jre").resolve("bin");
+    File javaw = bin.resolve("javaw.exe").toFile();
     if (!javaw.exists()) {
-      throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
-        "Não foi encontrado: " + javaw.getAbsolutePath());  
+      javaw = bin.resolve("java").toFile(); //mac or linux
+      if (!javaw.exists()) {
+        throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
+          "Não foi encontrado: " + javaw.getAbsolutePath());  
+      }
     }
     
     File cutplayer = pjeofficeHome.resolve("cutplayer4jfx.jar").toFile();
