@@ -27,8 +27,7 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
-import static com.github.utils4j.gui.imp.Dialogs.getInteger;
-import static java.util.Optional.ofNullable;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
+import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoFile;
 import com.github.videohandler4j.imp.BySizeVideoSplitter;
@@ -59,12 +59,14 @@ class PjeBySizeVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVideoDivi
     ITarefaVideoDivisaoTamanho pojo = getPojoParams();
     this.tamanho = pojo.getTamanho();
     if (this.tamanho == 0) {
-      Optional<Integer> total = ofNullable(getInteger(
-        "Tamanho máximo do arquivo (MB):", 
-        90, 
-        2, 
-        Integer.MAX_VALUE - 1
-      ));
+      Optional<Integer> total = invokeAndWait(() -> {
+        return Dialogs.getInteger(
+          "Tamanho máximo do arquivo (MB):", 
+          90, 
+          2, 
+          Integer.MAX_VALUE - 1
+        );
+      });
       this.tamanho = total.orElseThrow(InterruptedException::new);
     }
   }

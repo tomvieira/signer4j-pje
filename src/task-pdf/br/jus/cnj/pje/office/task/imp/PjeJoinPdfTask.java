@@ -27,6 +27,7 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWaitT;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
@@ -103,7 +104,7 @@ class PjeJoinPdfTask extends PjeAbstractMediaTask<ITarefaMedia> {
     Optional<String> fileName;
     
     do {
-      fileName = new FileListWindow(PjeConfig.getIcon(), files).getFileName();
+      fileName = invokeAndWaitT(new FileListWindow(PjeConfig.getIcon(), files)::getFileName);
       
       if (!fileName.isPresent()) {
         throw new InterruptedException();

@@ -28,7 +28,7 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static com.github.utils4j.gui.imp.Dialogs.getInteger;
-import static java.util.Optional.ofNullable;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -63,12 +63,14 @@ class PjeBySizePdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisaoT
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
     this.tamanho = getPojoParams().getTamanho();
     if (this.tamanho == 0) {
-      Optional<Integer> total = ofNullable(getInteger(
-        "Tamanho máximo do arquivo (MB):", 
-        10, 
-        2, 
-        1024
-      ));
+      Optional<Integer> total = invokeAndWait(() -> {
+        return getInteger(
+          "Tamanho máximo do arquivo (MB):", 
+          10, 
+          2, 
+          1024
+        );
+      });
       this.tamanho = total.orElseThrow(InterruptedException::new);
     }
   }

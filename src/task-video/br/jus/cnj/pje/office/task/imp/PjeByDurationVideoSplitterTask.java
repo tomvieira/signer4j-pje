@@ -28,7 +28,7 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static com.github.utils4j.gui.imp.Dialogs.getInteger;
-import static java.util.Optional.ofNullable;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -60,12 +60,14 @@ class PjeByDurationVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVideo
     ITarefaVideoDivisaoDuracao pojo = getPojoParams();
     this.duracao = pojo.getDuracao();    
     if (this.duracao <= 0) {
-      Optional<Integer> total = ofNullable(getInteger(
-        "O tempo máximo do vídeo (minutos):", 
-        10, 
-        1, 
-        Integer.MAX_VALUE - 1
-      ));
+      Optional<Integer> total = invokeAndWait(() -> {
+        return getInteger(
+          "O tempo máximo do vídeo (minutos):", 
+          10, 
+          1, 
+          Integer.MAX_VALUE - 1
+        );
+      });
       this.duracao = total.orElseThrow(InterruptedException::new);
     }
   }

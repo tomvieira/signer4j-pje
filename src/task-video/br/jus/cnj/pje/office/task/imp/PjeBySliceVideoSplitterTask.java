@@ -58,7 +58,7 @@ class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMedia> {
     Path pjeofficeHome = home.get();
     
     Path bin = pjeofficeHome.resolve("jre").resolve("bin");
-    File javaw = bin.resolve("javaw.exe").toFile();
+    File javaw = bin.resolve("javaw.exe").toFile(); //windows
     if (!javaw.exists()) {
       javaw = bin.resolve("java").toFile(); //mac or linux
       if (!javaw.exists()) {

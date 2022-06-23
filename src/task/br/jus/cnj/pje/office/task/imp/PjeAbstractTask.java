@@ -29,6 +29,7 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.IMainParams.PJE_MAIN_REQUEST_PARAM;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 import static com.github.utils4j.imp.Strings.empty;
 
 import java.io.File;
@@ -239,14 +240,19 @@ abstract class PjeAbstractTask<T> extends AbstractTask<IPjeResponse>{
   }
   
   protected final File[] selectFilesFromDialogs(String title) throws InterruptedException {
-    DefaultFileChooser chooser = new DefaultFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    chooser.setMultiSelectionEnabled(true);
-    chooser.setDialogTitle(title);
-    if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
+    Optional<File[]> files = invokeAndWait(() -> {
+      DefaultFileChooser chooser = new DefaultFileChooser();
+      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      chooser.setMultiSelectionEnabled(true);
+      chooser.setDialogTitle(title);
+      if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null)) {
+        return null;
+      }
+      return chooser.getSelectedFiles();
+    });
+    if (!files.isPresent())
       throwCancel();
-    }
-    return chooser.getSelectedFiles();
+    return files.get();
   }
 
   protected final Optional<File> download(final IPjeTarget target, File saveAt) {

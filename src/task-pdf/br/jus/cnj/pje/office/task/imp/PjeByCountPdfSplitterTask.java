@@ -28,7 +28,7 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static com.github.utils4j.gui.imp.Dialogs.getInteger;
-import static java.util.Optional.ofNullable;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -65,12 +65,14 @@ class PjeByCountPdfSplitterTask extends PjeMediaProcessingTask<ITarefaPdfDivisao
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
     this.totalPaginas = getPojoParams().getTotalPaginas();
     if (this.totalPaginas <= 0) {
-      Optional<Integer> total = ofNullable(getInteger(
-        "Número máximo de páginas:", 
-        10, 
-        1, 
-        Integer.MAX_VALUE - 1
-      ));
+      Optional<Integer> total = invokeAndWait(() -> {
+        return getInteger(
+          "Número máximo de páginas:", 
+          10, 
+          1, 
+          Integer.MAX_VALUE - 1
+        );
+      });
       this.totalPaginas = total.orElseThrow(InterruptedException::new);
     }
   }

@@ -38,7 +38,6 @@ import br.jus.cnj.pje.office.task.ITarefaMedia;
 
 class PjeVideoOptimizerTask extends PjeBasicConverterTask<ITarefaMedia> {
 
-//  private int bitrate;
   
   protected PjeVideoOptimizerTask(Params request, ITarefaMedia pojo) {
     super(request, pojo, "Otimizado-");
@@ -47,13 +46,7 @@ class PjeVideoOptimizerTask extends PjeBasicConverterTask<ITarefaMedia> {
   
   @Override
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
-//    Optional<Integer> bitrate = ofNullable(getInteger(
-//      "Valor do bitrate:", 
-//      512, 
-//      96, 
-//      Integer.MAX_VALUE - 1
-//    ));
-//    this.bitrate = bitrate.orElseThrow(InterruptedException::new);
+    //insert your initialization here!
   }
 
   @Override

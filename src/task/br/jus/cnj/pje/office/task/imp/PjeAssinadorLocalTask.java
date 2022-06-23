@@ -29,6 +29,7 @@ package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.TarefaAssinadorReader.AssinadorArquivo.newInstance;
 import static com.github.progress4j.IProgress.CANCELED_OPERATION_MESSAGE;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWait;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,16 +117,20 @@ class PjeAssinadorLocalTask extends PjeAssinadorTask {
   }
   
   protected File chooseDestination() throws InterruptedException {
-    final JFileChooser chooser = new DefaultFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
-    switch(chooser.showOpenDialog(null)) {
-      case JFileChooser.APPROVE_OPTION:
-        return chooser.getSelectedFile(); 
-      default:
-        throwCancel();
-        return null;
-    }
+    Optional<File> file = invokeAndWait(() -> {
+      final JFileChooser chooser = new DefaultFileChooser();
+      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      chooser.setDialogTitle("Selecione onde será(ão) gravado(s) o(s) arquivo(s) assinado(s)");
+      switch(chooser.showOpenDialog(null)) {
+        case JFileChooser.APPROVE_OPTION:
+          return chooser.getSelectedFile(); 
+        default:
+          return null;
+      }
+    });
+    if (!file.isPresent())
+      throwCancel();
+    return file.get();
   }
 
   @Override

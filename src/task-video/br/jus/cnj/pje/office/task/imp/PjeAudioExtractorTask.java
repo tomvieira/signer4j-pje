@@ -28,6 +28,8 @@
 package br.jus.cnj.pje.office.task.imp;
 
 import static br.jus.cnj.pje.office.task.imp.PjeTaskChecker.checkIfPresent;
+import static com.github.utils4j.gui.imp.Dialogs.getOption;
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWaitT;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,7 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.github.filehandler4j.IFileHandler;
 import com.github.progress4j.IQuietlyProgress;
 import com.github.taskresolver4j.exception.TaskException;
-import com.github.utils4j.gui.imp.Dialogs;
 import com.github.utils4j.imp.Params;
 import com.github.videohandler4j.IVideoInfoEvent;
 import com.github.videohandler4j.imp.Mp3AudioExtractor;
@@ -69,7 +70,7 @@ class PjeAudioExtractorTask extends PjeBasicConverterTask<ITarefaVideoExtracaoAu
     try {
       ot = Optional.of(Media.valueOf(checkIfPresent(getPojoParams().getTipo(), "tipo").toUpperCase().trim()));
     }catch(Exception e) {
-      ot = Dialogs.getOption("Escolha um formato de audio:", Media.values());
+      ot = invokeAndWaitT(() -> getOption("Escolha um formato de audio:", Media.values()));
     }
     if (!ot.isPresent()) {
       throwCancel();

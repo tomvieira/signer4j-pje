@@ -27,6 +27,8 @@
 
 package br.jus.cnj.pje.office.task.imp;
 
+import static com.github.utils4j.gui.imp.SwingTools.invokeAndWaitT;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -65,11 +67,8 @@ class PjeByPagesPdfSplitterTask extends PjeMediaProcessingTask<ITarefaMedia> {
 
   @Override
   protected void doValidateTaskParams() throws TaskException, InterruptedException {
-    Optional<String> intervals = new PrintStyleDialog(PjeConfig.getIcon()).getPagesInterval();
-    if (!intervals.isPresent()) {
-      throw new InterruptedException();
-    }
-    buildSlices(intervals.get());
+    Optional<String> intervals = invokeAndWaitT(new PrintStyleDialog(PjeConfig.getIcon())::getPagesInterval);
+    buildSlices(intervals.orElseThrow(InterruptedException::new));
     if (slices.isEmpty()) {
       throw new TaskException("Intervalo de páginas incorreto");
     }
@@ -98,7 +97,7 @@ class PjeByPagesPdfSplitterTask extends PjeMediaProcessingTask<ITarefaMedia> {
 
   @Override
   protected boolean process(Path file, IQuietlyProgress progress) {
-    
+
     Path parentFolder = file.getParent();
     IInputFile input = new FileWrapper(file.toFile());
     InputDescriptor desc;
