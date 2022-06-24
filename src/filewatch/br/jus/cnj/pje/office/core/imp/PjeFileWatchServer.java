@@ -171,6 +171,8 @@ class PjeFileWatchServer extends PjeURIServer {
             list.add(p);
           });
           
+          block.clear();
+          
           uri = tryRuntime(PjeFileWatchServer.this::nextUri);
           
         }while(!uri.isPresent());

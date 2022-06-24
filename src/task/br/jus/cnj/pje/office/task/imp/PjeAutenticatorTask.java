@@ -106,7 +106,7 @@ class PjeAutenticatorTask extends PjeAbstractTask<ITarefaAutenticador> {
     final ISignedData signedData;
     final IPjeToken token = loginToken();
     try {
-      signedData = token.signerBuilder().usingAlgorigthm(algorithm).build().process(content);
+      signedData = token.signerBuilder().usingAlgorithm(algorithm).build().process(content);
     } catch (Signer4JException e) {
       throw progress.abort(showFail("Não foi possível assinar a mensagem.", e));
     } finally {

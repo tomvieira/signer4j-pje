@@ -114,7 +114,7 @@ class PjeAssinadorHashTask extends PjeAbstractTask<ITarefaAssinadorHash> {
     PjeTaskResponses response = new PjeTaskResponses();
     final IPjeToken token = loginToken();
     try {
-      final ISimpleSigner signer = token.signerBuilder().usingAlgorigthm(this.algorithm).build();
+      final ISimpleSigner signer = token.signerBuilder().usingAlgorithm(this.algorithm).build();
   
       progress.begin(Stage.HASH_SIGNING, size);
       

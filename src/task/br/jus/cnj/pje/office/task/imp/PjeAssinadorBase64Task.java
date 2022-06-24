@@ -94,7 +94,7 @@ class PjeAssinadorBase64Task extends PjeAbstractTask<ITarefaAssinadorBase64> {
     
     IPjeToken token = loginToken();
     try {
-      IByteProcessor processor = token.signerBuilder().usingAlgorigthm(algoritmoAssinatura).build();
+      IByteProcessor processor = token.signerBuilder().usingAlgorithm(algoritmoAssinatura).build();
           
       final int total;
       progress.begin(Stage.FILE_SIGNING, total = arquivos.size());
