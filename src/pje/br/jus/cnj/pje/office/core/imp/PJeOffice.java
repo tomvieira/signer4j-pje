@@ -31,13 +31,17 @@ import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.AWAYS;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.CONFIRM;
 import static br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy.ONE_TIME;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
-import static com.github.utils4j.imp.Containers.arrayList;
 import static com.github.utils4j.imp.Threads.startAsync;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -282,12 +286,14 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     DefaultFileChooser chooser = new DefaultFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     chooser.setMultiSelectionEnabled(true);
-    chooser.setDialogTitle("Seleção de arquivos");
+    FileFilter filter = new FileNameExtensionFilter("Arquivos PDF e Vídeos MP4", "pdf", "mp4");
+    chooser.setFileFilter(filter);
+    chooser.setDialogTitle("Seleção de arquivos");    
     if (JFileChooser.CANCEL_OPTION == chooser.showOpenDialog(null))
       return;
-    File[] files = chooser.getSelectedFiles();
+    List<File> files = Stream.of(chooser.getSelectedFiles()).filter(filter::accept).collect(toList());
     if (Containers.isEmpty(files))
       return;
-    ShellExtensionPopup.show(arrayList(files));
+    ShellExtensionPopup.show(files);
   }
 }

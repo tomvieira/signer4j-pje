@@ -100,7 +100,7 @@ class PjeBySizeVideoSplitterTask extends PjeMediaProcessingTask<ITarefaVideoDivi
     }
     
     AtomicBoolean success = new AtomicBoolean(true);
-    new BySizeVideoSplitter(video, tamanho * 1024 * 1024)
+    new BySizeVideoSplitter(video, tamanho * 1000 * 1000)
       .apply(desc)
       .subscribe(
         e -> progress.info(e.getMessage()),
