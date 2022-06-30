@@ -29,15 +29,19 @@ package br.jus.cnj.pje.office.task.imp;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.taskresolver4j.ITaskResponse;
 import com.github.taskresolver4j.exception.TaskException;
 import com.github.utils4j.imp.Containers;
 import com.github.utils4j.imp.Environment;
 import com.github.utils4j.imp.Params;
+import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.task.ITarefaMedia;
@@ -74,13 +78,34 @@ class PjeBySliceVideoSplitterTask extends PjeAbstractMediaTask<ITarefaMedia> {
     }
     
     File fileHome = pjeofficeHome.toFile();
-    List<String> params = Containers.arrayList(
-      javaw.getAbsolutePath(),
-      "-Dpjeoffice_home=" + fileHome.getAbsolutePath(),
-      "-Dffmpeg_home=" + fileHome.getAbsolutePath(),
-      "-jar",
-      cutplayer.getAbsolutePath()
-    );
+
+    File processInvoke = fileHome.toPath().resolve("process.invoke").toFile();
+    if (!cutplayer.exists()) {
+      throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
+        "Não foi encontrado: " + processInvoke.getAbsolutePath());  
+    }
+    
+    List<String> nativeParams = Collections.emptyList();
+    try {
+      nativeParams = Files.readAllLines(processInvoke.toPath());      
+    } catch (IOException e1) {
+      throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
+          "Não foi possível ler os comandos de " + processInvoke.getAbsolutePath(), e1);  
+    }
+    
+    List<String> cleanParams = nativeParams.stream().filter(Strings::hasText).collect(Collectors.toList());    
+    if (Containers.isEmpty(nativeParams)) {
+      throw showFail("A instalação do PJeOffice PRO encontra-se corrompida.", 
+          "O arquivo '" + processInvoke.getAbsolutePath() + "' não define os comandos nativos da plataforma");
+    }
+    
+    List<String> params = Containers.arrayList();
+    params.addAll(cleanParams);
+    params.add(javaw.getAbsolutePath());
+    params.add("-Dpjeoffice_home=" + fileHome.getAbsolutePath());
+    params.add("-Dffmpeg_home=" + fileHome.getAbsolutePath());
+    params.add("-jar");
+    params.add(cutplayer.getAbsolutePath());
     params.addAll(arquivos);   
     
     try {
