@@ -25,7 +25,7 @@
 */
 
 
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.core.imp.sec;
 
 import static br.jus.cnj.pje.office.core.imp.PjeAccessTime.fromOptions;
 
@@ -35,6 +35,7 @@ import com.github.utils4j.imp.Strings;
 
 import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
+import br.jus.cnj.pje.office.core.imp.PjeAccessTime;
 import br.jus.cnj.pje.office.gui.alert.PjePermissionAccessor;
 
 enum PjePermissionAcessor implements IPjePermissionAccessor {

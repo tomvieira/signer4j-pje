@@ -33,6 +33,9 @@ public interface IPjeSecurityAgent {
   String PARAM_NAME = IPjeSecurityAgent.class.getSimpleName() + ".instance";
   
   void refresh();
+  void setDevMode();
+  void setProductionMode();
   
+  boolean isDevMode();
   boolean isPermitted(IMainParams params, StringBuilder whyNot);
 }

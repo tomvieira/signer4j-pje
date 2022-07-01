@@ -110,7 +110,17 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
 //    MenuItem mnuLog = new MenuItem("Registro de atividades");
 //    mnuLog.addActionListener(e -> office.showActivities());
     
-    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo inseguro (evite usar)");
+    CheckboxMenuItem mnuSafeMode = new CheckboxMenuItem("Modo inseguro (evite usar)");
+    mnuSafeMode.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED){
+        office.setUnsafe();
+      } else {
+        office.setSafe();
+      }
+    });
+    mnuSafeMode.setState(office.isUnsafe());
+
+    CheckboxMenuItem mnuDev = new CheckboxMenuItem("Modo desenvolvimento (evite usar)");
     mnuDev.addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED){
         office.setDevMode();
@@ -118,6 +128,7 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
         office.setProductionMode();
       }
     });
+    mnuDev.setState(office.isDevMode());
 
     MenuItem mnuExit   = new MenuItem("Sair");
     mnuExit.addActionListener(e ->  office.exit());
@@ -134,8 +145,10 @@ public abstract class PjeOfficeClassic extends PjeOfficeApp {
         newInstance(front, origin).start();
       });
       mnuOption.add(mnuDesk);
+      mnuOption.addSeparator();
     }
     
+    mnuOption.add(mnuSafeMode);
     mnuOption.add(mnuDev);
 
     popup.add(mnuSelect);

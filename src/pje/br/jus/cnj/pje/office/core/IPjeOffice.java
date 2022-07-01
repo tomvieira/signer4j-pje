@@ -46,13 +46,21 @@ public interface IPjeOffice extends IBootable {
 
   void setAuthStrategy(PjeAuthStrategy strategy);
 
+  void kill();
+
+  void selectTo();
+
+  void setUnsafe();
+
+  void setSafe();
+  
   boolean isAwayStrategy();
 
   boolean isOneTimeStrategy();
 
   boolean isConfirmStrategy();
-
-  void kill();
-
-  void selectTo();
+  
+  boolean isUnsafe();
+  
+  boolean isDevMode();
 }

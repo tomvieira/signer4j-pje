@@ -60,6 +60,7 @@ import br.jus.cnj.pje.office.core.IPJeLifeCycle;
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
+import br.jus.cnj.pje.office.core.imp.sec.PjeSecurityController;
 import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import io.reactivex.disposables.Disposable;
@@ -122,13 +123,37 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void setDevMode() {
     checkIsAlive();
-    PjeSecurityAgent.INSTANCE.setDevMode();
+    PjeSecurityController.ROOT.setDevMode();
   }
 
   @Override
   public void setProductionMode() {
     checkIsAlive();
-    PjeSecurityAgent.INSTANCE.setProductionMode();    
+    PjeSecurityController.ROOT.setProductionMode();    
+  }
+  
+  @Override
+  public void setUnsafe() {
+    checkIsAlive();
+    PjeSecurityController.ROOT.unsafe();
+  }
+
+  @Override
+  public void setSafe() {
+    checkIsAlive();
+    PjeSecurityController.ROOT.safe();
+  }
+  
+  @Override
+  public boolean isUnsafe() {
+    checkIsAlive();
+    return PjeSecurityController.ROOT.isUnsafe();
+  }
+  
+  @Override
+  public boolean isDevMode() {
+    checkIsAlive();
+    return PjeSecurityController.ROOT.isDevMode();
   }
   
   @Override
@@ -168,7 +193,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   protected void onCommanderStart() {
     LOGGER.info("Commander iniciado e pronto para receber requisições.");
     this.dettector.start();
-    PjeSecurityAgent.INSTANCE.refresh();
+    PjeSecurityController.ROOT.refresh();
     lifeCycle.onStartup();
   }
 

@@ -50,7 +50,7 @@ import br.jus.cnj.pje.office.gui.desktop.PjeOfficeDesktop;
 
 enum PjeOfficeFrontEnd implements IPjeFrontEnd {
   
-  SYSTRAY("Versão Systray") {
+  SYSTRAY("Versão Bandeja") {
     private SystemTray tray;
     private TrayIcon trayIcon;
     private Frame trayFrame;

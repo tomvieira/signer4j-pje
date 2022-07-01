@@ -25,7 +25,7 @@
 */
 
 
-package br.jus.cnj.pje.office.core.imp;
+package br.jus.cnj.pje.office.core.imp.sec;
 
 import static br.jus.cnj.pje.office.core.imp.PjeAccessTime.AT_THIS_TIME;
 import static br.jus.cnj.pje.office.core.imp.PjeAccessTime.AWAYS;
@@ -45,10 +45,20 @@ import br.jus.cnj.pje.office.core.IPjePermissionAccessor;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeServerAccess;
 import br.jus.cnj.pje.office.core.IPjeServerAccessPersister;
+import br.jus.cnj.pje.office.core.imp.PjeAccessTime;
+import br.jus.cnj.pje.office.core.imp.PjePermissionDeniedException;
+import br.jus.cnj.pje.office.core.imp.PjeServerAccess;
+import br.jus.cnj.pje.office.core.imp.PjeServerAccessPersisters;
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public enum PjeSecurityAgent implements IPjeSecurityAgent {
-  INSTANCE;
+enum PjeSecurityAgent implements IPjeSecurityAgent {
+  SAFE,
+  UNSAFE(){
+    @Override
+    protected final boolean checkOrigin() {
+      return false;
+    }
+  };
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PjeSecurityAgent.class);
 
@@ -69,10 +79,17 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     this.persister = Args.requireNonNull(persister, "persister is null");
   }
 
+  @Override
   public void setDevMode() {
     this.persister = PjeServerAccessPersisters.DEVMODE.reload();
   }
   
+  @Override
+  public boolean isDevMode() {
+    return this.persister == PjeServerAccessPersisters.DEVMODE;
+  }
+  
+  @Override
   public void setProductionMode() {
     this.persister = PjeServerAccessPersisters.PRODUCTION.reload();
   }
@@ -137,13 +154,13 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
     final int targetPort = computePort(targetUri.getPort(), targetSchema.get());
     
     
-    /* A sentença IF que segue não deveria existir porque toda requisição ao assinador via protocolo http(s) DEVERIA
+    /* A sentença IF que segue considera que toda requisição ao assinador via protocolo http(s) DEVERIA
      * ser feita com POST para que ORIGIN fosse sempre conhecido e, portanto, sujeito a tratamento CSRF. Por ora esta 
      * condicional fromPostRequest deve ser testada para que os servidores que ainda não foram atualizados com a nova
      * abordagem (requisições POST) não fossem impedidos de autenticação pela ausência de ORIGIN em requisições GET 
      * (idempotência)
      */
-    if (params.fromPostRequest()) {
+    if (params.fromPostRequest() || checkOrigin()) {
       Optional<String> nativeOrigin = params.getOrigin();
       if (!nativeOrigin.isPresent()) {
         whyNot.append("Origem da requisição é desconhecida e foi rejeitada por segurança (CSRF prevent)");
@@ -214,6 +231,10 @@ public enum PjeSecurityAgent implements IPjeSecurityAgent {
           "'.\nRevise as configurações no menu 'Servidores autorizados' do PjeOffice.");
     }
     return ok;
+  }
+
+  protected boolean checkOrigin() {
+    return true;
   }
 
   private static int computePort(int defaultPort, String schema) {
