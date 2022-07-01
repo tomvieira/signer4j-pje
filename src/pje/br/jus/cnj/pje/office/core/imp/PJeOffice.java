@@ -289,6 +289,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
       Threads.sleep(delay);
       this.kill();
       LOGGER.info("Game over! Bye bye!");
+      Threads.sleep(2500);      
       Runtime.getRuntime().halt(0);
     };
     if (Threads.isShutdownHook()) {

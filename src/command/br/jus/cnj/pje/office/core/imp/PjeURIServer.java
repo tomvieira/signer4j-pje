@@ -35,7 +35,6 @@ import java.io.InterruptedIOException;
 
 import com.github.utils4j.ILifeCycle;
 import com.github.utils4j.imp.ThreadContext;
-import com.github.utils4j.imp.Threads;
 
 import br.jus.cnj.pje.office.IBootable;
 import br.jus.cnj.pje.office.core.IPjeContext;
@@ -128,7 +127,8 @@ public abstract class PjeURIServer extends DefaultPjeCommander {
           LOGGER.warn("Contexto indisponível");
           continue;
         }
-        Threads.startAsync("Tratando contexto: " + context.getId(), () -> submit(context));
+        
+        async(() -> submit(context));
       }while(true);
     }
   }

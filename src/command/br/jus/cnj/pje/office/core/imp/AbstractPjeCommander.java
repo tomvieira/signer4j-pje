@@ -29,7 +29,6 @@ package br.jus.cnj.pje.office.core.imp;
 
 import static com.github.utils4j.imp.Strings.hasText;
 import static com.github.utils4j.imp.Strings.trim;
-import static com.github.utils4j.imp.Threads.startAsync;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
 import java.io.IOException;
@@ -60,7 +59,7 @@ abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeRespons
 
   protected final IBootable boot;
 
-  protected final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
+  private final ITaskRequestExecutor<IPjeRequest, IPjeResponse> executor;
   
   private final BehaviorSubject<LifeCycle> startup = BehaviorSubject.create();
   
@@ -131,7 +130,11 @@ abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeRespons
       handleException(request, response, e);
     }
   }
-
+  
+  protected final void async(Runnable runnable) {
+    this.executor.async(runnable);
+  }
+  
   protected void handleException(I request, O response, Exception e) {
     LOGGER.error("Exceção no ciclo de vida da requisição", e);
   }
@@ -173,7 +176,7 @@ abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeRespons
     if (!hasText(uri = trim(uri)))
       return;
     final String request = uri;
-    startAsync(() -> openRequest(request));
+    async(() -> openRequest(request));
   }    
   
   protected abstract void openRequest(String request);
