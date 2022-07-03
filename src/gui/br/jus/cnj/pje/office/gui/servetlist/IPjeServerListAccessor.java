@@ -27,6 +27,6 @@
 
 package br.jus.cnj.pje.office.gui.servetlist;
 
-public interface IPjeServerListAcessor {
+public interface IPjeServerListAccessor {
   void show();
 }

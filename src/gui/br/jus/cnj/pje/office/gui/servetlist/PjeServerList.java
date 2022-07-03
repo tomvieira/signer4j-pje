@@ -42,8 +42,8 @@ import br.jus.cnj.pje.office.gui.servetlist.IPjeServerListUI.Action;
 import br.jus.cnj.pje.office.gui.servetlist.IPjeServerListUI.Authorization;
 import br.jus.cnj.pje.office.gui.servetlist.IPjeServerListUI.IServerEntry;
 
-public enum PjeServerListAcessor implements IPjeServerListAcessor {
-  INSTANCE;
+public enum PjeServerList implements IPjeServerListAccessor {
+  ACCESSOR;
   
   private static class ServerEntry implements IServerEntry {
     private IPjeServerAccess serverAccess;

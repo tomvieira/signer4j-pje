@@ -70,9 +70,9 @@ import br.jus.cnj.pje.office.signer4j.IPjeToken;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import br.jus.cnj.pje.office.signer4j.imp.PjeToken;
 
-public enum PjeCertificateAcessor implements IPjeTokenAccess {
+public enum PjeCertificate implements IPjeTokenAccess {
   
-  INSTANCE;
+  ACCESSOR;
   
   private class FilePathStrategy extends AbstractStrategy {
     @Override
@@ -93,7 +93,7 @@ public enum PjeCertificateAcessor implements IPjeTokenAccess {
   
   private List<IFilePath> a3Libraries = new ArrayList<>();
 
-  private PjeCertificateAcessor() {
+  private PjeCertificate() {
     PjeConfig.loadA1Paths(a1Files::add);
     PjeConfig.loadA3Paths(a3Libraries::add);
     this.strategy = PjeAuthStrategy.getDefault();

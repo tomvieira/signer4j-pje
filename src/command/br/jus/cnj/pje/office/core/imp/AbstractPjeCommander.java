@@ -47,7 +47,7 @@ import br.jus.cnj.pje.office.core.IPjeRequest;
 import br.jus.cnj.pje.office.core.IPjeResponse;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.core.IPjeTokenAccess;
-import br.jus.cnj.pje.office.core.imp.sec.PjeSecurityController;
+import br.jus.cnj.pje.office.core.imp.sec.PjeSecurity;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -66,7 +66,7 @@ abstract class AbstractPjeCommander<I extends IPjeRequest, O extends IPjeRespons
   private boolean started = false;
   
   protected AbstractPjeCommander(IBootable boot, String serverEndpoint) {
-    this(boot, serverEndpoint, PjeCertificateAcessor.INSTANCE, PjeSecurityController.ROOT);
+    this(boot, serverEndpoint, PjeCertificate.ACCESSOR, PjeSecurity.CONTROLLER);
   }
   
   protected AbstractPjeCommander(IBootable boot, String serverEndpoint, IPjeTokenAccess tokenAccess, IPjeSecurityAgent securityAgent) {

@@ -325,9 +325,7 @@ public class PjeServerListUI extends SimpleDialog implements IPjeServerListUI {
     }
 
     public Authorization getAuthorization() {
-      if (yesOption.isSelected())
-        return Authorization.SIM;
-      return Authorization.NÃO;
+      return Authorization.from(yesOption.isSelected());
     }
 
     public void setAuthorization(Authorization status) {

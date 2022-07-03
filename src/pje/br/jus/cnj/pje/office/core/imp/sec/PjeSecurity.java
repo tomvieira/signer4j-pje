@@ -3,12 +3,12 @@ package br.jus.cnj.pje.office.core.imp.sec;
 import br.jus.cnj.pje.office.core.IPjeSecurityAgent;
 import br.jus.cnj.pje.office.task.IMainParams;
 
-public enum PjeSecurityController implements IPjeSecurityAgent {
+public enum PjeSecurity implements IPjeSecurityAgent {
 
-  ROOT(PjeSecurityAgent.SAFE); //default to SAFE
+  CONTROLLER(PjeSecurityAgent.SAFE); //default to SAFE
   
   
-  private PjeSecurityController(IPjeSecurityAgent agent) {
+  private PjeSecurity(IPjeSecurityAgent agent) {
     this.agent = agent;
   }
   

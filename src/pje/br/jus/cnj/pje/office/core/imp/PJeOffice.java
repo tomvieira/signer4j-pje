@@ -60,8 +60,8 @@ import br.jus.cnj.pje.office.core.IPJeLifeCycle;
 import br.jus.cnj.pje.office.core.IPjeCommandFactory;
 import br.jus.cnj.pje.office.core.IPjeLifeCycleHook;
 import br.jus.cnj.pje.office.core.IPjeOffice;
-import br.jus.cnj.pje.office.core.imp.sec.PjeSecurityController;
-import br.jus.cnj.pje.office.gui.servetlist.PjeServerListAcessor;
+import br.jus.cnj.pje.office.core.imp.sec.PjeSecurity;
+import br.jus.cnj.pje.office.gui.servetlist.PjeServerList;
 import br.jus.cnj.pje.office.signer4j.imp.PjeAuthStrategy;
 import io.reactivex.disposables.Disposable;
 
@@ -105,13 +105,13 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void showCertificates() {
     checkIsAlive();
-    PjeCertificateAcessor.INSTANCE.showCertificates(true, false);
+    PjeCertificate.ACCESSOR.showCertificates(true, false);
   }
 
   @Override
   public void showAuthorizedServers() {
     checkIsAlive();
-    PjeServerListAcessor.INSTANCE.show();
+    PjeServerList.ACCESSOR.show();
   }
 
   @Override
@@ -123,61 +123,61 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void setDevMode() {
     checkIsAlive();
-    PjeSecurityController.ROOT.setDevMode();
+    PjeSecurity.CONTROLLER.setDevMode();
   }
 
   @Override
   public void setProductionMode() {
     checkIsAlive();
-    PjeSecurityController.ROOT.setProductionMode();    
+    PjeSecurity.CONTROLLER.setProductionMode();    
   }
   
   @Override
   public void setUnsafe() {
     checkIsAlive();
-    PjeSecurityController.ROOT.unsafe();
+    PjeSecurity.CONTROLLER.unsafe();
   }
 
   @Override
   public void setSafe() {
     checkIsAlive();
-    PjeSecurityController.ROOT.safe();
+    PjeSecurity.CONTROLLER.safe();
   }
   
   @Override
   public boolean isUnsafe() {
     checkIsAlive();
-    return PjeSecurityController.ROOT.isUnsafe();
+    return PjeSecurity.CONTROLLER.isUnsafe();
   }
   
   @Override
   public boolean isDevMode() {
     checkIsAlive();
-    return PjeSecurityController.ROOT.isDevMode();
+    return PjeSecurity.CONTROLLER.isDevMode();
   }
   
   @Override
   public void setAuthStrategy(PjeAuthStrategy strategy) {
     checkIsAlive();
-    PjeCertificateAcessor.INSTANCE.setAuthStrategy(strategy);
+    PjeCertificate.ACCESSOR.setAuthStrategy(strategy);
   }
   
   @Override
   public boolean isAwayStrategy() {
     checkIsAlive();
-    return AWAYS == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
+    return AWAYS == PjeCertificate.ACCESSOR.getAuthStrategy();
   }
 
   @Override
   public boolean isOneTimeStrategy() {
     checkIsAlive();
-    return ONE_TIME == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
+    return ONE_TIME == PjeCertificate.ACCESSOR.getAuthStrategy();
   }
 
   @Override
   public boolean isConfirmStrategy() {
     checkIsAlive();
-    return CONFIRM == PjeCertificateAcessor.INSTANCE.getAuthStrategy();
+    return CONFIRM == PjeCertificate.ACCESSOR.getAuthStrategy();
   }
   
   @Override
@@ -193,7 +193,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   protected void onCommanderStart() {
     LOGGER.info("Commander iniciado e pronto para receber requisições.");
     this.dettector.start();
-    PjeSecurityController.ROOT.refresh();
+    PjeSecurity.CONTROLLER.refresh();
     lifeCycle.onStartup();
   }
 
@@ -206,7 +206,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   protected void onCommanderKill() {
     LOGGER.info("Killing PjeOffice");
     this.dettector.stop();
-    PjeCertificateAcessor.INSTANCE.close();
+    PjeCertificate.ACCESSOR.close();
     LOGGER.info("Fechada instância certificate acessor");
     this.lifeCycle.onKill();
     this.lifeCycle = null;
@@ -217,7 +217,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
     checkIsAlive();
     LOGGER.info("Máquina bloqueada pelo usuário");
     stopCommander();
-    PjeCertificateAcessor.INSTANCE.close();
+    PjeCertificate.ACCESSOR.close();
   }
 
   @Override
@@ -303,7 +303,7 @@ public class PJeOffice implements IWorkstationLockListener, IPjeOffice {
   @Override
   public void logout() {
     checkIsAlive();
-    startAsync(PjeCertificateAcessor.INSTANCE::logout);    
+    startAsync(PjeCertificate.ACCESSOR::logout);    
   }
   
   @Override
