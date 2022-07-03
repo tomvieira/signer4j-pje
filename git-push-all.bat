@@ -1,3 +1,5 @@
+cd %~dp0
+
 cd ../utils4j
 git push origin
 
