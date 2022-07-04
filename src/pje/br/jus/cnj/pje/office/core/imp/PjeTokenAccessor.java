@@ -165,6 +165,14 @@ public enum PjeTokenAccessor implements IPjeTokenAccess {
       DeviceCertificateEntry e = (DeviceCertificateEntry)selected.get();
       Optional<IDevice> device = e.getNative();
       if (device.isPresent()) {
+        IDevice newDevice = device.get();
+        if (this.token != null) {
+          IDevice current = this.token.getSlot().toDevice();
+          if (!newDevice.equals(current)) {
+            logout();
+          }
+          return Optional.of(this.token);
+        }
         return Optional.of(this.token = toToken(device.get()));
       }
     }

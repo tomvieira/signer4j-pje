@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleGetInfoString</key>
+  <string>PJeOffice PRO. Copyright (c) 2022 Leonardo de Lima Oliveira (https://github.com/l3onardo-oliv3ira)</string>
+  <key>CFBundleExecutable</key>
+  <string>pjeoffice-pro.sh</string>
+  <key>CFBundleIdentifier</key>
+  <string>br.jus.cnj.pje.office</string>
+  <key>CFBundleName</key>
+  <string>PJeOffice-PRO</string>
+  <key>CFBundleIconFile</key>
+  <string>pje.icns</string>
+  <key>CFBundleShortVersionString</key>
+  <string>2.1.0</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>IFMajorVersion</key>
+  <integer>0</integer>
+  <key>IFMinorVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>

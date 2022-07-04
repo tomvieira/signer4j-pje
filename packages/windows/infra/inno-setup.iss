@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PjeOffice PRO"
-#define MyAppVersion "2.0.9"
-#define MyAppPublisher "Leonardo Oliveira"
+#define MyAppVersion "2.1.0"
+#define MyAppPublisher "Leonardo de Lima Oliveira"
 #define MyAppURL "https://github.com/l3onardo-oliv3ira"
 #define MyAppExeName "pjeoffice-pro.exe"
 
@@ -37,10 +37,10 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
-Name: "startup" ; Description: "Iniciar o aplicativo quando o Windows iniciar" ; GroupDescription: "Inicialização";
+Name: "startup" ; Description: "Iniciar o aplicativo quando o Windows iniciar" ; GroupDescription: "Inicializaï¿½ï¿½o";
 
 [Registry]
-; Estas variáveis de ambientes são lidas apenas pelo componente Shell de integração com o Windows Explorer
+; Estas variï¿½veis de ambientes sï¿½o lidas apenas pelo componente Shell de integraï¿½ï¿½o com o Windows Explorer
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType:string; ValueName: "PJEOFFICE_HOME"; \
     ValueData: "{app}"; Flags: preservestringtype uninsdeletevalue
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType:string; ValueName: "FFMPEG_HOME"; \

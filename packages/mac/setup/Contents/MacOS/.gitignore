@@ -1,0 +1,5 @@
+/jre
+/web
+*.jar
+*.log
+*.exe

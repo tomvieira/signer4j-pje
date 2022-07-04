@@ -29,8 +29,17 @@ package br.jus.cnj.pje.office.core;
 
 import com.github.utils4j.IConstants;
 
+/**
+ * Alterações de versões:
+ * 1 - Enumeração: br.jus.cnj.pje.office.core.Version
+ * 2 - Arquivo: packages/windows/infra/inno-setup.iss
+ * 3 - Arquivo: packages/mac/setup/Contents/Info.plist
+ * 4 - Arquivo: packages/mac/infra/build.sh
+ * 
+ * TODO AUTOMATIZAR A INFORMAÇÃO DE VERSÓES EM TODOS OS ARQUIVOS E POM.XML
+ * */
 public enum Version {
-  _2_0_9("2.0.9"); //remember: last version must be first enum position
+  _2_1_0("2.1.0"); //remember: last version must be first enum position
   
   private String version;
 
